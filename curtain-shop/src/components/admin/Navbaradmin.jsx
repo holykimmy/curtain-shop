@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import {
   Navbar,
   MobileNav,
@@ -9,19 +9,18 @@ import {
   MenuHandler,
   MenuList,
   MenuItem,
-  Card,
   IconButton,
 } from "@material-tailwind/react";
 import {
   CubeTransparentIcon,
   UserCircleIcon,
   CodeBracketSquareIcon,
-  Square3Stack3DIcon,
+ 
   ChevronDownIcon,
   Cog6ToothIcon,
   InboxArrowDownIcon,
   PowerIcon,
-  RocketLaunchIcon,
+  
   Bars2Icon,
 } from "@heroicons/react/24/outline";
 import { CiUser } from "react-icons/ci";
@@ -52,6 +51,8 @@ function ProfileMenu() {
   const closeMenu = () => setIsMenuOpen(false);
 
   return (
+
+    
     <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end">
       <MenuHandler>
         <Button
@@ -108,20 +109,11 @@ function ProfileMenu() {
 // nav list component
 const navListItems = [
   {
-    label: "หน้าหลัก",
+    label: "จัดการสินค้า",
     icon: UserCircleIcon,
     to: "/menu",
   },
-  {
-    label: "บริการของเรา",
-    icon: CubeTransparentIcon,
-    to: "/service",
-  },
-  {
-    label: "ติดต่อเรา",
-    icon: CodeBracketSquareIcon,
-    to: "/contact",
-  },
+ 
 ];
 
 function NavList() {
@@ -159,6 +151,16 @@ function ComplexNavbar() {
 
   return (
     <>
+      {/* <div className="top-[50%] bg-white fixed">
+        <div class="bg-blue-500 sm:bg-green-500 md:bg-yellow-500 lg:bg-red-500 xl:bg-purple-500">
+          bg-blue-500 sm:bg-green-500 md:bg-yellow-500 lg:bg-red-500
+          xl:bg-purple-500
+        </div>
+        <p class="text-md sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl">
+          text-md sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl{" "}
+        </p>
+      </div> */}
+
     <Navbar className="fixed top-0 z-10 shadow-md h-max max-w-full border-none rounded-none  px-4 lg:px-8 py-2 bg-browntop">
       <div className="relative mx-auto flex items-center text-white">
         <Typography

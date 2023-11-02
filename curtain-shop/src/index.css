@@ -14,3 +14,19 @@
     font-family: 'Kanit', sans-serif;
   }
 }
+
+html,
+body {
+  height: 100%;
+  vertical-align: middle;
+  /* vertical-align: middle; */
+}
+html {
+  width: 100%;
+}
+
+body {
+   align-items: center;
+   vertical-align: middle;
+ 
+}

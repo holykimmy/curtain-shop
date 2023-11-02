@@ -1,13 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import {
   createBrowserRouter,
   RouterProvider,
-  Route,
-  Link,
 } from "react-router-dom";
 import { ThemeProvider } from "@material-tailwind/react";
 import LoginPage from "./components/LoginPage";
@@ -25,6 +22,10 @@ import ReceiptPage from "./components/admin/ReceiptPage";
 import QuotationPage from "./components/admin/QuotationPage";
 import InvoicePage from "./components/admin/InvoicePage";
 import AddProductPage from "./components/admin/AddProductPage";
+import Customers from "./components/admin/Customers";
+import Orders from "./components/admin/Orders";
+import Products from "./components/admin/Products";
+import UpdateProduct from "./components/admin/UpdateProduct";
 
 const router = createBrowserRouter([
   { path: "/", element: <HomePage /> },
@@ -36,11 +37,16 @@ const router = createBrowserRouter([
   { path: "/account", element: <AccountPage /> },
   { path: "/product-detail", element: <ProductDetail /> },
   { path: "/category", element: <CategoryPage /> },
-  {path: "/menu", element: <MenuPage/>},
-  {path: "/receipt", element: <ReceiptPage/>},
-  {path: "/quotation", element: <QuotationPage/>},
-  {path: "/invoice", element:<InvoicePage/> },
-  {path: "/add-product", element: <AddProductPage/>}
+  //admin
+  { path: "/menu", element: <MenuPage/>},
+  { path: "/receipt", element: <ReceiptPage/>},
+  { path: "/quotation", element: <QuotationPage/>},
+  { path: "/invoice", element:<InvoicePage/> },
+  { path: "/add-product", element: <AddProductPage/>},
+  { path: "/customers", element: <Customers/> },
+  { path: "/orders", element: <Orders/>},
+  { path: "/products-ad", element: <Products/>},
+  { path: "/update-product", element:<UpdateProduct/>},
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

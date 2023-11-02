@@ -9,19 +9,16 @@ import {
   MenuHandler,
   MenuList,
   MenuItem,
-  Card,
   IconButton,
 } from "@material-tailwind/react";
 import {
   CubeTransparentIcon,
   UserCircleIcon,
   CodeBracketSquareIcon,
-  Square3Stack3DIcon,
   ChevronDownIcon,
   Cog6ToothIcon,
   InboxArrowDownIcon,
   PowerIcon,
-  RocketLaunchIcon,
   Bars2Icon,
 } from "@heroicons/react/24/outline";
 import { CiUser } from "react-icons/ci";
@@ -77,8 +74,8 @@ function ProfileMenu() {
               onClick={closeMenu}
               className={`flex items-center gap-2 rounded ${
                 isLastItem
-                  // ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
-                  ? ""
+                  ? // ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
+                    ""
                   : ""
               }`}
             >
@@ -104,7 +101,6 @@ function ProfileMenu() {
 
 // nav list menu
 const navListMenuItems = [
-
   {
     title: "ผ้ากำมะหยี่",
     description: "3",
@@ -258,34 +254,34 @@ function ComplexNavbar() {
 
   return (
     <>
-    <Navbar className="fixed top-0 z-10 shadow-md h-max max-w-full border-none rounded-none  px-4 lg:px-8 py-2 bg-browntop">
-      <div className="relative mx-auto flex items-center text-white">
-        <Typography
-          as="a"
-          href="/"
-          className="mr-4 ml-2  text-2xl font-Kanit cursor-pointer py-1.5 font-medium"
-        >
-          Curtain Shop
-        </Typography>
-        <div className="absolute top-2/4 left-2/4 hidden -translate-x-2/4 -translate-y-2/4 lg:block">
-          <NavList />
+      <Navbar className="fixed top-0 z-10 shadow-md h-max max-w-full border-none rounded-none  px-4 lg:px-8 py-2 bg-browntop">
+        <div className="relative mx-auto flex items-center text-white">
+          <Typography
+            as="a"
+            href="/"
+            className="mr-4 ml-2  text-2xl font-Kanit cursor-pointer py-1.5 font-medium"
+          >
+            Curtain Shop
+          </Typography>
+          <div className="absolute top-2/4 left-2/4 hidden -translate-x-2/4 -translate-y-2/4 lg:block">
+            <NavList />
+          </div>
+          <IconButton
+            size="sm"
+            color="white"
+            variant="text"
+            onClick={toggleIsNavOpen}
+            className="ml-auto mr-2 lg:hidden"
+          >
+            <Bars2Icon className="h-6 w-6" />
+          </IconButton>
+          <ProfileMenu />
         </div>
-        <IconButton
-          size="sm"
-          color="white"
-          variant="text"
-          onClick={toggleIsNavOpen}
-          className="ml-auto mr-2 lg:hidden"
-        >
-          <Bars2Icon className="h-6 w-6" />
-        </IconButton>
-        <ProfileMenu />
-      </div>
-      <MobileNav open={isNavOpen} className="overflow-scroll">
-        <NavList />
-      </MobileNav>
-    </Navbar>
-    <div class="welcome pt-[60px]"></div>
+        <MobileNav open={isNavOpen} className="overflow-scroll">
+          <NavList />
+        </MobileNav>
+      </Navbar>
+      <div class="welcome pt-[60px]"></div>
     </>
   );
 }

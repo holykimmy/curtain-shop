@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { SwatchesPicker } from "react-color";
 import Navbaradmin from "./Navbaradmin";
-import { BiSolidBookmark } from "react-icons/bi";
 
 function AddProductPage() {
   // Define a state variable to store the selected color
@@ -14,12 +13,12 @@ function AddProductPage() {
   };
 
   // Function to update the button's color
-//   const updateButtonColor = (color) => {
-//     const button = document.getElementById("colorButton");
-//     if (button) {
-//       button.style.backgroundColor = color;
-//     }
-//   };
+  //   const updateButtonColor = (color) => {
+  //     const button = document.getElementById("colorButton");
+  //     if (button) {
+  //       button.style.backgroundColor = color;
+  //     }
+  //   };
   const buttonStyle = {
     backgroundColor: selectedColor || "transparent",
   };
@@ -27,13 +26,13 @@ function AddProductPage() {
   return (
     <>
       <Navbaradmin></Navbaradmin>
-      <div className="w-full flex items-center justify-center mt-5">
+      <div className="w-full flex items-center justify-center mt-5 pb-5">
         <form class="bg-white ">
           <p class="text-center text-2xl text-b-font font-bold">เพิ่มสินค้า</p>
 
           <p className="text-gray-700 md:text-base mt-4 pl-5">แบรนด์สินค้า</p>
           <select
-            class="input-group data-te-select-init shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-5"
+            class="input-group w-full data-te-select-init shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-5"
             id="p_brand"
             type="text"
           >
@@ -45,7 +44,7 @@ function AddProductPage() {
             ประเภทของสินค้า
           </p>
           <select
-            class="input-group data-te-select-init shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-5"
+            class="input-group w-full data-te-select-init shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-5"
             id="p_type"
             type="text"
           >
@@ -69,8 +68,10 @@ function AddProductPage() {
             onChange={handleColorChange} // Call the handler when a color is selected
           ></SwatchesPicker>
           <div className="my-5 flex justify-center">
-            <div style={buttonStyle} class="h-6 w-6 rounded-full shadow-xl inline-block  mr-2">
-            </div>
+            <div
+              style={buttonStyle}
+              class="h-6 w-6 rounded-full shadow-xl inline-block  mr-2"
+            ></div>
             <p className="text-gray-700 md:text-base text-center inline-block">
               {/* Display the selected color's name or hex code */}
               {selectedColor || "No color selected"}

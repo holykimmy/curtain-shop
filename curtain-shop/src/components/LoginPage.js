@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./styles/login.css";
+import {Link} from "react-router-dom";
+// import "./login.css";
 function LoginPage() {
   return (
     <>
@@ -10,7 +11,7 @@ function LoginPage() {
         <form class="bg-white rounded-[18px] shadow px-8 pt-6 pb-8 mb-4  ">
           <p class="text-center text-2xl text-b-font font-bold">เข้าสู่ระบบ</p>
 
-          <div class="input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline my-6">
+          <div class="flex items-center input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline my-6 pl-2">
             <span class="input-group-icon ">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -18,7 +19,7 @@ function LoginPage() {
                 viewBox="0 0 24 24"
                 strokeWidth={1.8}
                 stroke="currentColor"
-                className="w-6 h-6"
+                className="w-6 h-6 "
               >
                 <path
                   strokeLinecap="round "
@@ -27,14 +28,14 @@ function LoginPage() {
               </svg>
             </span>
             <input
-              class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="appearance-none border-none rounded w-full py-2 px-3 ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="email"
               type="text"
               placeholder="Enter email"
             />
           </div>
 
-          <div class="input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2">
+          <div class=" flex items-center  input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2 pl-2">
             <span class="input-group-icon ">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -52,7 +53,7 @@ function LoginPage() {
               </svg>
             </span>
             <input
-              class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="appearance-none border-none rounded w-full py-2 px-3 ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="password"
               type="password"
               placeholder="Enter password"
@@ -73,12 +74,11 @@ function LoginPage() {
           <div class="flex items-center justify-center mt-8">
             <p class="text-b-gray mr-3">ยังไม่ได้ลงทะเบียน?</p>
 
-            <a
+            <Link to="/register"
               class="font-bold text-lg text-browntop hover:text-b-sli"
-              href="#"
             >
               สร้างบัญชี
-            </a>
+            </Link>
           </div>
         </form>
       </div>

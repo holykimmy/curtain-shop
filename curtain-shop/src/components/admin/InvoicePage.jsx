@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import Navbaradmin from "./Navbaradmin";
-import { LuReceipt, LuFileClock } from "react-icons/lu";
+import { LuReceipt} from "react-icons/lu";
 import "../../App.css";
-import { Card } from "@material-tailwind/react";
 import CreatableSelect from "react-select/creatable";
 import type { DatePickerProps } from "antd";
 import { DatePicker, Space } from "antd";

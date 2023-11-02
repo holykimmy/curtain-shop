@@ -1,13 +1,13 @@
 import React from "react";
 import Navbaradmin from "./Navbaradmin";
-function InputName (){
+function Customers (){
     return (
         <>
           <Navbaradmin/>
-          <h1>inputname</h1>
+          <h1>customers</h1>
         </>
       );
     
 }
 
-export default InputName ;
+export default Customers ;

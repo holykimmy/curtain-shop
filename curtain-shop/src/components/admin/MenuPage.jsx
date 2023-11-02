@@ -9,28 +9,32 @@ function MenuPage() {
   return (
     <>
       <Navbaradmin></Navbaradmin>
-      <div class="flex-col w-full justify-center items-center p-auto  pt-2 md:pt-2">
-        <Link to="/receipt">
-          <button class="flex bg-sky-300 my-5 mx-auto p-1 pl-2 items-center shadow-md hover:shadow-xl h-[85px] md:h-[100px] w-[90%] md:w-[65%] rounded-[72px] justify-center">
-            <div className="flex-[15%] rounded-[72px] border-4 border-sky-300 border-r-white">
-              <BiSolidStore className=" inline-block shadow-lg p-2 w-auto h-[70px] bg-blue-gray-400 rounded-full  text-white "></BiSolidStore>
-            </div>
-            <h5 className="flex-[85%] inline-block text-center text-2xl pr-4  text-neutral-600 font-bold ">
-              สินค้าที่มีอยู่
-            </h5>
-          </button>
-        </Link>
+      <div class="flex-col w-full h-screen items-center justify-center p-auto  pt-2 pb-2  md:pt-2">
+        <div class="justify-center tems-centershadow-lg">
+          <Link to="/products-ad">
+            <button class="flex bg-sky-300 my-5 mx-auto p-1 pl-2 items-center shadow-md hover:shadow-xl h-[85px] md:h-[100px] w-[90%] md:w-[65%] rounded-[72px] justify-center">
+              <div className="flex-[15%] rounded-[72px] border-4 border-sky-300 border-r-white">
+                <BiSolidStore className=" inline-block shadow-lg p-2 w-auto h-[70px] bg-blue-gray-400 rounded-full  text-white "></BiSolidStore>
+              </div>
+              <h5 className="flex-[85%] inline-block text-center text-2xl pr-4  text-neutral-600 font-bold ">
+                สินค้าที่มีอยู่
+              </h5>
+            </button>
+          </Link>
+    
 
-        <Link to="/menu">
-          <button class="flex bg-green-400 my-5 mx-auto p-1 pl-2 items-center shadow-md hover:shadow-xl h-[85px] md:h-[100px] w-[90%] md:w-[65%] rounded-[72px] justify-center">
-            <div className="flex-[15%] rounded-[72px] border-4 border-green-400 border-r-white">
-              <BiRefresh className=" inline-block shadow-lg p-2 w-auto h-[70px] bg-white/40 rounded-full  text-white "></BiRefresh>
-            </div>
-            <h5 className="flex-[85%] inline-block text-center text-2xl pr-4 text-neutral-600 font-bold ">
-              อัปเดตข้อมูล
-            </h5>
-          </button>
-        </Link>
+       
+          <Link to="/update-product">
+            <button class="flex bg-green-400 my-5 mx-auto p-1 pl-2 items-center shadow-md hover:shadow-xl h-[85px] md:h-[100px] w-[90%] md:w-[65%] rounded-[72px] justify-center">
+              <div className="flex-[15%] rounded-[72px] border-4 border-green-400 border-r-white">
+                <BiRefresh className=" inline-block shadow-lg p-2 w-auto h-[70px] bg-white/40 rounded-full  text-white "></BiRefresh>
+              </div>
+              <h5 className="flex-[85%] inline-block text-center text-2xl pr-4 text-neutral-600 font-bold ">
+                อัปเดตข้อมูล
+              </h5>
+            </button>
+          </Link>
+        
 
         <Link to="/add-product">
           <button class="flex bg-green-200 my-5 mx-auto p-1 pl-2 items-center shadow-md hover:shadow-xl h-[85px] md:h-[100px] w-[90%] md:w-[65%] rounded-[72px] justify-center">
@@ -43,7 +47,7 @@ function MenuPage() {
           </button>
         </Link>
 
-        <Link to="/menu">
+        <Link to="/orders">
           <button class="flex bg-orange-200 my-5 mx-auto p-1 pl-2 items-center shadow-md hover:shadow-xl h-[85px] md:h-[100px] w-[90%] md:w-[65%] rounded-[72px] justify-center">
             <div className="flex-[15%] rounded-[72px] border-4 border-orange-200 border-r-white">
               <RiScissorsCutFill className=" inline-block shadow-lg p-2 w-auto h-[70px] bg-orange-400 rounded-full  text-white "></RiScissorsCutFill>
@@ -54,7 +58,7 @@ function MenuPage() {
           </button>
         </Link>
 
-        <Link to="/menu">
+        <Link to="/customers">
           <button class="flex bg-yellow-200 my-5 mx-auto p-1 pl-2 items-center shadow-md hover:shadow-xl h-[85px] md:h-[100px] w-[90%] md:w-[65%] rounded-[72px] justify-center">
             <div className="flex-[15%] rounded-[72px] border-4 border-yellow-200 border-r-white">
               <BiUserCircle className=" inline-block shadow-lg p-1 w-auto h-[70px] bg-white rounded-full  text-blue-gray-400 "></BiUserCircle>
@@ -75,6 +79,7 @@ function MenuPage() {
             </h5>
           </button>
         </Link>
+        </div>
       </div>
     </>
   );

@@ -1,8 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 import { HiOutlineChat } from "react-icons/hi";
-
-import { Transition } from "@tailwindui/react";
-
 import line from "./img/icon/line.png";
 import {
   IconButton,
@@ -11,12 +8,6 @@ import {
   SpeedDialContent,
   SpeedDialAction,
 } from "@material-tailwind/react";
-import {
-  PlusIcon,
-  HomeIcon,
-  CogIcon,
-  Square3Stack3DIcon,
-} from "@heroicons/react/24/outline";
 
 function Chaticon() {
   return (

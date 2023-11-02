@@ -1,9 +1,8 @@
 import Chaticon from "./Chaticon";
-import { HiOutlineChat } from "react-icons/hi";
 function Footer() {
   return (
     <>
-      <div className="top-[30%] bg-white fixed">
+      {/* <div className="top-[30%] bg-white fixed">
         <div class="bg-blue-500 sm:bg-green-500 md:bg-yellow-500 lg:bg-red-500 xl:bg-purple-500">
           bg-blue-500 sm:bg-green-500 md:bg-yellow-500 lg:bg-red-500
           xl:bg-purple-500
@@ -11,7 +10,7 @@ function Footer() {
         <p class="text-md sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl">
           text-md sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl{" "}
         </p>
-      </div>
+      </div> */}
 
       <footer class=" text-lg-start w-full bg-b-footer">
         <div class="text-left p-3">

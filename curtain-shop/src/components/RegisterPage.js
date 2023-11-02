@@ -1,15 +1,15 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
-import "./styles/login.css";
+// import ReactDOM from "react-dom/client";
+// import "./login.css";
 function RegisterPage() {
   return (
     <>
-    <div className=" w-full bg-brown-bg  flex h-screen items-center justify-center ">
+    <div className=" w-full bg-brown-bg  flex h-screen items-center justify-center p-5">
       <div class="container w-11/12 sm:w-96 mx-auto ">
         <form class="bg-white rounded-[18px] shadow px-8 pt-6 pb-8 mb-4  ">
           <p class="text-center text-2xl text-b-font font-bold">สมัครสมาชิก</p>
 
-          <div class="input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline my-6">
+          <div class="flex items-center input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline my-6 pl-2">
             <span class="input-group-icon ">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -25,14 +25,14 @@ function RegisterPage() {
               </svg>
             </span>
             <input
-              class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="appearance-none border-none rounded w-full py-2 px-3 ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline  "
               id="firstname"
               type="text"
               placeholder="ชื่อ"
             />
           </div>
 
-          <div class="input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-6">
+          <div class="flex items-center input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-6 pl-2">
             <span class="input-group-icon ">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -48,14 +48,14 @@ function RegisterPage() {
               </svg>
             </span>
             <input
-              class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="appearance-none border-none rounded w-full py-2 px-3 ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="lastname"
               type="text"
               placeholder="นามสกุล"
             />
           </div>
 
-          <div class="input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-6">
+          <div class="flex items-center input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-6 pl-2">
             <span class="input-group-icon ">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -71,14 +71,14 @@ function RegisterPage() {
               </svg>
             </span>
             <input
-              class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="appearance-none border-none rounded w-full py-2 px-3 ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="username"
               type="text"
               placeholder="ตั้ง username ของท่าน"
             />
           </div>
 
-          <div class="input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-6">
+          <div class="flex items-center input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-6 pl-2">
             <span class="input-group-icon ">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -95,14 +95,14 @@ function RegisterPage() {
               </svg>
             </span>
             <input
-              class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="flex items-center appearance-none border-none rounded w-full py-2 px-3 ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="email"
               type="text"
               placeholder="Enter email"
             />
           </div>
 
-          <div class="input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-6">
+          <div class="flex items-center input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-6 pl-2">
             <span class="input-group-icon ">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -118,14 +118,14 @@ function RegisterPage() {
               </svg>
             </span>
             <input
-              class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="appearance-none border-none rounded w-full py-2 px-3 ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="password"
               type="phone"
               placeholder="Enter number"
             />
           </div>
 
-          <div class="input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-6">
+          <div class="flex items-center input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-6 pl-2">
             <span class="input-group-icon ">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -143,14 +143,14 @@ function RegisterPage() {
               </svg>
             </span>
             <input
-              class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="ml-2 appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="password"
               type="password"
               placeholder="Enter password"
             />
           </div>
 
-          <div class="input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-6">
+          <div class="flex items-center input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-6 pl-2">
             <span class="input-group-icon ">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -166,7 +166,7 @@ function RegisterPage() {
               </svg>
             </span>
             <input
-              class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ml-2"
               id="password"
               type="password"
               placeholder="Enter password"
