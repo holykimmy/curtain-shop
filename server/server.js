@@ -1,9 +1,9 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 require("dotenv").config()
-const blogRoute = require('./route/blog')
+const blogRoute = require('./routes/blog')
 
 const app = express();
 

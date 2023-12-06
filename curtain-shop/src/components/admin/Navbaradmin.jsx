@@ -10,7 +10,7 @@ import {
   MenuList,
   MenuItem,
   IconButton,
-} from "@material-tailwind/react";
+} from "@material-tailwind/react"; 
 import {
   CubeTransparentIcon,
   UserCircleIcon,

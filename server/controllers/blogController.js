@@ -1,11 +1,13 @@
 //connected database
+const mongoose = require('mongoose');
 const slugify = require("slugify");
+const Blogs = require("../models/blogs");
 //save data
 exports.create = (req, res) => {
   const { title, content, author } = req.body;
-  // const slug = slugify(req.body.slug)
   const slug = slugify(title);
 
+  //validate
   switch (true) {
     case !title:
       return res.status(400).json({ error: "enter title" });
@@ -14,7 +16,28 @@ exports.create = (req, res) => {
       return res.status(400).json({ error: "enter content" });
       break;
   }
-  res.json({
-    data: { title, content, author, slug },
+
+  // connect database
+ 
+  Blogs.create({ title, content, author, slug })
+  .then(blog => {
+    res.json(blog);
+  })
+  .catch(err => {
+    res.status(400).json({ error: err.message || "Error saving entry to the database" });
   });
+
+
+  // create a new blog entry
+  // const newBlog = new Blogs({ title, content, author, slug });
+
+  // save the blog entry to the database
+  // newBlog.save()
+  //   .then(savedBlog => {
+  //     res.json({ data: savedBlog });
+  //   })
+  //   .catch(error => {
+  //     res.status(500).json({ error: "Error saving blog entry to the database." });
+  //   });
+
 };

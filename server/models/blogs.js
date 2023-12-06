@@ -6,14 +6,20 @@ const blogSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    content: { type: {}, required: true },
-    author: { type: String, required: "Admin" },
+    content: { 
+      type: {},
+      required: true 
+    },
+    author: { 
+      type:String, 
+      default: "Admin" 
+    },
     slug: {
       type: String,
       lowercase: true,
-      required: true,
+      unique: true,
     },
   },
   { timestamp: true }
-);
-module.exports =mongoose.model("Blogs", blogSchema);
+)
+module.exports = mongoose.model("Blogs", blogSchema);
