@@ -20,6 +20,8 @@ const blogSchema = mongoose.Schema(
       unique: true,
     },
   },
-  { timestamp: true }
+  { timestamps: true }
 )
 module.exports = mongoose.model("Blogs", blogSchema);
+
+

@@ -22,6 +22,8 @@ import ReceiptPage from "./components/admin/ReceiptPage";
 import QuotationPage from "./components/admin/QuotationPage";
 import InvoicePage from "./components/admin/InvoicePage";
 import AddProductPage from "./components/admin/AddProductPage";
+import AddBrandPage from "./components/admin/AddBrandPage";
+import CategoryProduct from "./components/admin/AddCategoryAndType";
 import Customers from "./components/admin/Customers";
 import Orders from "./components/admin/Orders";
 import Products from "./components/admin/Products";
@@ -43,10 +45,13 @@ const router = createBrowserRouter([
   { path: "/quotation", element: <QuotationPage/>},
   { path: "/invoice", element:<InvoicePage/> },
   { path: "/add-product", element: <AddProductPage/>},
+  { path: "/add-brand", element: <AddBrandPage/>},
+  { path: "/add-category", element:<CategoryProduct/>},
   { path: "/customers", element: <Customers/> },
   { path: "/orders", element: <Orders/>},
   { path: "/products-ad", element: <Products/>},
   { path: "/update-product", element:<UpdateProduct/>},
+
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

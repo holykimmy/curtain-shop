@@ -1,0 +1,25 @@
+{
+    "terminal.integrated.fontFamily": "MesloLGS NF",
+    "workbench.colorCustomizations": {
+        "terminal.background": "#1B1818",
+        "terminal.foreground": "#8A8585",
+        "terminalCursor.background": "#8A8585",
+        "terminalCursor.foreground": "#8A8585",
+        "terminal.ansiBlack": "#1B1818",
+        "terminal.ansiBlue": "#7272CA",
+        "terminal.ansiBrightBlack": "#655D5D",
+        "terminal.ansiBrightBlue": "#7272CA",
+        "terminal.ansiBrightCyan": "#5485B6",
+        "terminal.ansiBrightGreen": "#4B8B8B",
+        "terminal.ansiBrightMagenta": "#8464C4",
+        "terminal.ansiBrightRed": "#CA4949",
+        "terminal.ansiBrightWhite": "#F4ECEC",
+        "terminal.ansiBrightYellow": "#A06E3B",
+        "terminal.ansiCyan": "#5485B6",
+        "terminal.ansiGreen": "#4B8B8B",
+        "terminal.ansiMagenta": "#8464C4",
+        "terminal.ansiRed": "#CA4949",
+        "terminal.ansiWhite": "#8A8585",
+        "terminal.ansiYellow": "#A06E3B"
+    }
+}
