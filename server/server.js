@@ -27,12 +27,12 @@ app.use(cors())
 app.use(morgan("dev"))
 
 //route
-app.use('/',(req,res)=> {
-  return res.json({
-    "message": "success",
-    "data": "hello world"
-  })
-})
+// app.use('/',(req,res)=> {
+//   return res.json({
+//     "message": "success",
+//     "data": "hello world"
+//   })
+// })
 app.use('/api',CustomerRoute)
 app.use('/api/product',ProductRoute)
 app.use('/api/category',CategoryRoute)
