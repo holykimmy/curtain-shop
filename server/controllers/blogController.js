@@ -49,7 +49,7 @@ exports.getAllblogs = (req, res) => {
 
 //singleblogs ref slug
 exports.Singleblogs  = (req, res) => {
-  const {slug} =req.params
+  const {slug} =req.params ;
   Blogs.findOne({slug}).exec()
   .then(blogs => {
     res.json(blogs);

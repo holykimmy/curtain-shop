@@ -33,9 +33,10 @@ app.use(morgan("dev"))
 //     "data": "hello world"
 //   })
 // })
-app.use('/api',CustomerRoute)
+app.use('/api/customer',CustomerRoute)
 app.use('/api/product',ProductRoute)
 app.use('/api/category',CategoryRoute)
+
 
 const port = process.env.PORT || 8080
 app.listen(port,()=>console.log(`start server in port ${port}`))

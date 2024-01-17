@@ -2,6 +2,7 @@
 const mongoose = require("mongoose");
 const slugify = require("slugify");
 // const Blogs = require("../models/blogs");
+const slugifyMultilingual = (text) => slugify(text, { lower: true, locale: 'th' });
 const Customers = require("../models/customers");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
@@ -66,36 +67,7 @@ exports.create = (req, res) => {
     });
 };
 
-// exports.create = (req, res) => {
-//   const { f_name, l_name, username, email, tell, password } = req.body;
-//   let slug = slugify(f_name);
 
-//   //validate
-//   if (!slug) slug = uuidv4();
-//   switch (true) {
-//     case !f_name:
-//       return res.status(400).json({ error: "enter firstname" });
-//       break;
-//     case !l_name:
-//       return res.status(400).json({ error: "enter lastname" });
-//       break;
-//     case !username:
-//       return res.status(400).json({ error: "enter username" });
-//       break;
-//     case !email:
-//       return res.status(400).json({ error: "enter email" });
-//       break;
-//   }
-
-//   // connect database saved
-//   Customers.create({ f_name, l_name, username, email, tell, password })
-//     .then((customer) => {
-//       res.json(customer);
-//     })
-//     .catch((err) => {
-//       res.status(400).json({ error: "Error saving entry to the database" });
-//     });
-// };
 
 exports.getAllCustomers = (req, res) => {
   Customers.find({})
@@ -109,16 +81,20 @@ exports.getAllCustomers = (req, res) => {
     });
 };
 
-//singleblogs ref slug
-exports.SingleCustomer = (req, res) => {
-  const { slug } = req.params;
-  Customers.findOne({ slug })
+exports.search = (req, res) => {
+  const { name } = req.query;
+
+    // Use a regular expression to perform a case-insensitive partial match on both first and last names
+  const regex = new RegExp(name, 'i');
+  Customers.find({ $or: [{ f_name: regex }, { l_name: regex }] })
     .exec()
-    .then((customer) => {
-      res.json(customer);
+    .then((customers) => {
+      res.json(customers);
     })
     .catch((err) => {
-      // Handle the error, for example, send an error response
+      // จัดการข้อผิดพลาด, ตัวอย่างเช่น ส่งการตอบกลับด้วยข้อความผิดพลาด
       res.status(500).json({ error: err.message });
     });
+
 };
+

@@ -65,7 +65,7 @@ function RegisterPage() {
       console.log("API URL = ", process.env.REACT_APP_API);
       axios
 
-        .post(`${process.env.REACT_APP_API}/create`, {
+        .post(`${process.env.REACT_APP_API}/customer/create`, {
           f_name,
           l_name,
           username,
