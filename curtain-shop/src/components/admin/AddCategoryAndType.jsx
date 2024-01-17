@@ -40,7 +40,7 @@ function AddCategoryPage() {
     console.table({ brand, p_type });
     console.log("API URL = ", process.env.REACT_APP_API);
     axios
-      .post(`${process.env.REACT_APP_API}/category/create`, {
+      .post(`${process.env.REACT_APP_API}/category/create-type`, {
         brand,
         p_type: p_type,
       })
@@ -106,6 +106,7 @@ function AddCategoryPage() {
             value={p_type}
             onChange={inputValue("p_type")}
           >
+            <option disabled selected value="">เลือกประเภทสินค้า</option>
             <option>ผ้ากำมะหยี่</option>
             <option>ผ้าฝ้าย</option>
             <option>ผ้าผ้าซาติน</option>

@@ -13,14 +13,15 @@ function AddProductPage() {
     name: "",
     color: "",
     detail: "",
-    price: "",
+    price: "" ,
   });
 
   const [data, setData] = useState([]);
   const [brandOptions, setBrandOptions] = useState([]);
   const [pTypeOptions, setPTypeOptions] = useState([]);
+  const [price, setPrice] = useState("");
 
-  const { brand, p_type, name, color, detail, price } = state;
+  const { brand, p_type, name, color, detail  } = state;
 
   const fetchData = async () => {
     try {
@@ -110,6 +111,20 @@ function AddProductPage() {
     }));
   };
 
+  const handlePriceChange = (event) => {
+    // Get the input value
+    let inputValue = event.target.value;
+
+    // Remove leading zeros
+    inputValue = inputValue.replace(/^0+/, "");
+
+    // Ensure the input is a positive number
+    const numericValue = Math.abs(Number(inputValue));
+
+    // Update the state
+    setPrice(numericValue);
+  };
+
   const buttonStyle = {
     backgroundColor: color || "transparent",
   };
@@ -133,7 +148,10 @@ function AddProductPage() {
         </Link>
       </div>
       <div className="w-full items-center justify-center mt-5 pb-5">
-        <form onSubmit={submitForm} class="bg-white w-[80%] items-center justify-center m-auto mb-10">
+        <form
+          onSubmit={submitForm}
+          class="bg-white w-[80%] items-center justify-center m-auto mb-10"
+        >
           {/* {JSON.stringify(state)} */}
           <p class="text-center text-2xl text-b-font font-bold">เพิ่มสินค้า</p>
           <p className="text-gray-700 md:text-base mt-4 pl-5">แบรนด์สินค้า</p>
@@ -206,15 +224,17 @@ function AddProductPage() {
               placeholder="รายละเอียดสินค้า"
             />
           </div>
-          <div class="input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2">
+          <div class="input-groupfle shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2">
             <input
-              class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="appearance-none border-none rounded w-[90%] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="p_price"
               value={price}
-              onChange={inputValue("price")}
+              onChange={handlePriceChange}
               type="number"
+              step="0.01"
               placeholder="ราคาสินค้า"
             />
+            <span className=" w-[10%] text-center text-gray-500 ml-2 m-auto p-auto ">บาท</span>
           </div>
           <div class="flex items-center justify-center">
             <button
@@ -227,7 +247,8 @@ function AddProductPage() {
           </div>
         </form>
       </div>
-      <Link to="/menu"
+      <Link
+        to="/menu"
         type="button"
         class="fixed bottom-0 w-full flex justify-center ml-2 mb-2 w-1/2 px-5 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white border rounded-lg gap-x-2 sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700"
       >

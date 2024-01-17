@@ -1,13 +1,15 @@
 //connected database
 const mongoose = require("mongoose");
 const slugify = require("slugify");
-
+const { v4: uuidv4 } = require('uuid'); 
 const Categorys = require("../models/categorys");
 // const TypeOfPs =  require("../models/categorys");
+const slugifyMultilingual = (text) => slugify(text, { lower: true, locale: 'th' });
 
 exports.create = (req, res) => {
   const { brand, p_type } = req.body;
-  let slug = slugify(brand);
+  // let slug = slugify(brand);
+  let slug = slugifyMultilingual(brand);
   // ตรวจสอบว่าแบรนนี้มีอยู่แล้วหรือไม่
 
   Categorys.findOne({ brand })
@@ -50,7 +52,14 @@ exports.create = (req, res) => {
 
 exports.createBrand = (req, res) => {
   const { brand } = req.body;
-  let slug = slugify(brand);
+  let slug = slugifyMultilingual(brand);
+  if(!slug)slug=uuidv4();
+  switch (true) {
+    case !brand:
+      return res.status(400).json({ error: "enter brand" });
+      break;
+  }
+
   Categorys.create({ brand, slug })
     .then((category) => {
       res.json(category);
@@ -59,6 +68,54 @@ exports.createBrand = (req, res) => {
       res.status(400).json({ error: "brand นี้มีอยู่แล้ว" });
     });
 };
+
+exports.createType = (req,res) => {
+  const {brand , p_type  } = req.body ;
+  let slug = slugifyMultilingual(brand);
+  if(!slug)slug=uuidv4();
+  switch (true) {
+    case !brand:
+      return res.status(400).json({ error: "กรุณาเลือกแบรนด์สินค้า" });
+      break;
+  }
+
+  Categorys.findOne({ brand })
+    .then((existingCategory) => {
+      if (existingCategory) {
+        // if have brand
+        if (p_type.length > 0) {
+          // check if dupicate
+          const newTypes = p_type.filter(
+            (type) => !existingCategory.p_type.includes(type)
+          );
+
+          if (newTypes.length > 0) {
+            // add type if not dupicate
+            existingCategory.p_type.push(...newTypes);
+
+            return existingCategory.save();
+          } else {
+            // if type have in data
+            return Promise.reject({ error: "ประเภททั้งหมดมีอยู่แล้ว" });
+          }
+        }
+        return Promise.reject({ error: "ข้อมูลนี้มีอยู่แล้ว" });
+      } else {
+        // if don't have brand in database
+        // create brand and type
+        
+        const newCategory = new Categorys({ brand:brand , p_type: p_type,slug });
+        return newCategory.save();
+      }
+    })
+    .then((updatedCategory) => {
+      res.json(updatedCategory);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ error: "กรุณาเลือกประเภทของสินค้า" });
+    });
+}
 
 exports.getAllCategorys = (req, res) => {
   const { slug, brand } = req.query; // รับ brand จาก query parameters
