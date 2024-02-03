@@ -37,7 +37,7 @@ exports.create = (req, res) => {
       res.json(product);
     })
     .catch((err) => {
-      res.status(500).json({ error: "กรุรากรอกข้อมูลให้ครบ" });
+      res.status(500).json({ error: "กรุณากรอกข้อมูลให้ครบ" });
     });
 };
 

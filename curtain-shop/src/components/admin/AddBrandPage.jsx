@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Navbaradmin from "./Navbaradmin";
-import axios from "axios";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
+import categoryAPI from '../../services/categoryAPI';
 function AddBrandPage() {
-  const [state, setState] = useState({
+
+  const [setState] = useState({
     brand: "",
   });
   const [data, setData] = useState([]);
@@ -12,40 +13,22 @@ function AddBrandPage() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API}/category/brand`
-      );
-      setData(response.data);
+      const brands = await categoryAPI.getAllBrands();
+      setData(brands);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const { p_type } = state;
   useEffect(() => {
     fetchData();
-    const intervalId = setInterval(fetchData, 5000);
-    // Make an initial GET request when the component mounts
-    axios
-      .get(`${process.env.REACT_APP_API}/category/brand`)
-      .then((response) => {
-        setData(response.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    const intervalId = setInterval(fetchData, 5000); //refresh
     return () => clearInterval(intervalId);
-  }, []); // Empty dependency array means it will only run once on mount
+  }, []); 
 
-  //   const { brand, p_type } = state;
   const submitForm = (e) => {
     e.preventDefault();
-    console.table({ brand });
-    console.log("API URL = ", process.env.REACT_APP_API);
-    axios
-      .post(`${process.env.REACT_APP_API}/category/create-brand`, {
-        brand,
-      })
+    categoryAPI.createBrand(brand)
       .then((response) => {
         Swal.fire({
           title: "Saved",
@@ -62,9 +45,8 @@ function AddBrandPage() {
 
   const inputValue = (name) => (event) => {
     const value = event.target.value;
-    console.log(name, "=", event.target.value);
     if (name === "brand") {
-      setBrand(event.target.value);
+      setBrand(value);
     }
     console.log(name, "=", value);
     setState((prevState) => ({ ...prevState, [name]: value }));
