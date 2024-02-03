@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Navbaradmin from "./Navbaradmin";
-import axios from "axios";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
+import categoryAPI from '../../services/categoryAPI';
+
 function AddCategoryPage() {
   const [state, setState] = useState({
     brand: "",
@@ -13,37 +14,24 @@ function AddCategoryPage() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API}/category/brand`);
-      setData(response.data);
+      const brands = await categoryAPI.getAllBrands();
+      setData(brands);
     } catch (error) {
       console.error(error);
     }
   };
+  
   const { p_type } = state;
-  useEffect(() => {
-    fetchData();
-    const intervalId = setInterval(fetchData, 5000);
-    // Make an initial GET request when the component mounts
-    axios
-      .get(`${process.env.REACT_APP_API}/category/brand`)
-      .then((response) => {
-        setData(response.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []); // Empty dependency array means it will only run once on mount
 
-  //   const { brand, p_type } = state;
+  useEffect(() => {
+    fetchData(); 
+    const intervalId = setInterval(fetchData, 5000); //refresh
+    return () => clearInterval(intervalId);
+  }, []); 
+
   const submitForm = (e) => {
     e.preventDefault();
-    console.table({ brand, p_type });
-    console.log("API URL = ", process.env.REACT_APP_API);
-    axios
-      .post(`${process.env.REACT_APP_API}/category/create-type`, {
-        brand,
-        p_type: p_type,
-      })
+    categoryAPI.createType(brand, p_type)
       .then((response) => {
         Swal.fire({
           title: "Saved",
@@ -59,9 +47,9 @@ function AddCategoryPage() {
   };
 
   const inputValue = (name) => (event) => {
-    console.log(name, "=", event.target.value);
+    const value = event.target.value;
     if (name === "brand") {
-      setBrand(event.target.value);
+      setBrand(value);
     } else if (name === "p_type") {
       // แก้ไขเพื่อรองรับการเลือกหลายตัวเลือก
       const selectedOptions = Array.from(

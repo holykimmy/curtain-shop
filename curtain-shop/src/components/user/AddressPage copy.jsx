@@ -1,31 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "../styles/login.css";
 
 function AddressPage() {
   
   
   return (
     <>
-      {/* <div class="container">
-          <h2>Thailand.js</h2>
-          <div class="form-control">
-            <span>ตำบล/แขวง</span>
-            <input id="sub_district" type="text" class="txt" placeholder="ตำบล"/>
-          </div>
-          <div class="form-control">
-            <span>อำเภอ/เขต</span>
-            <input id="district" type="text" class="txt" placeholder="อำเภอ"/>
-          </div>
-          <div class="form-control">
-            <span>จังหวัด</span>
-            <input id="province" type="text" class="txt" placeholder="จังหวัด"/>
-          </div>
-          <div class="form-control">
-            <span>รหัสไปรษณีย์</span>
-            <input id="postcode" type="text" class="txt" placeholder="รหัสไปรษณีย์"/>
-          </div>
-        </div> */}
     
     
       <div className=" w-full  flex h-screen items-center justify-center ">

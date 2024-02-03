@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { SwatchesPicker } from "react-color";
 import { Link } from "react-router-dom";
 import Navbaradmin from "./Navbaradmin";
-import axios from "axios";
 import Swal from "sweetalert2";
-
+import categoryAPI from "../../services/categoryAPI";
+import productAPI from "../../services/productAPI";
 function AddProductPage() {
   // สร้าง state สำหรับเก็บข้อมูล
   const [state, setState] = useState({
@@ -13,73 +13,29 @@ function AddProductPage() {
     name: "",
     color: "",
     detail: "",
-    price: "" ,
+    price: "",
   });
 
-  const [data, setData] = useState([]);
   const [brandOptions, setBrandOptions] = useState([]);
   const [pTypeOptions, setPTypeOptions] = useState([]);
   const [price, setPrice] = useState("");
 
-  const { brand, p_type, name, color, detail  } = state;
+  const { brand, p_type, name, color, detail } = state;
 
-  const fetchData = async () => {
+  const fetchBrands = async () => {
     try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API}/category/brand`
-      );
-      setData(response.data);
+      const brandOptions = await categoryAPI.getAllBrands();
+      setBrandOptions(brandOptions);
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching all brands:", error);
     }
   };
 
-  useEffect(() => {
-    fetchData();
-    const intervalId = setInterval(fetchData, 5000);
-
-    axios
-      .get(`${process.env.REACT_APP_API}/category/brand`)
-      .then((response) => {
-        setBrandOptions(response.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
-
-  const submitForm = (e) => {
-    e.preventDefault();
-    console.table({ brandOptions, pTypeOptions, name, color, detail, price });
-    console.log("API URL = ", process.env.REACT_APP_API);
-    axios
-      .post(`${process.env.REACT_APP_API}/product/create`, {
-        brand,
-        p_type: p_type,
-        name,
-        color,
-        detail,
-        price,
-      })
-      .then((response) => {
-        Swal.fire({
-          title: "Saved",
-          icon: "success",
-        });
-      })
-      .catch((err) => {
-        Swal.fire({
-          icon: "error",
-          text: err.response.data.error,
-        });
-      });
-  };
-
   const fetchPTypeOptions = (selectedBrand) => {
-    axios
-      .get(`${process.env.REACT_APP_API}/category/?slug=${selectedBrand}`)
-      .then((response) => {
-        setPTypeOptions(response.data.p_type || []);
+    productAPI
+      .getPTypeOptions(selectedBrand)
+      .then((pTypeOptions) => {
+        setPTypeOptions(pTypeOptions);
         setState((prevState) => ({
           ...prevState,
           brand: selectedBrand,
@@ -91,6 +47,12 @@ function AddProductPage() {
       });
   };
 
+  useEffect(() => {
+    fetchBrands()
+    const intervalId = setInterval(fetchBrands, 5000); //refresh
+    return () => clearInterval(intervalId);
+  }, []);
+
   const handleBrandChange = (event) => {
     const selectedBrand = event.target.value;
     setPTypeOptions([]); // Clear p_type options when brand changes
@@ -99,7 +61,6 @@ function AddProductPage() {
 
   const inputValue = (name) => (event) => {
     const value = event.target.value;
-
     console.log(name, "=", value);
     setState((prevState) => ({ ...prevState, [name]: value }));
   };
@@ -112,21 +73,34 @@ function AddProductPage() {
   };
 
   const handlePriceChange = (event) => {
-    // Get the input value
     let inputValue = event.target.value;
-
-    // Remove leading zeros
     inputValue = inputValue.replace(/^0+/, "");
-
-    // Ensure the input is a positive number
     const numericValue = Math.abs(Number(inputValue));
 
-    // Update the state
     setPrice(numericValue);
   };
 
   const buttonStyle = {
     backgroundColor: color || "transparent",
+  };
+
+  const submitForm = (e) => {
+    e.preventDefault();
+    console.table({ brandOptions, pTypeOptions, name, color, detail, price });
+    productAPI
+      .createProduct(brand, p_type, name, color, detail, price)
+      .then((response) => {
+        Swal.fire({
+          title: "Saved",
+          icon: "success",
+        });
+      })
+      .catch((err) => {
+        Swal.fire({
+          icon: "error",
+          text: err.response.data.error,
+        });
+      });
   };
 
   return (
@@ -234,7 +208,9 @@ function AddProductPage() {
               step="0.01"
               placeholder="ราคาสินค้า"
             />
-            <span className=" w-[10%] text-center text-gray-500 ml-2 m-auto p-auto ">บาท</span>
+            <span className=" w-[10%] text-center text-gray-500 ml-2 m-auto p-auto ">
+              บาท
+            </span>
           </div>
           <div class="flex items-center justify-center">
             <button

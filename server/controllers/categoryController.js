@@ -8,7 +8,6 @@ const slugifyMultilingual = (text) => slugify(text, { lower: true, locale: 'th' 
 
 exports.create = (req, res) => {
   const { brand, p_type } = req.body;
-  // let slug = slugify(brand);
   let slug = slugifyMultilingual(brand);
   // ตรวจสอบว่าแบรนนี้มีอยู่แล้วหรือไม่
 

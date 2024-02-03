@@ -6,6 +6,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+//user
 import { ThemeProvider } from "@material-tailwind/react";
 import LoginPage from "./components/LoginPage";
 import HomePage from "./components/user/HomePage";
@@ -14,6 +15,7 @@ import ContactPage from "./components/user/ContactPage";
 import ServicePage from "./components/user/ServicePage";
 import ProductsPage from "./components/user/ProductsPage";
 import AccountPage from "./components/user/AccountPage";
+import AddressPage from "./components/user/AddressPage";
 import ProductDetail from "./components/user/ProductDetail";
 import CategoryPage from "./components/user/CategoryPage";
 //admin
@@ -37,6 +39,7 @@ const router = createBrowserRouter([
   { path: "/service", element: <ServicePage /> },
   { path: "/products", element: <ProductsPage /> },
   { path: "/account", element: <AccountPage /> },
+  { path: "/address", element: <AddressPage /> },
   { path: "/product-detail", element: <ProductDetail /> },
   { path: "/category", element: <CategoryPage /> },
   //admin

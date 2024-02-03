@@ -28,6 +28,15 @@ const customerSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    address:  [
+      {
+        houseNo: { type: String },
+        sub_district: { type: String },
+        district: { type: String },
+        province: { type: String },
+        postcode: { type: String },
+      },
+    ],
   },
   { timestamps: true }
 );
