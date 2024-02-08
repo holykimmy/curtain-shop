@@ -4,8 +4,25 @@ import { BiSolidStore, BiRefresh, BiUserCircle } from "react-icons/bi";
 import { BsPlusLg } from "react-icons/bs";
 import { RiScissorsCutFill } from "react-icons/ri";
 import { LuReceipt } from "react-icons/lu";
-import { Link } from "react-router-dom";
+import { Link ,useNavigate  } from "react-router-dom";
+import {useEffect, useState} from"react" ;
+import axios from "axios";
+
 function MenuPage() {
+  const navigate = useNavigate();
+  const [suc, setSuc] = useState() 
+
+  useEffect(()=>{
+    axios.get(`${process.env.REACT_APP_API}/dashboard`)
+    .then(res => {
+      if(res.data === "Success"){
+        setSuc("Successed Ok")
+      } else {
+        navigate("/")
+      }
+    }).catch (err => console.log(err))
+  },[])
+
   return (
     <>
       <Navbaradmin></Navbaradmin>

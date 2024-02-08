@@ -1,17 +1,34 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { IoMdEyeOff } from "react-icons/io";
-
-// import ReactDOM from "react-dom/client";
-// import "./login.css";
-
+import { useNavigate } from "react-router-dom";
 function RegisterPage() {
+  //set status
+  const [data, setData] = useState({
+    f_name: "",
+    l_name: "",
+    username: "",
+    email: "",
+    tell: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const [error, setError] = useState("");
+
+
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [passwordMatch, setPasswordMatch] = useState(true);
+
+  const { f_name, l_name, username, email, tell } = data;
+
+  useEffect(() => {
+    setPasswordMatch(password === confirmPassword);
+  }, [password, confirmPassword]);
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
@@ -29,30 +46,21 @@ function RegisterPage() {
     setShowPassword(!showPassword);
   };
 
-  const [state, setState] = useState({
-    f_name: "",
-    l_name: "",
-    username: "",
-    email: "",
-    tell: "",
-    password: "",
-  });
-  const { f_name, l_name, username, email, tell } = state;
   const submitForm = (e) => {
     e.preventDefault();
-    
+
     // ตรวจสอบว่ารหัสผ่านและยืนยันรหัสผ่านตรงกันหรือไม่
     if (password === confirmPassword) {
       // ทำการบันทึกข้อมูลหรือกระทำอื่นๆ ตามที่ต้องการ
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
         Swal.fire({
           title: "Invalid Email Format",
           icon: "error",
         });
         return;
       }
-  
-      if (!/^(09|08|06|02)\d{0,8}$/.test(tell)) {
+
+      if (!/^(09|08|06|02)\d{0,8}$/.test(data.tell)) {
         Swal.fire({
           title: "Invalid Phone Number Format",
           icon: "error",
@@ -61,11 +69,10 @@ function RegisterPage() {
       }
 
       console.log("Password matched. Ready to save data.");
-      console.table({ f_name, l_name, username, email, tell, password });
+      // console.table({ f_name, l_name, username, email, tell, password });
       console.log("API URL = ", process.env.REACT_APP_API);
       axios
-
-        .post(`${process.env.REACT_APP_API}/customer/create`, {
+        .post(`${process.env.REACT_APP_API}/customer/register`, {
           f_name,
           l_name,
           username,
@@ -73,6 +80,7 @@ function RegisterPage() {
           tell,
           password,
         })
+     
         .then((response) => {
           Swal.fire({
             title: "Saved",
@@ -85,6 +93,8 @@ function RegisterPage() {
             text: err.response.data.error,
           });
         });
+
+        
     } else {
       Swal.fire({
         title: " รหัสผ่านไม่ตรงกัน ",
@@ -93,15 +103,10 @@ function RegisterPage() {
     }
   };
 
-  //const state
-  // const inputValue = (name) => (event) => {
-
-  //   console.log(name, "=", event.target.value);
-  //   setState({ ...state, [name]: event.target.value });
-  // };
   const inputValue = (name) => (event) => {
     const value = event.target.value;
-  
+    setData((prevState) => ({ ...prevState, [name]: value }));
+
     if (name === "tell") {
       if (!/^0\d{0,9}$/.test(value)) {
         console.log("Invalid format for tell");
@@ -109,13 +114,10 @@ function RegisterPage() {
         return;
       }
     }
-  
 
     console.log(name, "=", value);
-    setState((prevState) => ({ ...prevState, [name]: value }));
+    setData((prevState) => ({ ...prevState, [name]: value }));
   };
-  
-
 
   return (
     <>
@@ -125,7 +127,6 @@ function RegisterPage() {
             onSubmit={submitForm}
             class="bg-white rounded-[18px] shadow px-8 pt-6 pb-8 mb-4  "
           >
-      
             <p class="text-center text-2xl text-b-font font-bold">
               สมัครสมาชิก
             </p>
@@ -147,9 +148,10 @@ function RegisterPage() {
               </span>
               <input
                 class="appearance-none border-none rounded w-full py-2 px-3 ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline  "
-                id="f_name"
+                name="f_name"
                 type="text"
-                value={f_name}
+                value={data.f_name}
+                required
                 onChange={inputValue("f_name")}
                 placeholder="ชื่อ"
               />
@@ -172,9 +174,10 @@ function RegisterPage() {
               </span>
               <input
                 class="appearance-none border-none rounded w-full py-2 px-3 ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="l_name"
+                name="l_name"
                 type="text"
-                value={l_name}
+                value={data.l_name}
+                required
                 onChange={inputValue("l_name")}
                 placeholder="นามสกุล"
               />
@@ -197,10 +200,11 @@ function RegisterPage() {
               </span>
               <input
                 class="appearance-none border-none rounded w-full py-2 px-3 ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="username"
+                name="username"
                 type="text"
-                value={username}
+                value={data.username}
                 onChange={inputValue("username")}
+                required
                 placeholder="ตั้ง username ของท่าน"
               />
             </div>
@@ -223,13 +227,13 @@ function RegisterPage() {
               </span>
               <input
                 class="flex items-center appearance-none border-none rounded w-full py-2 px-3 ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="email"
+                name="email"
                 type="text"
-                value={email}
+                value={data.email}
+                required
                 onChange={inputValue("email")}
                 placeholder="Enter email"
               />
-              
             </div>
             {/* <p>{isValidEmail ? "Email is valid" : "Invalid email format"}</p> */}
 
@@ -250,9 +254,10 @@ function RegisterPage() {
               </span>
               <input
                 class="appearance-none border-none rounded w-full py-2 px-3 ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="tell"
+                name="tell"
                 type="tel"
-                value={state.tell}
+                value={data.tell}
+                required
                 onChange={inputValue("tell")}
                 placeholder="Enter number"
               />
@@ -277,7 +282,7 @@ function RegisterPage() {
               </span>
               <input
                 className="ml-2 appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="password"
+                name="password"
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={handlePasswordChange}
@@ -309,7 +314,7 @@ function RegisterPage() {
               </span>
               <input
                 className="ml-2 appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="confirmPassword"
+                name="confirmPassword"
                 type={showPassword ? "text" : "password"}
                 value={confirmPassword}
                 onChange={handleConfirmPasswordChange}
@@ -326,14 +331,18 @@ function RegisterPage() {
             {passwordMatch ? null : (
               <p className="text-red-500">รหัสผ่านไม่ตรงกัน</p>
             )}
-
+            {error && {error}}
+             {/* {passwordMatch ? null : (
+              <p className="text-red-500">รหัสผ่านไม่ตรงกัน</p>
+            )}
+            {error && <p className="text-red-500">{error.msg}</p>} */}
             <div class="flex items-center justify-center mt-10">
               <button
                 class="w-full bg-b-btn hover:bg-browntop text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 value="save"
                 type="submit"
               >
-                Sign In
+                Sign Up
               </button>
             </div>
           </form>

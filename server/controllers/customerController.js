@@ -4,86 +4,88 @@ const slugify = require("slugify");
 // const Blogs = require("../models/blogs");
 const slugifyMultilingual = (text) =>
   slugify(text, { lower: true, locale: "th" });
-const Customers = require("../models/customers");
+const { User, validate } = require("../models/customers");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 const { body, validationResult } = require("express-validator");
+const Joi = require("joi");
 
-exports.validateCreate = [
-  body("f_name").notEmpty().withMessage("ต้องกรอกชื่อ"),
-  body("l_name").notEmpty().withMessage("ต้องกรอกนามสกุล"),
-  body("username").notEmpty().withMessage("ต้องกรอกชื่อผู้ใช้"),
-  body("email")
-    .notEmpty()
-    .withMessage("ต้องกรอกอีเมล")
-    .isEmail()
-    .withMessage("อีเมลไม่ถูกต้อง"),
-  body("tell")
-    .notEmpty()
-    .withMessage("ต้องกรอกเบอร์โทร")
-    .isMobilePhone("any", { strictMode: false })
-    .withMessage("เบอร์โทรไม่ถูกต้อง"),
-  body("password").notEmpty().withMessage("ต้องกรอกรหัสผ่าน"),
-];
-
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
   const { f_name, l_name, username, email, tell, password } = req.body;
+  try {
+    const { error } = validate(req.body);
+    if (error) {
+      return res
+        .status(400)
+        .json({ error: error.details.map((detail) => detail.message) });
+    }
+    console.log(f_name, l_name, username, email, tell, password);
+    const user = await User.findOne({ email: req.body.email });
+    const u_username = await User.findOne({ username: req.body.username });
+    const u_tell = await User.findOne({ tell: req.body.tell });
+    if (user) {
+      return res
+        .status(409)
+        .json({ error: "email นี้ถูกใช้ไปแล้ว กรุณาใช้ email อื่น" });
+    } else if (u_username) {
+      return res
+        .status(409)
+        .json({ error: "username นี้ถูกใช้ไปแล้ว กรุณาใช้ username อื่น" });
+    } else if (u_tell) {
+      return res
+        .status(409)
+        .json({ error: "เบอร์โทรนี้ถูกใช้ไปแล้ว กรุณาใช้เบอร์โทรอื่น" });
+    }
 
-  // ตรวจสอบข้อมูลที่ไม่ถูกต้องและส่งคืน response 400 ถ้าไม่ถูกต้อง
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    const salt = await bcrypt.genSalt(Number(process.env.SALT));
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    await new User({ ...req.body, password: hashedPassword }).save();
+    res.status(201).json({ message: "สมัครรสมาชิกสำเร็จ" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
+};
 
-  // ตรวจสอบว่า username, email, และ tell ไม่ซ้ำกัน
-  Customers.findOne({ $or: [{ username }, { email }, { tell }] })
-    .then((existingCustomer) => {
-      if (existingCustomer) {
-        let errorMessage = "";
-        if (existingCustomer.username === username) {
-          errorMessage = "Username already exists";
-        } else if (existingCustomer.email === email) {
-          errorMessage = "Email already exists";
-        } else if (existingCustomer.tell === tell) {
-          errorMessage = "Tell already exists";
-        }
-        return Promise.reject({ error: errorMessage });
-      }
+const validatelogin = (data) => {
+  const schema = Joi.object({
+    user: Joi.string().required().label("Email or Tell"), // ใช้ "user" แทน "email"
+    password: Joi.string().min(7).required().label("Password"),
+  });
+  return schema.validate(data);
+};
 
-      // เข้ารหัสรหัสผ่าน
-      return bcrypt.hash(password, 10);
-    })
-    .then((hashedPassword) => {
-      // สร้างข้อมูลลูกค้าโดยไม่รวมรหัสผ่านในข้อมูลที่ส่งกลับ
-      return Customers.create({
-        f_name,
-        l_name,
-        username,
-        email,
-        tell,
-        password: hashedPassword,
-      });
-    })
-    .then((customer) => {
-      // ส่งข้อมูลลูกค้าโดยไม่รวมรหัสผ่านกลับ
-      const response = {
-        _id: customer._id,
-        f_name: customer.f_name,
-        l_name: customer.l_name,
-        username: customer.username,
-        email: customer.email,
-        tell: customer.tell,
-      };
+exports.loginUser = async (req, res) => {
+  const { user, password } = req.body;
 
-      res.json(response);
-    })
-    .catch((err) => {
-      console.error(err);
-      res
-        .status(500)
-        .json({ error: "เกิดข้อผิดพลาดในการบันทึกข้อมูลลงในฐานข้อมูล" });
+  try {
+    const { error } = validatelogin(req.body);
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
+    }
+
+    const userFound = await User.findOne({
+      $or: [{ email: user }, { tell: user }],
     });
+
+    if (!userFound) {
+      return res.status(401).json({ error: "email หรือ เบอร์โปทรไม่ถูกต้อง" });
+    }
+
+    const validPassword = await bcrypt.compare(password, userFound.password);
+
+    if (!validPassword) {
+      return res.status(401).json({ error: "รหัสผ่านไม่ถูกต้อง" });
+    }
+
+    const token = await userFound.generateAuthToken();
+    res.cookie("token", token )
+    // res.status(200).json({ token });
+    return res.json({Status:"Success", role: userFound.role})
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
 
 exports.getAllCustomers = (req, res) => {
@@ -153,7 +155,6 @@ exports.createAddress = (req, res) => {
             // If the address already exists, reject with an error
             return Promise.reject({ error: "ที่อยู่นี้มีอยู่แล้ว" });
           }
-          
         });
 
         // Save the updated customer data
@@ -163,7 +164,7 @@ exports.createAddress = (req, res) => {
         return Promise.reject({ error: "ไม่พบลูกค้า" });
       }
     })
-    
+
     .then((updatedCustomer) => {
       // Return success response
       res.status(200).json(updatedCustomer);
@@ -172,46 +173,10 @@ exports.createAddress = (req, res) => {
       // Handle errors
       console.error(error);
       res.status(500).json({ error: "กรุณากรอกข้อมูลให้ครบ" });
-    })
-   
+    });
 };
 
-process.on('unhandledRejection', (reason, promise) => {
+process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection at:", promise, "reason:", reason);
   // ทำสิ่งที่ต้องการเพื่อจัดการกับ unhandled rejection
 });
-
-exports.login = async (req, res) => {
-  const { username, password } = req.body;
-
-  try {
-    // ค้นหาลูกค้าตาม username
-    const customer = await Customers.findOne({ username });
-
-    // ถ้าไม่พบลูกค้า
-    if (!customer) {
-      return res.status(401).json({ error: 'ไม่พบบัญชีผู้ใช้' });
-    }
-
-    // ตรวจสอบรหัสผ่าน
-    const isPasswordMatch = await bcrypt.compare(password, customer.password);
-
-    // ถ้ารหัสผ่านไม่ตรง
-    if (!isPasswordMatch) {
-      return res.status(401).json({ error: 'รหัสผ่านไม่ถูกต้อง' });
-    }
-
-    // สร้าง Token
-    const token = jwt.sign(
-      { customerId: customer._id, username: customer.username },
-      'your_secret_key', // ใส่คีย์ลับเฉพาะของคุณที่ปลอดภัย
-      { expiresIn: '1h' } // ให้ Token มีอายุ 1 ชั่วโมง
-    );
-
-    // ส่ง Token และข้อมูลลูกค้ากลับไป
-    res.status(200).json({ token, customer });
-  } catch (error) {
-    console.error('Error during login:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};

@@ -15,6 +15,11 @@ function HomePage() {
     "https://i.ibb.co/XXR8kzF/3.png",
   ];
 
+  const handleLogout =() =>{
+    localStorage.removeItem("token");
+    window.location.reload();
+  }
+
   return (
     <>
       <Navbar></Navbar>
