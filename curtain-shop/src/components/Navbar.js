@@ -22,31 +22,79 @@ import {
   Bars2Icon,
 } from "@heroicons/react/24/outline";
 import { CiUser } from "react-icons/ci";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 // profile menu component
-const profileMenuItems = [
-  {
-    label: "My Profile",
-    icon: UserCircleIcon,
-  },
-  {
-    label: "Edit Profile",
-    icon: Cog6ToothIcon,
-  },
-  {
-    label: "Inbox",
-    icon: InboxArrowDownIcon,
-  },
-  {
-    label: "Sign Out",
-    icon: PowerIcon,
-  },
-];
+
 
 function ProfileMenu() {
+
+  //set status
+  const [data, setData] = useState({
+    f_name: "",
+    l_name: "",
+    username: "",
+    email: "",
+    tell: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const { f_name, l_name, username, email, tell } = data;
+
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   const closeMenu = () => setIsMenuOpen(false);
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.reload();
+  };
+
+  const profileMenuItems = [
+    {
+      label: "My Profile",
+      icon: UserCircleIcon,
+    },
+    {
+      label: "แก้ไขโปรไฟล์",
+      icon: Cog6ToothIcon,
+    },
+    {
+      label: "ตระกร้าสินค้า",
+      icon: InboxArrowDownIcon,
+    },
+    {
+      label: "ออกจากระบบ",
+      icon: PowerIcon,
+    },
+  ];
+  
+  const [loggedInUser, setLoggedInUser] = React.useState(" "); // สร้าง state เพื่อเก็บชื่อผู้ใช้ที่ login เข้ามา
+  
+  // ภายในฟังก์ชัน submitForm หรือที่คุณเก็บชื่อผู้ใช้หลังจาก login
+  const submitForm = async (e) => {
+    e.preventDefault();
+    // ตรวจสอบสิ่งที่ต้องการก่อน
+    // ...
+  
+    axios
+      .post(`${process.env.REACT_APP_API}/customer/login`, {
+        f_name,
+        l_name,
+        username,
+        email,
+        tell,
+      })
+      .then((response) => {
+        // หลังจาก login สำเร็จ
+        // บันทึกชื่อผู้ใช้ที่ login เข้ามาใน state
+        setLoggedInUser(username);
+        // ดำเนินการอื่น ๆ
+      })
+      .catch((err) => {
+        // กรณีเกิดข้อผิดพลาด
+      });
+  };
 
   return (
     <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end">
@@ -68,16 +116,21 @@ function ProfileMenu() {
       <MenuList className="p-1">
         {profileMenuItems.map(({ label, icon }, key) => {
           const isLastItem = key === profileMenuItems.length - 1;
+          const isLogout = label === "ออกจากระบบ";
           return (
             <MenuItem
               key={label}
-              onClick={closeMenu}
+              onClick={isLogout ? handleLogout : closeMenu}
               className={`flex items-center gap-2 rounded ${
-                isLastItem
-                  ? // ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
-                    ""
-                  : ""
+                isLastItem ? "" : ""
               }`}
+              // onClick={closeMenu}
+              // className={`flex items-center gap-2 rounded ${
+              //   isLastItem
+              //     ? // ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
+              //       ""
+              //     : ""
+              // }`}
             >
               {React.createElement(icon, {
                 className: `h-4 w-4 ${isLastItem ? "text-red-500" : ""}`,

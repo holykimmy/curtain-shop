@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import categoryAPI from "../../services/categoryAPI";
 import productAPI from "../../services/productAPI";
 function AddProductPage() {
-  // สร้าง state สำหรับเก็บข้อมูล
+ 
   const [state, setState] = useState({
     brand: "",
     p_type: "",

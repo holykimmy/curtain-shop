@@ -68,18 +68,17 @@ exports.search = (req, res) => {
     });
 };
 
-
 exports.getFromBrand = (req, res) => {
-    const { name } = req.query;
+  const { name } = req.query;
   // Use a regular expression to perform a case-insensitive partial match on both first and last names
   const regex = new RegExp(name, "i");
-    Products.find({$or: [{brand:regex}]})
-      .exec()
-      .then((products) => {
-        res.json(products);
-      })
-      .catch((err) => {
-        // จัดการข้อผิดพลาด, ตัวอย่างเช่น ส่งการตอบกลับด้วยข้อความผิดพลาด
-        res.status(500).json({ error: err.message });
-      });
-  };
+  Products.find({ $or: [{ brand: regex }] })
+    .exec()
+    .then((products) => {
+      res.json(products);
+    })
+    .catch((err) => {
+      // จัดการข้อผิดพลาด, ตัวอย่างเช่น ส่งการตอบกลับด้วยข้อความผิดพลาด
+      res.status(500).json({ error: err.message });
+    });
+};
