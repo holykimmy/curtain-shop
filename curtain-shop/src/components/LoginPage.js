@@ -45,7 +45,7 @@ function LoginPage() {
 
         // หากบทบาทของผู้ใช้เป็น "admin" ให้นำผู้ใช้ไปยังหน้า "/menu"
         if (response.data.role === "admin") {
-          navigate("/menu");
+          navigate("/dashboard");
         } else {
           // ถ้าไม่ใช่ "admin" ให้บันทึก token และนำผู้ใช้ไปยังหน้าหลัก "/"
           localStorage.setItem("token", response.data.token);
