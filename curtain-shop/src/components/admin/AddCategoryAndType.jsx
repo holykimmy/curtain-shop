@@ -103,6 +103,7 @@ function AddCategoryPage() {
             <option>ผ้าใยผสม</option>
             <option>ผ้ากันแสง</option>
             <option>ม่านล็อกลอน</option>
+            <option>ผ้าโพลีเอสเตอร์ 100%</option>
           </select>
 
           <div class="flex items-center justify-center">
