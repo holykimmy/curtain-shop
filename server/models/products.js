@@ -36,7 +36,7 @@ const ProdusctSchema = mongoose.Schema(
     },
     author: { 
       type:String, 
-      default: "Admin" 
+      default: "admin" 
     },
   },
   { timestamps: true }
