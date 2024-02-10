@@ -12,16 +12,38 @@ function MenuPage() {
   const navigate = useNavigate();
   const [suc, setSuc] = useState() 
 
-  useEffect(()=>{
-    axios.get(`${process.env.REACT_APP_API}/dashboard`)
-    .then(res => {
-      if(res.data === "Success"){
-        setSuc("Successed Ok")
-      } else {
-        navigate("/")
-      }
-    }).catch (err => console.log(err))
-  },[])
+  // useEffect(()=>{
+  //   axios.get(`${process.env.REACT_APP_API}/dashboard`)
+  //   .then(res => {
+  //     if(res.data === "Success"){
+  //       setSuc("Successed Ok")
+  //     } else {
+  //       navigate("/")
+  //     }
+  //   }).catch (err => console.log(err))
+  // },[])
+
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetch(`${process.env.REACT_APP_API}/dashboard/admin`);
+  //       const data = await response.json();
+  //       if (data === "Success") {
+  //         setSuc("Successed Ok");
+  //       } else {
+  //         navigate("/");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //       navigate("/");
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [navigate]);
+
+
 
   return (
     <>

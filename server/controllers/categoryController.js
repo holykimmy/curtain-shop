@@ -112,7 +112,7 @@ exports.createType = (req,res) => {
     })
     .catch((err) => {
       console.error(err);
-      res.status(500).json({ error: "กรุณาเลือกประเภทของสินค้า" });
+      res.status(500).json({ error: "ข้อมูลนี้มีอยู่แล้ว" });
     });
 }
 

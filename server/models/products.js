@@ -9,7 +9,6 @@ const ProdusctSchema = mongoose.Schema(
     },
     p_type: {
       type: String,
-      unique: true,
       required: true,
     },
     slug: {
