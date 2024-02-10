@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import Navbaradmin from "./Navbaradmin";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
-import categoryAPI from '../../services/categoryAPI';
+import categoryAPI from "../../services/categoryAPI";
 function AddBrandPage() {
-
   const [setState] = useState({
     brand: "",
   });
@@ -24,11 +23,12 @@ function AddBrandPage() {
     fetchData();
     const intervalId = setInterval(fetchData, 5000); //refresh
     return () => clearInterval(intervalId);
-  }, []); 
+  }, []);
 
   const submitForm = (e) => {
     e.preventDefault();
-    categoryAPI.createBrand(brand)
+    categoryAPI
+      .createBrand(brand)
       .then((response) => {
         Swal.fire({
           title: "Saved",
@@ -49,18 +49,19 @@ function AddBrandPage() {
       setBrand(value);
     }
     console.log(name, "=", value);
-    setState((prevState) => ({ ...prevState, [name]: value }));
+    setData((prevState) => ({ ...prevState, [name]: value }));
   };
 
   return (
     <>
       <Navbaradmin></Navbaradmin>
       <div className=" items-center justify-center mt-5 pb-5 p-10 bg-white w-[80%] m-auto">
-      <p class="text-center text-xl text-b-font font-bold">แบรนด์สินค้าที่มีอยู่แล้ว</p>
+        <p class="text-center text-xl text-b-font font-bold">
+          แบรนด์สินค้าที่มีอยู่แล้ว
+        </p>
         <ol>
-          {data.map((item) => (
-            <li key={item.brand}>{item.brand}</li>
-          ))}
+          {Array.isArray(data) &&
+            data.map((item) => <li key={item.brand}>{item.brand}</li>)}
         </ol>
 
         {/* <ol>{data.map((item) => (

@@ -111,7 +111,7 @@ const navListItems = [
   {
     label: "จัดการสินค้า",
     icon: UserCircleIcon,
-    to: "/menu",
+    to: "/dashboard",
   },
  
 ];
