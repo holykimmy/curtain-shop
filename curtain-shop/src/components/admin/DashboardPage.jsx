@@ -56,14 +56,14 @@ function MenuPage() {
                 <BiSolidStore className=" inline-block shadow-lg p-2 w-auto h-[70px] bg-blue-gray-400 rounded-full  text-white "></BiSolidStore>
               </div>
               <h5 className="flex-[85%] inline-block text-center text-2xl pr-4  text-neutral-600 font-bold ">
-                สินค้าที่มีอยู่
+                สินค้าที่มีอยู่ในคลังและอัปเดตสินค้า
               </h5>
             </button>
           </Link>
     
 
        
-          <Link to="/update-product">
+          {/* <Link to="/update-product">
             <button class="flex bg-green-400 my-5 mx-auto p-1 pl-2 items-center shadow-md hover:shadow-xl h-[85px] md:h-[100px] w-[90%] md:w-[65%] rounded-[72px] justify-center">
               <div className="flex-[15%] rounded-[72px] border-4 border-green-400 border-r-white">
                 <BiRefresh className=" inline-block shadow-lg p-2 w-auto h-[70px] bg-white/40 rounded-full  text-white "></BiRefresh>
@@ -72,7 +72,7 @@ function MenuPage() {
                 อัปเดตข้อมูล
               </h5>
             </button>
-          </Link>
+          </Link> */}
         
 
         <Link to="/add-product">

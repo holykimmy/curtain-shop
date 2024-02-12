@@ -29,7 +29,8 @@ app.use(express.json());
 app.use(
   cors({
     origin: "http://localhost:3000", // กำหนดโดเมนที่อนุญาตให้เข้าถึง
-    methods: ["GET", "POST"], // กำหนดเมทอดที่อนุญาต
+    methods: ["GET", "POST" ,"PUT" ,"DELETE"], // กำหนดเมทอดที่อนุญาต
+    allowedHeaders: 'Content-Type,Authorization',
     credentials: true, // อนุญาตให้ส่งคุกกี้ (cookies) ไปพร้อมกับคำขอ
   })
 );

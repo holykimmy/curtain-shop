@@ -1,10 +1,126 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbaradmin from "./Navbaradmin";
 import { BsPinFill } from "react-icons/bs";
-import { Link } from "react-router-dom";
-import { HiOutlineArrowSmRight } from "react-icons/hi";
+import { Link, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import blackout from "../img/products/blackout.jpeg";
+import { FaTrashAlt } from "react-icons/fa";
+import productAPI from "../../services/productAPI";
+import Swal from "sweetalert2";
+import axios from "axios";
+
 function Products() {
+  // const { productId } = useParams();
+  const [velvetProducts, setVelvetProducts] = useState([]);
+  const [cottonProducts, setCottonProducts] = useState([]);
+  const [satinProducts, setSatinProducts] = useState([]);
+  const [linenProducts, setLinenProducts] = useState([]);
+  const [polyesterProducts, setPolesterProducts] = useState([]);
+  const [mixedProducts, setMixedProducts] = useState([]);
+  const [blackoutProducts, setBlackoutProducts] = useState([]);
+  const [waveProducts, setWaveProducts] = useState([]);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+
+  const handleSearch = async () => {
+    try {
+      const searchData = await productAPI.getSearch(searchTerm);
+      console.log(searchData);
+      setSearchResults(searchData); // เซตค่า searchResults ที่ได้จากการค้นหาเข้า state
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const velvetData = await productAPI.getProductTypeVelvet();
+        setVelvetProducts(velvetData);
+
+        const cottonData = await productAPI.getProductTypeCotton();
+        setCottonProducts(cottonData);
+
+        const satinData = await productAPI.getProductTypeSatin();
+        setSatinProducts(satinData);
+
+        const linenProducts = await productAPI.getProductTypeLinen();
+        setLinenProducts(linenProducts);
+
+        const polyesterData = await productAPI.getProductTypePolyester();
+        setPolesterProducts(polyesterData);
+
+        const mixedData = await productAPI.getProductTypeMixed();
+        setMixedProducts(mixedData);
+
+        const blackoutData = await productAPI.getProductTypeBlackout();
+        setBlackoutProducts(blackoutData);
+
+        const waveData = await productAPI.getProductTypeWave();
+        setWaveProducts(waveData);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    const intervalId = setInterval(() => {
+      fetchData();
+    }, 5000); // 5 วินาที
+
+    fetchData();
+    return () => clearInterval(intervalId);
+  }, []);
+
+  // const history = useHistory();
+  const navigate = useNavigate();
+
+  const handleEditProduct = (productId,productName) => {
+    Swal.fire({
+      title: `คุณต้องการแก้ไขข้อมูลสินค้า ${productName} ใช่หรือไม่?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่",
+      cancelButtonText: "ไม่ใช่",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate(`/update-product/${productId}`);
+      }
+    });
+  };
+
+  const handleDeleteProduct = (productId,productName) => {
+    console.log(productId);
+    Swal.fire({
+      title: `คุณต้องการลบข้อมูลสินค้า ${productName} ใช่หรือไม่?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่",
+      cancelButtonText: "ไม่ใช่",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // ทำการลบสินค้าโดยใช้ ID ของสินค้า
+        productAPI
+          .deleteProduct(productId)
+          .then((response) => {
+            console.log("Product deleted successfully");
+            // อัพเดท state หรือทำอื่น ๆ ตามต้องการหลังจากลบสินค้าเสร็จสิ้น
+            // เรียก fetchData เพื่ออัพเดทข้อมูลใหม่หลังจากลบสินค้า
+          })
+          .catch((error) => {
+            console.error("Error deleting product:", error);
+          });
+      } else {
+        // ผู้ใช้เลือกยกเลิกการลบสินค้า
+        console.log("Cancelled delete operation");
+      }
+    });
+  };
+
   return (
     <>
       <Navbaradmin />
@@ -16,33 +132,14 @@ function Products() {
           id="search-bar"
           placeholder="ค้นหาข้อมูล"
           class="px-6 py-2 w-full rounded-md flex-1 outline-none bg-white"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <button class="w-full md:w-auto px-6 py-3 bg-gray-500 border-gray-500 text-white fill-white active:scale-95 duration-100 border will-change-transform overflow-hidden relative rounded-xl transition-all disabled:opacity-70">
+        <button
+          onClick={handleSearch}
+          class="w-full md:w-auto px-6 py-3 bg-gray-500 border-gray-500 text-white fill-white active:scale-95 duration-100 border will-change-transform overflow-hidden relative rounded-xl transition-all disabled:opacity-70 "
+        >
           <div class="relative">
-            {/* <!-- Loading animation change opacity to display --> */}
-            {/* <div class="flex items-center justify-center h-3 w-3 absolute inset-1/2 -translate-x-1/2 -translate-y-1/2 transition-all"> */}
-            {/* <svg
-                class="opacity-0 animate-spin w-full h-full"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  class="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  stroke-width="4"
-                ></circle>
-                <path
-                  class="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg> */}
-            {/* </div> */}
-
             <div class="flex items-center transition-all opacity-1 valid:">
               <span class="text-sm font-semibold whitespace-nowrap truncate mx-auto">
                 Search
@@ -51,80 +148,326 @@ function Products() {
           </div>
         </button>
       </label>
-      <div class="titlea bg-gray-100 py-1 shadow-md">
-        <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-8 xl:h-8 text-b-font"></BsPinFill>
-        <h5 className=" inline-block text-base md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
-          ผ้ากำมะหยี่
-        </h5>
-      </div>
-      
 
-    
-      <div class="titlea bg-gray-100 py-1 shadow-md">
-        <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-8 xl:h-8 text-b-font"></BsPinFill>
-        <h5 className=" inline-block text-base md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
-          ผ้าฝ้าย
-        </h5>
-      </div>
-
-      
-
-      <div class="titlea bg-gray-100 py-1 shadow-md">
-        <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-8 xl:h-8 text-b-font"></BsPinFill>
-        <h5 className=" inline-block text-base md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
-          ผ้าซาติน
-        </h5>
-      </div>
-
-     
-   
-      
-      <div class="titlea bg-gray-100 py-1 shadow-md">
-        <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-8 xl:h-8 text-b-font"></BsPinFill>
-        <h5 className=" inline-block text-base md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
-          ผ้าลินิน
-        </h5>
-      </div>
-
-   
-
-      <div class="titlea bg-gray-100 py-1 shadow-md">
-        <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-8 xl:h-8 text-b-font"></BsPinFill>
-        <h5 className=" inline-block text-base md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
-          ผ้าใยสังเคราะห์
-        </h5>
-      </div>
-      
-      <div class="titlea bg-gray-100 py-1 shadow-md">
-        <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-8 xl:h-8 text-b-font"></BsPinFill>
-        <h5 className=" inline-block text-base md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
-          ผ้าใยผสม
-        </h5>
-      </div>
+      {searchResults.length > 0 ? (
+        searchResults.map((product) => (
+          <div key={product._id} className="flex justify-center">
+            <div className="flex justify-between w-[85%] h-auto bg-white shadow-md border rounded mt-2 mb-4 p-3">
+              <img className="w-[25%] rounded" src={blackout} alt="blackout" />
+              <div className="pl-5 w-[50%]">
+                <p className="text-lg text-brown-400">{product.name}</p>
+                <p className="text-md text-brown-400">{product.brand}</p>
+                <p className="text-md text-brown-400">{product.p_type}</p>
+                <p className="text-md text-brown-400">{product.color}</p>
+                <p className="text-md text-brown-400">{product.detail}</p>
+                <p className="text-md text-brown-400">{product.price}</p>
+              </div>
+              <div>
+                <div>
+                  <button
+                    className=" mt-3 mb-3 inline-block text-md  text-green-300 "
+                    onClick={() => handleEditProduct(product._id)}
+                  >
+                    แก้ไขข้อมูล
+                  </button>
+                </div>
+                <button
+                  className="mt-3 mb-3 inline-block text-md text-red-300"
+                  onClick={() => handleDeleteProduct(product._id)}
+                >
+                  ลบข้อมูล <FaTrashAlt className="inline-block text-red-400" />
+                </button>
+              </div>
+            </div>
+          </div>
+        ))
+      ) : (
+        <p>ไม่พบข้อมูล</p>
+      )}
 
       <div class="titlea bg-gray-100 py-1 shadow-md">
         <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-8 xl:h-8 text-b-font"></BsPinFill>
         <h5 className=" inline-block text-base md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
-          ผ้าม่านกันแสง
+          ผ้ากำมะหยี่ (velvet)
         </h5>
       </div>
+
+      {velvetProducts.map((product) => (
+        <div key={product._id} className="flex justify-center">
+          <div className=" flex justify-between w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
+            <img class="w-[25%] rounded  " src={blackout} alt="blackout" />
+            <div className="pl-5 w-[50%]">
+              <p className="text-lg text-brown-400">{product.name}</p>
+              <p className="text-md text-brown-400">{product.brand}</p>
+              <p className="text-md text-brown-400">{product.p_type}</p>
+              <p className="text-md text-brown-400">{product.color}</p>
+              <p className="text-md text-brown-400">{product.detail}</p>
+              <p className="text-md text-brown-400">{product.price}</p>
+            </div>
+            <div>
+              <div>
+                <button
+                  className=" mt-3 mb-3 inline-block text-md  text-green-300 "
+                  onClick={() => handleEditProduct(product._id, product.name)}
+                >
+                  แก้ไขข้อมูล
+                </button>
+              </div>
+              <button
+                className="mt-3 mb-3 inline-block text-md text-red-300"
+                onClick={() => handleDeleteProduct(product._id, product.name)}
+              >
+                ลบข้อมูล <FaTrashAlt className="inline-block text-red-400" />
+              </button>
+            </div>
+          </div>
+        </div>
+      ))}
 
       <div class="titlea bg-gray-100 py-1 shadow-md">
         <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-8 xl:h-8 text-b-font"></BsPinFill>
         <h5 className=" inline-block text-base md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
-          ผ้าล็อกลอน
+          ผ้าฝ้าย (cotton)
         </h5>
       </div>
+      {cottonProducts.map((product) => (
+        <div key={product._id} className="flex justify-center">
+          <div className=" flex justify-between w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
+            <img class="w-[25%] rounded  " src={blackout} alt="blackout" />
+            <div className="pl-5 w-[50%]">
+              <p className="text-lg text-brown-400">{product.name}</p>
+              <p className="text-md text-brown-400">{product.brand}</p>
+              <p className="text-md text-brown-400">{product.p_type}</p>
+              <p className="text-md text-brown-400">{product.color}</p>
+              <p className="text-md text-brown-400">{product.detail}</p>
+              <p className="text-md text-brown-400">{product.price}</p>
+            </div>
+            <div>
+              <div>
+                <Link
+                  to={`/update-product/${product._id}`}
+                  className=" mt-3 mb-3 inline-block text-md  text-green-300 "
+                >
+                  {" "}
+                  แก้ไขข้อมูล{" "}
+                </Link>
+              </div>
+              <button
+                className=" mt-3 mb-3 inline-block text-md  text-red-300 "
+                onClick={() => handleDeleteProduct(product._id)}
+              >
+                {" "}
+                ลบข้อมูล <FaTrashAlt className="inline-block  text-red-400" />{" "}
+              </button>
+            </div>
+          </div>
+        </div>
+      ))}
 
       <div class="titlea bg-gray-100 py-1 shadow-md">
         <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-8 xl:h-8 text-b-font"></BsPinFill>
         <h5 className=" inline-block text-base md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
-          ผ้าโพลีเอสเตอร์ 100%
+          ผ้าผ้าซาติน (satin)
         </h5>
       </div>
-    
-    
+      {satinProducts.map((product) => (
+        <div key={product._id} className="flex justify-center">
+          <div className=" flex justify-between w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
+            <img class="w-[25%] rounded  " src={blackout} alt="blackout" />
+            <div className="pl-5 w-[50%]">
+              <p className="text-lg text-brown-400">{product.name}</p>
+              <p className="text-md text-brown-400">{product.brand}</p>
+              <p className="text-md text-brown-400">{product.p_type}</p>
+              <p className="text-md text-brown-400">{product.color}</p>
+              <p className="text-md text-brown-400">{product.detail}</p>
+              <p className="text-md text-brown-400">{product.price}</p>
+            </div>
+            <div>
+              <div>
+                <p className=" mt-3 mb-3 inline-block text-md  text-green-300 ">
+                  {" "}
+                  แก้ไขข้อมูล{" "}
+                </p>
+              </div>
+              <p className=" mt-3 mb-3 inline-block text-md  text-red-300 ">
+                {" "}
+                ลบข้อมูล <FaTrashAlt className="inline-block  text-red-400" />{" "}
+              </p>
+            </div>
+          </div>
+        </div>
+      ))}
 
+      <div class="titlea bg-gray-100 py-1 shadow-md">
+        <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-8 xl:h-8 text-b-font"></BsPinFill>
+        <h5 className=" inline-block text-base md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
+          ผ้าลินิน (linen)
+        </h5>
+      </div>
+
+      {linenProducts.map((product) => (
+        <div key={product._id} className="flex justify-center">
+          <div className=" flex justify-between w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
+            <img class="w-[25%] rounded  " src={blackout} alt="blackout" />
+            <div className="pl-5 w-[50%]">
+              <p className="text-lg text-brown-400">{product.name}</p>
+              <p className="text-md text-brown-400">{product.brand}</p>
+              <p className="text-md text-brown-400">{product.p_type}</p>
+              <p className="text-md text-brown-400">{product.color}</p>
+              <p className="text-md text-brown-400">{product.detail}</p>
+              <p className="text-md text-brown-400">{product.price}</p>
+            </div>
+            <div>
+              <div>
+                <p className=" mt-3 mb-3 inline-block text-md  text-green-300 ">
+                  {" "}
+                  แก้ไขข้อมูล{" "}
+                </p>
+              </div>
+              <p className=" mt-3 mb-3 inline-block text-md  text-red-300 ">
+                {" "}
+                ลบข้อมูล <FaTrashAlt className="inline-block  text-red-400" />{" "}
+              </p>
+            </div>
+          </div>
+        </div>
+      ))}
+
+      <div class="titlea bg-gray-100 py-1 shadow-md">
+        <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-8 xl:h-8 text-b-font"></BsPinFill>
+        <h5 className=" inline-block text-base md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
+          ผ้าใยสังเคราะห์ (polyester)
+        </h5>
+      </div>
+      {polyesterProducts.map((product) => (
+        <div key={product._id} className="flex justify-center">
+          <div className=" flex justify-between w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
+            <img class="w-[25%] rounded  " src={blackout} alt="blackout" />
+            <div className="pl-5 w-[50%]">
+              <p className="text-lg text-brown-400">{product.name}</p>
+              <p className="text-md text-brown-400">{product.brand}</p>
+              <p className="text-md text-brown-400">{product.p_type}</p>
+              <p className="text-md text-brown-400">{product.color}</p>
+              <p className="text-md text-brown-400">{product.detail}</p>
+              <p className="text-md text-brown-400">{product.price}</p>
+            </div>
+            <div>
+              <div>
+                <p className=" mt-3 mb-3 inline-block text-md  text-green-300 ">
+                  {" "}
+                  แก้ไขข้อมูล{" "}
+                </p>
+              </div>
+              <p className=" mt-3 mb-3 inline-block text-md  text-red-300 ">
+                {" "}
+                ลบข้อมูล <FaTrashAlt className="inline-block  text-red-400" />{" "}
+              </p>
+            </div>
+          </div>
+        </div>
+      ))}
+
+      <div class="titlea bg-gray-100 py-1 shadow-md">
+        <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-8 xl:h-8 text-b-font"></BsPinFill>
+        <h5 className=" inline-block text-base md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
+          ผ้าใยผสม (mixed)
+        </h5>
+      </div>
+      {mixedProducts.map((product) => (
+        <div key={product._id} className="flex justify-center">
+          <div className=" flex justify-between w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
+            <img class="w-[25%] rounded  " src={blackout} alt="blackout" />
+            <div className="pl-5 w-[50%]">
+              <p className="text-lg text-brown-400">{product.name}</p>
+              <p className="text-md text-brown-400">{product.brand}</p>
+              <p className="text-md text-brown-400">{product.p_type}</p>
+              <p className="text-md text-brown-400">{product.color}</p>
+              <p className="text-md text-brown-400">{product.detail}</p>
+              <p className="text-md text-brown-400">{product.price}</p>
+            </div>
+            <div>
+              <div>
+                <p className=" mt-3 mb-3 inline-block text-md  text-green-300 ">
+                  {" "}
+                  แก้ไขข้อมูล{" "}
+                </p>
+              </div>
+              <p className=" mt-3 mb-3 inline-block text-md  text-red-300 ">
+                {" "}
+                ลบข้อมูล <FaTrashAlt className="inline-block  text-red-400" />{" "}
+              </p>
+            </div>
+          </div>
+        </div>
+      ))}
+
+      <div class="titlea bg-gray-100 py-1 shadow-md">
+        <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-8 xl:h-8 text-b-font"></BsPinFill>
+        <h5 className=" inline-block text-base md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
+          ผ้ากันแสง (blackout)
+        </h5>
+      </div>
+      {blackoutProducts.map((product) => (
+        <div key={product._id} className="flex justify-center">
+          <div className=" flex justify-between w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
+            <img class="w-[25%] rounded  " src={blackout} alt="blackout" />
+            <div className="pl-5 w-[50%]">
+              <p className="text-lg text-brown-400">{product.name}</p>
+              <p className="text-md text-brown-400">{product.brand}</p>
+              <p className="text-md text-brown-400">{product.p_type}</p>
+              <p className="text-md text-brown-400">{product.color}</p>
+              <p className="text-md text-brown-400">{product.detail}</p>
+              <p className="text-md text-brown-400">{product.price}</p>
+            </div>
+            <div>
+              <div>
+                <p className=" mt-3 mb-3 inline-block text-md  text-green-300 ">
+                  {" "}
+                  แก้ไขข้อมูล{" "}
+                </p>
+              </div>
+              <p className=" mt-3 mb-3 inline-block text-md  text-red-300 ">
+                {" "}
+                ลบข้อมูล <FaTrashAlt className="inline-block  text-red-400" />{" "}
+              </p>
+            </div>
+          </div>
+        </div>
+      ))}
+
+      <div class="titlea bg-gray-100 py-1 shadow-md">
+        <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-8 xl:h-8 text-b-font"></BsPinFill>
+        <h5 className=" inline-block text-base md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
+          ม่านล็อกลอน (wave curtains)
+        </h5>
+      </div>
+      {waveProducts.map((product) => (
+        <div key={product._id} className="flex justify-center">
+          <div className=" flex justify-between w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
+            <img class="w-[25%] rounded  " src={blackout} alt="blackout" />
+            <div className="pl-5 w-[50%]">
+              <p className="text-lg text-brown-400">{product.name}</p>
+              <p className="text-md text-brown-400">{product.brand}</p>
+              <p className="text-md text-brown-400">{product.p_type}</p>
+              <p className="text-md text-brown-400">{product.color}</p>
+              <p className="text-md text-brown-400">{product.detail}</p>
+              <p className="text-md text-brown-400">{product.price}</p>
+            </div>
+            <div>
+              <div>
+                <p className=" mt-3 mb-3 inline-block text-md  text-green-300 ">
+                  {" "}
+                  แก้ไขข้อมูล{" "}
+                </p>
+              </div>
+              <p className=" mt-3 mb-3 inline-block text-md  text-red-300 ">
+                {" "}
+                ลบข้อมูล <FaTrashAlt className="inline-block  text-red-400" />{" "}
+              </p>
+            </div>
+          </div>
+        </div>
+      ))}
     </>
   );
 }

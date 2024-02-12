@@ -10,7 +10,7 @@ const Products = require("../models/products");
 exports.create = (req, res) => {
   const { brand, p_type, name, color, detail, price } = req.body;
   let slug = slugifyMultilingual(
-    `${slugify(brand)}-${slugify(name)}-${Date.now()}`
+    `${slugify(brand)}-${slugify(name)}-${slugify(p_type)}-${Date.now()}`
   );
   //connect
   Products.findOne({ brand, p_type, name, color, detail })
@@ -39,7 +39,6 @@ exports.create = (req, res) => {
     .catch((err) => {
       res.status(500).json({ error: "กรุณากรอกข้อมูลให้ครบ" });
     });
-
 };
 
 exports.getAllProducts = (req, res) => {
@@ -54,11 +53,25 @@ exports.getAllProducts = (req, res) => {
     });
 };
 
+exports.getProductType = (req, res) => {
+  const name = req.query.name;
+  const regex = new RegExp(name, "i");
+  Products.find({ p_type: regex })
+    .exec()
+    .then((products) => {
+      res.json(products);
+    })
+    .catch((err) => {
+      // จัดการข้อผิดพลาด, ตัวอย่างเช่น ส่งการตอบกลับด้วยข้อความผิดพลาด
+      res.status(500).json({ error: err.message });
+    });
+};
+
 exports.search = (req, res) => {
   const { name } = req.query;
   // Use a regular expression to perform a case-insensitive partial match on both first and last names
   const regex = new RegExp(name, "i");
-  Products.find({ $or: [{ brand: regex }, { name: regex }] })
+  Products.find({ $or: [{ brand: regex }, { p_type: regex }] })
     .exec()
     .then((products) => {
       res.json(products);
@@ -81,5 +94,47 @@ exports.getFromBrand = (req, res) => {
     .catch((err) => {
       // จัดการข้อผิดพลาด, ตัวอย่างเช่น ส่งการตอบกลับด้วยข้อความผิดพลาด
       res.status(500).json({ error: err.message });
+    });
+};
+
+exports.updateProduct = (req, res) => {
+  const productId = req.params.productId;
+  const { brand, p_type, name, color, detail, price  } = req.body;
+  let slug = slugifyMultilingual(
+    `${slugify(brand)}-${slugify(name)}-${slugify(p_type)}-${Date.now()}`
+  );
+
+  Products.findByIdAndUpdate(
+    productId,
+    { brand, p_type, name, color, detail, price, slug },
+    { new: true }
+  )
+    .then((product) => {
+      if (!product) {
+        return res.status(404).json({ error: "ไม่พบสินค้าที่ต้องการแก้ไข" });
+      }
+      res.json(product);
+    })
+    .catch((err) => {
+      logger.error(err)
+      res.status(500).json({ error: "เกิดข้อผิดพลาดในการแก้ไขข้อมูล" });
+    });
+};
+
+
+
+
+exports.deleteProduct = (req, res) => {
+  const productId = req.params.productId;
+
+  Products.findByIdAndRemove(productId)
+    .then((product) => {
+      if (!product) {
+        return res.status(404).json({ error: "ไม่พบสินค้าที่ต้องการลบ" });
+      }
+      res.json({ message: "ลบสินค้าเรียบร้อยแล้ว" });
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "เกิดข้อผิดพลาดในการลบสินค้า" });
     });
 };
