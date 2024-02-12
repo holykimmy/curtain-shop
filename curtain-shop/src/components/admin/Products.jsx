@@ -1,6 +1,9 @@
 import React from "react";
 import Navbaradmin from "./Navbaradmin";
-import { BsPinFill, BsSearch } from "react-icons/bs";
+import { BsPinFill } from "react-icons/bs";
+import { Link } from "react-router-dom";
+import { HiOutlineArrowSmRight } from "react-icons/hi";
+import blackout from "../img/products/blackout.jpeg";
 function Products() {
   return (
     <>
@@ -18,7 +21,7 @@ function Products() {
           <div class="relative">
             {/* <!-- Loading animation change opacity to display --> */}
             {/* <div class="flex items-center justify-center h-3 w-3 absolute inset-1/2 -translate-x-1/2 -translate-y-1/2 transition-all"> */}
-              {/* <svg
+            {/* <svg
                 class="opacity-0 animate-spin w-full h-full"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -49,11 +52,79 @@ function Products() {
         </button>
       </label>
       <div class="titlea bg-gray-100 py-1 shadow-md">
-          <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-8 xl:h-8 text-b-font"></BsPinFill>
-          <h5 className=" inline-block text-base md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
-            ผ้าม่าน
-          </h5>
-        </div>
+        <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-8 xl:h-8 text-b-font"></BsPinFill>
+        <h5 className=" inline-block text-base md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
+          ผ้ากำมะหยี่
+        </h5>
+      </div>
+      
+
+    
+      <div class="titlea bg-gray-100 py-1 shadow-md">
+        <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-8 xl:h-8 text-b-font"></BsPinFill>
+        <h5 className=" inline-block text-base md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
+          ผ้าฝ้าย
+        </h5>
+      </div>
+
+      
+
+      <div class="titlea bg-gray-100 py-1 shadow-md">
+        <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-8 xl:h-8 text-b-font"></BsPinFill>
+        <h5 className=" inline-block text-base md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
+          ผ้าซาติน
+        </h5>
+      </div>
+
+     
+   
+      
+      <div class="titlea bg-gray-100 py-1 shadow-md">
+        <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-8 xl:h-8 text-b-font"></BsPinFill>
+        <h5 className=" inline-block text-base md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
+          ผ้าลินิน
+        </h5>
+      </div>
+
+   
+
+      <div class="titlea bg-gray-100 py-1 shadow-md">
+        <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-8 xl:h-8 text-b-font"></BsPinFill>
+        <h5 className=" inline-block text-base md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
+          ผ้าใยสังเคราะห์
+        </h5>
+      </div>
+      
+      <div class="titlea bg-gray-100 py-1 shadow-md">
+        <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-8 xl:h-8 text-b-font"></BsPinFill>
+        <h5 className=" inline-block text-base md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
+          ผ้าใยผสม
+        </h5>
+      </div>
+
+      <div class="titlea bg-gray-100 py-1 shadow-md">
+        <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-8 xl:h-8 text-b-font"></BsPinFill>
+        <h5 className=" inline-block text-base md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
+          ผ้าม่านกันแสง
+        </h5>
+      </div>
+
+      <div class="titlea bg-gray-100 py-1 shadow-md">
+        <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-8 xl:h-8 text-b-font"></BsPinFill>
+        <h5 className=" inline-block text-base md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
+          ผ้าล็อกลอน
+        </h5>
+      </div>
+
+      <div class="titlea bg-gray-100 py-1 shadow-md">
+        <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-8 xl:h-8 text-b-font"></BsPinFill>
+        <h5 className=" inline-block text-base md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
+          ผ้าโพลีเอสเตอร์ 100%
+        </h5>
+      </div>
+    
+    
+
     </>
   );
 }

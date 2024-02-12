@@ -21,7 +21,7 @@ function MenuPage() {
   //       navigate("/")
   //     }
   //   }).catch (err => console.log(err))
-  // },[])
+  // },[navigate])
 
 
   // useEffect(() => {

@@ -108,11 +108,13 @@ exports.createType = (req,res) => {
       }
     })
     .then((updatedCategory) => {
+      console.log(updatedCategory);
       res.json(updatedCategory);
     })
     .catch((err) => {
-      console.error(err);
-      res.status(500).json({ error: "ข้อมูลนี้มีอยู่แล้ว" });
+      // console.log(error);
+      res.status(500).json({ error: err.message });
+      // res.status(500).json({ error: "server error" });
     });
 }
 
