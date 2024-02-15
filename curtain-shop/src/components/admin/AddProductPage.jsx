@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { SwatchesPicker } from "react-color";
+import { SliderPicker } from "react-color";
 import { Link } from "react-router-dom";
 import Navbaradmin from "./Navbaradmin";
 import Swal from "sweetalert2";
@@ -172,12 +172,12 @@ function AddProductPage() {
             />
           </div>
 
-          <SwatchesPicker
+          <SliderPicker
             class="appearance-none border-none rounded justify-center w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="p_color"
             color={color}
             onChange={handleColorChange} // Call the handler when a color is selected
-          ></SwatchesPicker>
+          ></SliderPicker>
           <div className="my-5 flex justify-center">
             <div
               style={buttonStyle}

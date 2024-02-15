@@ -11,7 +11,6 @@ const AdminRoute = require("./routes/admin");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
-
 const app = express();
 
 //connect cloud database
@@ -34,14 +33,28 @@ app.use(
     credentials: true, // อนุญาตให้ส่งคุกกี้ (cookies) ไปพร้อมกับคำขอ
   })
 );
-app.use(cookieParser());
 
+app.use(cookieParser());
 app.use(morgan("dev"));
 
+// Routes
 app.use("/api/customer", CustomerRoute);
 app.use("/api/product", ProductRoute);
 app.use("/api/category", CategoryRoute);
 app.use('/api/dashboard', AdminRoute);
+
+// Proxy middleware to forward requests to the actual API server
+app.use("/api", (req, res) => {
+  // Forward the request to the actual API server
+  const targetUrl = "http://localhost:5500" + req.originalUrl;
+  req.pipe(request(targetUrl)).pipe(res);
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`start server in port ${port}`));

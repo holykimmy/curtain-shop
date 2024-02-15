@@ -26,10 +26,10 @@ function Products() {
   const handleSearch = async () => {
     try {
       const searchData = await productAPI.getSearch(searchTerm);
-      console.log(searchData);
       setSearchResults(searchData); // เซตค่า searchResults ที่ได้จากการค้นหาเข้า state
     } catch (error) {
       console.error("Error fetching search results:", error);
+      // แสดงข้อความผิดพลาดหรือจัดการข้อผิดพลาดตามที่ต้องการ
     }
   };
 
@@ -66,7 +66,7 @@ function Products() {
 
     const intervalId = setInterval(() => {
       fetchData();
-    }, 5000); // 5 วินาที
+    }, 500000); // 5 วินาที
 
     fetchData();
     return () => clearInterval(intervalId);
@@ -75,7 +75,16 @@ function Products() {
   // const history = useHistory();
   const navigate = useNavigate();
 
-  const handleEditProduct = (productId,productName) => {
+  const handleEditProduct = (
+    productId,
+    productName,
+    brand,
+    p_type,
+    name,
+    color,
+    detail,
+    price
+  ) => {
     Swal.fire({
       title: `คุณต้องการแก้ไขข้อมูลสินค้า ${productName} ใช่หรือไม่?`,
       icon: "question",
@@ -86,12 +95,21 @@ function Products() {
       cancelButtonText: "ไม่ใช่",
     }).then((result) => {
       if (result.isConfirmed) {
-        navigate(`/update-product/${productId}`);
+        navigate(`/update-product/${productId}`, {
+          state: {
+            brand,
+            p_type,
+            name,
+            color,
+            detail,
+            price,
+          },
+        });
       }
     });
   };
 
-  const handleDeleteProduct = (productId,productName) => {
+  const handleDeleteProduct = (productId, productName) => {
     console.log(productId);
     Swal.fire({
       title: `คุณต้องการลบข้อมูลสินค้า ${productName} ใช่หรือไม่?`,
@@ -166,7 +184,7 @@ function Products() {
                 <div>
                   <button
                     className=" mt-3 mb-3 inline-block text-md  text-green-300 "
-                    onClick={() => handleEditProduct(product._id)}
+                    onClick={() => handleEditProduct(product._id, product.name)}
                   >
                     แก้ไขข้อมูล
                   </button>
@@ -244,13 +262,12 @@ function Products() {
             </div>
             <div>
               <div>
-                <Link
-                  to={`/update-product/${product._id}`}
+                <button
                   className=" mt-3 mb-3 inline-block text-md  text-green-300 "
+                  onClick={() => handleEditProduct(product._id, product.name)}
                 >
-                  {" "}
-                  แก้ไขข้อมูล{" "}
-                </Link>
+                  แก้ไขข้อมูล
+                </button>
               </div>
               <button
                 className=" mt-3 mb-3 inline-block text-md  text-red-300 "
@@ -284,15 +301,20 @@ function Products() {
             </div>
             <div>
               <div>
-                <p className=" mt-3 mb-3 inline-block text-md  text-green-300 ">
-                  {" "}
-                  แก้ไขข้อมูล{" "}
-                </p>
+                <button
+                  className=" mt-3 mb-3 inline-block text-md  text-green-300 "
+                  onClick={() => handleEditProduct(product._id, product.name)}
+                >
+                  แก้ไขข้อมูล
+                </button>
               </div>
-              <p className=" mt-3 mb-3 inline-block text-md  text-red-300 ">
+              <button
+                className=" mt-3 mb-3 inline-block text-md  text-red-300 "
+                onClick={() => handleDeleteProduct(product._id)}
+              >
                 {" "}
                 ลบข้อมูล <FaTrashAlt className="inline-block  text-red-400" />{" "}
-              </p>
+              </button>
             </div>
           </div>
         </div>
@@ -319,15 +341,20 @@ function Products() {
             </div>
             <div>
               <div>
-                <p className=" mt-3 mb-3 inline-block text-md  text-green-300 ">
-                  {" "}
-                  แก้ไขข้อมูล{" "}
-                </p>
+                <button
+                  className=" mt-3 mb-3 inline-block text-md  text-green-300 "
+                  onClick={() => handleEditProduct(product._id, product.name)}
+                >
+                  แก้ไขข้อมูล
+                </button>
               </div>
-              <p className=" mt-3 mb-3 inline-block text-md  text-red-300 ">
+              <button
+                className=" mt-3 mb-3 inline-block text-md  text-red-300 "
+                onClick={() => handleDeleteProduct(product._id)}
+              >
                 {" "}
                 ลบข้อมูล <FaTrashAlt className="inline-block  text-red-400" />{" "}
-              </p>
+              </button>
             </div>
           </div>
         </div>
@@ -353,15 +380,20 @@ function Products() {
             </div>
             <div>
               <div>
-                <p className=" mt-3 mb-3 inline-block text-md  text-green-300 ">
-                  {" "}
-                  แก้ไขข้อมูล{" "}
-                </p>
+                <button
+                  className=" mt-3 mb-3 inline-block text-md  text-green-300 "
+                  onClick={() => handleEditProduct(product._id, product.name)}
+                >
+                  แก้ไขข้อมูล
+                </button>
               </div>
-              <p className=" mt-3 mb-3 inline-block text-md  text-red-300 ">
+              <button
+                className=" mt-3 mb-3 inline-block text-md  text-red-300 "
+                onClick={() => handleDeleteProduct(product._id)}
+              >
                 {" "}
                 ลบข้อมูล <FaTrashAlt className="inline-block  text-red-400" />{" "}
-              </p>
+              </button>
             </div>
           </div>
         </div>
@@ -387,15 +419,20 @@ function Products() {
             </div>
             <div>
               <div>
-                <p className=" mt-3 mb-3 inline-block text-md  text-green-300 ">
-                  {" "}
-                  แก้ไขข้อมูล{" "}
-                </p>
+                <button
+                  className=" mt-3 mb-3 inline-block text-md  text-green-300 "
+                  onClick={() => handleEditProduct(product._id, product.name)}
+                >
+                  แก้ไขข้อมูล
+                </button>
               </div>
-              <p className=" mt-3 mb-3 inline-block text-md  text-red-300 ">
+              <button
+                className=" mt-3 mb-3 inline-block text-md  text-red-300 "
+                onClick={() => handleDeleteProduct(product._id)}
+              >
                 {" "}
                 ลบข้อมูล <FaTrashAlt className="inline-block  text-red-400" />{" "}
-              </p>
+              </button>
             </div>
           </div>
         </div>
@@ -421,15 +458,20 @@ function Products() {
             </div>
             <div>
               <div>
-                <p className=" mt-3 mb-3 inline-block text-md  text-green-300 ">
-                  {" "}
-                  แก้ไขข้อมูล{" "}
-                </p>
+                <button
+                  className=" mt-3 mb-3 inline-block text-md  text-green-300 "
+                  onClick={() => handleEditProduct(product._id, product.name)}
+                >
+                  แก้ไขข้อมูล
+                </button>
               </div>
-              <p className=" mt-3 mb-3 inline-block text-md  text-red-300 ">
+              <button
+                className=" mt-3 mb-3 inline-block text-md  text-red-300 "
+                onClick={() => handleDeleteProduct(product._id)}
+              >
                 {" "}
                 ลบข้อมูล <FaTrashAlt className="inline-block  text-red-400" />{" "}
-              </p>
+              </button>
             </div>
           </div>
         </div>
@@ -455,15 +497,20 @@ function Products() {
             </div>
             <div>
               <div>
-                <p className=" mt-3 mb-3 inline-block text-md  text-green-300 ">
-                  {" "}
-                  แก้ไขข้อมูล{" "}
-                </p>
+                <button
+                  className=" mt-3 mb-3 inline-block text-md  text-green-300 "
+                  onClick={() => handleEditProduct(product._id, product.name)}
+                >
+                  แก้ไขข้อมูล
+                </button>
               </div>
-              <p className=" mt-3 mb-3 inline-block text-md  text-red-300 ">
+              <button
+                className=" mt-3 mb-3 inline-block text-md  text-red-300 "
+                onClick={() => handleDeleteProduct(product._id)}
+              >
                 {" "}
                 ลบข้อมูล <FaTrashAlt className="inline-block  text-red-400" />{" "}
-              </p>
+              </button>
             </div>
           </div>
         </div>

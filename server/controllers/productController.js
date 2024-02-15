@@ -71,7 +71,7 @@ exports.search = (req, res) => {
   const { name } = req.query;
   // Use a regular expression to perform a case-insensitive partial match on both first and last names
   const regex = new RegExp(name, "i");
-  Products.find({ $or: [{ brand: regex }, { p_type: regex }] })
+  Products.find({ $or: [{ name: regex },{ brand: regex }, { p_type: regex }] })
     .exec()
     .then((products) => {
       res.json(products);
@@ -99,7 +99,9 @@ exports.getFromBrand = (req, res) => {
 
 exports.updateProduct = (req, res) => {
   const productId = req.params.productId;
+  console.log("productId",productId);
   const { brand, p_type, name, color, detail, price  } = req.body;
+  console.log(brand, p_type, name, color, detail, price );
   let slug = slugifyMultilingual(
     `${slugify(brand)}-${slugify(name)}-${slugify(p_type)}-${Date.now()}`
   );
@@ -121,8 +123,21 @@ exports.updateProduct = (req, res) => {
     });
 };
 
+exports.getProductById = (req, res) => {
+  const productId = req.params.productId;
 
-
+  Products.findById(productId)
+    .then((product) => {
+      if (!product) {
+        return res.status(404).json({ error: "ไม่พบสินค้าที่ค้นหา" });
+      }
+      res.json(product);
+    })
+    .catch((err) => {
+      logger.error(err);
+      res.status(500).json({ error: "เกิดข้อผิดพลาดในการดึงข้อมูลสินค้า" });
+    });
+};
 
 exports.deleteProduct = (req, res) => {
   const productId = req.params.productId;

@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { SliderPicker } from "react-color";
-import { Link, useParams, useLocation } from "react-router-dom";
+import { SwatchesPicker } from "react-color";
+import { Link, useParams } from "react-router-dom";
 import Navbaradmin from "./Navbaradmin";
 import Swal from "sweetalert2";
 import categoryAPI from "../../services/categoryAPI";
 import productAPI from "../../services/productAPI";
-import axios from "axios";
 
 function UpdateProductPage() {
-  const { productId, brand, p_type, name, color, detail, price } = useParams();
-  const location = useLocation();
+  const { productId } = useParams();
+  console.log("productId:", productId);
 
-  const [product, setProduct] = useState({
+  const [state, setState] = useState({
     productID: "",
     brand: "",
     p_type: "",
@@ -21,14 +20,11 @@ function UpdateProductPage() {
     price: "",
   });
 
-  console.log("Params:", productId, brand, p_type, name, color, detail, price);
-  console.log("Product Data:", product);
-
   const [brandOptions, setBrandOptions] = useState([]);
   const [pTypeOptions, setPTypeOptions] = useState([]);
-  // const [price, setPrice] = useState("");
+  const [price, setPrice] = useState("");
 
-  // const { productID, brand, p_type, name, color, detail } = state;
+  const { productID, brand, p_type, name, color, detail } = state;
 
   const fetchBrands = async () => {
     try {
@@ -44,7 +40,7 @@ function UpdateProductPage() {
       .getPTypeOptions(selectedBrand)
       .then((pTypeOptions) => {
         setPTypeOptions(pTypeOptions);
-        setProduct((prevState) => ({
+        setState((prevState) => ({
           ...prevState,
           brand: selectedBrand,
           p_type: "", // รีเซ็ต p_type เมื่อเลือก brand ใหม่
@@ -62,11 +58,25 @@ function UpdateProductPage() {
   }, []);
 
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_API}/product/update/` + productId)
-      .then((res) => console.log(res))
-      .catch((err) => console.error(err));
-  }, []);
+    const fetchData = async () => {
+      try {
+        const product = await productAPI.getProductById(productId);
+        setState({
+          productID: product.productID,
+          brand: product.brand,
+          p_type: product.p_type,
+          name: product.name,
+          color: product.color,
+          detail: product.detail,
+          price: product.price,
+        });
+      } catch (error) {
+        console.error("Error fetching product data:", error);
+      }
+    };
+
+    fetchData();
+  }, [productId]);
 
   const handleBrandChange = (event) => {
     const selectedBrand = event.target.value;
@@ -77,32 +87,22 @@ function UpdateProductPage() {
   const inputValue = (name) => (event) => {
     const value = event.target.value;
     console.log(name, "=", value);
-    setProduct((prevState) => ({ ...prevState, [name]: value }));
+    setState((prevState) => ({ ...prevState, [name]: value }));
   };
 
   const handleColorChange = (selectedColor) => {
-    setProduct((prevState) => ({
+    setState((prevState) => ({
       ...prevState,
       color: selectedColor.hex,
     }));
   };
 
-  // const handlePriceChange = (event) => {
-  //   let inputValue = event.target.value;
-  //   inputValue = inputValue.replace(/^0+/, "");
-  //   const numericValue = Math.abs(Number(inputValue));
-
-  // //   setPrice(numericValue);
-  // };
   const handlePriceChange = (event) => {
     let inputValue = event.target.value;
     inputValue = inputValue.replace(/^0+/, "");
     const numericValue = Math.abs(Number(inputValue));
 
-    setProduct((prevState) => ({
-      ...prevState,
-      price: numericValue,
-    }));
+    setPrice(numericValue);
   };
 
   const buttonStyle = {
@@ -115,12 +115,12 @@ function UpdateProductPage() {
     productAPI
       .updateProduct(
         productId,
-        product.brand,
-        product.p_type,
-        product.name,
-        product.color,
-        product.detail,
-        product.price
+        state.brand,
+        state.p_type,
+        state.name,
+        state.color,
+        state.detail,
+        price
       )
       .then((response) => {
         Swal.fire({
@@ -140,19 +140,11 @@ function UpdateProductPage() {
     <>
       <Navbaradmin></Navbaradmin>
       <div className="w-full items-center justify-center mt-5 pb-5">
-        <p>Product ID: {product.productID}</p>
-        <p>Brand: {product.brand}</p>
-        <p>Product Type: {product.p_type}</p>
-        <p>Name: {product.name}</p>
-        <p>Color: {product.color}</p>
-        <p>Detail: {product.detail}</p>
-        <p>Price: {product.price}</p>
-
         <form
           onSubmit={submitForm}
           class="bg-white w-[80%] items-center justify-center m-auto mb-10"
         >
-          {JSON.stringify(product)}
+          {/* {JSON.stringify(state)} */}
           <p class="text-center text-2xl text-b-font font-bold">
             แก้ไขข้อมูลสินค้า
           </p>
@@ -161,7 +153,7 @@ function UpdateProductPage() {
             class="input-group w-full data-te-select-init shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-5"
             id="p_brand"
             type="text"
-            value={product.brand}
+            value={state.brand}
             onChange={handleBrandChange}
           >
             <option value="">เลือกแบรนด์สินค้า</option>
@@ -179,7 +171,7 @@ function UpdateProductPage() {
             id="p_type"
             type="text"
             // multiple
-            value={product.p_type}
+            value={state.p_type}
             onChange={inputValue("p_type")}
           >
             <option value="">เลือกประเภทสินค้า</option>
@@ -189,20 +181,23 @@ function UpdateProductPage() {
               </option>
             ))}
           </select>
-          <input
-            class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="p_name"
-            type="text"
-            value={product.name || ""}
-            onChange={inputValue("name")}
-          />
+          <div class="input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline my-6">
+            <input
+              class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="p_name"
+              type="text"
+              value={state.name}
+              onChange={inputValue("name")}
+              
+            />
+          </div>
 
-          <SliderPicker
+          <SwatchesPicker
             class="appearance-none border-none rounded justify-center w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="p_color"
-            color={product.color}
+            color={color}
             onChange={handleColorChange} // Call the handler when a color is selected
-          ></SliderPicker>
+          ></SwatchesPicker>
           <div className="my-5 flex justify-center">
             <div
               style={buttonStyle}
@@ -218,7 +213,7 @@ function UpdateProductPage() {
               class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="p_detail"
               type="text"
-              value={product.detail}
+              value={detail}
               onChange={inputValue("detail")}
               defaultValue={detail}
             />
@@ -227,7 +222,7 @@ function UpdateProductPage() {
             <input
               class="appearance-none border-none rounded w-[90%] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="p_price"
-              value={product.price}
+              value={price}
               onChange={handlePriceChange}
               type="number"
               step="0.01"

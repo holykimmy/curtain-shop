@@ -28,19 +28,11 @@ import { CiUser } from "react-icons/ci";
 // profile menu component
 const profileMenuItems = [
   {
-    label: "My Profile",
-    icon: UserCircleIcon,
-  },
-  {
-    label: "Edit Profile",
-    icon: Cog6ToothIcon,
-  },
-  {
-    label: "Inbox",
+    label: "การแจ้งเตือน",
     icon: InboxArrowDownIcon,
   },
   {
-    label: "Sign Out",
+    label: "ออกจากระบบ",
     icon: PowerIcon,
   },
 ];
