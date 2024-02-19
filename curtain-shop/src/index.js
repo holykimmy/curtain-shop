@@ -18,6 +18,8 @@ import AccountPage from "./components/user/AccountPage";
 import AddressPage from "./components/user/AddressPage";
 import ProductDetail from "./components/user/ProductDetail";
 import CategoryPage from "./components/user/CategoryPage";
+import CartPage from "./components/user/CartPage";
+import CheckOrder from "./components/user/CheckOrderPage";
 //admin
 import DashboardPage from "./components/admin/DashboardPage";
 import ReceiptPage from "./components/admin/ReceiptPage";
@@ -42,6 +44,9 @@ const router = createBrowserRouter([
   { path: "/address", element: <AddressPage /> },
   { path: "/product-detail", element: <ProductDetail /> },
   { path: "/category", element: <CategoryPage /> },
+  { path: "/Cart", element: <CartPage /> },
+  { path: "/check-order", element: <CheckOrder /> },
+
   //admin
   { path: "/dashboard", element: <DashboardPage/>},
   { path: "/receipt", element: <ReceiptPage/>},
