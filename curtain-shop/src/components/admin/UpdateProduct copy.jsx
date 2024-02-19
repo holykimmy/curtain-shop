@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { SliderPicker, SketchPicker, SwatchesPicker } from "react-color";
+import { SliderPicker } from "react-color";
 import { Link, useParams, useLocation } from "react-router-dom";
 import Navbaradmin from "./Navbaradmin";
 import Swal from "sweetalert2";
@@ -20,13 +20,12 @@ function UpdateProductPage() {
     price: "",
   });
 
-  const [form, setForm] = useState([]);
-  const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+
   const [brandOptions, setBrandOptions] = useState([]);
   const [pTypeOptions, setPTypeOptions] = useState([]);
   const [price, setPrice] = useState("");
-  const { brand, p_type, name, color, detail } = product;
+
+  const { productID, brand, p_type, name, color, detail} = product;
 
   const fetchBrands = async () => {
     try {
@@ -52,7 +51,7 @@ function UpdateProductPage() {
         console.error("Error fetching p_type options:", error);
       });
   };
-
+  
   useEffect(() => {
     console.log(
       "api",
@@ -76,18 +75,20 @@ function UpdateProductPage() {
       .catch((err) => console.error(err));
   }, [productId]);
 
+ 
+
   useEffect(() => {
     fetchBrands();
     const intervalId = setInterval(fetchBrands, 5000); //refresh
     return () => clearInterval(intervalId);
   }, []);
-
+  
   useEffect(() => {
     fetchPTypeOptions();
     const intervalId = setInterval(fetchPTypeOptions, 5000); //refresh
     return () => clearInterval(intervalId);
   }, []);
-
+  
   const handleBrandChange = (event) => {
     const selectedBrand = event.target.value;
     setPTypeOptions([]); // Clear p_type options when brand changes
@@ -107,6 +108,7 @@ function UpdateProductPage() {
     }));
   };
 
+
   const handlePriceChange = (event) => {
     let inputValue = event.target.value;
     inputValue = inputValue.replace(/^0+/, "");
@@ -118,70 +120,23 @@ function UpdateProductPage() {
     }));
   };
 
-  // Function to handle file selection and preview
-  const handleFileSelection = (e) => {
-    const image = e.target.files[0];
-    setImage(image); // อัปเดตค่าไฟล์ใหม่
-
-    // แสดงตัวอย่างรูปภาพ
-    const previewURL = URL.createObjectURL(image);
-    setImagePreview(previewURL);
-  };
   const buttonStyle = {
     backgroundColor: color || "transparent",
   };
 
-  // const submitForm = (e) => {
-  //   e.preventDefault();
-  //   console.table({ brandOptions, pTypeOptions, name, color, detail, price });
-  //   productAPI
-  //     .updateProduct(
-  //       productId,
-  //       product.brand,
-  //       product.p_type,
-  //       product.name,
-  //       product.color,
-  //       product.detail,
-  //       product.price
-  //     )
-  //     .then((response) => {
-  //       Swal.fire({
-  //         title: "Saved",
-  //         icon: "success",
-  //       });
-  //     })
-  //     .catch((err) => {
-  //       Swal.fire({
-  //         icon: "error",
-  //         text: err.response.data.error,
-  //       });
-  //     });
-  // };
-
   const submitForm = (e) => {
     e.preventDefault();
-    console.log("submit");
-    // สร้าง FormData object
-    const formData = new FormData();
-    formData.append("brand", product.brand);
-    formData.append("p_type", product.p_type);
-    formData.append("name", product.name);
-    formData.append("color", product.color);
-    formData.append("detail", product.detail);
-    formData.append("price", product.price);
-    formData.append("image", image); // อัปโหลดไฟล์รูปภาพ
-    console.log("formData:");
-    console.log(formData.get("brand"));
-    console.log(formData.get("p_type"));
-    console.log(formData.get("name"));
-    console.log(formData.get("color"));
-    console.log(formData.get("detail"));
-    console.log(formData.get("price"));
-    console.log(formData.get("image")); 
-    console.log("endl");
-    // เรียกใช้ API แบบ multipart/form-data โดยใช้ FormData object
+    console.table({ brandOptions, pTypeOptions, name, color, detail, price });
     productAPI
-      .updateProduct(productId, formData)
+      .updateProduct(
+        productId,
+        product.brand,
+        product.p_type,
+        product.name,
+        product.color,
+        product.detail,
+        product.price
+      )
       .then((response) => {
         Swal.fire({
           title: "Saved",
@@ -199,35 +154,29 @@ function UpdateProductPage() {
   return (
     <>
       <Navbaradmin></Navbaradmin>
-      <div class="w-full inline-flex justify-center items-center mt-5 pb-5">
-        <Link
-          to="/add-brand"
-          class="bg-gray-300  hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l"
-        >
-          เพิ่มแบรนด์สินค้า
-        </Link>
-        <Link
-          to="/add-category"
-          class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r"
-        >
-          เพิ่มประเภทผ้าม่าน
-        </Link>
-      </div>
       <div className="w-full items-center justify-center mt-5 pb-5">
+        <p>Product ID: {product.productID}</p>
+        <p>Brand: {product.brand}</p>
+        <p>Product Type: {product.p_type}</p>
+        <p>Name: {product.name}</p>
+        <p>Color: {product.color}</p>
+        <p>Detail: {product.detail}</p>
+        <p>Price: {product.price}</p>
+
         <form
           onSubmit={submitForm}
-          /* ตรวจสอบว่ามี enctype และถูกต้องหรือไม่ */
-          enctype="multipart/form-data"
           class="bg-white w-[80%] items-center justify-center m-auto mb-10"
         >
-          {/* {JSON.stringify(state)} */}
-          <p class="text-center text-2xl text-b-font font-bold">เพิ่มสินค้า</p>
+          {JSON.stringify(product)}
+          <p class="text-center text-2xl text-b-font font-bold">
+            แก้ไขข้อมูลสินค้า
+          </p>
           <p className="text-gray-700 md:text-base mt-4 pl-5">แบรนด์สินค้า</p>
           <select
             class="input-group w-full data-te-select-init shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-5"
             id="p_brand"
             type="text"
-            value={brand}
+            value={product.brand}
             onChange={handleBrandChange}
           >
             <option value="">เลือกแบรนด์สินค้า</option>
@@ -240,83 +189,56 @@ function UpdateProductPage() {
           <p className="text-gray-700 md:text-base mt-4 pl-5">
             ประเภทของสินค้า
           </p>
+
           <select
             class="input-group w-full data-te-select-init shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-5"
             id="p_type"
             type="text"
             // multiple
-            value={p_type}
+            value={product.p_type}
             onChange={inputValue("p_type")}
           >
-            <option value="">เลือกประเภทสินค้า</option>
+           <option value="">เลือกประเภทสินค้า</option>
             {pTypeOptions.map((pType) => (
               <option key={pType} value={pType}>
                 {pType}
               </option>
             ))}
           </select>
-          <div class="input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline my-6">
-            <input
-              class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="p_name"
-              type="text"
-              value={name}
-              onChange={inputValue("name")}
-              placeholder="ชื่อสินค้า"
-            />
-          </div>
-          {/* Input for file selection */}
+
           <input
-            type="file"
-            name="image"
-            id="image"
-            accept="image/*"
-            onChange={handleFileSelection}
+            class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="name"
+            name="name"
+            type="text"
+            value={product.name || ""}
+            onChange={inputValue("name")}
           />
 
-          <div className="flex justify-center">
-            {/* Image preview */}
-            {imagePreview && (
-              <img
-                className="appearance-none border-none  mt-4 w-auto h-[350px] rounded justify-center py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                src={imagePreview}
-                alt="Preview"
-              />
-            )}
-
-            <SketchPicker
-              class="appearance-none border-none  m-5 rounded justify-center w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="p_color"
-              color={color}
-              onChange={handleColorChange} // Call the handler when a color is selected
-            ></SketchPicker>
-            <div className="h-10"></div>
-            <SwatchesPicker
-              class="appearance-none border-none m-5 rounded justify-center w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="p_color"
-              color={color}
-              onChange={handleColorChange} // Call the handler when a color is selected
-            ></SwatchesPicker>
-          </div>
+          <SliderPicker
+            class="appearance-none border-none rounded justify-center w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="p_color"
+            color={product.color}
+            onChange={handleColorChange} // Call the handler when a color is selected
+          ></SliderPicker>
           <div className="my-5 flex justify-center">
             <div
               style={buttonStyle}
-              class="h-6 w-[60%] rounded-full shadow-xl inline-block  mr-2"
+              class="h-6 w-6 rounded-full shadow-xl inline-block  mr-2"
             ></div>
             <p className="text-gray-700 md:text-base text-center inline-block">
               {/* Display the selected color's name or hex code */}
               {color || "No color selected"}
             </p>
           </div>
-
           <div class="input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2">
             <input
               class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="p_detail"
               type="text"
-              value={detail}
+              value={product.detail}
               onChange={inputValue("detail")}
-              placeholder="รายละเอียดสินค้า"
+              defaultValue={detail}
             />
           </div>
           <div class="input-groupfle shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2">
@@ -347,7 +269,7 @@ function UpdateProductPage() {
       <Link
         to="/menu"
         type="button"
-        class="fixed bottom-0 flex justify-center ml-2 mb-2 w-1/2 px-5 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white border rounded-lg gap-x-2 sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700"
+        class="fixed bottom-0 w-full flex justify-center ml-2 mb-2 w-1/2 px-5 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white border rounded-lg gap-x-2 sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700"
       >
         <svg
           class="w-5 h-5 rtl:rotate-180"

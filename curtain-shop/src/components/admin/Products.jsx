@@ -23,6 +23,8 @@ function Products() {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
+  const [data, setData] = useState([]);
+
   const handleSearch = async () => {
     try {
       const searchData = await productAPI.getSearch(searchTerm);
@@ -171,7 +173,12 @@ function Products() {
         searchResults.map((product) => (
           <div key={product._id} className="flex justify-center">
             <div className="flex justify-between w-[85%] h-auto bg-white shadow-md border rounded mt-2 mb-4 p-3">
-              <img className="w-[25%] rounded" src={blackout} alt="blackout" />
+              <img
+                className="w-[25%] rounded"
+                src={`${process.env.REACT_APP_API}/images/${product.image}`}
+                alt="product"
+              />
+
               <div className="pl-5 w-[50%]">
                 <p className="text-lg text-brown-400">{product.name}</p>
                 <p className="text-md text-brown-400">{product.brand}</p>
@@ -213,7 +220,12 @@ function Products() {
       {velvetProducts.map((product) => (
         <div key={product._id} className="flex justify-center">
           <div className=" flex justify-between w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
-            <img class="w-[25%] rounded  " src={blackout} alt="blackout" />
+            <img
+              className="w-[25%] rounded"
+              src={`${process.env.REACT_APP_API}/images/${product.image}`}
+              alt="product"
+            />
+
             <div className="pl-5 w-[50%]">
               <p className="text-lg text-brown-400">{product.name}</p>
               <p className="text-md text-brown-400">{product.brand}</p>
@@ -221,6 +233,7 @@ function Products() {
               <p className="text-md text-brown-400">{product.color}</p>
               <p className="text-md text-brown-400">{product.detail}</p>
               <p className="text-md text-brown-400">{product.price}</p>
+              <p className="text-md text-brown-400">{product.image}</p>
             </div>
             <div>
               <div>
@@ -251,7 +264,11 @@ function Products() {
       {cottonProducts.map((product) => (
         <div key={product._id} className="flex justify-center">
           <div className=" flex justify-between w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
-            <img class="w-[25%] rounded  " src={blackout} alt="blackout" />
+            <img
+              className="w-[25%] rounded"
+              src={`${process.env.REACT_APP_API}/images/${product.image}`}
+              alt="product"
+            />
             <div className="pl-5 w-[50%]">
               <p className="text-lg text-brown-400">{product.name}</p>
               <p className="text-md text-brown-400">{product.brand}</p>
@@ -290,7 +307,11 @@ function Products() {
       {satinProducts.map((product) => (
         <div key={product._id} className="flex justify-center">
           <div className=" flex justify-between w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
-            <img class="w-[25%] rounded  " src={blackout} alt="blackout" />
+            <img
+              className="w-[25%] rounded"
+              src={`${process.env.REACT_APP_API}/images/${product.image}`}
+              alt="product"
+            />
             <div className="pl-5 w-[50%]">
               <p className="text-lg text-brown-400">{product.name}</p>
               <p className="text-md text-brown-400">{product.brand}</p>
@@ -330,7 +351,11 @@ function Products() {
       {linenProducts.map((product) => (
         <div key={product._id} className="flex justify-center">
           <div className=" flex justify-between w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
-            <img class="w-[25%] rounded  " src={blackout} alt="blackout" />
+            <img
+              className="w-[25%] rounded"
+              src={`${process.env.REACT_APP_API}/images/${product.image}`}
+              alt="product"
+            />
             <div className="pl-5 w-[50%]">
               <p className="text-lg text-brown-400">{product.name}</p>
               <p className="text-md text-brown-400">{product.brand}</p>
@@ -369,7 +394,11 @@ function Products() {
       {polyesterProducts.map((product) => (
         <div key={product._id} className="flex justify-center">
           <div className=" flex justify-between w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
-            <img class="w-[25%] rounded  " src={blackout} alt="blackout" />
+            <img
+              className="w-[25%] rounded"
+              src={`${process.env.REACT_APP_API}/images/${product.image}`}
+              alt="product"
+            />
             <div className="pl-5 w-[50%]">
               <p className="text-lg text-brown-400">{product.name}</p>
               <p className="text-md text-brown-400">{product.brand}</p>
@@ -408,7 +437,11 @@ function Products() {
       {mixedProducts.map((product) => (
         <div key={product._id} className="flex justify-center">
           <div className=" flex justify-between w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
-            <img class="w-[25%] rounded  " src={blackout} alt="blackout" />
+            <img
+              className="w-[25%] rounded"
+              src={`${process.env.REACT_APP_API}/images/${product.image}`}
+              alt="product"
+            />
             <div className="pl-5 w-[50%]">
               <p className="text-lg text-brown-400">{product.name}</p>
               <p className="text-md text-brown-400">{product.brand}</p>
@@ -447,7 +480,11 @@ function Products() {
       {blackoutProducts.map((product) => (
         <div key={product._id} className="flex justify-center">
           <div className=" flex justify-between w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
-            <img class="w-[25%] rounded  " src={blackout} alt="blackout" />
+            <img
+              className="w-[25%] rounded"
+              src={`${process.env.REACT_APP_API}/images/${product.image}`}
+              alt="product"
+            />
             <div className="pl-5 w-[50%]">
               <p className="text-lg text-brown-400">{product.name}</p>
               <p className="text-md text-brown-400">{product.brand}</p>
@@ -486,7 +523,11 @@ function Products() {
       {waveProducts.map((product) => (
         <div key={product._id} className="flex justify-center">
           <div className=" flex justify-between w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
-            <img class="w-[25%] rounded  " src={blackout} alt="blackout" />
+            <img
+              className="w-[25%] rounded"
+              src={`${process.env.REACT_APP_API}/images/${product.image}`}
+              alt="product"
+            />
             <div className="pl-5 w-[50%]">
               <p className="text-lg text-brown-400">{product.name}</p>
               <p className="text-md text-brown-400">{product.brand}</p>

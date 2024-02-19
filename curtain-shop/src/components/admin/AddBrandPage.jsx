@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import categoryAPI from "../../services/categoryAPI";
 function AddBrandPage() {
-  const [setState] = useState({
+  const [state ,setState] = useState({
     brand: "",
   });
   const [data, setData] = useState([]);
@@ -20,10 +20,14 @@ function AddBrandPage() {
   };
 
   useEffect(() => {
-    fetchData();
-    const intervalId = setInterval(fetchData, 5000); //refresh
-    return () => clearInterval(intervalId);
+ 
+    fetchData(); // fetchData 
+  
+    const intervalId = setInterval(fetchData, 5000); //refresh 5 วินาที
+  
+    return () => clearInterval(intervalId ); // ลบ interval เมื่อคอมโพเนนต์ถูกถอดออก
   }, []);
+  
 
   const submitForm = (e) => {
     e.preventDefault();
@@ -34,6 +38,7 @@ function AddBrandPage() {
           title: "Saved",
           icon: "success",
         });
+        fetchData();
       })
       .catch((err) => {
         Swal.fire({
@@ -49,7 +54,6 @@ function AddBrandPage() {
       setBrand(value);
     }
     console.log(name, "=", value);
-    setData((prevState) => ({ ...prevState, [name]: value }));
   };
 
   return (

@@ -3,6 +3,8 @@ const morgan = require("morgan");
 const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
+const request = require('request');
+
 // const blogRoute = require('./routes/blog')
 const CustomerRoute = require("./routes/customer");
 const ProductRoute = require("./routes/product");
@@ -11,8 +13,9 @@ const AdminRoute = require("./routes/admin");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+const serveImages = require('./middleware/product');
 const app = express();
-
+const path = require('path');
 //connect cloud database
 mongoose
   .connect(process.env.DATABASE, {
@@ -25,6 +28,7 @@ mongoose
 
 //middleware
 app.use(express.json());
+
 app.use(
   cors({
     origin: "http://localhost:3000", // กำหนดโดเมนที่อนุญาตให้เข้าถึง
@@ -33,11 +37,11 @@ app.use(
     credentials: true, // อนุญาตให้ส่งคุกกี้ (cookies) ไปพร้อมกับคำขอ
   })
 );
-
 app.use(cookieParser());
 app.use(morgan("dev"));
 
 // Routes
+app.use('/api/images', express.static(path.join(__dirname, 'images')));
 app.use("/api/customer", CustomerRoute);
 app.use("/api/product", ProductRoute);
 app.use("/api/category", CategoryRoute);

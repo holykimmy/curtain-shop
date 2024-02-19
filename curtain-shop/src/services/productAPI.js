@@ -14,37 +14,17 @@ const getProductById = async (productId) => {
 const productAPI = {
   getProductById,
   
-  createProduct: async (brand, p_type, name, color, detail, price) => {
-    return axios.post(`${process.env.REACT_APP_API}/product/create`, {
-      brand,
-      p_type: p_type,
-      name,
-      color,
-      detail,
-      price,
-    });
+  createProduct: async (formData) => {
+    return axios.post(`${process.env.REACT_APP_API}/product/create`, formData);
   },
 
   updateProduct: async (
-    productId,
-    brand,
-    p_type,
-    name,
-    color,
-    detail,
-    price
+    productId,formData
   ) => {
     try {
       const response = await axios.put(
         `${process.env.REACT_APP_API}/product/update/${productId}`,
-        {
-          brand,
-          p_type,
-          name,
-          color,
-          detail,
-          price,
-        }
+        formData
       );
       return response.data; // ส่งข้อมูลที่ได้รับกลับ
     } catch (error) {
