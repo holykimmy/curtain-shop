@@ -22,18 +22,17 @@ module.exports = withMT({
         "b-gray": "#6A6969",
       },
       screens: {
-        'sx': '300px',
-        'sm': '576px',
-        // => @media (min-width: 576px) { ... }
+     
+        'sm': '300px',
+       
       
         'md': '768px',
-        // => @media (min-width: 768px) { ... }
+       
       
         'lg': '992px',
-        // => @media (min-width: 992px) { ... }
-      
+   
         'xl': '1200px',
-        // => @media (min-width: 1200px) { ... }
+     
       },
       boxShadow: {
         '3xl': '0 -15px 50px rgba(50, 50, 93, 0.25) ',
@@ -47,10 +46,6 @@ module.exports = withMT({
   },
   plugins: [
     require("@tailwindcss/forms"),
-    // require('flowbite/plugin'),
   ],
-  // variants: {
-  //   // ...
-  //    appearance: ['responsive', 'hover', 'focus'],
-  // }
+
 });

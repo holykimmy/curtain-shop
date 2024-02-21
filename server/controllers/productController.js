@@ -64,7 +64,7 @@ exports.create = (req, res) => {
           color: data.color,
           detail: data.detail,
           price: data.price,
-          image: data.file,
+          image: req.file.filename,
           slug,
         });
       }
@@ -149,7 +149,7 @@ exports.updateProduct = (req, res) => {
  // Check if there's a new image uploaded
   if (req.file) {
     updateData.image = req.file.filename;
-  }
+  } 
 
   Products.findByIdAndUpdate(
     productId,

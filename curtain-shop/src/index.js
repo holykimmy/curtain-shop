@@ -11,13 +11,16 @@ import { ThemeProvider } from "@material-tailwind/react";
 import LoginPage from "./components/LoginPage";
 import HomePage from "./components/user/HomePage";
 import RegisterPage from "./components/RegisterPage";
-import ContactPage from "./components/user/ContactPage";
+// import ContactPage from "./components/user/ContactPage";
 import ServicePage from "./components/user/ServicePage";
 import ProductsPage from "./components/user/ProductsPage";
 import AccountPage from "./components/user/AccountPage";
 import AddressPage from "./components/user/AddressPage";
 import ProductDetail from "./components/user/ProductDetail";
 import CategoryPage from "./components/user/CategoryPage";
+//product
+import Polyester from "./components/user/product/Polyester";
+
 //admin
 import DashboardPage from "./components/admin/DashboardPage";
 import ReceiptPage from "./components/admin/ReceiptPage";
@@ -35,13 +38,14 @@ const router = createBrowserRouter([
   { path: "/", element: <HomePage /> },
   { path: "/login", element: <LoginPage /> },
   { path: "/register", element: <RegisterPage /> },
-  { path: "/contact", element: <ContactPage /> },
   { path: "/service", element: <ServicePage /> },
   { path: "/products", element: <ProductsPage /> },
   { path: "/account", element: <AccountPage /> },
   { path: "/address", element: <AddressPage /> },
   { path: "/product-detail", element: <ProductDetail /> },
   { path: "/category", element: <CategoryPage /> },
+  //product
+  {path : "product/polyester", element: <Polyester/>},
   //admin
   { path: "/dashboard", element: <DashboardPage/>},
   { path: "/receipt", element: <ReceiptPage/>},

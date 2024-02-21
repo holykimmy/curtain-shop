@@ -90,11 +90,18 @@ function AddProductPage() {
     setImagePreview(previewURL);
   };
 
+  function handleKeyPress(event) {
+    // ตรวจสอบว่าปุ่ม Enter ถูกกดหรือไม่
+    if (event.key === "Enter") {
+      // เมื่อปุ่ม Enter ถูกกด ให้เพิ่มบรรทัดใหม่
+      event.target.value += "\n";
+    }
+  }
+
   const buttonStyle = {
     backgroundColor: color || "transparent",
   };
 
-  
   const submitForm = (e) => {
     e.preventDefault();
 
@@ -114,7 +121,7 @@ function AddProductPage() {
     console.log(formData.get("color"));
     console.log(formData.get("detail"));
     console.log(formData.get("price"));
-    console.log(formData.get("image")); 
+    console.log(formData.get("image"));
     console.log("endl");
 
     productAPI
@@ -247,10 +254,9 @@ function AddProductPage() {
           </div>
 
           <div class="input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2">
-            <input
+            <textarea
               class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="p_detail"
-              type="text"
               value={state.detail}
               onChange={inputValue("detail")}
               placeholder="รายละเอียดสินค้า"

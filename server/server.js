@@ -3,19 +3,22 @@ const morgan = require("morgan");
 const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
-const request = require('request');
+// const request = require('request');
+const axios = require("axios");
 
-// const blogRoute = require('./routes/blog')
+// import route
 const CustomerRoute = require("./routes/customer");
 const ProductRoute = require("./routes/product");
 const CategoryRoute = require("./routes/category");
 const AdminRoute = require("./routes/admin");
+
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
-const serveImages = require('./middleware/product');
 const app = express();
 const path = require('path');
+
+
 //connect cloud database
 mongoose
   .connect(process.env.DATABASE, {
@@ -27,8 +30,7 @@ mongoose
   .catch((err) => console.log(err));
 
 //middleware
-app.use(express.json());
-
+app.use(express.json());  
 app.use(
   cors({
     origin: "http://localhost:3000", // กำหนดโดเมนที่อนุญาตให้เข้าถึง
@@ -40,24 +42,43 @@ app.use(
 app.use(cookieParser());
 app.use(morgan("dev"));
 
-// Routes
+// Serve images statically
 app.use('/api/images', express.static(path.join(__dirname, 'images')));
+
+// Routes
 app.use("/api/customer", CustomerRoute);
 app.use("/api/product", ProductRoute);
 app.use("/api/category", CategoryRoute);
 app.use('/api/dashboard', AdminRoute);
 
-// Proxy middleware to forward requests to the actual API server
-app.use("/api", (req, res) => {
-  // Forward the request to the actual API server
-  const targetUrl = "http://localhost:5500" + req.originalUrl;
-  req.pipe(request(targetUrl)).pipe(res);
-});
-
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
+});
+
+// // Proxy middleware to forward requests to the actual API server
+// app.use("/api", (req, res) => {
+//   // Forward the request to the actual API server
+//   const targetUrl = "http://localhost:5500" + req.originalUrl;
+//   req.pipe(request(targetUrl)).pipe(res);
+// });
+
+// Middleware to forward requests to the actual API server
+app.use("/api", async (req, res) => {
+  try {
+    const response = await axios({
+      method: req.method,
+      url: `http://localhost:5500${req.originalUrl}`,
+      data: req.body,
+      headers: req.headers,
+    });
+
+    res.status(response.status).send(response.data);
+  } catch (error) {
+    // Handle errors appropriately
+    res.status(500).json({ error: error.message });
+  }
 });
 
 const port = process.env.PORT || 8080;

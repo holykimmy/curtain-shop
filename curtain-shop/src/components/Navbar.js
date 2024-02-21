@@ -124,13 +124,7 @@ function ProfileMenu() {
               className={`flex items-center gap-2 rounded ${
                 isLastItem ? "" : ""
               }`}
-              // onClick={closeMenu}
-              // className={`flex items-center gap-2 rounded ${
-              //   isLastItem
-              //     ? // ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
-              //       ""
-              //     : ""
-              // }`}
+
             >
               {React.createElement(icon, {
                 className: `h-4 w-4 ${isLastItem ? "text-red-500" : ""}`,
@@ -177,7 +171,7 @@ const navListMenuItems = [
   {
     title: "ผ้าใยสังเคราะห์",
     description: "5",
-    to: "/register",
+    to: "/product/polyester",
   },
   {
     title: "ผ้าใยผสม",

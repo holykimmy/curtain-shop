@@ -115,7 +115,7 @@ const productAPI = {
   },
   getProductTypePolyester: async () => {
     return axios
-      .get(`${process.env.REACT_APP_API}/product/type?name=100`)
+      .get(`${process.env.REACT_APP_API}/product/type?name=polyester`)
       .then((response) => response.data)
       .catch((error) => {
         console.error(error);
