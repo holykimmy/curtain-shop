@@ -1,0 +1,110 @@
+import React from "react";
+import Navbar from "../Navbar";
+import { BsPinFill } from "react-icons/bs";
+import r1 from "../img/r1.jpg";
+import r2 from "../img/r2.jpg";
+import r3 from "../img/r3.jpg";
+import r4 from "../img/r4.jpg";
+import r5 from "../img/r5.jpg";
+import Footer from "../Footer";
+function ServicePage() {
+  return (
+    <>
+      {" "}
+      <div className="h-screen w-full bg-gradient-to-r from-5% from-white via-50% via-brown-bg to-90% to-white">
+        <Navbar></Navbar>
+
+        <div class="titlea  py-1 shadow-md">
+          <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-9 xl:h-9 text-b-font"></BsPinFill>
+          <h5 className=" inline-block text-lg md:text-xl xl:text-3xl text-b-font  pl-4 p-2 my-1">
+            ห้องของคุณเหมาะกับผ้าม่านแบบไหน
+          </h5>
+        </div>
+
+        <div className="flex justify-center items-center ">
+          <p class="p-5 xl:text-4xl text-b-font text-lg">ทิศทางแสงและผ้าม่าน</p>
+        </div>
+        <div className=" bg-brown-blog">
+          <div class="about flex shadow-md">
+            <div class="sideabout flex-[35%]">
+              <img class="shadow-2xl" src={r1} alt="about" width="100%" />
+            </div>
+            <div class="sideabout flex-[65%] text-xl md:text-3xl xl:text-3xl text-b-font p-20 justify-center">
+              <p><h1 class=" mt-0 mx-auto text-center ">
+                จุดประสงค์หลักของผ้าม่านคือเพื่อป้องกันแสงส่วนเกิน วิธีเลือกผ้าม่านให้เหมาะสมก็ควรดูว่าทิศทางของ  
+                แสงมาจากทางไหนมากที่สุด เช่น หากห้องอยู่ในทิศใต้หรือทิศตะวันตก ความร้อนจากแสงแดดจะส่องถึงห้องในช่วงบ่าย 
+                ซึ่งจะได้รับความร้อนจากแสงจะแรงกว่า ตัวเลือกของผ้าม่านจึงจะแตกต่างจากห้องที่อยู่ทางทิศตะวันออก อาทิ ผ้าม่านกันแสง ที่มีคุณสมบัติกัน UV ได้ และยังช่วยเพิ่มความเป็นส่วนตัวขณะอยู่ในบ้านได้อีกด้วย ซึ่งผ้าม่านกันแสงก็มีการให้ระดับการป้องกันแสงต่างกัน สามารถเลือกได้ตามความเหมาะสมและความชอบส่วนตัว</h1>
+                </p>
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-center items-center ">
+          <p class="p-5 xl:text-4xl text-b-font text-lg">ผ้าม่านแต่ละประเภท </p>
+        </div>
+        <div className=" bg-brown-blog">
+          <div class="about flex shadow-md">
+            <div class="sideabout flex-[65%] text-xl md:text-2xl xl:text-3xl text-b-font p-20 justify-center">
+              <h1 class="mt-0 mx-auto text-center">
+                1. ม่านจีบ : คราสสิค ร่วมสมัย มีความสวยหรู 
+                เป็นม่านรูปแบบมาตรฐานที่ทุกบ้านนิยมเลือกใช้กันมาตั้งแต่อดีตจนถึงปัจจุบัน เพราะม่านรูปแบบนี้สามารถเข้ากันได้กับห้องทั่ว ๆ ไปได้แทบจะทุกสไตล์ ลักษณะของม่านจีบ จะมีการจับจีบที่ผ้าม่านด้านบน เป็นจีบ 3 จีบ ทำให้ผ้าม่านมีลอนสวยงาม และสามารถติดผ้าได้ 2 ชั้นคือม่านโปร่งและม่านทึบ หากบานหน้าต่างหรือประตูยิ่งเป็นบานใหญ่และสูง แล้วเลือกติดม่านจีบจะยิ่งทำให้ห้องนั้นดูสวยหรู อลังการ หรือหากต้องการให้ห้องนั้นมีอารมณ์ร่วมสมัย เรียบหรู และดูเรียบร้อย ให้ทำรางม่านซ่อนบนฝ้าเพดานได้</h1>
+            </div>
+            <div class="sideabout flex-[35%]">
+              <img class="shadow-2xl" src={r2} alt="about" width="100%" />
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-center items-center ">
+          <p class="p-5 xl:text-2xl text-b-font text-lg"></p>
+        </div>
+        <div className=" bg-brown-blog">
+          <div class="about flex shadow-md">
+            <div class="sideabout flex-[35%]">
+              <img class="shadow-2xl" src={r3} alt="about" width="100%" />
+            </div>
+            <div class="sideabout flex-[65%] text-xl md:text-3xl xl:text-3xl text-b-font p-40 justify-center">
+              <h1 class=" mt-0 mx-auto text-center ">
+              2. ผ้าม่านตาไก่ : โดดเด่น ดีไซน์สวย ไม่ตกยุค
+              สำหรับคนที่เน้นความทันสมัย ไม่ตกเทรนด์ ออกแบบบ้านสไตล์โมเดิร์น แนะนำให้เลือกติดม่านตาไก่ ลักษณะของม่านรูปแบบนี้ จะโชว์รางม่านชัดเจน โดยสามารถเลือกแบบรางม่าน และหัวรางให้เข้ากับสไตล์ของห้องได้ ส่วนผ้าม่านที่ได้จากการสอดผ่านห่วงตาไก่ จะได้ลอนที่ดูพริ้วไหว สวยงาม เพิ่มมิติให้ห้องดูมีเสน่ห์มากขึ้น</h1>
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-center items-center ">
+          <p class="p-5 xl:text-4xl text-b-font text-lg"></p>
+        </div>
+        <div className=" bg-brown-blog">
+          <div class="about flex shadow-md">
+            <div class="sideabout flex-[65%] text-xl md:text-2xl xl:text-3xl text-b-font p-20 justify-center">
+              <h1 class="mt-0 mx-auto text-center">
+              3. ผ้าม่านลอน : เรียบง่าย ดูดี ไม่หรูจนเกินไป
+              ลักษณะของม่านลอน ผสมผสานระหว่างม่านตาไก่ และม่านจีบเข้าไว้ด้วยกัน โดยลักษณะของผ้าจะเป็นลอนพับไปมา คล้ายม่านตาไก่ แต่ไม่มีการเจาะห่วงที่ด้านบนผ้าม่าน จะถูกล็อคผ้าม่านให้เป็นลอนคล้ายม่านจีบแทน ม่านรูปแบบนี้เหมาะกับการตกแต่งบ้านสไตล์มินิมอล การจัดบ้านแบบเรียบง่าย สบาย ๆ แต่ยังคงเรียบหรูและดูดี ไม่เบื่อง่าย เนื่องจากบริเวณหัวผ้าม่านจะไม่มีการจับจีบ และปล่อยหัวผ้าม่านให้เป็นลอนโค้งอิสระไปจนสุดปลายผ้า จึงดูเป็นระเบียบเรียบร้อย สบายตา และทำให้รู้สึกผ่อนคลาย</h1>
+            </div>
+            <div class="sideabout flex-[35%]">
+              <img class="shadow-2xl" src={r4} alt="about" width="100%" />
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-center items-center ">
+          <p class="p-5 xl:text-2xl text-b-font text-lg"></p>
+        </div>
+        <div className=" bg-brown-blog">
+          <div class="about flex shadow-md">
+            <div class="sideabout flex-[35%]">
+              <img class="shadow-2xl" src={r5} alt="about" width="100%" />
+            </div>
+            <div class="sideabout flex-[65%] text-xl md:text-3xl xl:text-3xl text-b-font p-40 justify-center">
+              <h1 class=" mt-0 mx-auto text-center ">
+              4. ผ้าม่านพับ : รูปแบบทันสมัย เรียบหรู
+              ม่านรูปแบบนี้ เหมาะกับหน้าต่างบานแคบ หรือหน้าต่างบานเล็กที่ติดกันหลายบาน เพราะจะได้เลือกบานเปิดม่านได้ ไม่ต้องเปิดทั้งหมด ม่านพับจะคล้ายกับม่านม้วน คือ เมื่อต้องการเปิดม่าน ให้ดึงรอกให้ผ้าม่านเก็บขึ้นไปด้านบน ม่านม้วน ผ้าก็จะม้วนขึ้นไปด้านบน ส่วนม่านพับ ผ้าจะพับขึ้นไปเป็นชั้น ๆ เรียงซ้อนกันขึ้นไป ม่านม้วนและม่านพับจะแตกต่างกันที่สไตล์ ม่านม้วนจะออกไปทางโมเดิร์นแบบเรียบง่าย แต่ม่านพับจะเป็นโมเดิร์นแบบเรียบหรู</h1>
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-center items-center ">
+          <p class="p-5 xl:text-2xl text-b-font text-lg"></p>
+        </div>
+        <Footer></Footer>
+      </div>
+      
+    </>
+  );
+}
+export default ServicePage;

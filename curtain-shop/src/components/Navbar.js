@@ -265,6 +265,16 @@ const navListItems = [
     to: "/service",
   },
   {
+    label: "แนะนำผ้าม่าน",
+    icon: CubeTransparentIcon,
+    to: "/recommended-curtain",
+  },
+  {
+    label: "วิธีการวัดผ้าม่าน",
+    icon: CubeTransparentIcon,
+    to: "/gauging-curtain",
+  },
+  {
     label: "ติดต่อเรา",
     icon: CodeBracketSquareIcon,
     to: "/contact",

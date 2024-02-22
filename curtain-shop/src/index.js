@@ -20,6 +20,8 @@ import ProductDetail from "./components/user/ProductDetail";
 import CategoryPage from "./components/user/CategoryPage";
 import CartPage from "./components/user/CartPage";
 import CheckOrder from "./components/user/CheckOrderPage";
+import Recommend from "./components/user/RecommendPage";
+import Gauging from "./components/user/GaugingPage";
 //admin
 import DashboardPage from "./components/admin/DashboardPage";
 import ReceiptPage from "./components/admin/ReceiptPage";
@@ -46,6 +48,8 @@ const router = createBrowserRouter([
   { path: "/category", element: <CategoryPage /> },
   { path: "/Cart", element: <CartPage /> },
   { path: "/check-order", element: <CheckOrder /> },
+  { path: "/recommended-curtain", element: <Recommend /> },
+  { path: "/gauging-curtain", element: <Gauging /> },
 
   //admin
   { path: "/dashboard", element: <DashboardPage/>},
