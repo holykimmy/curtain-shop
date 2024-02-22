@@ -54,7 +54,6 @@ const router = createBrowserRouter([
   { path: "/check-order", element: <CheckOrder /> },
   { path: "/recommended-curtain", element: <Recommend /> },
   { path: "/gauging-curtain", element: <Gauging /> },
-
   {path: "/custom-product", element: <CustomPage />},
   //product
   {path : "product/polyester", element: <Polyester/>},
