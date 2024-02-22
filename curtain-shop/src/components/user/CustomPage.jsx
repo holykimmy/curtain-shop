@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import productAPI from "../../services/productAPI";
 import Footer from "../Footer";
 import TransformedImage from "./Tranformedimage";
+
 var { Alpha } = require("react-color/lib/components/common");
 
 function CustomPage() {
@@ -27,7 +28,7 @@ function CustomPage() {
     id: 1,
     main: "test2_ocvii1",
   };
-
+  const index = "curtain-";
   const [curtain, setCurtain] = useState([
     default_product,
     { id: 2, main: "test1_gvyquf" },
@@ -56,6 +57,7 @@ function CustomPage() {
   };
 
   const [product, setProduct] = useState([]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -72,6 +74,28 @@ function CustomPage() {
     fetchData();
     return () => clearInterval(interval);
   }, []);
+
+  const images = [
+    "curtain-1.jpg",
+    "curtain-2.jpg",
+    "curtain-3.jpg",
+    "curtain-4.jpg",
+    "curtain-5.jpg",
+    "curtain-6.jpg",
+    "curtain-7.jpg",
+    "curtain-8.jpg",
+  ];
+  const curtainNames = [
+    "ม่านจีบ",
+    "ม่านพับ",
+    "ม่านตาไก่",
+    "ม่านลอน",
+    "ม่านหลุยส์",
+    "ม่านหลุยส์",
+    "ม่านหลุยส์",
+    "ม่านหลุยส์",
+    "ม่านหลุยส์",
+  ];
 
   return (
     <>
@@ -152,63 +176,7 @@ function CustomPage() {
           </div>
         </div>
       </div>
-      {/* <div className="flex flex-row mb-10">
-        <div className="basis-1/3">
-          <p className=" text-gray-700 md:text-base mt-4 pl-5">
-            ต้องการสั่งตัดผ้าม่านแบบใด
-          </p>
-          {["ม่านจีบ", "ม่านพับ", "ม่านตาไก่", "ม่านลอน", "ม่านหลุยส์"].map(
-            (type) => (
-              <div
-                key={type}
-                className="basis-1/3 text-browntop text-lg mt-2 ml-10 mb-2"
-              >
-                <input
-                  className="ml-2"
-                  type="checkbox"
-                  id={type}
-                  value={type}
-                  checked={selectedType === type}
-                  onChange={handleCheckboxChange}
-                />
-                <label className="ml-2" htmlFor={type}>
-                  {type}
-                </label>
-              </div>
-            )
-          )}
-          <p className=" text-gray-700 md:text-base mt-4 pl-5">
-            ** หากเป็นม่านหลุยด์แนะนำให้สอบถามลายระเอียดเพิ่มเติม
-          </p>
-        </div>
 
-        <div className="basic-1/2 flex flex-nowrap overflow-x-auto ">
-          {product.map((product) => (
-            <div key={product._id} className="p-2">
-              <div className="rounded-lg w-[200px] shadow-3xl hover:shadow-2xl h-auto md:h-full flex-col md:pb-2 bg-white ">
-                <div className="relative ">
-                  <img
-                    className="w-full rounded-t-lg bg-contain bg-center"
-                    src={`${process.env.REACT_APP_API}/images/${product.image}`}
-                    alt="product"
-                  />
-                  <div className="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25  rounded-t-lg "></div>
-                  <div className="absolute shadow-md rounded-r-lg bottom-0 left-0 bg-white/30 px-4 py-2 text-white text-sm hover:bg-white hover:text-browntop transition duration-500 ease-in-out">
-                    {product.name}
-                  </div>
-                </div>
-                <Link
-                  to="/product-detail"
-                  className="pl-5 mt-3 text-brown-500 text-sm md:base hover:text-browntop inline-flex items-center"
-                >
-                  อ่านพิ่มเติม
-                  <HiOutlineArrowSmRight />
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div> */}
       <div className="flex flex-row mb-10">
         <div className="basis-1/3">
           <p className="text-gray-700 md:text-base mt-4 pl-5">
@@ -239,45 +207,45 @@ function CustomPage() {
           </p>
         </div>
         <div className="w-3/5 flex flex-nowrap overflow-x-auto">
-          {product.map((product) => (
-            <div key={product._id} className="p-2">
-              <div className="rounded-lg w-[200px] shadow-3xl hover:shadow-2xl h-auto md:h-full flex-col md:pb-2 bg-white ">
-                <div className="relative ">
+          {images.map((image, index) => (
+            <div key={index} className="p-2">
+              <div className="rounded-lg shadow-3xl hover:shadow-2xl md:h-full flex-col md:pb-2 bg-white">
+                <div className="relative h-[300px] w-[280px]">
                   <img
-                    className="w-full rounded-t-lg bg-contain bg-center"
-                    src={`${process.env.REACT_APP_API}/images/${product.image}`}
-                    alt="product"
+                    className="w-auto h-full object-cover rounded-t-lg bg-contain bg-center"
+                    src={require(`../img/type-cut/${image}`)}
+                    alt="type"
                   />
-                  <div className="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25  rounded-t-lg "></div>
+                  <div className="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25 rounded-t-lg "></div>
                   <div className="absolute shadow-md rounded-r-lg bottom-0 left-0 bg-white/30 px-4 py-2 text-white text-sm hover:bg-white hover:text-browntop transition duration-500 ease-in-out">
-                    {product.name}
+                    {curtainNames[index]}
                   </div>
                 </div>
-                <Link
-                  to="/product-detail"
-                  className="pl-5 mt-3 text-brown-500 text-sm md:base hover:text-browntop inline-flex items-center"
-                >
-                  อ่านพิ่มเติม
-                  <HiOutlineArrowSmRight />
-                </Link>
               </div>
             </div>
           ))}
         </div>
-
       </div>
 
-
       <div className="flex justify-center">
-                  <div>
-                    <p className="mt-4 ml-5 text-sm text-brown-400">กว้าง</p>
-                    <input class="appearance-none  rounded w-[150px] py-2 px-3 ml-2 my-2  text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-                  </div>
-                  <div>
-                    <p className="mt-4 text-sm ml-5 text-brown-400">ยาว</p>
-                    <input class="appearance-none  rounded w-[150px] py-2 px-3 ml-2 my-2  text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-                  </div>
-                </div>
+        <div>
+          <p className="mt-4 ml-5 text-sm text-brown-400">กว้าง</p>
+          <input class="appearance-none  rounded w-[150px] py-2 px-3 ml-2 my-2  text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+        </div>
+        <div>
+          <p className="mt-4 text-sm ml-5 text-brown-400">ยาว</p>
+          <input class="appearance-none  rounded w-[150px] py-2 px-3 ml-2 my-2  text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+        </div>
+      </div>
+    <div className="flex justify-center">
+      <Link to="/custom-product">
+        <button
+          className=" mt-10  mb-3 px-4 py-2 rounded-lg inline-block text-base bg-brown-200 hover:bg-browntop hover:shadow-xl text-white focus:outline-none focus:shadow-outline"
+          // onClick={() => handleEditProduct(product._id, product.name)}
+        >
+          เพิ่มลงลงตระกร้าสินค้า
+        </button>
+      </Link></div>
       <Footer></Footer>
     </>
   );

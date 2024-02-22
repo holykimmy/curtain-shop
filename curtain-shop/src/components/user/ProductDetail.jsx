@@ -78,20 +78,7 @@ function ContactPage() {
                 <p className="mt-4 text-base text-brown-400">
                   ราคาสินค้า : 350 {product.price} บาท/หลา
                 </p>
-                <p className="mt-4 text-base text-brown-400">
-                  ขนาดของผ้าม่านที่ต้องการ
-                </p>
-
-                <div className="flex">
-                  <div>
-                    <p className="mt-4 ml-5 text-sm text-brown-400">กว้าง</p>
-                    <input class="appearance-none  rounded w-[150px] py-2 px-3 ml-2 my-2  text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-                  </div>
-                  <div>
-                    <p className="mt-4 text-sm ml-5 text-brown-400">ยาว</p>
-                    <input class="appearance-none  rounded w-[150px] py-2 px-3 ml-2 my-2  text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-                  </div>
-                </div>
+               
                 <button
                   className=" mt-2 mb-3 px-4 py-2 rounded-lg inline-block text-sm  text-brown-500 hover:text-brown-300 hover:text-base"
                   // onClick={() => handleEditProduct(product._id, product.name)}
@@ -100,12 +87,14 @@ function ContactPage() {
                   <HiOutlineCursorClick className="inline-block h-5 w-auto ml-2" />
                 </button>
                 <div>
+                  <Link to="/custom-product">
                   <button
                     className=" mt-10  mb-3 px-4 py-2 rounded-lg inline-block text-base bg-brown-200 hover:bg-browntop hover:shadow-xl text-white focus:outline-none focus:shadow-outline"
                     // onClick={() => handleEditProduct(product._id, product.name)}
                   >
                     เพิ่มลงลงตระกร้าสินค้า
                   </button>
+                  </Link>
                 </div>
               </div>
             </div>
