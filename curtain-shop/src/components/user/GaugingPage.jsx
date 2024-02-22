@@ -5,6 +5,8 @@ import g1 from "../img/g1.jpg";
 import g2 from "../img/g2.jpg";
 import g3 from "../img/g3.jpg";
 import g4 from "../img/g4.jpg";
+import g5 from "../img/g5.jpg";
+import g6 from "../img/g6.jpg";
 import Footer from "../Footer";
 
 const features = [
@@ -97,7 +99,11 @@ function ServicePage() {
                     <p class="p-10 xl:text-2xl text-b-font text-lg"></p>
                 </div>
                 <p className="mt-4 text-3xl font-bold text-black-500">
-                    การวัดม่านพับ ต้องวัดจากความสูงโดยวัดให้เลยจากขอบวงกบขึ้นไปประมาณ 30 ซม. หรือน้อยกว่าได้ตามความเหมาะสมของพื้นที่หน้าต่างและวัดเลยวงกบล่างลงประมาณ 15 - 20 ซม. เพื่อให้ม่านสามารถพับได้
+                    1.วัดความกว้างให้เลยจากขอบวงกบซ้ายและขวาด้านละ 5 ซม. หากต้องการติดผ้าม่านผ้าในขอบวงกบหรือหน้าต่างให้ลดความกว้างลง 1 ซม. เพื่อให้ติดตั้งได้ง่ายขึ้น ( เช่นวัดความกว้างจากขอบวงกบได้ 100 ซม. ให้ลดความกว้างเหลือ 99 ซม.  )
+                </p>
+                <p class="p-10 xl:text-2xl text-b-font text-lg"></p>
+                <p className="mt-4 text-3xl font-bold text-black-500">
+                    2.การวัดม่านพับ ต้องวัดจากความสูงโดยวัดให้เลยจากขอบวงกบขึ้นไปประมาณ 30 ซม. หรือน้อยกว่าได้ตามความเหมาะสมของพื้นที่หน้าต่างและวัดเลยวงกบล่างลงประมาณ 15 - 20 ซม. เพื่อให้ม่านสามารถพับได้
                 </p>
                 
                 <dl className="mt-16 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 sm:gap-y-16 lg:gap-x-8">
@@ -105,12 +111,12 @@ function ServicePage() {
                 </div>
                 <div className="grid grid-cols-2 grid-rows-2 gap-4 sm:gap-6 lg:gap-8">
                 <img
-                    src={g1}
+                    src={g5}
                     alt="Walnut card tray with white powder coated steel divider and 3 punchout holes."
                     className="rounded-lg bg-gray-100"
                 />
                 <img
-                    src={g2}
+                    src={g6}
                     alt="Top down view of walnut card tray with embedded magnets and card groove."
                     className="rounded-lg bg-gray-100"
                 />
