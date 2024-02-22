@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
     const slugPType = slugify(p_type, { lower: true });
     const slugName = slugify(name, { lower: true });
 
-   const newFilename = `${slugBrand}-${slugPType}-${slugName}-${uuidv4()}${path.extname(file.originalname)}`;
+   const newFilename = `${slugBrand}-${slugPType}-${slugName}-${uuidv4()}-${path.extname(file.originalname)}`;
 
     cb(
       null,
@@ -27,5 +27,4 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage }).single("image");
 
 module.exports = upload;
-
 

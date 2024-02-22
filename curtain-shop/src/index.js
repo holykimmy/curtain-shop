@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
+// import { StrictMode } from "react";
 import {
   createBrowserRouter,
   RouterProvider,
@@ -11,7 +12,7 @@ import { ThemeProvider } from "@material-tailwind/react";
 import LoginPage from "./components/LoginPage";
 import HomePage from "./components/user/HomePage";
 import RegisterPage from "./components/RegisterPage";
-import ContactPage from "./components/user/ContactPage";
+// import ContactPage from "./components/user/ContactPage";
 import ServicePage from "./components/user/ServicePage";
 import ProductsPage from "./components/user/ProductsPage";
 import AccountPage from "./components/user/AccountPage";
@@ -22,6 +23,10 @@ import CartPage from "./components/user/CartPage";
 import CheckOrder from "./components/user/CheckOrderPage";
 import Recommend from "./components/user/RecommendPage";
 import Gauging from "./components/user/GaugingPage";
+import CustomPage from "./components/user/CustomPage";
+//product
+import Polyester from "./components/user/product/Polyester";
+
 //admin
 import DashboardPage from "./components/admin/DashboardPage";
 import ReceiptPage from "./components/admin/ReceiptPage";
@@ -39,7 +44,6 @@ const router = createBrowserRouter([
   { path: "/", element: <HomePage /> },
   { path: "/login", element: <LoginPage /> },
   { path: "/register", element: <RegisterPage /> },
-  { path: "/contact", element: <ContactPage /> },
   { path: "/service", element: <ServicePage /> },
   { path: "/products", element: <ProductsPage /> },
   { path: "/account", element: <AccountPage /> },
@@ -51,6 +55,9 @@ const router = createBrowserRouter([
   { path: "/recommended-curtain", element: <Recommend /> },
   { path: "/gauging-curtain", element: <Gauging /> },
 
+  {path: "/custom-product", element: <CustomPage />},
+  //product
+  {path : "product/polyester", element: <Polyester/>},
   //admin
   { path: "/dashboard", element: <DashboardPage/>},
   { path: "/receipt", element: <ReceiptPage/>},
