@@ -53,11 +53,24 @@ function AddProductPage() {
     return () => clearInterval(intervalId);
   }, []);
 
+  // const handleBrandChange = (event) => {
+  //   const selectedBrand = event.target.value;
+  //   setPTypeOptions([]); // Clear p_type options when brand changes
+  //   fetchPTypeOptions(selectedBrand);
+
   const handleBrandChange = (event) => {
-    const selectedBrand = event.target.value;
-    setPTypeOptions([]); // Clear p_type options when brand changes
-    fetchPTypeOptions(selectedBrand);
-  };
+    const selectedBrandSlug = event.target.value;
+    const selectedBrand = brandOptions.find((brand) => brand.slug === selectedBrandSlug);
+    setState((prevState) => ({
+      ...prevState,
+      brand: selectedBrand ? selectedBrand.brand : "", // Use selected brand's name if available, otherwise set to empty string
+      p_type: "", // Reset p_type when brand changes
+    }));
+    fetchPTypeOptions(selectedBrandSlug);
+  };  
+  
+  
+
 
   const inputValue = (name) => (event) => {
     const value = event.target.value;
@@ -90,13 +103,6 @@ function AddProductPage() {
     setImagePreview(previewURL);
   };
 
-  function handleKeyPress(event) {
-    // ตรวจสอบว่าปุ่ม Enter ถูกกดหรือไม่
-    if (event.key === "Enter") {
-      // เมื่อปุ่ม Enter ถูกกด ให้เพิ่มบรรทัดใหม่
-      event.target.value += "\n";
-    }
-  }
 
   const buttonStyle = {
     backgroundColor: color || "transparent",
@@ -114,6 +120,7 @@ function AddProductPage() {
     formData.append("detail", state.detail);
     formData.append("price", price); // ใช้ state หรือตัวแปร price ตรงนี้ตามที่คุณต้องการ
     formData.append("image", image);
+
     console.log("formData:");
     console.log(formData.get("brand"));
     console.log(formData.get("p_type"));
@@ -164,14 +171,14 @@ function AddProductPage() {
           enctype="multipart/form-data"
           class="bg-white w-[80%] items-center justify-center m-auto mb-10"
         >
-          {/* {JSON.stringify(state)} */}
+          {JSON.stringify(state)}
           <p class="text-center text-2xl text-b-font font-bold">เพิ่มสินค้า</p>
           <p className="text-gray-700 md:text-base mt-4 pl-5">แบรนด์สินค้า</p>
           <select
             class="input-group w-full data-te-select-init shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-5"
-            id="p_brand"
+            id="brand"
             type="text"
-            value={state.brand}
+            value={brand.brand}
             onChange={handleBrandChange}
           >
             <option value="">เลือกแบรนด์สินค้า</option>

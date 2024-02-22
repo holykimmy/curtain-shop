@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
+// import { StrictMode } from "react";
 import {
   createBrowserRouter,
   RouterProvider,
@@ -18,6 +19,7 @@ import AccountPage from "./components/user/AccountPage";
 import AddressPage from "./components/user/AddressPage";
 import ProductDetail from "./components/user/ProductDetail";
 import CategoryPage from "./components/user/CategoryPage";
+import CustomPage from "./components/user/CustomPage";
 //product
 import Polyester from "./components/user/product/Polyester";
 
@@ -44,6 +46,7 @@ const router = createBrowserRouter([
   { path: "/address", element: <AddressPage /> },
   { path: "/product-detail", element: <ProductDetail /> },
   { path: "/category", element: <CategoryPage /> },
+  {path: "/custom-product", element: <CustomPage />},
   //product
   {path : "product/polyester", element: <Polyester/>},
   //admin

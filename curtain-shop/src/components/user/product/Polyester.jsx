@@ -3,9 +3,7 @@ import Navbar from "../../Navbar";
 import { BsPinFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { HiOutlineArrowSmRight } from "react-icons/hi";
-import blackout from "../../img/products/blackout.jpeg";
 import Footer from "../../Footer";
-import ProductDetail from "../ProductDetail";
 import productAPI from "../../../services/productAPI";
 function Polyester() {
   const [product, setProduct] = useState([]);
@@ -45,210 +43,43 @@ function Polyester() {
             className=" p-2 md:p-4 max-w-[180px] md:max-w-sm "
           >
             {/* card--1 */}
-            <Link to="/product-detail">
-              <div class="flex rounded-lg shadow-3xl hover:shadow-2xl h-auto md:h-full flex-col  md:pb-5 bg-white ">
-                <div class="relative ">
-                  <Link to="/product-detail">
-                    <img
-                      className=" w-full rounded-t-lg bg-contain bg-center"
-                      src={`${process.env.REACT_APP_API}/images/${product.image}`}
-                      alt="product"
-                    />
-                    <div class="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25  rounded-t-lg "></div>
-                  </Link>
 
-                  <div class="absolute shadow-md rounded-r-lg bottom-0 left-0 bg-white/30 px-4 py-2 text-white text-sm hover:bg-white hover:text-browntop transition duration-500 ease-in-out">
-                    {product.p_type}
-                  </div>
+            <div class="flex rounded-lg shadow-3xl hover:shadow-2xl h-auto md:h-full flex-col  md:pb-5 bg-white ">
+              <div class="relative ">
+                <img
+                  className=" w-full rounded-t-lg bg-contain bg-center"
+                  src={`${process.env.REACT_APP_API}/images/${product.image}`}
+                  alt="product"
+                />
+                <div class="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25  rounded-t-lg "></div>
+
+                <div class="absolute shadow-md rounded-r-lg bottom-0 left-0 bg-white/30 px-4 py-2 text-white text-sm hover:bg-white hover:text-browntop transition duration-500 ease-in-out">
+                  {product.p_type}
                 </div>
-
-                <div class="px-6 py-4 pl-5">
-                  <p class="font-semibold text-brown-600 text-base md:text-md lg:text-lg inline-block hover:text-browntop transition duration-500 ease-in-out">
-                    รายละเอียด
-                  </p>
-                  <p class="text-brown-500 text-xs md:text-sm">
-                   {product.detail}
-                  </p>
-                </div>
-
-                <Link
-                  to="/product-detail"
-                  class="pl-5 mt-3 text-brown-500 text-sm md:base hover:text-browntop inline-flex items-center"
-                >
-                  อ่านพิ่มเติม
-                  <HiOutlineArrowSmRight />
-                </Link>
               </div>
-            </Link>
+
+                {/* <div class="px-6 py-4 pl-5"> */}
+                <div class="pt-4 px-4 font-semibold text-brown-600 text-base md:text-base lg:text-lg inline-block hover:text-browntop transition duration-500 ease-in-out">
+                  รายละเอียด
+                </div>
+                <div class="pt-2 px-4 font-semibold text-brown-600 text-sm md:text-base lg:text-base inline-block hover:text-browntop transition duration-500 ease-in-out">
+                  ยี่ห้อ : {product.brand}
+                </div>
+                <div className="pt-2 pb-4 px-4  text-sm md:text-base lg:text-base xl:text-base text-brown-400 whitespace-pre-wrap">
+                  {product.detail.split("\r\n")[0]}
+                </div>
+              {/* </div> */}
+
+              <Link
+                to="/product-detail"
+                class="pl-5 mt-3 text-brown-500 text-sm md:base hover:text-browntop inline-flex items-center"
+              >
+                อ่านพิ่มเติม
+                <HiOutlineArrowSmRight />
+              </Link>
+            </div>
           </div>
         ))}
-      </div>
-
-      {/* card product flex*/}
-      <div className="flex flex-wrap justify-center mt-2 mb-2 md:mt-10 md:mb-10 ">
-        {/* part */}
-        <div class=" p-2 md:p-4 max-w-[180px] md:max-w-sm   ">
-          {/* card--1 */}
-          <Link to="/product-detail">
-            <div class="flex rounded-lg shadow-3xl hover:shadow-2xl h-[280px] md:h-full flex-col  md:pb-5 bg-white ">
-              <div class="relative ">
-                <Link to="/product-detail">
-                  <img
-                    class="w-full rounded-t-lg "
-                    src={blackout}
-                    alt="blackout"
-                  />
-                  <div class="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25  rounded-t-lg "></div>
-                </Link>
-
-                <div class="absolute shadow-md rounded-r-lg bottom-0 left-0 bg-white/30 px-4 py-2 text-white text-sm hover:bg-white hover:text-browntop transition duration-500 ease-in-out">
-                  Black Out
-                </div>
-              </div>
-
-              <div class="px-6 py-4 pl-5">
-                <p class="font-semibold text-brown-600 text-base md:text-lg inline-block hover:text-browntop transition duration-500 ease-in-out">
-                  คุณสมบัติ
-                </p>
-                <p class="text-brown-500 text-xs md:text-sm">
-                  ผ้าแบล็คเอ้าท์ (Black out) สามารถป้องกันแสงได้ 100%
-                  และป้องกันรังสี UV
-                </p>
-              </div>
-
-              <Link
-                to="/product-detail"
-                class="pl-5 mt-3 text-brown-500 text-sm md:base hover:text-browntop inline-flex items-center"
-              >
-                อ่านพิ่มเติม
-                <HiOutlineArrowSmRight />
-              </Link>
-            </div>
-          </Link>
-        </div>
-
-        {/* part */}
-        <div class=" p-2 md:p-4 max-w-[180px] md:max-w-sm   ">
-          {/* card--1 */}
-          <Link to="/product-detail">
-            <div class="flex rounded-lg shadow-3xl hover:shadow-2xl h-[280px] md:h-full flex-col  md:pb-5 bg-white ">
-              <div class="relative ">
-                <Link to="/product-detail">
-                  <img
-                    class="w-full rounded-t-lg "
-                    src={blackout}
-                    alt="blackout"
-                  />
-                  <div class="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25  rounded-t-lg "></div>
-                </Link>
-
-                <div class="absolute shadow-md rounded-r-lg bottom-0 left-0 bg-white/30 px-4 py-2 text-white text-sm hover:bg-white hover:text-browntop transition duration-500 ease-in-out">
-                  Black Out
-                </div>
-              </div>
-
-              <div class="px-6 py-4 pl-5">
-                <p class="font-semibold text-brown-600 text-base md:text-lg inline-block hover:text-browntop transition duration-500 ease-in-out">
-                  คุณสมบัติ
-                </p>
-                <p class="text-brown-500 text-xs md:text-sm">
-                  ผ้าแบล็คเอ้าท์ (Black out) สามารถป้องกันแสงได้ 100%
-                  และป้องกันรังสี UV
-                </p>
-              </div>
-
-              <Link
-                to="/product-detail"
-                class="pl-5 mt-3 text-brown-500 text-sm md:base hover:text-browntop inline-flex items-center"
-              >
-                อ่านพิ่มเติม
-                <HiOutlineArrowSmRight />
-              </Link>
-            </div>
-          </Link>
-        </div>
-
-        {/* part */}
-        <div class=" p-2 md:p-4 max-w-[180px] md:max-w-sm   ">
-          {/* card--1 */}
-          <Link to="/product-detail">
-            <div class="flex rounded-lg shadow-3xl hover:shadow-2xl h-[280px] md:h-full flex-col  md:pb-5 bg-white ">
-              <div class="relative ">
-                <Link to="/product-detail">
-                  <img
-                    class="w-full rounded-t-lg "
-                    src={blackout}
-                    alt="blackout"
-                  />
-                  <div class="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25  rounded-t-lg "></div>
-                </Link>
-
-                <div class="absolute shadow-md rounded-r-lg bottom-0 left-0 bg-white/30 px-4 py-2 text-white text-sm hover:bg-white hover:text-browntop transition duration-500 ease-in-out">
-                  Black Out
-                </div>
-              </div>
-
-              <div class="px-6 py-4 pl-5">
-                <p class="font-semibold text-brown-600 text-base md:text-lg inline-block hover:text-browntop transition duration-500 ease-in-out">
-                  คุณสมบัติ
-                </p>
-                <p class="text-brown-500 text-xs md:text-sm">
-                  ผ้าแบล็คเอ้าท์ (Black out) สามารถป้องกันแสงได้ 100%
-                  และป้องกันรังสี UV
-                </p>
-              </div>
-
-              <Link
-                to="/product-detail"
-                class="pl-5 mt-3 text-brown-500 text-sm md:base hover:text-browntop inline-flex items-center"
-              >
-                อ่านพิ่มเติม
-                <HiOutlineArrowSmRight />
-              </Link>
-            </div>
-          </Link>
-        </div>
-
-        {/* part */}
-        <div class=" p-2 md:p-4 max-w-[180px] md:max-w-sm   ">
-          {/* card--1 */}
-          <Link to="/product-detail">
-            <div class="flex rounded-lg shadow-3xl hover:shadow-2xl h-[280px] md:h-full flex-col  md:pb-5 bg-white ">
-              <div class="relative ">
-                <Link to="/product-detail">
-                  <img
-                    class="w-full rounded-t-lg "
-                    src={blackout}
-                    alt="blackout"
-                  />
-                  <div class="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25  rounded-t-lg "></div>
-                </Link>
-
-                <div class="absolute shadow-md rounded-r-lg bottom-0 left-0 bg-white/30 px-4 py-2 text-white text-sm hover:bg-white hover:text-browntop transition duration-500 ease-in-out">
-                  Black Out
-                </div>
-              </div>
-
-              <div class="px-6 py-4 pl-5">
-                <p class="font-semibold text-brown-600 text-base md:text-lg inline-block hover:text-browntop transition duration-500 ease-in-out">
-                  คุณสมบัติ
-                </p>
-                <p class="text-brown-500 text-xs md:text-sm">
-                  ผ้าแบล็คเอ้าท์ (Black out) สามารถป้องกันแสงได้ 100%
-                  และป้องกันรังสี UV
-                </p>
-              </div>
-
-              <Link
-                to="/product-detail"
-                class="pl-5 mt-3 text-brown-500 text-sm md:base hover:text-browntop inline-flex items-center"
-              >
-                อ่านพิ่มเติม
-                <HiOutlineArrowSmRight />
-              </Link>
-            </div>
-          </Link>
-        </div>
       </div>
 
       <Footer></Footer>
