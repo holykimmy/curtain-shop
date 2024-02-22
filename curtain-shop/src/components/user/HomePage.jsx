@@ -6,6 +6,7 @@ import Slideshow from "./Slideshow";
 import Footer from "../Footer";
 import Showing from "./Showing";
 import { BsPinFill } from "react-icons/bs";
+import { Link } from "react-router-dom";
 function HomePage() {
   const slides = [
     "https://i.ibb.co/ncrXc2V/1.png",
@@ -15,32 +16,31 @@ function HomePage() {
     "https://i.ibb.co/XXR8kzF/3.png",
   ];
 
-  const handleLogout =() =>{
+  const handleLogout = () => {
     localStorage.removeItem("token");
     window.location.reload();
-  }
+  };
 
   return (
     <>
       <Navbar></Navbar>
 
-      
       <div class="test flixed">
         <div class="jarern text-[280%] sm:text-[330%] md:text-[370%] lg:text-[450%] text-b-font bg-brown-bg font-[500px] p-[4%] md:p-[2%] text-center">
           {" "}
           เจริญกิจผ้าม่าน{" "}
         </div>
-       
       </div>
 
       <div className="max-w-full h-[400px] mb-[100px]">
         <Slideshow></Slideshow>
       </div>
-
-      <div class="create font-[500px] text-2xl md:text-3xl xl:text-4xl text-b-font text-center  p-[30px]">
-        {" "}
-        ออกแบบผ้าม่านของคุณ{" "}
-      </div>
+      <Link to="/custom-product">
+        <div class="create font-[500px] text-2xl md:text-3xl xl:text-4xl text-b-font text-center  p-[30px]">
+          {" "}
+          ออกแบบผ้าม่านของคุณ{" "}
+        </div>
+      </Link>
       <div class="arrow flex mb-[30px] items-center justify-evenly">
         <img src={arrow} alt="arrow" width="75%" />
       </div>
@@ -57,7 +57,9 @@ function HomePage() {
           <div class="sideabout  flex-[50%]">
             <img class="shadow-2xl" src={about} alt="about" width="75%" />
           </div>
-          <div class="sideabout flex-[50%] text-xl md:text-2xl xl:text-3xl text-b-font">jiktuyi</div>
+          <div class="sideabout flex-[50%] text-xl md:text-2xl xl:text-3xl text-b-font">
+            jiktuyi
+          </div>
         </div>
       </div>
 

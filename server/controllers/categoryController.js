@@ -49,6 +49,7 @@ exports.create = (req, res) => {
     });
 };
 
+
 exports.createBrand = (req, res) => {
   const { brand } = req.body;
   let slug = slugifyMultilingual(brand);
@@ -108,11 +109,13 @@ exports.createType = (req,res) => {
       }
     })
     .then((updatedCategory) => {
+      console.log(updatedCategory);
       res.json(updatedCategory);
     })
     .catch((err) => {
-      console.error(err);
-      res.status(500).json({ error: "กรุณาเลือกประเภทของสินค้า" });
+      // console.log(error);
+      res.status(500).json({ error: err.message });
+      // res.status(500).json({ error: "server error" });
     });
 }
 

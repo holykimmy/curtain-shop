@@ -89,13 +89,14 @@ exports.loginUser = async (req, res) => {
 };
 
 exports.getAllCustomers = (req, res) => {
-  Customers.find({})
+  User.find({})
     .exec()
-    .then((customers) => {
-      res.json(customers);
+    .then((customer) => {
+      res.json(customer);
     })
     .catch((err) => {
       // Handle the error, for example, send an error response
+      console.log(error);
       res.status(500).json({ error: err.message });
     });
 };
@@ -105,12 +106,13 @@ exports.search = (req, res) => {
 
   // Use a regular expression to perform a case-insensitive partial match on both first and last names
   const regex = new RegExp(name, "i");
-  Customers.find({ $or: [{ f_name: regex }, { l_name: regex }] })
+  User.find({ $or: [{ f_name: regex }, { l_name: regex }] })
     .exec()
     .then((customers) => {
       res.json(customers);
     })
     .catch((err) => {
+      console.log(error);
       // จัดการข้อผิดพลาด, ตัวอย่างเช่น ส่งการตอบกลับด้วยข้อความผิดพลาด
       res.status(500).json({ error: err.message });
     });
@@ -121,7 +123,7 @@ exports.createAddress = (req, res) => {
   const addressData = req.body.address;
   console.log(username, addressData);
 
-  Customers.findOne({ username })
+  User.findOne({ username })
     .exec()
     .then((existingCustomer) => {
       if (existingCustomer) {

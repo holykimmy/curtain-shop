@@ -13,7 +13,7 @@ const categorySchema = mongoose.Schema(
       unique: true,
     },
     p_type: [
-      {
+      { 
         type: String,
         required: true,
       },
