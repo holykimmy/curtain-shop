@@ -3,7 +3,7 @@ import Navbar from "../Navbar";
 import { BsPinFill } from "react-icons/bs";
 import productAPI from "../../services/productAPI";
 import Footer from "../Footer";
-import { HiOutlineArrowSmRight } from "react-icons/hi";
+import { HiOutlineArrowSmRight, HiOutlineCursorClick } from "react-icons/hi";
 import { Link } from "react-router-dom";
 function ContactPage() {
   const [product, setProduct] = useState([]);
@@ -34,7 +34,7 @@ function ContactPage() {
         </h5>
       </div>
       {/* {product.map((product) => ( */}
-      <div className="flex w-full justify-center m-5 ">
+      <div className="flex overflow-x-auto max-w-screen justify-center m-5 ">
         <div className=" p-2 md:p-4 w-[90%]">
           <div key={product._id} className="flex justify-center">
             <div className="flex justify-between w-[90%] h-auto shadow-md border rounded mt-2 mb-4 p-3">
@@ -48,13 +48,12 @@ function ContactPage() {
                 <p className="text-lg mx-4 my-4 text-brown-400">
                   ชื่อสินค้า : AF17-3 {product.name}
                 </p>
-                <p className="text-md my-2 text-brown-400">
+                <p className="text-base my-2 text-brown-400">
                   ยี่ห้อสินค้า : asia-fabric-plus-18 {product.brand}
                 </p>
-                <p className="text-md my-2 text-brown-400">
+                <p className="text-base my-2 text-brown-400">
                   ประเภทของผ้าม่าน : ผ้าใยสังเคราะห์ (polyester){product.p_type}
                 </p>
-
                 <div
                   style={{ backgroundColor: product.color }}
                   className="h-7 w-[60%] text-white rounded-full shadow-xl inline-block pl-5 ml-4 mr-2"
@@ -62,8 +61,7 @@ function ContactPage() {
                   {" "}
                   {product.color}{" "}
                 </div>
-
-                <div className="text-md mt-4 text-brown-400 whitespace-pre-wrap">
+                <div className="text-base mt-4 text-brown-400 whitespace-pre-wrap">
                   <span className>รายละเอียดสินค้า : </span> ผ้าม่าน PRO TEXTILE
                   ผ้าสีทองอ่อน เป็นผ้าผิวมันสะท้อนเเสง
                   ตัวผ้ามีการพิมพ์ลาดลายดอกบัวบานผสานกับดอกบัวตูม
@@ -77,17 +75,26 @@ function ContactPage() {
                   และไม่ควรใช้สารฟอกขาว \r\n\r\n\r\nข้อแนะนำ :
                   การรีดเนื้อผ้าควรใช้ไฟอ่อนถึงปานกลาง {product.detail}
                 </div>
-                <p className="mt-4 text-md text-brown-400">
-                  ราคาสินค้า : 500 {product.price} บาท
+                <p className="mt-4 text-base text-brown-400">
+                  ราคาสินค้า : 350 {product.price} บาท/หลา
                 </p>
-
+               
+                <button
+                  className=" mt-2 mb-3 px-4 py-2 rounded-lg inline-block text-sm  text-brown-500 hover:text-brown-300 hover:text-base"
+                  // onClick={() => handleEditProduct(product._id, product.name)}
+                >
+                  สามารถดูวิธีการวัดขนาดของผ้าม่านได้ที่นี่
+                  <HiOutlineCursorClick className="inline-block h-5 w-auto ml-2" />
+                </button>
                 <div>
+                  <Link to="/custom-product">
                   <button
-                    className=" mt-10  mb-3 px-4 py-2 rounded-lg inline-block text-md bg-browntop  text-white"
+                    className=" mt-10  mb-3 px-4 py-2 rounded-lg inline-block text-base bg-brown-200 hover:bg-browntop hover:shadow-xl text-white focus:outline-none focus:shadow-outline"
                     // onClick={() => handleEditProduct(product._id, product.name)}
                   >
                     เพิ่มลงลงตระกร้าสินค้า
                   </button>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -103,7 +110,7 @@ function ContactPage() {
       <div className="flex flex-nowrap overflow-x-auto max-w-screen">
         {product.map((product) => (
           <div key={product._id} className="p-2 md:p-4">
-            <div className="rounded-lg w-[300px] shadow-3xl hover:shadow-2xl h-auto md:h-full flex-col md:pb-5 bg-white ">
+            <div className="rounded-lg w-[230px] shadow-3xl hover:shadow-2xl h-auto md:h-full flex-col md:pb-5 bg-white ">
               <div className="relative ">
                 <img
                   className="w-full rounded-t-lg bg-contain bg-center"
@@ -122,7 +129,7 @@ function ContactPage() {
               <div className="pt-2 px-4 font-semibold text-brown-600 text-sm md:text-base lg:text-base inline-block hover:text-browntop transition duration-500 ease-in-out">
                 ยี่ห้อ : {product.brand}
               </div>
-              <div className="pt-2 pb-4 px-4  text-sm md:text-base lg:text-base xl:text-base text-brown-400 whitespace-pre-wrap">
+              <div className="pt-2 pb-4 px-4  text-xs md:text-sm lg:text-sm xl:text-base text-brown-400 whitespace-pre-wrap">
                 {product.detail.split("\r\n")[0]}
               </div>
               <Link
