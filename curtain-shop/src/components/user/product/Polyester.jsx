@@ -4,7 +4,7 @@ import { BsPinFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { HiOutlineArrowSmRight } from "react-icons/hi";
 import Footer from "../../Footer";
-import productAPI from "../../../services/productAPI";
+import productAPI from "../../../services/productvisAPI";
 function Polyester() {
   const [product, setProduct] = useState([]);
   useEffect(() => {
@@ -63,7 +63,7 @@ function Polyester() {
                   รายละเอียด
                 </div>
                 <div class="pt-2 px-4 font-semibold text-brown-600 text-sm md:text-base lg:text-base inline-block hover:text-browntop transition duration-500 ease-in-out">
-                  ยี่ห้อ : {product.brand}
+                  รหัส : {product.name}
                 </div>
                 <div className="pt-2 pb-4 px-4  text-sm md:text-base lg:text-base xl:text-base text-brown-400 whitespace-pre-wrap">
                   {product.detail.split("\r\n")[0]}

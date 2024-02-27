@@ -11,7 +11,17 @@ const brandAPI = {
       });
   },
 
- 
+  getTypeOf: async (slug) => {
+    return axios
+      .get(`${process.env.REACT_APP_API}/category/type`, { params: { slug } })
+      .then((response) => response.data)
+      .catch((error) => {
+        console.error(error);
+        throw error;
+      });
+  },
+  
+
 
   createBrand: async (brand) => {
     return axios

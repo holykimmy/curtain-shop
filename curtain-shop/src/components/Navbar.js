@@ -28,7 +28,7 @@ import axios from "axios";
 // profile menu component
 
 
-function ProfileMenu() {
+function ProfileMenu({ isLoggedIn, handleLogout }) {
 
   //set status
   const [data, setData] = useState({
@@ -45,56 +45,35 @@ function ProfileMenu() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   const closeMenu = () => setIsMenuOpen(false);
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location.reload();
-  };
+  const profileMenuItems = isLoggedIn
+  ? [
+      {
+        label: "My Profile",
+        icon: CiUser,
+      },
+      {
+        label: "แก้ไขโปรไฟล์",
+        icon: Cog6ToothIcon,
+      },
+      {
+        label: "ตระกร้าสินค้า",
+        icon: InboxArrowDownIcon,
+      },
+      {
+        label: "ออกจากระบบ",
+        icon: PowerIcon,
+        onClick: handleLogout,
+      },
+    ]
+  : [
+      {
+        label: "เข้าสู่ระบบ",
+        icon: PowerIcon,
+         to: "/login",
+      },
+    ];
 
-  const profileMenuItems = [
-    {
-      label: "My Profile",
-      icon: UserCircleIcon,
-    },
-    {
-      label: "แก้ไขโปรไฟล์",
-      icon: Cog6ToothIcon,
-    },
-    {
-      label: "ตระกร้าสินค้า",
-      icon: InboxArrowDownIcon,
-    },
-    {
-      label: "ออกจากระบบ",
-      icon: PowerIcon,
-    },
-  ];
   
-  const [loggedInUser, setLoggedInUser] = React.useState(" "); // สร้าง state เพื่อเก็บชื่อผู้ใช้ที่ login เข้ามา
-  
-  // ภายในฟังก์ชัน submitForm หรือที่คุณเก็บชื่อผู้ใช้หลังจาก login
-  const submitForm = async (e) => {
-    e.preventDefault();
-    // ตรวจสอบสิ่งที่ต้องการก่อน
-    // ...
-  
-    axios
-      .post(`${process.env.REACT_APP_API}/customer/login`, {
-        f_name,
-        l_name,
-        username,
-        email,
-        tell,
-      })
-      .then((response) => {
-        // หลังจาก login สำเร็จ
-        // บันทึกชื่อผู้ใช้ที่ login เข้ามาใน state
-        setLoggedInUser(username);
-        // ดำเนินการอื่น ๆ
-      })
-      .catch((err) => {
-        // กรณีเกิดข้อผิดพลาด
-      });
-  };
 
   return (
     <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end">
@@ -120,7 +99,7 @@ function ProfileMenu() {
           return (
             <MenuItem
               key={label}
-              onClick={isLogout ? handleLogout : closeMenu}
+              onClick={closeMenu}
               className={`flex items-center gap-2 rounded ${
                 isLastItem ? "" : ""
               }`}

@@ -10,7 +10,7 @@ import axios from "axios";
 function UpdateProductPage() {
   const { productId } = useParams();
 
-  const [product, setProduct] = useState({
+  const [data, setData] = useState({
     productId: productId,
     brand: "",
     p_type: "",
@@ -18,6 +18,7 @@ function UpdateProductPage() {
     color: "",
     detail: "",
     price: "",
+    image: "",
   });
 
   const [form, setForm] = useState([]);
@@ -26,25 +27,68 @@ function UpdateProductPage() {
   const [brandOptions, setBrandOptions] = useState([]);
   const [pTypeOptions, setPTypeOptions] = useState([]);
   const [price, setPrice] = useState("");
-  const { brand, p_type, name, color, detail } = product;
+  const [selectedBrandSlug, setSelectedBrandSlug] = useState("");
 
+  const { brand, p_type, name, color, detail } = data;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API}/product/${productId}`
+        );
+        const productData = res.data;
+        console.log("Product Data:", productData); // ให้ดูค่า productData ที่ได้รับมา
+        if (productData) {
+
+            // เรียกใช้ฟังก์ชันเพื่อดึงประเภทสินค้า
+        // fetchBrands(productData.brand);
+       
+        fetchPTypeOptions(productData.brand);
+
+          setData({
+            ...data,
+            brand: productData.brand,
+            p_type: productData.p_type,
+            name: productData.name,
+            color: productData.color,
+            detail: productData.detail,
+            price: productData.price,
+            image: productData.image,
+          });
+        }
+        console.log("Product Data:", data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, [productId]);
+  
   const fetchBrands = async () => {
     try {
       const brandOptions = await categoryAPI.getAllBrands();
+      console.log("brandoption", brandOptions);
       setBrandOptions(brandOptions);
     } catch (error) {
       console.error("Error fetching all brands:", error);
     }
   };
 
-  const fetchPTypeOptions = (selectedBrand) => {
-    productAPI
-      .getPTypeOptions(selectedBrand)
-      .then((pTypeOptions) => {
-        setPTypeOptions(pTypeOptions);
-        setProduct((prevState) => ({
+  useEffect(() => {
+    fetchBrands();
+    const intervalId = setInterval(fetchBrands, 500000); //refresh
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const fetchPTypeOptions = (selectedBrandSlug) => {
+    categoryAPI
+      .getTypeOf(selectedBrandSlug) // ปรับให้ใช้ API getTypeOfPs และส่ง selectedBrandSlug เข้าไป
+      .then((result) => {
+        setPTypeOptions(result.p_type); // กำหนดค่า pTypeOptions จากข้อมูลที่ได้จาก API
+        setData((prevState) => ({
           ...prevState,
-          brand: selectedBrand,
+          brand: result.brand,
           p_type: "", // รีเซ็ต p_type เมื่อเลือก brand ใหม่
         }));
       })
@@ -53,55 +97,33 @@ function UpdateProductPage() {
       });
   };
 
-  useEffect(() => {
-    console.log(
-      "api",
-      process.env.REACT_APP_API,
-      "/product/update/" + productId
-    );
-    axios
-      .get(`${process.env.REACT_APP_API}/product/update/` + productId)
-      .then((res) => {
-        setProduct({
-          ...product,
-          brand: res.data.brand,
-          p_type: res.data.p_type,
-          name: res.data.name,
-          color: res.data.color,
-          detail: res.data.detail,
-          price: res.data.price,
-        });
-        console.log("Product Data:", product);
-      })
-      .catch((err) => console.error(err));
-  }, [productId]);
-
-  useEffect(() => {
-    fetchBrands();
-    const intervalId = setInterval(fetchBrands, 5000); //refresh
-    return () => clearInterval(intervalId);
-  }, []);
-
-  useEffect(() => {
-    fetchPTypeOptions();
-    const intervalId = setInterval(fetchPTypeOptions, 5000); //refresh
-    return () => clearInterval(intervalId);
-  }, []);
-
   const handleBrandChange = (event) => {
-    const selectedBrand = event.target.value;
-    setPTypeOptions([]); // Clear p_type options when brand changes
-    fetchPTypeOptions(selectedBrand);
+    const selectedBrandSlug = event.target.value;
+    const selectedBrand = brandOptions.find(
+      (brand) => brand.slug === selectedBrandSlug
+    );
+    console.log("selectedbrand", selectedBrandSlug.brand);
+    if (selectedBrand) {
+      // ตรวจสอบว่า selectedBrand ไม่เป็น undefined
+      setData((prevState) => ({
+        ...prevState,
+        brand: selectedBrand.brand,
+        // slug: selectedBrand.slug,
+        // brand: selectedBrand ? selectedBrand.brand : "", // Use selected brand's name if available, otherwise set to empty string
+        p_type: "", // Reset p_type when brand changes
+      }));
+      console.log("selectslug",selectedBrand.slug);
+      fetchPTypeOptions(selectedBrandSlug);
+    }
   };
-
   const inputValue = (name) => (event) => {
     const value = event.target.value;
     console.log(name, "=", value);
-    setProduct((prevState) => ({ ...prevState, [name]: value }));
+    setData((prevState) => ({ ...prevState, [name]: value }));
   };
 
   const handleColorChange = (selectedColor) => {
-    setProduct((prevState) => ({
+    setData((prevState) => ({
       ...prevState,
       color: selectedColor.hex,
     }));
@@ -112,13 +134,13 @@ function UpdateProductPage() {
     inputValue = inputValue.replace(/^0+/, "");
     const numericValue = Math.abs(Number(inputValue));
 
-    setProduct((prevState) => ({
+    setData((prevState) => ({
       ...prevState,
       price: numericValue,
     }));
   };
 
-  // Function to handle file selection and preview
+
   const handleFileSelection = (e) => {
     const image = e.target.files[0];
     setImage(image); // อัปเดตค่าไฟล์ใหม่
@@ -127,49 +149,25 @@ function UpdateProductPage() {
     const previewURL = URL.createObjectURL(image);
     setImagePreview(previewURL);
   };
+
   const buttonStyle = {
     backgroundColor: color || "transparent",
   };
 
-  // const submitForm = (e) => {
-  //   e.preventDefault();
-  //   console.table({ brandOptions, pTypeOptions, name, color, detail, price });
-  //   productAPI
-  //     .updateProduct(
-  //       productId,
-  //       product.brand,
-  //       product.p_type,
-  //       product.name,
-  //       product.color,
-  //       product.detail,
-  //       product.price
-  //     )
-  //     .then((response) => {
-  //       Swal.fire({
-  //         title: "Saved",
-  //         icon: "success",
-  //       });
-  //     })
-  //     .catch((err) => {
-  //       Swal.fire({
-  //         icon: "error",
-  //         text: err.response.data.error,
-  //       });
-  //     });
-  // };
-
-  const submitForm = (e) => {
+  const submitForm = (e, productId, data, image) => {
     e.preventDefault();
-    console.log("submit");
-    // สร้าง FormData object
+
+    // Collect form data
     const formData = new FormData();
-    formData.append("brand", product.brand);
-    formData.append("p_type", product.p_type);
-    formData.append("name", product.name);
-    formData.append("color", product.color);
-    formData.append("detail", product.detail);
-    formData.append("price", product.price);
-    formData.append("image", image); // อัปโหลดไฟล์รูปภาพ
+    formData.append("brand", data.brand);
+    formData.append("p_type", data.p_type);
+    formData.append("name", data.name);
+    formData.append("color", data.color);
+    formData.append("detail", data.detail);
+    formData.append("price", data.price);
+    if (image) {
+      formData.append("image", image);
+    }
     console.log("formData:");
     console.log(formData.get("brand"));
     console.log(formData.get("p_type"));
@@ -179,21 +177,27 @@ function UpdateProductPage() {
     console.log(formData.get("price"));
     console.log(formData.get("image")); 
     console.log("endl");
-    // เรียกใช้ API แบบ multipart/form-data โดยใช้ FormData object
-    productAPI
-      .updateProduct(productId, formData)
-      .then((response) => {
-        Swal.fire({
-          title: "Saved",
-          icon: "success",
-        });
-      })
-      .catch((err) => {
-        Swal.fire({
-          icon: "error",
-          text: err.response.data.error,
-        });
+
+    // Call the update function with formData
+    update(e, productId, formData);
+    
+  };
+
+  const update = async (e, productId, formData) => {
+    // Pass formData as an argument
+    e.preventDefault();
+    try {
+      const response = await productAPI.updateProduct(productId, formData);
+      Swal.fire({
+        title: "Saved",
+        icon: "success",
       });
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        text: err.response.data.error,
+      });
+    }
   };
 
   return (
@@ -215,52 +219,58 @@ function UpdateProductPage() {
       </div>
       <div className="w-full items-center justify-center mt-5 pb-5">
         <form
-          onSubmit={submitForm}
+         onSubmit={(e) => submitForm(e, productId, data, image)}
           /* ตรวจสอบว่ามี enctype และถูกต้องหรือไม่ */
           enctype="multipart/form-data"
           class="bg-white w-[80%] items-center justify-center m-auto mb-10"
         >
-          {/* {JSON.stringify(state)} */}
+          {/* {JSON.stringify(data)} */}
           <p class="text-center text-2xl text-b-font font-bold">เพิ่มสินค้า</p>
           <p className="text-gray-700 md:text-base mt-4 pl-5">แบรนด์สินค้า</p>
           <select
-            class="input-group w-full data-te-select-init shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-5"
-            id="p_brand"
+            className="input-group w-full data-te-select-init shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-5"
+            id="brand"
             type="text"
-            value={brand}
+            value={data.brand}
             onChange={handleBrandChange}
           >
-            <option value="">เลือกแบรนด์สินค้า</option>
-            {brandOptions.map((brand) => (
-              <option key={brand.slug} value={brand.slug}>
-                {brand.brand}
+            <option value={data.brand}>{data.brand}</option>
+            {brandOptions.map((option) => (
+              <option
+                key={option.slug}
+                value={option.slug}
+                selected={option.brand === data.brand}
+              >
+                {option.brand}
               </option>
             ))}
           </select>
+
           <p className="text-gray-700 md:text-base mt-4 pl-5">
             ประเภทของสินค้า
           </p>
           <select
-            class="input-group w-full data-te-select-init shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-5"
+            className="input-group w-full data-te-select-init shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-5"
             id="p_type"
             type="text"
-            // multiple
-            value={p_type}
+            value={data.p_type}
             onChange={inputValue("p_type")}
           >
-            <option value="">เลือกประเภทสินค้า</option>
-            {pTypeOptions.map((pType) => (
-              <option key={pType} value={pType}>
-                {pType}
-              </option>
-            ))}
+            <option value="{data.p_type}">{data.p_type}</option>
+            {pTypeOptions &&
+              pTypeOptions.map((pType) => (
+                <option key={pType} value={pType}>
+                  {pType}
+                </option>
+              ))}
           </select>
+
           <div class="input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline my-6">
             <input
               class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="p_name"
               type="text"
-              value={name}
+              value={data.name}
               onChange={inputValue("name")}
               placeholder="ชื่อสินค้า"
             />
@@ -283,18 +293,23 @@ function UpdateProductPage() {
                 alt="Preview"
               />
             )}
+            <img
+              className="appearance-none border-none  mt-4 w-auto h-[350px] rounded justify-center py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              src={`${process.env.REACT_APP_API}/images/${data.image}`}
+              alt="Preview"
+            />
 
             <SketchPicker
               class="appearance-none border-none  m-5 rounded justify-center w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="p_color"
-              color={color}
+              color={data.color}
               onChange={handleColorChange} // Call the handler when a color is selected
             ></SketchPicker>
             <div className="h-10"></div>
             <SwatchesPicker
               class="appearance-none border-none m-5 rounded justify-center w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="p_color"
-              color={color}
+              color={data.color}
               onChange={handleColorChange} // Call the handler when a color is selected
             ></SwatchesPicker>
           </div>
@@ -310,11 +325,10 @@ function UpdateProductPage() {
           </div>
 
           <div class="input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2">
-            <input
+            <textarea
               class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="p_detail"
-              type="text"
-              value={detail}
+              value={data.detail}
               onChange={inputValue("detail")}
               placeholder="รายละเอียดสินค้า"
             />
@@ -323,7 +337,7 @@ function UpdateProductPage() {
             <input
               class="appearance-none border-none rounded w-[90%] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="p_price"
-              value={product.price}
+              value={data.price}
               onChange={handlePriceChange}
               type="number"
               step="0.01"

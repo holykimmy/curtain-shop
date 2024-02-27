@@ -14,53 +14,6 @@ const getProductById = async (productId) => {
 const productAPI = {
   getProductById,
 
-  readProduct: async (productId) => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API}/product/${productId}`
-      );
-      return response.data;
-    } catch (error) {}
-  },
-
-  createProduct: async (formData) => {
-    return axios.post(`${process.env.REACT_APP_API}/product/create`, formData);
-  },
-
-  updateProduct: async (productId, formData) => {
-    try {
-      console.log("API", formData);
-      console.log("formDataAPI:");
-      console.log(formData.get("brand"));
-      console.log(formData.get("p_type"));
-      console.log(formData.get("name"));
-      console.log(formData.get("color"));
-      console.log(formData.get("detail"));
-      console.log(formData.get("price"));
-      console.log(formData.get("image"));
-      console.log("endlAPI");
-      const response = await axios.put(
-        `${process.env.REACT_APP_API}/product/update/${productId}`,
-        formData
-      );
-      return response.data; // ส่งข้อมูลที่ได้รับกลับ
-    } catch (error) {
-      throw error; // ส่ง error ให้ caller จัดการ
-    }
-  },
-
-  deleteProduct: async (productId) => {
-    try {
-      const response = await axios.delete(
-        `${process.env.REACT_APP_API}/product/delete/${productId}`
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching p_type options:", error);
-      throw error;
-    }
-  },
-
   getPTypeOptions: (selectedBrand) => {
     return axios
       .get(`${process.env.REACT_APP_API}/category/?slug=${selectedBrand}`)
@@ -73,7 +26,7 @@ const productAPI = {
 
   getSearch: (search) => {
     return axios
-      .get(`${process.env.REACT_APP_API}/product/search?name=${search}`)
+      .get(`${process.env.REACT_APP_API}/product/search-vis?name=${search}`)
       .then((response) => response.data)
       .catch((error) => {
         console.error("Error fetching p_type options:", error);
@@ -83,7 +36,7 @@ const productAPI = {
 
   getProductTypeVelvet: async () => {
     return axios
-      .get(`${process.env.REACT_APP_API}/product/type?name=velvet`)
+      .get(`${process.env.REACT_APP_API}/product/type-vis?name=velvet`)
       .then((response) => response.data)
       .catch((error) => {
         console.error(error);
@@ -93,7 +46,7 @@ const productAPI = {
 
   getProductTypeCotton: async () => {
     return axios
-      .get(`${process.env.REACT_APP_API}/product/type?name=cotton`)
+      .get(`${process.env.REACT_APP_API}/product/type-vis?name=cotton`)
       .then((response) => response.data)
       .catch((error) => {
         console.error(error);
@@ -103,7 +56,7 @@ const productAPI = {
 
   getProductTypeSatin: async () => {
     return axios
-      .get(`${process.env.REACT_APP_API}/product/type?name=satin`)
+      .get(`${process.env.REACT_APP_API}/product/type-vis?name=satin`)
       .then((response) => response.data)
       .catch((error) => {
         console.error(error);
@@ -112,7 +65,7 @@ const productAPI = {
   },
   getProductTypeLinen: async () => {
     return axios
-      .get(`${process.env.REACT_APP_API}/product/type?name=linen`)
+      .get(`${process.env.REACT_APP_API}/product/type-vis?name=linen`)
       .then((response) => response.data)
       .catch((error) => {
         console.error(error);
@@ -121,7 +74,7 @@ const productAPI = {
   },
   getProductTypePolyester: async () => {
     return axios
-      .get(`${process.env.REACT_APP_API}/product/type?name=polyester`)
+      .get(`${process.env.REACT_APP_API}/product/type-vis?name=polyester`)
       .then((response) => response.data)
       .catch((error) => {
         console.error(error);
@@ -131,7 +84,7 @@ const productAPI = {
 
   getProductTypeMixed: async () => {
     return axios
-      .get(`${process.env.REACT_APP_API}/product/type?name=mixed`)
+      .get(`${process.env.REACT_APP_API}/product/type-vis?name=mixed`)
       .then((response) => response.data)
       .catch((error) => {
         console.error(error);
@@ -140,7 +93,7 @@ const productAPI = {
   },
   getProductTypeBlackout: async () => {
     return axios
-      .get(`${process.env.REACT_APP_API}/product/type?name=blackout`)
+      .get(`${process.env.REACT_APP_API}/product/type-vis?name=blackout`)
       .then((response) => response.data)
       .catch((error) => {
         console.error(error);
@@ -149,7 +102,7 @@ const productAPI = {
   },
   getProductTypeWave: async () => {
     return axios
-      .get(`${process.env.REACT_APP_API}/product/type?name=wave-curtains`)
+      .get(`${process.env.REACT_APP_API}/product/type-vis?name=wave-curtains`)
       .then((response) => response.data)
       .catch((error) => {
         console.error(error);

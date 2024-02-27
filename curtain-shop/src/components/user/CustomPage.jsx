@@ -168,12 +168,7 @@ function CustomPage() {
           ))}
         </div> */}
           </CloudinaryContext>
-          <div className="mt-[80px]">
-            <SwatchesPicker
-              color={background}
-              onChangeComplete={changeProductColor}
-            />
-          </div>
+       
         </div>
       </div>
 
@@ -210,7 +205,7 @@ function CustomPage() {
           {images.map((image, index) => (
             <div key={index} className="p-2">
               <div className="rounded-lg shadow-3xl hover:shadow-2xl md:h-full flex-col md:pb-2 bg-white">
-                <div className="relative h-[300px] w-[280px]">
+                <div className="relative h-[280px] w-[340px]">
                   <img
                     className="w-auto h-full object-cover rounded-t-lg bg-contain bg-center"
                     src={require(`../img/type-cut/${image}`)}
