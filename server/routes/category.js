@@ -1,13 +1,21 @@
 const express = require("express");
 const router = express.Router();
-const {create,createBrand,createType,getAllCategorys,getTypeOfPs} = require("../controllers/categoryController")
+const {
+  create,
+  createBrand,
+  createType,
+  getAllCategorys,
+  getTypeOfPs,
+} = require("../controllers/categoryController");
 
-router.post('/create',create)
+//middleware
+const { auth } = require("../middleware/auth");
+
+router.post("/create", auth, create);
 // router.post('/createType',createType)
-router.post('/create-brand',createBrand)
-router.post('/create-type',createType)
-router.get('/brand',getAllCategorys)
+router.post("/create-brand", auth, createBrand);
+router.post("/create-type", auth, createType);
+router.get("/brand", getAllCategorys);
+router.get("/type", getTypeOfPs);
 
-router.get('/',getTypeOfPs)
-
-module.exports = router
+module.exports = router;
