@@ -9,9 +9,8 @@ const slugifyMultilingual = (text) =>
   slugify(text, { lower: true, locale: "th" });
 
 exports.create = (req, res) => {
-  
   const data = req.body;
-  console.log(data);
+  console.log("data add ", data);
   if (!req.file) {
     return res.status(400).json({ error: "กรุณาเลือกรูปสินค้า" });
   }
@@ -78,7 +77,6 @@ exports.create = (req, res) => {
     });
 };
 
-
 exports.getAllProducts = (req, res) => {
   Products.find({})
     .exec()
@@ -105,6 +103,20 @@ exports.getProductType = (req, res) => {
     });
 };
 
+exports.getProductTypeVis = (req, res) => {
+  const name = req.query.name;
+  const regex = new RegExp(name, "i");
+  Products.find({ $and: [{ p_type: regex }, { visibility: true }] })
+    .exec()
+    .then((products) => {
+      res.json(products);
+    })
+    .catch((err) => {
+      // จัดการข้อผิดพลาด, ตัวอย่างเช่น ส่งการตอบกลับด้วยข้อความผิดพลาด
+      res.status(500).json({ error: err.message });
+    });
+};
+
 exports.search = (req, res) => {
   const { name } = req.query;
   // Use a regular expression to perform a case-insensitive partial match on both first and last names
@@ -119,6 +131,22 @@ exports.search = (req, res) => {
       res.status(500).json({ error: err.message });
     });
 };
+
+exports.searchVis = (req, res) => {
+  const { name } = req.query;
+  // Use a regular expression to perform a case-insensitive partial match on both first and last names
+  const regex = new RegExp(name, "i");
+  Products.find({ $and: [{ $or: [{ name: regex }, { brand: regex }, { p_type: regex }] }, { visibility: true }] })
+    .exec()
+    .then((products) => {
+      res.json(products);
+    })
+    .catch((err) => {
+      // Handle errors, for example, by sending back an error message
+      res.status(500).json({ error: err.message });
+    });
+};
+
 
 exports.getFromBrand = (req, res) => {
   const { name } = req.query;
@@ -135,38 +163,117 @@ exports.getFromBrand = (req, res) => {
     });
 };
 
-exports.updateProduct = (req, res) => {
-  const productId = req.params.productId;
-  console.log("productId",productId);
-  const { brand, p_type, name, color, detail, price  } = req.body;
-  console.log(brand, p_type, name, color, detail, price );
-  let slug = slugifyMultilingual(
-    `${slugify(brand)}-${slugify(name)}-${slugify(p_type)}-${Date.now()}`
-  );
-
-  let updateData = { brand, p_type, name, color, detail, price, slug };
-
- // Check if there's a new image uploaded
-  if (req.file) {
-    updateData.image = req.file.filename;
-  } 
-
-  Products.findByIdAndUpdate(
-    productId,
-    { brand, p_type, name, color, detail, price, slug },
-    { new: true }
-  )
-    .then((product) => {
-      if (!product) {
-        return res.status(404).json({ error: "ไม่พบสินค้าที่ต้องการแก้ไข" });
-      }
-      res.json(product);
+exports.getFromBrandVis = (req, res) => {
+  const { name } = req.query;
+  // Use a regular expression to perform a case-insensitive partial match on both first and last names
+  const regex = new RegExp(name, "i");
+  Products.find({ $and: [{ brand: regex }, { visibility: true }] })
+    .exec()
+    .then((products) => {
+      res.json(products);
     })
     .catch((err) => {
-      logger.error(err)
-      res.status(500).json({ error: "เกิดข้อผิดพลาดในการแก้ไขข้อมูล" });
+      // จัดการข้อผิดพลาด, ตัวอย่างเช่น ส่งการตอบกลับด้วยข้อความผิดพลาด
+      res.status(500).json({ error: err.message });
     });
 };
+
+
+exports.updateProduct = (req, res) => {
+  const newData = req.body;
+  console.log(newData);
+
+  const productId = req.params.productId;
+  if (!newData.brand) {
+    return res.status(400).json({ error: "กรุณาเลือกแบรนด์สินค้า" });
+  } else if (!newData.p_type) {
+    return res.status(400).json({ error: "กรุณาเลือกประเภทสินค้า" });
+  }
+  // ตรวจสอบว่ามีการอัปโหลดรูปหรือไม่
+  if (req.file) {
+    // เก็บชื่อไฟล์รูปภาพใหม่
+    newData.image = req.file.filename;
+    // หากมีรูปภาพใหม่ เรียกใช้งาน fs.unlink เพื่อลบรูปเก่า
+    Products.findById(productId)
+      .exec()
+      .then((product) => {
+        if (product && product.image) {
+          console.log("log /api/images/",product.image);
+          console.log("access");
+         
+          fs.unlink("./images/" + product.image, (err) => {
+            if (err) {
+              console.error("Error deleting old image:", err);
+            } else {
+              console.log("Old image deleted successfully");
+            }
+          });
+        }
+      })
+      .catch((err) => {
+        console.error("Error finding product:", err);
+      });
+  }
+  let slug = slugifyMultilingual(
+    `${slugify(newData.brand)}-${slugify(newData.name)}-${slugify(
+      newData.p_type
+    )}-${Date.now()}`
+  );
+
+  // ค้นหาและอัปเดตข้อมูลสินค้า
+  Products.findById(productId)
+    .exec()
+    .then((product) => {
+      if (!product) {
+        return res.status(404).json({ error: "ไม่พบสินค้าที่ต้องการอัปเดต" });
+      } else {
+        // อัปเดตข้อมูล
+        product.brand = newData.brand || product.brand;
+        product.p_type = newData.p_type || product.p_type;
+        product.name = newData.name || product.name;
+        product.color = newData.color || product.color;
+        product.detail = newData.detail || product.detail;
+        product.price = newData.price || product.price;
+        product.image = newData.image || product.image;
+        product.visibility = newData.visibility || product.visibility;
+        product.slug = slug;
+        // บันทึกการเปลี่ยนแปลง
+        return product.save();
+      }
+    })
+    .then((updatedProduct) => {
+      res.json(updatedProduct);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ error: "เกิดข้อผิดพลาดในการอัปเดตข้อมูล" });
+    });
+};
+
+exports.updateVisibility = (req, res) => {
+  const { visibility } = req.body;
+  const productId = req.params.productId;
+
+  // ตรวจสอบค่าที่ส่งมา
+  if (typeof visibility !== 'boolean') {
+    return res.status(400).json({ error: 'ค่าสถานะไม่ถูกต้อง' });
+  }
+
+  // ค้นหาและอัปเดตข้อมูลสินค้าเฉพาะฟิลด์ visibility
+  Products.findByIdAndUpdate(productId, { visibility }, { new: true })
+    .exec()
+    .then((updatedProduct) => {
+      if (!updatedProduct) {
+        return res.status(404).json({ error: 'ไม่พบสินค้าที่ต้องการอัปเดต' });
+      }
+      res.json(updatedProduct);
+    })
+    .catch((err) => {
+      console.error('Error updating visibility:', err);
+      res.status(500).json({ error: 'เกิดข้อผิดพลาดในการอัปเดตสถานะสินค้า' });
+    });
+};
+
 
 exports.getProductById = (req, res) => {
   const productId = req.params.productId;
@@ -184,7 +291,6 @@ exports.getProductById = (req, res) => {
     });
 };
 
-
 exports.deleteProduct = async (req, res) => {
   const productId = req.params.productId;
 
@@ -193,13 +299,13 @@ exports.deleteProduct = async (req, res) => {
     if (!product) {
       return res.status(404).json({ error: "ไม่พบสินค้าที่ต้องการลบ" });
     }
-    console.log("product.file",product.file);
-    console.log("product.image",product.image);
-    fs.unlink('./images/' + product.image, (err) => {
+    console.log("product.file", product.file);
+    console.log("product.image", product.image);
+    fs.unlink("./images/" + product.image, (err) => {
       if (err) {
         console.log(err);
       } else {
-        console.log('ลบรูปภาพสินค้าเรียบร้อยแล้ว');
+        console.log("ลบรูปภาพสินค้าเรียบร้อยแล้ว");
       }
     });
 

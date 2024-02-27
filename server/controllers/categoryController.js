@@ -131,12 +131,11 @@ exports.getAllCategorys = (req, res) => {
       res.status(500).json({ error: err.message });
     });
 };
+// const { slug } = req.body;
 
 exports.getTypeOfPs = (req, res) => {
-  const { slug } = req.query;
-  console.log("slug:", slug);
-  // console.log("brand:", brand);
-  // res.send(`ได้รับ brand : ${brand}`);
+const { slug } = req.query;
+console.log("slug:", slug);
 
   Categorys.find({ slug })
     .exec()
@@ -145,7 +144,8 @@ exports.getTypeOfPs = (req, res) => {
         res.status(404).json({ error: "ไม่พบข้อมูลที่ตรงกับ slug ที่ระบุ" });
         return;
       }
-      //ไว้เก็บค่า p_type
+
+      // ไว้เก็บค่า p_type
       const pTypesArray = [];
 
       categories.forEach((category) => {
@@ -155,9 +155,9 @@ exports.getTypeOfPs = (req, res) => {
       });
 
       const result = {
-        brand:categories[0].brand , //brand จาก file slug
-        slug: slug, //slug form slug
-        p_type: pTypesArray , //p_type form array
+        brand: categories[0].brand, // brand จาก file slug
+        slug: slug, // slug form slug
+        p_type: pTypesArray, // p_type form array
       };
 
       res.json(result);

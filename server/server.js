@@ -11,7 +11,7 @@ const CustomerRoute = require("./routes/customer");
 const ProductRoute = require("./routes/product");
 const CategoryRoute = require("./routes/category");
 const AdminRoute = require("./routes/admin");
-
+const AuthRoute = require("./routes/auth");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
@@ -35,7 +35,7 @@ app.use(
   cors({
     origin: "http://localhost:3000", // กำหนดโดเมนที่อนุญาตให้เข้าถึง
     methods: ["GET", "POST" ,"PUT" ,"DELETE"], // กำหนดเมทอดที่อนุญาต
-    allowedHeaders: 'Content-Type,Authorization',
+     allowedHeaders: ['Content-Type', 'Authorization', 'authtoken'],
     credentials: true, // อนุญาตให้ส่งคุกกี้ (cookies) ไปพร้อมกับคำขอ
   })
 );
@@ -50,7 +50,7 @@ app.use("/api/customer", CustomerRoute);
 app.use("/api/product", ProductRoute);
 app.use("/api/category", CategoryRoute);
 app.use('/api/dashboard', AdminRoute);
-
+app.use('/api',AuthRoute);
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);

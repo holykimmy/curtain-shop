@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../Navbar";
 import arrow from "../img/icon/arrow.png";
 import about from "../img/about.jpeg";
@@ -6,7 +6,12 @@ import Slideshow from "./Slideshow";
 import Footer from "../Footer";
 import Showing from "./Showing";
 import { BsPinFill } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import Swal from "sweetalert2";
+import axios from "axios";
+// import jwtDecode from "jwt-decode";
+
 function HomePage() {
   const slides = [
     "https://i.ibb.co/ncrXc2V/1.png",
@@ -16,14 +21,52 @@ function HomePage() {
     "https://i.ibb.co/XXR8kzF/3.png",
   ];
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+  const [suc, setSuc] = useState();
+
+  const [userData, setUserData] = useState(null);
+
+  const [userName, setUserName] = React.useState("");
+
+
+  useEffect(() => {
+    const authToken = localStorage.getItem("token");
+    console.log("authToken", authToken);
+
+    if (authToken) {
+      // Set up axios default headers
+      axios.defaults.headers.common["authtoken"] = authToken;
+
+      const decodedToken = jwtDecode(authToken); // Decode the token
+
+      if (decodedToken && decodedToken.user) {
+        const { f_name, l_name } = decodedToken.user;
+        setUserName(`${f_name} ${l_name}`);
+        setIsLoggedIn(true);
+
+      } else {
+        setUserData(decodedToken.user);
+      }
+    }else {
+      setIsLoggedIn(false);
+    }
+    console.log("login", setIsLoggedIn);
+  }, []);
+
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location.reload();
+    localStorage.removeItem("token"); // Remove token from localStorage
+    setIsLoggedIn(false); // Update login status to false
+    navigate("/login"); // Redirect to login page
   };
 
   return (
     <>
-      <Navbar></Navbar>
+      <Navbar
+        isLoggedIn={setIsLoggedIn}
+        handleLogout={handleLogout}
+        setUserName={setUserName}
+      ></Navbar>
 
       <div class="test flixed">
         <div class="jarern text-[280%] sm:text-[330%] md:text-[370%] lg:text-[450%] text-b-font bg-brown-bg font-[500px] p-[4%] md:p-[2%] text-center">
@@ -35,6 +78,7 @@ function HomePage() {
       <div className="max-w-full h-[400px] mb-[100px]">
         <Slideshow></Slideshow>
       </div>
+      <p className="m-5 text-xl">{userName}</p>
       <Link to="/custom-product">
         <div class="create font-[500px] text-2xl md:text-3xl xl:text-4xl text-b-font text-center  p-[30px]">
           {" "}
