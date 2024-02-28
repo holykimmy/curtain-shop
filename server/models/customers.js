@@ -61,23 +61,6 @@ const customerSchema = mongoose.Schema(
 
 // Hashing password before saving
 
-// Generate JWT token for authentication
-customerSchema.methods.generateAuthToken = async function () {
-  const customer = this;
-  const token = jwt.sign(
-    { _id: this._id, email: this.email ,role: this.role },
-    process.env.MY_KEY,
-    {
-      expiresIn: "7d",
-    }
-    
-  );
-
-  customer.tokens = customer.tokens.concat({ token });
-  await customer.save();
-
-  return token;
-};
 
 const User = mongoose.model("Customers", customerSchema);
 

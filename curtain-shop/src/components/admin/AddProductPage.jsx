@@ -25,20 +25,27 @@ function AddProductPage() {
   const fetchBrands = async () => {
     try {
       const brandOptions = await categoryAPI.getAllBrands();
+      console.log("brandoption", brandOptions);
       setBrandOptions(brandOptions);
     } catch (error) {
       console.error("Error fetching all brands:", error);
     }
   };
 
-  const fetchPTypeOptions = (selectedBrand) => {
-    productAPI
-      .getPTypeOptions(selectedBrand)
-      .then((pTypeOptions) => {
-        setPTypeOptions(pTypeOptions);
+  useEffect(() => {
+    fetchBrands();
+    const intervalId = setInterval(fetchBrands, 500000); //refresh
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const fetchPTypeOptions = (selectedBrandSlug) => {
+    categoryAPI
+      .getTypeOf(selectedBrandSlug) // ปรับให้ใช้ API getTypeOfPs และส่ง selectedBrandSlug เข้าไป
+      .then((result) => {
+        setPTypeOptions(result.p_type); // กำหนดค่า pTypeOptions จากข้อมูลที่ได้จาก API
         setState((prevState) => ({
           ...prevState,
-          brand: selectedBrand,
+          brand: result.brand,
           p_type: "", // รีเซ็ต p_type เมื่อเลือก brand ใหม่
         }));
       })
@@ -47,30 +54,26 @@ function AddProductPage() {
       });
   };
 
-  useEffect(() => {
-    fetchBrands();
-    const intervalId = setInterval(fetchBrands, 500000000000); //refresh
-    return () => clearInterval(intervalId);
-  }, []);
-
-  // const handleBrandChange = (event) => {
-  //   const selectedBrand = event.target.value;
-  //   setPTypeOptions([]); // Clear p_type options when brand changes
-  //   fetchPTypeOptions(selectedBrand);
-
+  
   const handleBrandChange = (event) => {
     const selectedBrandSlug = event.target.value;
-    const selectedBrand = brandOptions.find((brand) => brand.slug === selectedBrandSlug);
-    setState((prevState) => ({
-      ...prevState,
-      brand: selectedBrand ? selectedBrand.brand : "", // Use selected brand's name if available, otherwise set to empty string
-      p_type: "", // Reset p_type when brand changes
-    }));
-    fetchPTypeOptions(selectedBrandSlug);
-  };  
-  
-  
-
+    const selectedBrand = brandOptions.find(
+      (brand) => brand.slug === selectedBrandSlug
+    );
+    console.log("selectedbrand", selectedBrandSlug.brand);
+    if (selectedBrand) {
+      // ตรวจสอบว่า selectedBrand ไม่เป็น undefined
+      setState((prevState) => ({
+        ...prevState,
+        brand: selectedBrand.brand,
+        // slug: selectedBrand.slug,
+        // brand: selectedBrand ? selectedBrand.brand : "", // Use selected brand's name if available, otherwise set to empty string
+        p_type: "", // Reset p_type when brand changes
+      }));
+      console.log("selectslug",selectedBrand.slug);
+      fetchPTypeOptions(selectedBrandSlug);
+    }
+  };
 
   const inputValue = (name) => (event) => {
     const value = event.target.value;
@@ -102,7 +105,6 @@ function AddProductPage() {
     const previewURL = URL.createObjectURL(image);
     setImagePreview(previewURL);
   };
-
 
   const buttonStyle = {
     backgroundColor: color || "transparent",
@@ -171,10 +173,39 @@ function AddProductPage() {
           enctype="multipart/form-data"
           class="bg-white w-[80%] items-center justify-center m-auto mb-10"
         >
-          {JSON.stringify(state)}
+          {/* {JSON.stringify(state)} */}
           <p class="text-center text-2xl text-b-font font-bold">เพิ่มสินค้า</p>
           <p className="text-gray-700 md:text-base mt-4 pl-5">แบรนด์สินค้า</p>
-          <select
+          {/* <select
+            className="input-group w-full data-te-select-init shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-5"
+            id="brand"
+            type="text"
+            value={state.brand}
+            onChange={handleBrandChange}
+          >
+            <option value="">เลือกแบรนด์สินค้า</option>
+            {brandOptions.map((brand) => (
+              <option key={brand.slug} value={brand.slug}>
+                {brand.brand}
+              </option>
+            ))}
+          </select> */}
+          {/* <select
+            className="input-group w-full data-te-select-init shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-5"
+            id="brand"
+            type="text"
+            value={state.brand}
+            onChange={handleBrandChange}
+          >
+            <option value="">เลือกแบรนด์สินค้า</option>
+            {brandOptions &&
+              brandOptions.map((brand) => (
+                <option key={brand.slug} value={brand.slug}>
+                  {brand.brand}
+                </option>
+              ))}
+          </select> */}
+            <select
             class="input-group w-full data-te-select-init shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-5"
             id="brand"
             type="text"
@@ -188,24 +219,26 @@ function AddProductPage() {
               </option>
             ))}
           </select>
+
           <p className="text-gray-700 md:text-base mt-4 pl-5">
             ประเภทของสินค้า
           </p>
           <select
-            class="input-group w-full data-te-select-init shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-5"
+            className="input-group w-full data-te-select-init shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-5"
             id="p_type"
             type="text"
-            // multiple
-            value={p_type}
+            value={state.p_type}
             onChange={inputValue("p_type")}
           >
             <option value="">เลือกประเภทสินค้า</option>
-            {pTypeOptions.map((pType) => (
-              <option key={pType} value={pType}>
-                {pType}
-              </option>
-            ))}
+            {pTypeOptions &&
+              pTypeOptions.map((pType) => (
+                <option key={pType} value={pType}>
+                  {pType}
+                </option>
+              ))}
           </select>
+
           <div class="input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline my-6">
             <input
               class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"

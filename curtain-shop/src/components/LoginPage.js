@@ -45,13 +45,14 @@ function LoginPage() {
 
         // หากบทบาทของผู้ใช้เป็น "admin" ให้นำผู้ใช้ไปยังหน้า "/menu"
         if (response.data.role === "admin") {
+          localStorage.setItem("token", response.data.token);
+          axios.defaults.headers.common["authtoken"] = response.data.token; // Set token as a default header
           navigate("/dashboard");
         } else {
-          // ถ้าไม่ใช่ "admin" ให้บันทึก token และนำผู้ใช้ไปยังหน้าหลัก "/"
           localStorage.setItem("token", response.data.token);
+          axios.defaults.headers.common['authtoken'] = response.data.token; // Set token as a default header
           navigate("/");
         }
-        
       } else {
         // หากการเข้าสู่ระบบไม่สำเร็จ แสดงข้อความผิดพลาดที่ได้จากเซิร์ฟเวอร์
         setError(

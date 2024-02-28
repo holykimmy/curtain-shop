@@ -11,7 +11,7 @@ const jwt = require("jsonwebtoken");
 const { body, validationResult } = require("express-validator");
 const Joi = require("joi");
 
-exports.create = async (req, res) => {
+exports.register = async (req, res) => {
   const { f_name, l_name, username, email, tell, password } = req.body;
   try {
     const { error } = validate(req.body);
@@ -24,6 +24,8 @@ exports.create = async (req, res) => {
     const user = await User.findOne({ email: req.body.email });
     const u_username = await User.findOne({ username: req.body.username });
     const u_tell = await User.findOne({ tell: req.body.tell });
+
+    //chekc user
     if (user) {
       return res
         .status(409)
@@ -37,9 +39,11 @@ exports.create = async (req, res) => {
         .status(409)
         .json({ error: "เบอร์โทรนี้ถูกใช้ไปแล้ว กรุณาใช้เบอร์โทรอื่น" });
     }
-
+    //encrypt
     const salt = await bcrypt.genSalt(Number(process.env.SALT));
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+    //save
     await new User({ ...req.body, password: hashedPassword }).save();
     res.status(201).json({ message: "สมัครรสมาชิกสำเร็จ" });
   } catch (error) {
@@ -57,6 +61,7 @@ const validatelogin = (data) => {
 };
 
 exports.loginUser = async (req, res) => {
+  //check user
   const { user, password } = req.body;
 
   try {
@@ -64,11 +69,12 @@ exports.loginUser = async (req, res) => {
     if (error) {
       return res.status(400).json({ error: error.details[0].message });
     }
-
+    //หา user
     const userFound = await User.findOne({
       $or: [{ email: user }, { tell: user }],
     });
 
+    //ไม่เจอ
     if (!userFound) {
       return res.status(401).json({ error: "email หรือ เบอร์โปทรไม่ถูกต้อง" });
     }
@@ -79,10 +85,30 @@ exports.loginUser = async (req, res) => {
       return res.status(401).json({ error: "รหัสผ่านไม่ถูกต้อง" });
     }
 
-    const token = await userFound.generateAuthToken();
-    res.cookie("token", token )
-    // res.status(200).json({ token });
-    return res.json({Status:"Success", role: userFound.role})
+    //valid
+    let payload = {
+      user: {
+        f_name: userFound.f_name,
+        l_name: userFound.l_name,
+        username: userFound.username,
+        email: userFound.email,
+        tell: userFound.tell,
+        address: userFound.address,
+        role: userFound.role,
+      },
+    };
+
+    jwt.sign(payload, "jwtsecret", { expiresIn: '1d' }, (err, token) => {
+      if (err) throw err;
+      console.log(token, payload);
+
+      res.json({  Status: "Success", role: userFound.role , token, payload });
+    });
+
+    // const token = await userFound.generateAuthToken();
+    // res.cookie("token", token);
+    // // res.status(200).json({ token });
+    // return res.json({ Status: "Success", role: userFound.role });
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
