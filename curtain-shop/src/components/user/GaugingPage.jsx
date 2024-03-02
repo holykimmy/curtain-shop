@@ -77,6 +77,8 @@ function ServicePage() {
 
         // ใช้ useNavigate เพื่อนำผู้ใช้กลับไปยังหน้าหลัก
         navigate("/"); // ลิงก์ไปยังหน้าหลัก
+        window.location.reload();
+
       }
     });
   };

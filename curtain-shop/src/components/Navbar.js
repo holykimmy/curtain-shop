@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Navbar,
   MobileNav,
@@ -24,6 +24,7 @@ import {
 import { CiUser } from "react-icons/ci";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 // profile menu component
 
@@ -340,9 +341,10 @@ function NavList() {
   );
 }
 
-function ComplexNavbar({ isLoggedIn, handleLogout, userName }) {
-  const [isNavOpen, setIsNavOpen] = React.useState(false);
+function ComplexNavbar({ isLoggedIn, userName ,handleLogout}) {
 
+  
+  const [isNavOpen, setIsNavOpen] = React.useState(false);
   const toggleIsNavOpen = () => setIsNavOpen((cur) => !cur);
 
   React.useEffect(() => {
@@ -351,6 +353,16 @@ function ComplexNavbar({ isLoggedIn, handleLogout, userName }) {
       () => window.innerWidth >= 960 && setIsNavOpen(false)
     );
   }, []);
+
+  useEffect(() => {
+    // Check isLoggedIn and userName changes
+    console.log("isLoggedIn:", isLoggedIn);
+    console.log("userName:", userName);
+  }, [isLoggedIn, userName]);
+
+
+  const navigate = useNavigate();
+
 
   console.log("c isLoggedIn:", isLoggedIn);
   console.log("c handleLogout:", handleLogout);
