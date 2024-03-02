@@ -32,7 +32,9 @@ mongoose
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:3000","https://cms-curtain-shop.vercel.app/", // กำหนดโดเมนที่อนุญาตให้เข้าถึง
+
+    // https://cms-curtain-shop.vercel.app/
+    origin: "http://localhost:3000","https://cms-curtain-shop.vercel.app", // กำหนดโดเมนที่อนุญาตให้เข้าถึง
     methods: ["GET", "POST", "PUT", "DELETE"], // กำหนดเมทอดที่อนุญาต
     allowedHeaders: ["Content-Type", "Authorization", "authtoken"],
     credentials: true, // อนุญาตให้ส่งคุกกี้ (cookies) ไปพร้อมกับคำขอ
