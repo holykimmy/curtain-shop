@@ -36,10 +36,17 @@ app.use(
     // https://cms-curtain-shop.vercel.app/
     origin: ["http://localhost:3000", "https://cms-curtain-shop.vercel.app", "https://curtain-shop.vercel.app/"], // กำหนดโดเมนที่อนุญาตให้เข้าถึง
     methods: ["GET", "POST", "PUT", "DELETE"], // กำหนดเมทอดที่อนุญาต
-    allowedHeaders: ["Content-Type", "Authorization", "authtoken","Access-Control-Allow-Origin: *"],
+    allowedHeaders: ["Content-Type", "Authorization", "authtoken"],
     credentials: true, // อนุญาตให้ส่งคุกกี้ (cookies) ไปพร้อมกับคำขอ
   })
 );
+
+
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  next();
+});
+
 app.use(cookieParser());
 app.use(morgan("dev"));
 
