@@ -152,7 +152,7 @@ function LoginPage() {
             {error && <div className=" text-red text-xs"> {error} </div>}
             <div class="flex items-center justify-center">
               <button
-                class="w-full bg-brown-300 hover:bg-browntop hover:shadow-md text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                class="w-full bg-stone-500 hover:bg-browntop hover:shadow-md text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 value="save"
                 type="submit"
               >

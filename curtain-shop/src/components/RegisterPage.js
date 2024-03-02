@@ -338,7 +338,7 @@ function RegisterPage() {
             {error && <p className="text-red-500">{error.msg}</p>} */}
             <div class="flex items-center justify-center mt-10">
               <button
-                class="w-full bg-b-btn hover:bg-browntop text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                class="w-full bg-stone-500 hover:bg-browntop text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 value="save"
                 type="submit"
               >

@@ -36,7 +36,7 @@ const Slideshow = () => {
           </div>
         </div>
       </Slide>
-      <div class="top-right absolute rounded-l-3xl top-[8px] right-0 pl-0 w-[30%] p-2 pl-5 text-md md:text-2xl lg:text-3xl bg-white/75 text-b-font shadow-lg hover:shadow-2xl">รูปแบบผ้าม่าน</div>
+      <div class="top-right absolute rounded-l-3xl top-[8px] right-0 w-[30%] p-2 pl-5 text-md md:text-2xl lg:text-3xl bg-white/75 text-b-font shadow-lg hover:shadow-2xl">รูปแบบผ้าม่าน</div>
     </div>
     </div>
   );
