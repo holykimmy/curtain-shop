@@ -10,14 +10,68 @@ import {
 import Navbar from "../Navbar";
 import { BsPinFill } from "react-icons/bs";
 import { HiOutlineArrowSmRight } from "react-icons/hi";
-import { Link } from "react-router-dom";
 import productAPI from "../../services/productAPI";
 import Footer from "../Footer";
 import TransformedImage from "./Tranformedimage";
+import { Link, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 var { Alpha } = require("react-color/lib/components/common");
 
 function CustomPage() {
+
+    //login
+
+const [isLoggedIn, setIsLoggedIn] = useState(false);
+const navigate = useNavigate();
+const [userData, setUserData] = useState(null);
+const [userName, setUserName] = React.useState("");
+
+useEffect(() => {
+  const authToken = localStorage.getItem("token");
+
+  if (authToken) {
+    // Set up axios default headers
+    axios.defaults.headers.common["authtoken"] = authToken;
+
+    const decodedToken = jwtDecode(authToken); // Decode the token
+
+    if (decodedToken && decodedToken.user) {
+      const { f_name, l_name } = decodedToken.user;
+      setUserName(`${f_name} ${l_name}`);
+      setIsLoggedIn(true);
+
+    } else {
+      setUserData(decodedToken.user);
+    }
+  }else {
+    setIsLoggedIn(false);
+  }
+}, []);
+
+const handleLogout = () => {
+  Swal.fire({
+    title: `คุณต้องการออกจากระบบใช่หรือไม่?`,
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "ใช่",
+    cancelButtonText: "ไม่ใช่",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // ยืนยันออกจากระบบ
+      localStorage.removeItem("token");
+      setUserName("");
+
+      // ใช้ useNavigate เพื่อนำผู้ใช้กลับไปยังหน้าหลัก
+      navigate("/"); // ลิงก์ไปยังหน้าหลัก
+    }
+  });
+};
+  //login
   const [selectedType, setSelectedType] = useState("");
 
   const handleCheckboxChange = (event) => {
@@ -99,7 +153,11 @@ function CustomPage() {
 
   return (
     <>
-      <Navbar></Navbar>
+               <Navbar
+        isLoggedIn={isLoggedIn}
+        handleLogout={handleLogout}
+        userName={userName}
+      ></Navbar>
       <div class="titlea bg-brown-bg  w-full  h-full py-1 shadow-md">
         <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-9 xl:h-9 text-b-font"></BsPinFill>
         <h5 className=" inline-block text-lg md:text-xl xl:text-2xl text-b-font  pl-4 p-2 my-1">

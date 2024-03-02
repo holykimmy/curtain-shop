@@ -40,11 +40,10 @@ function UpdateProductPage() {
         const productData = res.data;
         console.log("Product Data:", productData); // ให้ดูค่า productData ที่ได้รับมา
         if (productData) {
+          // เรียกใช้ฟังก์ชันเพื่อดึงประเภทสินค้า
+          // fetchBrands(productData.brand);
 
-            // เรียกใช้ฟังก์ชันเพื่อดึงประเภทสินค้า
-        // fetchBrands(productData.brand);
-       
-        fetchPTypeOptions(productData.brand);
+          fetchPTypeOptions(productData.brand);
 
           setData({
             ...data,
@@ -64,7 +63,7 @@ function UpdateProductPage() {
     };
     fetchData();
   }, [productId]);
-  
+
   const fetchBrands = async () => {
     try {
       const brandOptions = await categoryAPI.getAllBrands();
@@ -112,7 +111,7 @@ function UpdateProductPage() {
         // brand: selectedBrand ? selectedBrand.brand : "", // Use selected brand's name if available, otherwise set to empty string
         p_type: "", // Reset p_type when brand changes
       }));
-      console.log("selectslug",selectedBrand.slug);
+      console.log("selectslug", selectedBrand.slug);
       fetchPTypeOptions(selectedBrandSlug);
     }
   };
@@ -139,7 +138,6 @@ function UpdateProductPage() {
       price: numericValue,
     }));
   };
-
 
   const handleFileSelection = (e) => {
     const image = e.target.files[0];
@@ -175,12 +173,11 @@ function UpdateProductPage() {
     console.log(formData.get("color"));
     console.log(formData.get("detail"));
     console.log(formData.get("price"));
-    console.log(formData.get("image")); 
+    console.log(formData.get("image"));
     console.log("endl");
 
     // Call the update function with formData
     update(e, productId, formData);
-    
   };
 
   const update = async (e, productId, formData) => {
@@ -219,7 +216,7 @@ function UpdateProductPage() {
       </div>
       <div className="w-full items-center justify-center mt-5 pb-5">
         <form
-         onSubmit={(e) => submitForm(e, productId, data, image)}
+          onSubmit={(e) => submitForm(e, productId, data, image)}
           /* ตรวจสอบว่ามี enctype และถูกต้องหรือไม่ */
           enctype="multipart/form-data"
           class="bg-white w-[80%] items-center justify-center m-auto mb-10"

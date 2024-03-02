@@ -1,21 +1,76 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../Navbar";
 import { BsPinFill } from "react-icons/bs";
-import { Link } from "react-router-dom";
 import { HiOutlineArrowSmRight } from "react-icons/hi";
 import blackout from "../img/products/blackout.jpeg";
 import Footer from "../Footer";
 import ProductDetail from "./ProductDetail";
-
+import { Link, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import Swal from "sweetalert2";
+import axios from "axios";
 const cartItems = [
-  { product: 'Vans Sk8-Hi MTE Shoes', price: 89, quantity: 2 }
+  { product: "Vans Sk8-Hi MTE Shoes", price: 89, quantity: 2 },
 ];
 
 function ContactPage() {
-  
+  //token login
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+  const [userData, setUserData] = useState(null);
+  const [userName, setUserName] = React.useState("");
+
+  useEffect(() => {
+    const authToken = localStorage.getItem("token");
+
+    if (authToken) {
+      // Set up axios default headers
+      axios.defaults.headers.common["authtoken"] = authToken;
+
+      const decodedToken = jwtDecode(authToken); // Decode the token
+
+      if (decodedToken && decodedToken.user) {
+        const { f_name, l_name } = decodedToken.user;
+        setUserName(`${f_name} ${l_name}`);
+        setIsLoggedIn(true);
+      } else {
+        setUserData(decodedToken.user);
+      }
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    Swal.fire({
+      title: `คุณต้องการออกจากระบบใช่หรือไม่?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่",
+      cancelButtonText: "ไม่ใช่",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // ยืนยันออกจากระบบ
+        localStorage.removeItem("token");
+        setUserName("");
+
+        // ใช้ useNavigate เพื่อนำผู้ใช้กลับไปยังหน้าหลัก
+        navigate("/"); // ลิงก์ไปยังหน้าหลัก
+      }
+    });
+  };
+  //login check
+
   return (
     <>
-      <Navbar />
+      <Navbar
+        isLoggedIn={isLoggedIn}
+        handleLogout={handleLogout}
+        userName={userName}
+      ></Navbar>
       <div class="titlea bg-brown-bg py-1 shadow-md">
         <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-9 xl:h-9 text-b-font"></BsPinFill>
         <h5 className=" inline-block text-lg md:text-xl xl:text-2xl text-b-font  pl-4 p-2 my-1">
@@ -91,5 +146,5 @@ function ContactPage() {
       <Footer></Footer>
     </>
   );
-};
+}
 export default ContactPage;

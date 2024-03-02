@@ -27,53 +27,44 @@ import axios from "axios";
 
 // profile menu component
 
-
-function ProfileMenu({ isLoggedIn, handleLogout }) {
-
+function ProfileMenu({ isLoggedIn, handleLogout, userName }) {
   //set status
-  const [data, setData] = useState({
-    f_name: "",
-    l_name: "",
-    username: "",
-    email: "",
-    tell: "",
-    password: "",
-    confirmPassword: "",
-  });
-  const { f_name, l_name, username, email, tell } = data;
-
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   const closeMenu = () => setIsMenuOpen(false);
-  const profileMenuItems = isLoggedIn
-  ? [
-      {
-        label: "My Profile",
-        icon: CiUser,
-      },
-      {
-        label: "แก้ไขโปรไฟล์",
-        icon: Cog6ToothIcon,
-      },
-      {
-        label: "ตระกร้าสินค้า",
-        icon: InboxArrowDownIcon,
-      },
-      {
-        label: "ออกจากระบบ",
-        icon: PowerIcon,
-        onClick: handleLogout,
-      },
-    ]
-  : [
-      {
-        label: "เข้าสู่ระบบ",
-        icon: PowerIcon,
-         to: "/login",
-      },
-    ];
 
-  
+  console.log("username", userName);
+  console.log("Nav login : ", isLoggedIn);
+  const profileMenuItems = isLoggedIn
+    ? [
+        {
+          label: "My Profile",
+          icon: CiUser,
+          to: "/account",
+        },
+        {
+          label: "แก้ไขโปรไฟล์",
+          icon: Cog6ToothIcon,
+          to: "/edit-profile",
+        },
+        {
+          label: "ตระกร้าสินค้า",
+          icon: InboxArrowDownIcon,
+          to: "/cart",
+        },
+        {
+          label: "ออกจากระบบ",
+          icon: PowerIcon,
+          onClick: handleLogout,
+        },
+      ]
+    : [
+        {
+          label: "เข้าสู่ระบบ",
+          icon: PowerIcon,
+          to: "/login",
+        },
+      ];
 
   return (
     <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end">
@@ -83,6 +74,7 @@ function ProfileMenu({ isLoggedIn, handleLogout }) {
           color="white"
           className="flex items-center gap-1 rounded-full py-0.5 pr-2 pl-0.5 lg:ml-auto"
         >
+          <p className="pl-3 pr-3">{userName}</p>
           <CiUser className="border bg-white/25 rounded-full border-white p-0.5 h-9 w-9" />
           <ChevronDownIcon
             strokeWidth={2.5}
@@ -92,34 +84,106 @@ function ProfileMenu({ isLoggedIn, handleLogout }) {
           />
         </Button>
       </MenuHandler>
-      <MenuList className="p-1">
-        {profileMenuItems.map(({ label, icon }, key) => {
+      {/* <MenuList className="p-1">
+        {profileMenuItems.map(({ label, icon, to, onClick }, key) => {
           const isLastItem = key === profileMenuItems.length - 1;
-          const isLogout = label === "ออกจากระบบ";
+          // const isLogout = label === "ออกจากระบบ";
           return (
             <MenuItem
               key={label}
-              onClick={closeMenu}
+              onClick={() => {
+                onClick(); // เรียกใช้ฟังก์ชัน handleLogout เมื่อคลิกที่เมนู "ออกจากระบบ"
+                closeMenu(); // ปิดเมนูหลังจากคลิก
+              }}
               className={`flex items-center gap-2 rounded ${
                 isLastItem ? "" : ""
               }`}
-
             >
               {React.createElement(icon, {
                 className: `h-4 w-4 ${isLastItem ? "text-red-500" : ""}`,
                 strokeWidth: 2,
               })}
+              <Link to={to}>
+                <Typography
+                  as="span"
+                  variant="small"
+                  className="font-normal"
+                  color={isLastItem ? "red" : "inherit"}
+                >
+                  {label}
+                </Typography>
+              </Link>
+            </MenuItem>
+          );
+        })}
+      </MenuList> */}
+
+      {/* <MenuList className="p-1">
+        {profileMenuItems.map(({ label, icon, to, onClick }, key) => (
+          <div
+            key={label}
+            onClick={() => {
+              onClick(); // เรียกใช้ฟังก์ชัน handleLogout เมื่อคลิกที่เมนู "ออกจากระบบ"
+              closeMenu(); // ปิดเมนูหลังจากคลิก
+            }}
+            className="flex items-center gap-2 rounded"
+          >
+            {React.createElement(icon, {
+              className: "h-4 w-4 mt-2 ml-2 mb-2",
+              strokeWidth: 2,
+            })}
+
+            <Typography
+              as="span"
+              variant="small"
+              className="font-normal"
+              color="inherit"
+            >
+              {label}
+            </Typography>
+          </div>
+        ))}
+      </MenuList> */}
+
+      <MenuList className="p-1">
+        {profileMenuItems.map(({ label, icon, to, onClick }, key) => (
+          <div
+            key={label}
+            onClick={() => {
+              if (onClick) {
+                onClick(); // เรียกใช้ฟังก์ชัน onClick ถ้ามีการกำหนด
+              }
+              closeMenu(); // ปิดเมนูหลังจากคลิก
+            }}
+            className="flex items-center gap-2 rounded cursor-pointer"
+          >
+            {React.createElement(icon, {
+              className: "h-4 w-4 mt-2 ml-2 mb-2",
+              strokeWidth: 2,
+            })}
+            {to ? (
+              <Link to={to} className="w-full">
+                <Typography
+                  as="span"
+                  variant="small"
+                  className="font-normal"
+                  color="inherit"
+                >
+                  {label}
+                </Typography>
+              </Link>
+            ) : (
               <Typography
                 as="span"
                 variant="small"
                 className="font-normal"
-                color={isLastItem ? "red" : "inherit"}
+                color="inherit"
               >
                 {label}
               </Typography>
-            </MenuItem>
-          );
-        })}
+            )}
+          </div>
+        ))}
       </MenuList>
     </Menu>
   );
@@ -276,7 +340,7 @@ function NavList() {
   );
 }
 
-function ComplexNavbar() {
+function ComplexNavbar({ isLoggedIn, handleLogout, userName }) {
   const [isNavOpen, setIsNavOpen] = React.useState(false);
 
   const toggleIsNavOpen = () => setIsNavOpen((cur) => !cur);
@@ -287,6 +351,10 @@ function ComplexNavbar() {
       () => window.innerWidth >= 960 && setIsNavOpen(false)
     );
   }, []);
+
+  console.log("c isLoggedIn:", isLoggedIn);
+  console.log("c handleLogout:", handleLogout);
+  console.log("c userName:", userName);
 
   return (
     <>
@@ -302,6 +370,7 @@ function ComplexNavbar() {
           <div className="absolute top-2/4 left-2/4 hidden -translate-x-2/4 -translate-y-2/4 lg:block">
             <NavList />
           </div>
+
           <IconButton
             size="sm"
             color="white"
@@ -311,8 +380,13 @@ function ComplexNavbar() {
           >
             <Bars2Icon className="h-6 w-6" />
           </IconButton>
-          <ProfileMenu />
+          <ProfileMenu
+            isLoggedIn={isLoggedIn}
+            handleLogout={handleLogout}
+            userName={userName}
+          />
         </div>
+
         <MobileNav open={isNavOpen} className="overflow-scroll">
           <NavList />
         </MobileNav>

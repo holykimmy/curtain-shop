@@ -23,12 +23,9 @@ function HomePage() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
-  const [suc, setSuc] = useState();
 
   const [userData, setUserData] = useState(null);
-
   const [userName, setUserName] = React.useState("");
-
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");
@@ -44,28 +41,45 @@ function HomePage() {
         const { f_name, l_name } = decodedToken.user;
         setUserName(`${f_name} ${l_name}`);
         setIsLoggedIn(true);
-
       } else {
         setUserData(decodedToken.user);
       }
-    }else {
+    } else {
       setIsLoggedIn(false);
     }
-    console.log("login", setIsLoggedIn);
   }, []);
 
+  console.log("login", isLoggedIn);
+
   const handleLogout = () => {
-    localStorage.removeItem("token"); // Remove token from localStorage
-    setIsLoggedIn(false); // Update login status to false
-    navigate("/login"); // Redirect to login page
+    Swal.fire({
+      title: `คุณต้องการออกจากระบบใช่หรือไม่?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่",
+      cancelButtonText: "ไม่ใช่",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // ยืนยันออกจากระบบ
+        localStorage.removeItem("token");
+        setUserName("");
+
+        // ใช้ useNavigate เพื่อนำผู้ใช้กลับไปยังหน้าหลัก
+        navigate("/"); // ลิงก์ไปยังหน้าหลัก
+      }
+    });
   };
+  console.log("login home", isLoggedIn);
+  console.log("username home: ", userName);
 
   return (
     <>
       <Navbar
-        isLoggedIn={setIsLoggedIn}
+        isLoggedIn={isLoggedIn}
         handleLogout={handleLogout}
-        setUserName={setUserName}
+        userName={userName}
       ></Navbar>
 
       <div class="test flixed">
@@ -78,7 +92,7 @@ function HomePage() {
       <div className="max-w-full h-[400px] mb-[100px]">
         <Slideshow></Slideshow>
       </div>
-      <p className="m-5 text-xl">{userName}</p>
+      {/* <p className="m-5 text-xl">{userName}</p> */}
       <Link to="/custom-product">
         <div class="create font-[500px] text-2xl md:text-3xl xl:text-4xl text-b-font text-center  p-[30px]">
           {" "}

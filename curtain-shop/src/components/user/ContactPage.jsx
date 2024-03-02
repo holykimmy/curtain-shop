@@ -1,13 +1,75 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../Navbar";
 import { BsPinFill } from "react-icons/bs";
 import img1 from "../img/contact.jpeg";
 import { HiPhone } from "react-icons/hi";
+import { Link, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import Swal from "sweetalert2";
+import axios from "axios";
 function ContactPage() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+
+  const [userData, setUserData] = useState(null);
+  const [userName, setUserName] = React.useState("");
+
+  useEffect(() => {
+    const authToken = localStorage.getItem("token");
+    console.log("authToken", authToken);
+
+    if (authToken) {
+      // Set up axios default headers
+      axios.defaults.headers.common["authtoken"] = authToken;
+
+      const decodedToken = jwtDecode(authToken); // Decode the token
+
+      if (decodedToken && decodedToken.user) {
+        const { f_name, l_name } = decodedToken.user;
+        setUserName(`${f_name} ${l_name}`);
+        setIsLoggedIn(true);
+      } else {
+        setUserData(decodedToken.user);
+      }
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
+
+  console.log("login", isLoggedIn);
+
+  const handleLogout = () => {
+    Swal.fire({
+      title: `คุณต้องการออกจากระบบใช่หรือไม่?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่",
+      cancelButtonText: "ไม่ใช่",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // ยืนยันออกจากระบบ
+        localStorage.removeItem("token");
+        setUserName("");
+
+        // ใช้ useNavigate เพื่อนำผู้ใช้กลับไปยังหน้าหลัก
+        navigate("/"); // ลิงก์ไปยังหน้าหลัก
+      }
+    });
+  };
+  console.log("login home", isLoggedIn);
+  console.log("username home: ", userName);
+
   return (
     <>
       <div className="h-screen w-full ">
-        <Navbar></Navbar>
+        <Navbar
+          isLoggedIn={isLoggedIn}
+          handleLogout={handleLogout}
+          userName={userName}
+        ></Navbar>
+
         {/* bg-gradient-to-r from-10% from-white via-50% via-brown-bg to-90% to-white */}
 
         <div class="titlea py-1 shadow-md">

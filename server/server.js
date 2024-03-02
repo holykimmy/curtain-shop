@@ -16,8 +16,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const app = express();
-const path = require('path');
-
+const path = require("path");
 
 //connect cloud database
 mongoose
@@ -30,12 +29,12 @@ mongoose
   .catch((err) => console.log(err));
 
 //middleware
-app.use(express.json());  
+app.use(express.json());
 app.use(
   cors({
     origin: "http://localhost:3000", // กำหนดโดเมนที่อนุญาตให้เข้าถึง
-    methods: ["GET", "POST" ,"PUT" ,"DELETE"], // กำหนดเมทอดที่อนุญาต
-     allowedHeaders: ['Content-Type', 'Authorization', 'authtoken'],
+    methods: ["GET", "POST", "PUT", "DELETE"], // กำหนดเมทอดที่อนุญาต
+    allowedHeaders: ["Content-Type", "Authorization", "authtoken"],
     credentials: true, // อนุญาตให้ส่งคุกกี้ (cookies) ไปพร้อมกับคำขอ
   })
 );
@@ -43,18 +42,18 @@ app.use(cookieParser());
 app.use(morgan("dev"));
 
 // Serve images statically
-app.use('/api/images', express.static(path.join(__dirname, 'images')));
+app.use("/api/images", express.static(path.join(__dirname, "images")));
 
 // Routes
 app.use("/api/customer", CustomerRoute);
 app.use("/api/product", ProductRoute);
 app.use("/api/category", CategoryRoute);
-app.use('/api/dashboard', AdminRoute);
-app.use('/api',AuthRoute);
+app.use("/api/dashboard", AdminRoute);
+app.use("/api", AuthRoute);
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send('Something broke!');
+  res.status(500).send("Something broke!");
 });
 
 // // Proxy middleware to forward requests to the actual API server
