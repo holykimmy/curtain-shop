@@ -26,7 +26,7 @@ function HomePage() {
 
   const [userData, setUserData] = useState(null);
   const [userName, setUserName] = React.useState("");
-  const [idUser,setIdUser] = React.useState("");
+  const [idUser, setIdUser] = React.useState("");
 
   const [user, setUser] = React.useState({
     f_name: "",
@@ -49,8 +49,8 @@ function HomePage() {
 
       if (decodedToken && decodedToken.user) {
         const { f_name, l_name } = decodedToken.user;
-        
-        const id = decodedToken.id ;
+
+        const id = decodedToken.id;
         setUserName(`${f_name} ${l_name}`);
         setIdUser(`${id}`);
         console.log("addresssjhf", decodedToken.user.addres);
@@ -62,7 +62,6 @@ function HomePage() {
           address: decodedToken.user.address,
         });
 
-     
         setIsLoggedIn(true);
       } else {
         setUserData(decodedToken.user);
@@ -94,7 +93,6 @@ function HomePage() {
     });
   };
 
-
   return (
     <>
       <Navbar
@@ -110,7 +108,6 @@ function HomePage() {
           เจริญกิจผ้าม่าน{" "}
         </div>
       </div>
-      {idUser}
       <div className="max-w-full h-[400px] mb-[100px]">
         <Slideshow></Slideshow>
       </div>
