@@ -135,22 +135,22 @@ const navListMenuItems = [
   {
     title: "ผ้ากำมะหยี่",
     description: "3",
-    to: "/products",
+    to: "/product/velvet",
   },
   {
     title: "ผ้าฝ้าย",
     description: "2",
-    to: "/register",
+    to: "/product/cotton",
   },
   {
     title: "ผ้าผ้าซาติน",
     description: "3",
-    to: "/register",
+    to: "/product/satin",
   },
   {
     title: "ผ้าลินิน",
     description: "4",
-    to: "/register",
+    to: "/product/linen",
   },
   {
     title: "ผ้าใยสังเคราะห์",
@@ -160,22 +160,22 @@ const navListMenuItems = [
   {
     title: "ผ้าใยผสม",
     description: "6",
-    to: "/register",
+    to: "/product/mixed",
   },
   {
     title: "ผ้ากันแสง",
     description: "7",
-    to: "/register",
+    to: "/product/blackout",
   },
   {
     title: "ม่านล็อกลอน",
     description: "4",
-    to: "/register",
+    to: "/product/wave",
   },
   {
     title: "อุปกรณ์ในการติดตั้ง",
     description: "4",
-    to: "/register",
+    to: "/product/equipment",
   },
 ];
 
