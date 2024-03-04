@@ -26,6 +26,15 @@ function HomePage() {
 
   const [userData, setUserData] = useState(null);
   const [userName, setUserName] = React.useState("");
+  const [idUser,setIdUser] = React.useState("");
+
+  const [user, setUser] = React.useState({
+    f_name: "",
+    l_name: "",
+    email: "",
+    tell: "",
+    address: "",
+  });
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");
@@ -36,10 +45,24 @@ function HomePage() {
       axios.defaults.headers.common["authtoken"] = authToken;
 
       const decodedToken = jwtDecode(authToken); // Decode the token
+      // console.log("_id ",decodedToken.id);
 
       if (decodedToken && decodedToken.user) {
         const { f_name, l_name } = decodedToken.user;
+        
+        const id = decodedToken.id ;
         setUserName(`${f_name} ${l_name}`);
+        setIdUser(`${id}`);
+        console.log("addresssjhf", decodedToken.user.addres);
+        setUser({
+          f_name: f_name,
+          l_name: l_name,
+          email: decodedToken.user.email,
+          tell: decodedToken.user.tell,
+          address: decodedToken.user.address,
+        });
+
+     
         setIsLoggedIn(true);
       } else {
         setUserData(decodedToken.user);
@@ -48,8 +71,6 @@ function HomePage() {
       setIsLoggedIn(false);
     }
   }, []);
-
-  console.log("login", isLoggedIn);
 
   const handleLogout = () => {
     Swal.fire({
@@ -72,8 +93,7 @@ function HomePage() {
       }
     });
   };
-  console.log("login home", isLoggedIn);
-  console.log("username home: ", userName);
+
 
   return (
     <>
@@ -81,6 +101,7 @@ function HomePage() {
         isLoggedIn={isLoggedIn}
         handleLogout={handleLogout}
         userName={userName}
+        idUser={idUser}
       ></Navbar>
 
       <div class="test flixed">
@@ -89,7 +110,7 @@ function HomePage() {
           เจริญกิจผ้าม่าน{" "}
         </div>
       </div>
-
+      {idUser}
       <div className="max-w-full h-[400px] mb-[100px]">
         <Slideshow></Slideshow>
       </div>

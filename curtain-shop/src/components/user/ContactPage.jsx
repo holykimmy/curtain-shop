@@ -13,6 +13,8 @@ function ContactPage() {
 
   const [userData, setUserData] = useState(null);
   const [userName, setUserName] = React.useState("");
+  const [idUser, setIdUser] = React.useState("");
+
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");
@@ -26,6 +28,8 @@ function ContactPage() {
 
       if (decodedToken && decodedToken.user) {
         const { f_name, l_name } = decodedToken.user;
+        const id = decodedToken.id ; 
+        setIdUser(`${id}`);
         setUserName(`${f_name} ${l_name}`);
         setIsLoggedIn(true);
       } else {

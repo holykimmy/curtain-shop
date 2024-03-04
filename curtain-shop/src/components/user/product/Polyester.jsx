@@ -15,7 +15,7 @@ function Polyester() {
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const [userName, setUserName] = React.useState("");
-
+  const [idUser, setIdUser] = useState(null);
   useEffect(() => {
     const authToken = localStorage.getItem("token");
 
@@ -27,6 +27,8 @@ function Polyester() {
 
       if (decodedToken && decodedToken.user) {
         const { f_name, l_name } = decodedToken.user;
+        const id = decodedToken.id;
+        setIdUser(`${id}`);
         setUserName(`${f_name} ${l_name}`);
         setIsLoggedIn(true);
       } else {
@@ -55,7 +57,6 @@ function Polyester() {
         // ใช้ useNavigate เพื่อนำผู้ใช้กลับไปยังหน้าหลัก
         navigate("/"); // ลิงก์ไปยังหน้าหลัก
         window.location.reload();
-
       }
     });
   };

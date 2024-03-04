@@ -28,7 +28,7 @@ import Swal from "sweetalert2";
 
 // profile menu component
 
-function ProfileMenu({ isLoggedIn, handleLogout, userName }) {
+function ProfileMenu({ isLoggedIn, handleLogout, userName , idUser }) {
   //set status
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
@@ -85,66 +85,6 @@ function ProfileMenu({ isLoggedIn, handleLogout, userName }) {
           />
         </Button>
       </MenuHandler>
-      {/* <MenuList className="p-1">
-        {profileMenuItems.map(({ label, icon, to, onClick }, key) => {
-          const isLastItem = key === profileMenuItems.length - 1;
-          // const isLogout = label === "ออกจากระบบ";
-          return (
-            <MenuItem
-              key={label}
-              onClick={() => {
-                onClick(); // เรียกใช้ฟังก์ชัน handleLogout เมื่อคลิกที่เมนู "ออกจากระบบ"
-                closeMenu(); // ปิดเมนูหลังจากคลิก
-              }}
-              className={`flex items-center gap-2 rounded ${
-                isLastItem ? "" : ""
-              }`}
-            >
-              {React.createElement(icon, {
-                className: `h-4 w-4 ${isLastItem ? "text-red-500" : ""}`,
-                strokeWidth: 2,
-              })}
-              <Link to={to}>
-                <Typography
-                  as="span"
-                  variant="small"
-                  className="font-normal"
-                  color={isLastItem ? "red" : "inherit"}
-                >
-                  {label}
-                </Typography>
-              </Link>
-            </MenuItem>
-          );
-        })}
-      </MenuList> */}
-
-      {/* <MenuList className="p-1">
-        {profileMenuItems.map(({ label, icon, to, onClick }, key) => (
-          <div
-            key={label}
-            onClick={() => {
-              onClick(); // เรียกใช้ฟังก์ชัน handleLogout เมื่อคลิกที่เมนู "ออกจากระบบ"
-              closeMenu(); // ปิดเมนูหลังจากคลิก
-            }}
-            className="flex items-center gap-2 rounded"
-          >
-            {React.createElement(icon, {
-              className: "h-4 w-4 mt-2 ml-2 mb-2",
-              strokeWidth: 2,
-            })}
-
-            <Typography
-              as="span"
-              variant="small"
-              className="font-normal"
-              color="inherit"
-            >
-              {label}
-            </Typography>
-          </div>
-        ))}
-      </MenuList> */}
 
       <MenuList className="p-1">
         {profileMenuItems.map(({ label, icon, to, onClick }, key) => (
@@ -341,7 +281,7 @@ function NavList() {
   );
 }
 
-function ComplexNavbar({ isLoggedIn, userName ,handleLogout}) {
+function ComplexNavbar({ isLoggedIn, idUser, userName ,handleLogout}) {
 
   
   const [isNavOpen, setIsNavOpen] = React.useState(false);
@@ -358,7 +298,9 @@ function ComplexNavbar({ isLoggedIn, userName ,handleLogout}) {
     // Check isLoggedIn and userName changes
     console.log("isLoggedIn:", isLoggedIn);
     console.log("userName:", userName);
-  }, [isLoggedIn, userName]);
+    console.log("idUser nav:", idUser);
+
+  }, [isLoggedIn, userName, idUser]);
 
 
   const navigate = useNavigate();
@@ -366,7 +308,9 @@ function ComplexNavbar({ isLoggedIn, userName ,handleLogout}) {
 
   console.log("c isLoggedIn:", isLoggedIn);
   console.log("c handleLogout:", handleLogout);
-  console.log("c userName:", userName);
+  console.log("c userName: ", userName);
+
+
 
   return (
     <>
@@ -393,6 +337,7 @@ function ComplexNavbar({ isLoggedIn, userName ,handleLogout}) {
             <Bars2Icon className="h-6 w-6" />
           </IconButton>
           <ProfileMenu
+            idUser={idUser}
             isLoggedIn={isLoggedIn}
             handleLogout={handleLogout}
             userName={userName}
