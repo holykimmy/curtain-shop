@@ -38,6 +38,26 @@ function Cotton() {
       setIsLoggedIn(false);
     }
   }, []);
+  
+  const handleDetailProduct = (
+    productId,
+    productName,
+    
+  ) => {
+    Swal.fire({
+      title: `คุณต้องการดูข้อมูลสินค้า ${productName} ใช่หรือไม่?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่",
+      cancelButtonText: "ไม่ใช่",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate(`/product-detail/${productId}`);
+      }
+    });
+  };
 
   const handleLogout = () => {
     Swal.fire({
@@ -130,13 +150,13 @@ function Cotton() {
               </div>
               {/* </div> */}
 
-              <Link
-                to="/product-detail"
+              <button
+                onClick={() => handleDetailProduct(product._id, product.name)}
                 class="pl-5 mt-3 text-brown-500 text-sm md:base hover:text-browntop inline-flex items-center"
               >
                 อ่านพิ่มเติม
                 <HiOutlineArrowSmRight />
-              </Link>
+              </button>
             </div>
           </div>
         ))}
