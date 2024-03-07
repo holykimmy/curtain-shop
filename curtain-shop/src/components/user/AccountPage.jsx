@@ -33,7 +33,7 @@ function ContactPage() {
       axios.defaults.headers.common["authtoken"] = authToken;
 
       const decodedToken = jwtDecode(authToken); // Decode the token
-
+      console.log("token", decodedToken);
       if (decodedToken && decodedToken.user) {
         const { f_name, l_name, username } = decodedToken.user;
 
@@ -63,7 +63,7 @@ function ContactPage() {
     const fetchData = async () => {
       try {
         const authToken = localStorage.getItem("token");
-        console.log("token: ",authToken);
+        console.log("token: ", authToken);
         if (authToken) {
           // Set up axios default headers
           axios.defaults.headers.common["authtoken"] = authToken;
@@ -111,78 +111,55 @@ function ContactPage() {
     });
   };
 
-  const handleEditAddress = (index) => {
-    // ดึงข้อมูลที่อยู่ที่ต้องการแก้ไขจากอาร์เรย์ address
-    const addressToEdit = address[index];
-
-    // เรียกใช้โมดูลหรือแสดงแบบฟอร์มสำหรับแก้ไขที่อยู่ที่ได้ดึงข้อมูลมาแล้ว
-    // ตัวอย่างเช่นการใช้โมดูลแสดง Modal หรือแบบฟอร์ม
-
-    // เมื่อผู้ใช้กดยืนยันการแก้ไขที่อยู่ ทำการส่งข้อมูลที่แก้ไขไปยังเซิร์ฟเวอร์
-    // ตัวอย่างเช่นใช้ axios.put() หรือ axios.post() เพื่อส่งข้อมูลที่แก้ไขไปยังเซิร์ฟเวอร์
+  const handleEditAddress = (addressData) => {
+    const { _id } = addressData;
+    navigate(`/edit-address/${_id}`);
   };
-
   
-const handleDeleteAddress = async (_id) => {
-  // แสดง Confirm Dialog เพื่อยืนยันการลบที่อยู่
-  const confirmation = await Swal.fire({
-    title: 'คุณแน่ใจหรือไม่?',
-    text: 'ท่านต้องการที่จะลบที่อยู่นี้ใช่หรือไม่?',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'ใช่, ลบที่อยู่',
-    cancelButtonText: 'ยกเลิก'
-  });
 
-  // ถ้าผู้ใช้ยืนยันการลบ
-  if (confirmation.isConfirmed) {
-    try {
-      // ทำการลบที่อยู่โดยส่งคำขอไปยังเซิร์ฟเวอร์
-      const response = await axios.delete(
-        `${process.env.REACT_APP_API}/customer/delete-address/${idUser}/${_id}`
-      );
+  const handleDeleteAddress = async (_id) => {
+    // แสดง Confirm Dialog เพื่อยืนยันการลบที่อยู่
+    const confirmation = await Swal.fire({
+      title: "คุณแน่ใจหรือไม่?",
+      text: "ท่านต้องการที่จะลบที่อยู่นี้ใช่หรือไม่?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "ใช่, ลบที่อยู่",
+      cancelButtonText: "ยกเลิก",
+    });
 
-      // ถ้าการลบสำเร็จ
-      if (response.status === 200) {
-        // อัปเดต UI และแสดงข้อความแจ้งเตือน
-        setAddress(address.filter((addr) => addr._id !== _id));
+    // ถ้าผู้ใช้ยืนยันการลบ
+    if (confirmation.isConfirmed) {
+      try {
+        // ทำการลบที่อยู่โดยส่งคำขอไปยังเซิร์ฟเวอร์
+        const response = await axios.delete(
+          `${process.env.REACT_APP_API}/customer/delete-address/${idUser}/${_id}`
+        );
+
+        // ถ้าการลบสำเร็จ
+        if (response.status === 200) {
+          // อัปเดต UI และแสดงข้อความแจ้งเตือน
+          setAddress(address.filter((addr) => addr._id !== _id));
+          Swal.fire({
+            icon: "success",
+            title: "ลบที่อยู่สำเร็จ",
+            timer: 1500,
+            showConfirmButton: false,
+          });
+        } else {
+          console.log("เกิดข้อผิดพลาดในการลบที่อยู่");
+        }
+      } catch (error) {
+        // แสดงข้อความแจ้งเตือนเมื่อเกิดข้อผิดพลาด
         Swal.fire({
-          icon: 'success',
-          title: 'ลบที่อยู่สำเร็จ',
-          timer: 1500,
-          showConfirmButton: false
+          icon: "error",
+          title: "เกิดข้อผิดพลาด",
+          text: "ไม่สามารถลบที่อยู่ได้",
         });
-      } else {
-        console.log('เกิดข้อผิดพลาดในการลบที่อยู่');
+        console.error(error);
       }
-    } catch (error) {
-      // แสดงข้อความแจ้งเตือนเมื่อเกิดข้อผิดพลาด
-      Swal.fire({
-        icon: 'error',
-        title: 'เกิดข้อผิดพลาด',
-        text: 'ไม่สามารถลบที่อยู่ได้'
-      });
-      console.error(error);
     }
-  }
-};
-
-  // const handleDeleteAddress = async (addressId) => {
-  //   try {
-  //     // ส่งคำขอ DELETE ไปยังเซิร์ฟเวอร์
-  //     const response = await axios.delete(`${process.env.REACT_APP_API}/customer/delete-address`, { data: { addressId } });
-
-  //     // หลังจากได้รับการตอบกลับจากเซิร์ฟเวอร์
-  //     console.log(response.data); // คุณสามารถทำการอัปเดต UI ตามที่ต้องการได้ที่นี่
-
-  //     // อัปเดต UI เพื่อลบที่อยู่ที่ถูกลบออกจากการแสดง
-  //     setAddress(address.filter((addressData) => addressData._id !== addressId));
-  //   } catch (error) {
-  //     console.error('Error deleting address:', error);
-  //     // จัดการข้อผิดพลาดอื่น ๆ ตามที่คุณต้องการ
-  //   }
-  // };
-
+  };
   //login
   return (
     <>
@@ -254,7 +231,7 @@ const handleDeleteAddress = async (_id) => {
                 <div className="flex">
                   <button
                     className=" mx-4 mt-4  mb-2 px-4 py-2 rounded-lg inline-block text-base bg-green-500 hover:bg-browntop hover:shadow-xl text-white focus:outline-none focus:shadow-outline"
-                    onClick={() => handleEditAddress(index)}
+                    onClick={() => handleEditAddress(addressData)}
                   >
                     แก้ไขที่อยู่
                   </button>

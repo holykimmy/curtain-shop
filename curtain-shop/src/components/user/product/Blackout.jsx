@@ -39,11 +39,7 @@ function Blackout() {
     }
   }, []);
 
-  const handleDetailProduct = (
-    productId,
-    productName,
-    
-  ) => {
+  const handleDetailProduct = (productId, productName) => {
     Swal.fire({
       title: `คุณต้องการดูข้อมูลสินค้า ${productName} ใช่หรือไม่?`,
       icon: "question",

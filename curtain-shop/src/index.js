@@ -14,6 +14,8 @@ import ServicePage from "./components/user/ServicePage";
 import ProductsPage from "./components/user/ProductsPage";
 import AccountPage from "./components/user/AccountPage";
 import AddressPage from "./components/user/AddressPage";
+import EditAddressPage from "./components/user/EditAddressPage";
+
 import ProductDetail from "./components/user/ProductDetail";
 import CategoryPage from "./components/user/CategoryPage";
 import CartPage from "./components/user/CartPage";
@@ -21,6 +23,7 @@ import CheckOrder from "./components/user/CheckOrderPage";
 import Recommend from "./components/user/RecommendPage";
 import Gauging from "./components/user/GaugingPage";
 import CustomPage from "./components/user/CustomPage";
+
 //product
 import Polyester from "./components/user/product/Polyester";
 import Velvet from "./components/user/product/Velvet";
@@ -58,6 +61,8 @@ const router = createBrowserRouter([
   { path: "/products", element: <ProductsPage /> },
   { path: "/account", element: <AccountPage /> },
   { path: "/address", element: <AddressPage /> },
+  { path: "/edit-address/:_id", element: <EditAddressPage /> },
+
   { path: "/product-detail/:productId", element: <ProductDetail /> },
   { path: "/category", element: <CategoryPage /> },
   { path: "/cart", element: <CartPage /> },
@@ -65,7 +70,7 @@ const router = createBrowserRouter([
   { path: "/recommended-curtain", element: <Recommend /> },
   { path: "/gauging-curtain", element: <Gauging /> },
 
-  { path: "/custom-product", element: <CustomPage /> },
+  { path: "/custom-product/:productId", element: <CustomPage /> },
   //product
   { path: "/product/polyester", element: <Polyester /> },
   { path: "/product/velvet", element: <Velvet /> },

@@ -10,7 +10,6 @@ import Swal from "sweetalert2";
 import axios from "axios";
 function ContactPage() {
   const { productId } = useParams();
-
   const [data, setData] = useState({
     productId: productId,
     brand: "",
@@ -31,19 +30,21 @@ function ContactPage() {
         // ตรวจสอบค่า data.p_type และกำหนดให้เรียกใช้ productAPI ตามที่ต้องการ
         if (data.p_type === "ผ้าใยสังเคราะห์ (polyester)") {
           productData = await productAPI.getProductTypePolyester();
-        } else if (data.p_type === "ผ้าฝ้าย(cotton)") {
+        } else if (data.p_type === "ผ้าฝ้าย (cotton)") {
           productData = await productAPI.getProductTypeCotton();
-        } else if (data.p_type === "ผ้าซาติน(satin)") {
+        } else if (data.p_type === "ผ้ากำมะหยี่ (velvet)") {
+          productData = await productAPI.getProductTypeVelvet();
+        } else if (data.p_type === "ผ้าซาติน (satin)") {
           productData = await productAPI.getProductTypeSatin();
-        } else if (data.p_type === "ผ้าลินิน(linen)") {
+        } else if (data.p_type === "ผ้าลินิน (linen)") {
           productData = await productAPI.getProductTypeLinen();
-        } else if (data.p_type === "ผ้าผสม(mixed)") {
+        } else if (data.p_type === "ผ้าผสม (mixed)") {
           productData = await productAPI.getProductTypeMixed();
-        } else if (data.p_type === "ผ้ากันแสง(blackout)") {
+        } else if (data.p_type === "ผ้ากันแสง (blackout)") {
           productData = await productAPI.getProductTypeBlackout();
-        } else if (data.p_type === "ม่อนลอน(wave)") {
+        } else if (data.p_type === "ม่อนลอน (wave)") {
           productData = await productAPI.getProductTypeWave();
-        }
+        } 
 
         setProduct(productData);
       } catch (err) {
@@ -93,7 +94,7 @@ function ContactPage() {
           `${process.env.REACT_APP_API}/product/${productId}`
         );
         const productData = res.data;
-        console.log("Product Data:", productData); // ให้ดูค่า productData ที่ได้รับมา
+        // console.log("Product Data:", productData); // ให้ดูค่า productData ที่ได้รับมา
         //ถ้าเจอ
         if (productData) {
           setData({
@@ -113,6 +114,26 @@ function ContactPage() {
     };
     fetchData();
   }, [productId]);
+
+  const handleDetailProduct = (productId, productName) => {
+    Swal.fire({
+      title: `คุณต้องการดูข้อมูลสินค้า ${productName} ใช่หรือไม่?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่",
+      cancelButtonText: "ไม่ใช่",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate(`/product-detail/${productId}`);
+      }
+    });
+  };
+
+  const handleCustom = (productId, productName) => {
+    navigate(`/custom-product/${productId}`);
+  };
 
   const handleLogout = () => {
     Swal.fire({
@@ -153,7 +174,7 @@ function ContactPage() {
       {/* {product.map((product) => ( */}
       <div className="flex overflow-x-auto max-w-screen justify-center m-5 ">
         <div className=" p-2 md:p-4 w-[90%]">
-          <div key={data._id} className="flex justify-center">
+          <div key={data.productId} className="flex justify-center">
             <div className="flex justify-between w-[90%] h-auto shadow-md border rounded mt-2 mb-4 p-3">
               <img
                 className="w-[40%] rounded"
@@ -185,22 +206,23 @@ function ContactPage() {
                   ราคาสินค้า : 350 {data.price} บาท/หลา
                 </p>
 
-                <button
+                <Link
+                  to="/gauging-curtain"
                   className=" mt-2 mb-3 px-4 py-2 rounded-lg inline-block text-sm  text-brown-500 hover:text-brown-300 hover:text-base"
                   // onClick={() => handleEditProduct(product._id, product.name)}
                 >
                   สามารถดูวิธีการวัดขนาดของผ้าม่านได้ที่นี่
                   <HiOutlineCursorClick className="inline-block h-5 w-auto ml-2" />
-                </button>
+                </Link>
                 <div>
-                  <Link to="/custom-product">
-                    <button
-                      className=" mt-10  mb-3 px-4 py-2 rounded-lg inline-block text-base bg-brown-200 hover:bg-browntop hover:shadow-xl text-white focus:outline-none focus:shadow-outline"
-                      // onClick={() => handleEditProduct(product._id, product.name)}
-                    >
-                      เพิ่มลงลงตระกร้าสินค้า
-                    </button>
-                  </Link>
+                  <button
+                  
+                    onClick={() => handleCustom(data.productId, data.name)}
+                    className=" mt-10  mb-3 px-4 py-2 rounded-lg inline-block text-base bg-brown-200 hover:bg-browntop hover:shadow-xl text-white focus:outline-none focus:shadow-outline"
+                    // onClick={() => handleEditProduct(product._id, product.name)}
+                  >
+                    เพิ่มลงลงตระกร้าสินค้า
+                  </button>
                 </div>
               </div>
             </div>
@@ -239,13 +261,14 @@ function ContactPage() {
                 <div className="pt-2 pb-4 px-4  text-xs md:text-sm lg:text-sm xl:text-base text-brown-400 whitespace-pre-wrap">
                   {product.detail.split("\r\n")[0]}
                 </div>
-                <Link
-                  to="/product-detail"
+
+                <button
+                  onClick={() => handleDetailProduct(product._id, product.name)}
                   className="pl-5 mt-3 text-brown-500 text-sm md:base hover:text-browntop inline-flex items-center"
                 >
                   อ่านพิ่มเติม
                   <HiOutlineArrowSmRight />
-                </Link>
+                </button>
               </div>
             </div>
           ))}

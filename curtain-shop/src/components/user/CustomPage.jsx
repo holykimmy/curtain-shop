@@ -13,87 +13,190 @@ import { HiOutlineArrowSmRight } from "react-icons/hi";
 import productAPI from "../../services/productAPI";
 import Footer from "../Footer";
 import TransformedImage from "./Tranformedimage";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
+import _ from "lodash";
+
 var { Alpha } = require("react-color/lib/components/common");
 
 function CustomPage() {
+  //login
 
-    //login
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+  const [userData, setUserData] = useState(null);
+  const [userName, setUserName] = React.useState("");
+  const [idUser, setIdUser] = React.useState("");
 
-const [isLoggedIn, setIsLoggedIn] = useState(false);
-const navigate = useNavigate();
-const [userData, setUserData] = useState(null);
-const [userName, setUserName] = React.useState("");
-const [idUser, setIdUser] = React.useState("");
-useEffect(() => {
-  const authToken = localStorage.getItem("token");
+  const { productId } = useParams();
+  // console.log(productId);
 
-  if (authToken) {
-    // Set up axios default headers
-    axios.defaults.headers.common["authtoken"] = authToken;
+  const [data, setData] = useState({
+    productId: productId,
+    brand: "",
+    p_type: "",
+    name: "",
+    color: "",
+    detail: "",
+    price: "",
+    image: "",
+  });
 
-    const decodedToken = jwtDecode(authToken); // Decode the token
+  useEffect(() => {
+    const authToken = localStorage.getItem("token");
 
-    if (decodedToken && decodedToken.user) {
-      const { f_name, l_name } = decodedToken.user;
-        const id = decodedToken.id ; 
+    if (authToken) {
+      // Set up axios default headers
+      axios.defaults.headers.common["authtoken"] = authToken;
+
+      const decodedToken = jwtDecode(authToken); // Decode the token
+
+      if (decodedToken && decodedToken.user) {
+        const { f_name, l_name } = decodedToken.user;
+        const id = decodedToken.id;
         setIdUser(`${id}`);
         setUserName(`${f_name} ${l_name}`);
-      setIsLoggedIn(true);
-
+        setIsLoggedIn(true);
+      } else {
+        setUserData(decodedToken.user);
+      }
     } else {
-      setUserData(decodedToken.user);
+      setIsLoggedIn(false);
     }
-  }else {
-    setIsLoggedIn(false);
-  }
-}, []);
+  }, []);
 
-const handleLogout = () => {
-  Swal.fire({
-    title: `คุณต้องการออกจากระบบใช่หรือไม่?`,
-    icon: "question",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "ใช่",
-    cancelButtonText: "ไม่ใช่",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      // ยืนยันออกจากระบบ
-      localStorage.removeItem("token");
-      setUserName("");
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API}/product/${productId}`
+        );
+        const productData = res.data;
+        // console.log("Product Data:", productData); // ให้ดูค่า productData ที่ได้รับมา
+        //ถ้าเจอ
+        if (productData) {
+          setData({
+            ...data,
+            brand: productData.brand,
+            p_type: productData.p_type,
+            name: productData.name,
+            color: productData.color,
+            detail: productData.detail,
+            price: productData.price,
+            image: productData.image,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, [productId]);
 
-      // ใช้ useNavigate เพื่อนำผู้ใช้กลับไปยังหน้าหลัก
-      navigate("/"); // ลิงก์ไปยังหน้าหลัก
-      window.location.reload();
+  const handleLogout = () => {
+    Swal.fire({
+      title: `คุณต้องการออกจากระบบใช่หรือไม่?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่",
+      cancelButtonText: "ไม่ใช่",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // ยืนยันออกจากระบบ
+        localStorage.removeItem("token");
+        setUserName("");
 
-    }
-  });
-};
+        // ใช้ useNavigate เพื่อนำผู้ใช้กลับไปยังหน้าหลัก
+        navigate("/"); // ลิงก์ไปยังหน้าหลัก
+        window.location.reload();
+      }
+    });
+  };
   //login
   const [selectedType, setSelectedType] = useState("");
 
-  const handleCheckboxChange = (event) => {
+  const handleRadioChange = (event) => {
     setSelectedType(event.target.value);
   };
+
+  const handleAddToCart = (data) => {
+    console.log("data in ", data);
+
+    let cart = [];
+
+    // ตรวจสอบค่า localStorage.getItem('cart')
+    const cartFromStorage = localStorage.getItem("cart");
+    console.log("localStorage.getItem('cart'):", cartFromStorage);
+
+  
+    try {
+      // พยายามแปลงข้อมูลใน localStorage เป็น JSON object
+      if (cartFromStorage) {
+          cart = JSON.parse(cartFromStorage);
+      }
+  } catch (error) {
+      console.error("Error parsing JSON:", error);
+      // กรณีที่เกิดข้อผิดพลาดในการแปลง JSON
+      // ลบข้อมูลที่ไม่ถูกต้องออกจาก localStorage
+      localStorage.removeItem("cart");
+  }
+    
+    console.log("cart before push:", cart);
+
+    const productData = {
+      productId: data.productId,
+      brand: data.brand,
+      p_type: data.p_type,
+      name: data.name,
+      color: data.color,
+      detail: data.detail,
+      price: data.price,
+      image: data.image,
+    };
+    console.log("p data : ", productData);
+
+    if (localStorage.getItem("cart")) {
+      cart = JSON.parse(localStorage.getItem("cart"));
+    }
+    
+    // ตรวจสอบค่าของ cart ก่อนที่จะ push ข้อมูลเข้าไป
+    console.log("cart before push:", cart);
+
+    cart.push({
+      ...productData,
+      count: 1,
+    });
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    // ตรวจสอบค่า cart หลังจาก push ข้อมูลเข้าไป
+    console.log("cart after push:", cart);
+};
+
+
+  // ตัวอย่างการเรียกใช้
+  // const data = { /* ข้อมูลของสินค้า */ };
+  // handleAddToCart(data); // ส่งข้อมูล data เข้าไปในฟังก์ชัน handleAddToCart
 
   const default_product = {
     id: 1,
     main: "test2_ocvii1",
   };
-  const index = "curtain-";
-  const [curtain, setCurtain] = useState([
-    default_product,
-    { id: 2, main: "test1_gvyquf" },
-    { id: 3, main: "curtain_fev3fs" },
-  ]);
+
+  // const index = "curtain-";
+  // const [curtain, setCurtain] = useState([
+  //   default_product,
+  //   { id: 2, main: "test1_gvyquf" },
+  //   { id: 3, main: "curtain_fev3fs" },
+  // ]);
 
   const [selectedCurtain, setSelectedCurtain] = useState(default_product);
+
   const [background, setBackground] = useState({
     rgb: { r: 160, g: 25, b: 25 },
   });
@@ -148,7 +251,7 @@ const handleLogout = () => {
     "ม่านพับ",
     "ม่านตาไก่",
     "ม่านลอน",
-    "ม่านหลุยส์",
+    "ม่านลอน",
     "ม่านหลุยส์",
     "ม่านหลุยส์",
     "ม่านหลุยส์",
@@ -157,7 +260,7 @@ const handleLogout = () => {
 
   return (
     <>
-               <Navbar
+      <Navbar
         isLoggedIn={isLoggedIn}
         handleLogout={handleLogout}
         userName={userName}
@@ -200,7 +303,7 @@ const handleLogout = () => {
         <div className="flex p-11">
           <img
             className="w-[300px] rounded shadow-xl "
-            src={`${process.env.REACT_APP_API}/images/asia-fabric-plus-18-(polyester)-af17-21-1329151e-eaf4-4c61-a6b7-13d31aefd3b7.jpg`}
+            src={`${process.env.REACT_APP_API}/images/${data.image}`}
             alt="product"
           />
           <CloudinaryContext
@@ -215,22 +318,7 @@ const handleLogout = () => {
                 />
               </div>
             </div>
-            {/* <div className="image__thumbnail">
-          {curtain.map((curtain_fev3fs) => (
-            <div
-              id="div2"
-              className="thumbnail"
-              key={curtain_fev3fs.id}
-            >
-              <TransformedImage
-                rgb={background.rgb}
-                selectedCurtain={curtain_fev3fs}
-              />
-            </div>
-          ))}
-        </div> */}
           </CloudinaryContext>
-       
         </div>
       </div>
 
@@ -239,6 +327,7 @@ const handleLogout = () => {
           <p className="text-gray-700 md:text-base mt-4 pl-5">
             ต้องการสั่งตัดผ้าม่านแบบใด
           </p>
+
           {["ม่านจีบ", "ม่านพับ", "ม่านตาไก่", "ม่านลอน", "ม่านหลุยส์"].map(
             (type) => (
               <div
@@ -247,11 +336,12 @@ const handleLogout = () => {
               >
                 <input
                   className="ml-2"
-                  type="checkbox"
+                  type="radio"
                   id={type}
+                  name="selectedType"
                   value={type}
                   checked={selectedType === type}
-                  onChange={handleCheckboxChange}
+                  onChange={handleRadioChange}
                 />
                 <label className="ml-2" htmlFor={type}>
                   {type}
@@ -259,6 +349,7 @@ const handleLogout = () => {
               </div>
             )
           )}
+
           <p className="text-gray-700 md:text-base mt-4 pl-5">
             ** หากเป็นม่านหลุยด์แนะนำให้สอบถามลายระเอียดเพิ่มเติม
           </p>
@@ -283,8 +374,14 @@ const handleLogout = () => {
           ))}
         </div>
       </div>
+      <div className="justify-center items-center test-center">
+        {" "}
+        <p className="mt-4 mb-4 text-base text-center text-brown-400">
+          ราคาสินค้าต่อหลา : {data.price}
+        </p>
+      </div>
 
-      <div className="flex justify-center">
+      <div className="flex justify-center w-full">
         <div>
           <p className="mt-4 ml-5 text-sm text-brown-400">กว้าง</p>
           <input class="appearance-none  rounded w-[150px] py-2 px-3 ml-2 my-2  text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
@@ -294,15 +391,17 @@ const handleLogout = () => {
           <input class="appearance-none  rounded w-[150px] py-2 px-3 ml-2 my-2  text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
         </div>
       </div>
-    <div className="flex justify-center">
-      <Link to="/custom-product">
+
+      <div className="flex justify-center">
         <button
+          onClick={() => handleAddToCart(data)}
+          // onClick={handleAddToCart}
           className=" mt-10  mb-3 px-4 py-2 rounded-lg inline-block text-base bg-brown-200 hover:bg-browntop hover:shadow-xl text-white focus:outline-none focus:shadow-outline"
-          // onClick={() => handleEditProduct(product._id, product.name)}
+          // onClick={() => handleAddToCart(data)}
         >
           เพิ่มลงลงตระกร้าสินค้า
         </button>
-      </Link></div>
+      </div>
       <Footer></Footer>
     </>
   );

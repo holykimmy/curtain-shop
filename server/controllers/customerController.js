@@ -168,6 +168,43 @@ exports.search = (req, res) => {
     });
 };
 
+exports.getAddress = (req, res) => {
+  const id = req.params.id; // Get the user ID from request params
+  const addressId = req.params.addressId; // Get the address ID from request params
+
+  // Find the customer by user ID
+  User.findById(id)
+    .exec()
+    .then((user) => {
+      if (!user) {
+        return res.status(404).json({ error: "Customer not found" });
+      }
+
+      // Find the address within the customer's addresses array by address ID
+      const address = user.address.find(
+        (addr) => addr._id.toString() === addressId
+      );
+
+      if (!address) {
+        return res.status(404).json({ error: "Address not found" });
+      }
+
+      // If address is found, return it
+      res.json({
+        houseNo: address.houseNo,
+        sub_district: address.sub_district,
+        district: address.district,
+        province: address.province,
+        postcode: address.postcode
+      });
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ error: "Internal Server Error" });
+    });
+};
+
+
 exports.createAddress = (req, res) => {
   const { id } = req.body; // รับ ID ของผู้ใช้จาก req.body
   const addressData = req.body.address;
@@ -244,7 +281,6 @@ exports.createAddress = (req, res) => {
     });
 };
 
-
 exports.deleteAddress = async (req, res) => {
   const { id, addressId } = req.params; // รับ ID ของผู้ใช้และ ID ของที่อยู่ที่ต้องการลบจาก params
 
@@ -258,7 +294,9 @@ exports.deleteAddress = async (req, res) => {
     }
 
     // ค้นหาที่อยู่ที่ต้องการลบ
-    const addressToDelete = user.address.find(addr => addr._id.toString() === addressId);
+    const addressToDelete = user.address.find(
+      (addr) => addr._id.toString() === addressId
+    );
 
     // ตรวจสอบว่าพบที่อยู่ที่ต้องการลบหรือไม่
     if (!addressToDelete) {
@@ -267,7 +305,7 @@ exports.deleteAddress = async (req, res) => {
 
     // ลบที่อยู่ที่ต้องการ
     user.address.pull(addressToDelete);
-    
+
     // บันทึกการเปลี่ยนแปลง
     await user.save();
 
@@ -280,40 +318,84 @@ exports.deleteAddress = async (req, res) => {
   }
 };
 
-exports.updateAddress = (req, res) => {
-  const { id, addressId, updatedAddress } = req.body; // รับ ID ของผู้ใช้และ ID ของที่อยู่ที่จะแก้ไข และข้อมูลที่อยู่ที่แก้ไขจาก req.body
+exports.updateAddress = async (req, res) => {
+  const { id, addressId } = req.params; // รับ ID ของผู้ใช้และ ID ของที่อยู่ที่ต้องการอัปเดตจาก params
+  const { newAddress } = req.body; // รับที่อยู่ใหม่จาก req.body
 
-  User.findById(id) // ใช้ ID เพื่อค้นหาผู้ใช้
-    .exec()
-    .then((existingCustomer) => {
-      if (!existingCustomer) {
-        return res.status(404).json({ error: "ไม่พบลูกค้า" });
-      }
+  try {
+    // ค้นหาผู้ใช้โดยใช้ ID
+    const user = await User.findById(id);
 
-      // หาที่อยู่ที่ต้องการแก้ไข
-      const addressToUpdate = existingCustomer.address.find(
-        (address) => address._id.toString() === addressId
-      );
-      if (!addressToUpdate) {
-        return res.status(404).json({ error: "ไม่พบที่อยู่ที่ต้องการแก้ไข" });
-      }
+    // ตรวจสอบว่าพบผู้ใช้หรือไม่
+    if (!user) {
+      return res.status(404).json({ error: "ไม่พบผู้ใช้" });
+    }
 
-      // แก้ไขข้อมูลที่อยู่
-      Object.assign(addressToUpdate, updatedAddress);
+    // ค้นหาที่อยู่ที่ต้องการอัปเดต
+    const addressToUpdate = user.address.find(
+      (addr) => addr._id.toString() === addressId
+    );
 
-      // บันทึกข้อมูลลูกค้าที่อัปเดต
-      return existingCustomer.save();
-    })
-    .then((updatedCustomer) => {
-      // ส่งคำตอบสำเร็จ
-      res.status(200).json(updatedCustomer);
-    })
-    .catch((error) => {
-      // จัดการข้อผิดพลาด
-      console.error(error);
-      res.status(500).json({ error: "server error" });
-    });
+    // ตรวจสอบว่าพบที่อยู่ที่ต้องการอัปเดตหรือไม่
+    if (!addressToUpdate) {
+      return res.status(404).json({ error: "ไม่พบที่อยู่ที่ต้องการอัปเดต" });
+    }
+
+    // อัปเดตที่อยู่เฉพาะถ้ามีการระบุข้อมูลใหม่
+    if (newAddress) {
+      addressToUpdate.houseNo = newAddress.houseNo || addressToUpdate.houseNo;
+      addressToUpdate.sub_district = newAddress.sub_district || addressToUpdate.sub_district;
+      addressToUpdate.district = newAddress.district || addressToUpdate.district;
+      addressToUpdate.province = newAddress.province || addressToUpdate.province;
+      addressToUpdate.postcode = newAddress.postcode || addressToUpdate.postcode;
+    }
+
+    // บันทึกการเปลี่ยนแปลง
+    await user.save();
+
+    // ส่งคำตอบสำเร็จ
+    res.status(200).json(user);
+  } catch (error) {
+    // จัดการข้อผิดพลาด
+    console.error(error);
+    res.status(500).json({ error: "server error" });
+  }
 };
+
+// exports.updateAddress = (req, res) => {
+//   const { id, addressId, updatedAddress } = req.body; // รับ ID ของผู้ใช้และ ID ของที่อยู่ที่จะแก้ไข และข้อมูลที่อยู่ที่แก้ไขจาก req.body
+
+//   User.findById(id) // ใช้ ID เพื่อค้นหาผู้ใช้
+//     .exec()
+//     .then((existingCustomer) => {
+//       if (!existingCustomer) {
+//         return res.status(404).json({ error: "ไม่พบลูกค้า" });
+//       }
+
+//       // หาที่อยู่ที่ต้องการแก้ไข
+//       const addressToUpdate = existingCustomer.address.find(
+//         (address) => address._id.toString() === addressId
+//       );
+//       if (!addressToUpdate) {
+//         return res.status(404).json({ error: "ไม่พบที่อยู่ที่ต้องการแก้ไข" });
+//       }
+
+//       // แก้ไขข้อมูลที่อยู่
+//       Object.assign(addressToUpdate, updatedAddress);
+
+//       // บันทึกข้อมูลลูกค้าที่อัปเดต
+//       return existingCustomer.save();
+//     })
+//     .then((updatedCustomer) => {
+//       // ส่งคำตอบสำเร็จ
+//       res.status(200).json(updatedCustomer);
+//     })
+//     .catch((error) => {
+//       // จัดการข้อผิดพลาด
+//       console.error(error);
+//       res.status(500).json({ error: "server error" });
+//     });
+// };
 
 process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection at:", promise, "reason:", reason);

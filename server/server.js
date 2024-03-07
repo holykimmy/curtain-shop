@@ -12,6 +12,9 @@ const ProductRoute = require("./routes/product");
 const CategoryRoute = require("./routes/category");
 const AdminRoute = require("./routes/admin");
 const AuthRoute = require("./routes/auth");
+const ReceptRoute = require("./routes/recept");
+
+
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
@@ -70,6 +73,7 @@ app.use("/api/customer", CustomerRoute);
 app.use("/api/product", ProductRoute);
 app.use("/api/category", CategoryRoute);
 app.use("/api/dashboard", AdminRoute);
+app.use("/api/recept", ReceptRoute);
 app.use("/api", AuthRoute);
 // Error handling middleware
 app.use((err, req, res, next) => {
