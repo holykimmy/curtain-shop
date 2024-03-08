@@ -12,12 +12,14 @@ const ProductRoute = require("./routes/product");
 const CategoryRoute = require("./routes/category");
 const AdminRoute = require("./routes/admin");
 const AuthRoute = require("./routes/auth");
+const ReceptRoute = require("./routes/recept");
+
+
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const app = express();
-const path = require('path');
-
+const path = require("path");
 
 //connect cloud database
 mongoose
@@ -30,31 +32,53 @@ mongoose
   .catch((err) => console.log(err));
 
 //middleware
-app.use(express.json());  
+app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:3000", // กำหนดโดเมนที่อนุญาตให้เข้าถึง
-    methods: ["GET", "POST" ,"PUT" ,"DELETE"], // กำหนดเมทอดที่อนุญาต
-     allowedHeaders: ['Content-Type', 'Authorization', 'authtoken'],
+
+    // https://cms-curtain-shop.vercel.app/
+    origin: ["http://localhost:3000", "https://cms-curtain-shop.vercel.app", "https://curtain-shop.vercel.app"], // กำหนดโดเมนที่อนุญาตให้เข้าถึง
+    methods: ["GET", "POST", "PUT", "DELETE"], // กำหนดเมทอดที่อนุญาต
+    allowedHeaders: ["Content-Type", "Authorization", "authtoken"],
     credentials: true, // อนุญาตให้ส่งคุกกี้ (cookies) ไปพร้อมกับคำขอ
   })
 );
+
+
+// app.use((req, res, next) => {
+//   // res.setHeader('Access-Control-Allow-Origin', origin);
+//   res.setHeader('Access-Control-Allow-Origin', 'https://cms-curtain-shop.vercel.app',);
+//   next();
+// });
+
+
+app.use((req, res, next) => {
+  const allowedOrigins = ['http://localhost:3000', 'https://cms-curtain-shop.vercel.app', 'https://curtain-shop.vercel.app'];
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Credentials', true);
+  }
+  next();
+});
+
 app.use(cookieParser());
 app.use(morgan("dev"));
 
 // Serve images statically
-app.use('/api/images', express.static(path.join(__dirname, 'images')));
+app.use("/api/images", express.static(path.join(__dirname, "images")));
 
 // Routes
 app.use("/api/customer", CustomerRoute);
 app.use("/api/product", ProductRoute);
 app.use("/api/category", CategoryRoute);
-app.use('/api/dashboard', AdminRoute);
-app.use('/api',AuthRoute);
+app.use("/api/dashboard", AdminRoute);
+app.use("/api/recept", ReceptRoute);
+app.use("/api", AuthRoute);
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send('Something broke!');
+  res.status(500).send("Something broke!");
 });
 
 // // Proxy middleware to forward requests to the actual API server

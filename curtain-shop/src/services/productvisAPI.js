@@ -34,6 +34,16 @@ const productAPI = {
       });
   },
 
+  getProductType: async (product) => {
+    return axios
+      .get(`${process.env.REACT_APP_API}/product/type-vis?name=${product}`)
+      .then((response) => response.data)
+      .catch((error) => {
+        console.error(error);
+        throw error;
+      });
+  },
+
   getProductTypeVelvet: async () => {
     return axios
       .get(`${process.env.REACT_APP_API}/product/type-vis?name=velvet`)
@@ -43,6 +53,9 @@ const productAPI = {
         throw error;
       });
   },
+
+ 
+
 
   getProductTypeCotton: async () => {
     return axios

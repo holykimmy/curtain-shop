@@ -4,8 +4,13 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { IoMdEyeOff } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
+
 function RegisterPage() {
+
+
   //set status
+
+
   const [data, setData] = useState({
     f_name: "",
     l_name: "",
@@ -46,6 +51,7 @@ function RegisterPage() {
     setShowPassword(!showPassword);
   };
 
+  const navigate = useNavigate();
   const submitForm = (e) => {
     e.preventDefault();
 
@@ -83,8 +89,20 @@ function RegisterPage() {
      
         .then((response) => {
           Swal.fire({
-            title: "Saved",
+            title: "สมัครสมาชิกเสร็จสิ้น",
+            text: "คุณต้องการไปยังหน้าเข้าสู่ระบบหรือไม่?",
             icon: "success",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "ไปยังหน้าเข้าสู่ระบบ",
+            cancelButtonText: "ไม่ต้องการ",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              navigate("/login"); // นำผู้ใช้ไปยังหน้าเข้าสู่ระบบ
+            } else {
+              // สามารถดำเนินการต่อได้ตามต้องการ
+            }
           });
         })
         .catch((err) => {
@@ -338,7 +356,7 @@ function RegisterPage() {
             {error && <p className="text-red-500">{error.msg}</p>} */}
             <div class="flex items-center justify-center mt-10">
               <button
-                class="w-full bg-b-btn hover:bg-browntop text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                class="w-full bg-stone-500 hover:bg-browntop text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 value="save"
                 type="submit"
               >

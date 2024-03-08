@@ -107,7 +107,7 @@ function Customers() {
                       จังหวัด : {customer.address[0].sub_district},{" "}
                     </p>
                     <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                    รหัสไปรษณีย์ : {customer.address[0].postcode}
+                      รหัสไปรษณีย์ : {customer.address[0].postcode}
                     </p>
                   </>
                 )}

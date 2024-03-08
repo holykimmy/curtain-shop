@@ -22,7 +22,7 @@ function ContactPage() {
         {/* part */}
         <div class="Login col-md-6 col-lg-3 col-4">
           {/* card--1 */}
-          <Link to="/Cart">
+          <Link to="/cart">
             <div class="flex rounded-lg shadow-3xl hover:shadow-2xl h-[280px] md:h-full flex-col  md:pb-5 bg-white ">
               <div class="relative ">
                 <Link to="/Cart">

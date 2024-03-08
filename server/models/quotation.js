@@ -26,6 +26,16 @@ const QuotationSchema = mongoose.Schema(
       required: true,
     },
     
+    address: [
+      {
+        houseNo: { type: String },
+        sub_district: { type: String },
+        district: { type: String },
+        province: { type: String },
+        postcode: { type: String },
+      },
+    ],
+    
     product: [
       {
         brand: {
@@ -65,4 +75,4 @@ const QuotationSchema = mongoose.Schema(
   },
   { timestamps: true }
 );
-module.exports = mongoose.model("Qoutations", ProdusctSchema);
+module.exports = mongoose.model("Quotations", QuotationSchema);

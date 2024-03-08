@@ -6,6 +6,10 @@ const {
   search,
   createAddress,
   loginUser,
+  findAddress,
+  updateAddress,
+  deleteAddress,
+  getAddress
 } = require("../controllers/customerController");
 
 //middleware
@@ -17,5 +21,11 @@ router.post("/add-address", auth , createAddress);
 router.post("/login",loginUser)
 router.get("/all", getAllCustomers);
 router.get("/search", search);
+router.get("/address", findAddress);
+router.get("/get-address/:id/:addressId",auth , getAddress);
+
+router.put("/update-address/:id/:addressId",auth, updateAddress);
+router.delete("/delete-address/:id/:addressId", auth , deleteAddress);
+
 
 module.exports = router;

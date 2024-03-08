@@ -20,8 +20,6 @@ const brandAPI = {
         throw error;
       });
   },
-  
-
 
   createBrand: async (brand) => {
     return axios
@@ -34,8 +32,7 @@ const brandAPI = {
   },
 
   createType: async (brand, p_type) => {
-    return axios
-    .post(`${process.env.REACT_APP_API}/category/create-type`, {
+    return axios.post(`${process.env.REACT_APP_API}/category/create-type`, {
       brand,
       p_type: p_type,
     });

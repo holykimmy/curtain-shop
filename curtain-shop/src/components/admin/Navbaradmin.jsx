@@ -183,7 +183,7 @@ function ComplexNavbar() {
                 color="white"
                 className="flex items-center gap-1 rounded-full py-0.5 pr-2 pl-0.5 lg:ml-auto"
               >
-                <p>{userName}</p>
+                <p className="pl-3 pr-3"> {userName}</p>
                 <CiUser className="border bg-white/25 rounded-full border-white p-0.5 h-9 w-9" />
                 <ChevronDownIcon
                   strokeWidth={2.5}
