@@ -52,6 +52,15 @@ import OrderDetail from "./components/admin/OrderDetail";
 import Products from "./components/admin/Products";
 import UpdateProduct from "./components/admin/UpdateProduct";
 
+
+// import { store } from "./app/store";
+import { Provider } from "react-redux";
+import { createStore } from "redux";
+import rootReducer  from './components/reducers/indexReducer';
+
+// import { StrictMode } from "react";
+// import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
 const router = createBrowserRouter([
   { path: "/", element: <HomePage /> },
   { path: "/login", element: <LoginPage /> },
@@ -97,12 +106,17 @@ const router = createBrowserRouter([
   { path: "/update-product/:productId", element: <UpdateProduct /> },
 ]);
 
+
+const store = createStore(rootReducer);
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <ThemeProvider>
-      <RouterProvider router={router} />
-    </ThemeProvider>
+    <Provider store={store} >
+      <ThemeProvider>
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    </Provider>
   </React.StrictMode>
 );
 
