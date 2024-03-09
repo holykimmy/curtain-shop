@@ -16,7 +16,13 @@ function AddressPage() {
   const [userData, setUserData] = useState(null);
   const [userName, setUserName] = React.useState("");
   const [idUser, setIdUser] = React.useState("");
-
+  const [user, setUser] = React.useState({
+    f_name: "",
+    l_name: "",
+    email: "",
+    tell: "",
+    address: "",
+  });
   useEffect(() => {
     const authToken = localStorage.getItem("token");
 
@@ -25,20 +31,51 @@ function AddressPage() {
       axios.defaults.headers.common["authtoken"] = authToken;
 
       const decodedToken = jwtDecode(authToken); // Decode the token
-      console.log(decodedToken.user.f_name);
+
       if (decodedToken && decodedToken.user) {
         const { f_name, l_name } = decodedToken.user;
-        const id = decodedToken.id ; 
-        setIdUser(`${id}`);
+
+        const id = decodedToken.id;
         setUserName(`${f_name} ${l_name}`);
+        setIdUser(`${id}`);
+        console.log("addresssjhf", decodedToken.user.addres);
+        setUser({
+          f_name: f_name,
+          l_name: l_name,
+          email: decodedToken.user.email,
+          tell: decodedToken.user.tell,
+          address: decodedToken.user.address,
+        });
+
         setIsLoggedIn(true);
       } else {
         setUserData(decodedToken.user);
       }
+
+      if (
+        decodedToken &&
+        decodedToken.exp &&
+        decodedToken.exp * 1000 < Date.now()
+      ) {
+        // Token expired, logout user
+        handleLogoutAuto();
+      }
+
+
+
     } else {
       setIsLoggedIn(false);
     }
   }, []);
+
+  const handleLogoutAuto = () => {
+    // Logout user
+    localStorage.removeItem("token");
+    setUserName(""); // Clear user name or any other relevant state
+
+    // Redirect to login page or perform any other action
+    navigate("/"); // Redirect to login page
+  };
 
   const handleLogout = () => {
     Swal.fire({
@@ -57,7 +94,6 @@ function AddressPage() {
 
         // ใช้ useNavigate เพื่อนำผู้ใช้กลับไปยังหน้าหลัก
         navigate("/"); // ลิงก์ไปยังหน้าหลัก
-        window.location.reload();
       }
     });
   };

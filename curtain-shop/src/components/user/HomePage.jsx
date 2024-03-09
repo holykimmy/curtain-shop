@@ -38,14 +38,12 @@ function HomePage() {
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");
-    console.log("authToken", authToken);
 
     if (authToken) {
       // Set up axios default headers
       axios.defaults.headers.common["authtoken"] = authToken;
 
       const decodedToken = jwtDecode(authToken); // Decode the token
-      // console.log("_id ",decodedToken.id);
 
       if (decodedToken && decodedToken.user) {
         const { f_name, l_name } = decodedToken.user;
@@ -66,10 +64,31 @@ function HomePage() {
       } else {
         setUserData(decodedToken.user);
       }
+
+      if (
+        decodedToken &&
+        decodedToken.exp &&
+        decodedToken.exp * 1000 < Date.now()
+      ) {
+        // Token expired, logout user
+        handleLogoutAuto();
+      }
+
+
+
     } else {
       setIsLoggedIn(false);
     }
   }, []);
+
+  const handleLogoutAuto = () => {
+    // Logout user
+    localStorage.removeItem("token");
+    setUserName(""); // Clear user name or any other relevant state
+
+    // Redirect to login page or perform any other action
+    navigate("/"); // Redirect to login page
+  };
 
   const handleLogout = () => {
     Swal.fire({
@@ -88,10 +107,10 @@ function HomePage() {
 
         // ใช้ useNavigate เพื่อนำผู้ใช้กลับไปยังหน้าหลัก
         navigate("/"); // ลิงก์ไปยังหน้าหลัก
-        window.location.reload();
       }
     });
   };
+
 
   return (
     <>
