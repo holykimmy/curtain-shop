@@ -362,41 +362,6 @@ exports.updateAddress = async (req, res) => {
   }
 };
 
-// exports.updateAddress = (req, res) => {
-//   const { id, addressId, updatedAddress } = req.body; // รับ ID ของผู้ใช้และ ID ของที่อยู่ที่จะแก้ไข และข้อมูลที่อยู่ที่แก้ไขจาก req.body
-
-//   User.findById(id) // ใช้ ID เพื่อค้นหาผู้ใช้
-//     .exec()
-//     .then((existingCustomer) => {
-//       if (!existingCustomer) {
-//         return res.status(404).json({ error: "ไม่พบลูกค้า" });
-//       }
-
-//       // หาที่อยู่ที่ต้องการแก้ไข
-//       const addressToUpdate = existingCustomer.address.find(
-//         (address) => address._id.toString() === addressId
-//       );
-//       if (!addressToUpdate) {
-//         return res.status(404).json({ error: "ไม่พบที่อยู่ที่ต้องการแก้ไข" });
-//       }
-
-//       // แก้ไขข้อมูลที่อยู่
-//       Object.assign(addressToUpdate, updatedAddress);
-
-//       // บันทึกข้อมูลลูกค้าที่อัปเดต
-//       return existingCustomer.save();
-//     })
-//     .then((updatedCustomer) => {
-//       // ส่งคำตอบสำเร็จ
-//       res.status(200).json(updatedCustomer);
-//     })
-//     .catch((error) => {
-//       // จัดการข้อผิดพลาด
-//       console.error(error);
-//       res.status(500).json({ error: "server error" });
-//     });
-// };
-
 process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection at:", promise, "reason:", reason);
   // ทำสิ่งที่ต้องการเพื่อจัดการกับ unhandled rejection

@@ -28,7 +28,7 @@ import Swal from "sweetalert2";
 
 // profile menu component
 
-function ProfileMenu({ isLoggedIn, handleLogout, userName , idUser }) {
+function ProfileMenu({ isLoggedIn, handleLogout, userName, idUser }) {
   //set status
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
@@ -168,11 +168,6 @@ const navListMenuItems = [
     to: "/product/blackout",
   },
   {
-    title: "ม่านล็อกลอน",
-    description: "4",
-    to: "/product/wave",
-  },
-  {
     title: "อุปกรณ์ในการติดตั้ง",
     description: "4",
     to: "/product/equipment",
@@ -291,9 +286,10 @@ function NavList() {
   );
 }
 
-function ComplexNavbar({ isLoggedIn, idUser, userName ,handleLogout}) {
+function ComplexNavbar({ isLoggedIn, idUser, userName, handleLogout }) {
 
   
+
   const [isNavOpen, setIsNavOpen] = React.useState(false);
   const toggleIsNavOpen = () => setIsNavOpen((cur) => !cur);
 
@@ -309,18 +305,13 @@ function ComplexNavbar({ isLoggedIn, idUser, userName ,handleLogout}) {
     console.log("isLoggedIn:", isLoggedIn);
     console.log("userName:", userName);
     console.log("idUser nav:", idUser);
-
   }, [isLoggedIn, userName, idUser]);
 
-
   const navigate = useNavigate();
-
 
   console.log("c isLoggedIn:", isLoggedIn);
   console.log("c handleLogout:", handleLogout);
   console.log("c userName: ", userName);
-
-
 
   return (
     <>

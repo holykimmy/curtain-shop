@@ -16,6 +16,13 @@ function Velvet() {
   const [userData, setUserData] = useState(null);
   const [userName, setUserName] = React.useState("");
   const [idUser, setIdUser] = useState(null);
+  const [user, setUser] = React.useState({
+    f_name: "",
+    l_name: "",
+    email: "",
+    tell: "",
+    address: "",
+  });
   useEffect(() => {
     const authToken = localStorage.getItem("token");
 
@@ -27,17 +34,69 @@ function Velvet() {
 
       if (decodedToken && decodedToken.user) {
         const { f_name, l_name } = decodedToken.user;
+
         const id = decodedToken.id;
-        setIdUser(`${id}`);
         setUserName(`${f_name} ${l_name}`);
+        setIdUser(`${id}`);
+        console.log("addresssjhf", decodedToken.user.addres);
+        setUser({
+          f_name: f_name,
+          l_name: l_name,
+          email: decodedToken.user.email,
+          tell: decodedToken.user.tell,
+          address: decodedToken.user.address,
+        });
+
         setIsLoggedIn(true);
       } else {
         setUserData(decodedToken.user);
       }
+
+      if (
+        decodedToken &&
+        decodedToken.exp &&
+        decodedToken.exp * 1000 < Date.now()
+      ) {
+        // Token expired, logout user
+        handleLogoutAuto();
+      }
+
+
+
     } else {
       setIsLoggedIn(false);
     }
   }, []);
+
+  const handleLogoutAuto = () => {
+    // Logout user
+    localStorage.removeItem("token");
+    setUserName(""); // Clear user name or any other relevant state
+
+    // Redirect to login page or perform any other action
+    navigate("/"); // Redirect to login page
+  };
+
+  const handleLogout = () => {
+    Swal.fire({
+      title: `คุณต้องการออกจากระบบใช่หรือไม่?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่",
+      cancelButtonText: "ไม่ใช่",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // ยืนยันออกจากระบบ
+        localStorage.removeItem("token");
+        setUserName("");
+
+        // ใช้ useNavigate เพื่อนำผู้ใช้กลับไปยังหน้าหลัก
+        navigate("/"); // ลิงก์ไปยังหน้าหลัก
+      }
+    });
+  };
 
   const handleDetailProduct = (
     productId,
@@ -59,28 +118,7 @@ function Velvet() {
     });
   };
 
-  const handleLogout = () => {
-    Swal.fire({
-      title: `คุณต้องการออกจากระบบใช่หรือไม่?`,
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "ใช่",
-      cancelButtonText: "ไม่ใช่",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // ยืนยันออกจากระบบ
-        localStorage.removeItem("token");
-        setUserName("");
 
-        // ใช้ useNavigate เพื่อนำผู้ใช้กลับไปยังหน้าหลัก
-        navigate("/"); // ลิงก์ไปยังหน้าหลัก
-        window.location.reload();
-      }
-    });
-  };
-  //login check
 
   const [product, setProduct] = useState([]);
   useEffect(() => {

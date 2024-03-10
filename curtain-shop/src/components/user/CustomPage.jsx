@@ -17,7 +17,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-
 import _ from "lodash";
 
 var { Alpha } = require("react-color/lib/components/common");
@@ -45,6 +44,13 @@ function CustomPage() {
     image: "",
   });
 
+  const [user, setUser] = React.useState({
+    f_name: "",
+    l_name: "",
+    email: "",
+    tell: "",
+    address: "",
+  });
   useEffect(() => {
     const authToken = localStorage.getItem("token");
 
@@ -56,17 +62,84 @@ function CustomPage() {
 
       if (decodedToken && decodedToken.user) {
         const { f_name, l_name } = decodedToken.user;
+
         const id = decodedToken.id;
-        setIdUser(`${id}`);
         setUserName(`${f_name} ${l_name}`);
+        setIdUser(`${id}`);
+        console.log("addresssjhf", decodedToken.user.addres);
+        setUser({
+          f_name: f_name,
+          l_name: l_name,
+          email: decodedToken.user.email,
+          tell: decodedToken.user.tell,
+          address: decodedToken.user.address,
+        });
+
         setIsLoggedIn(true);
       } else {
         setUserData(decodedToken.user);
+      }
+
+      if (
+        decodedToken &&
+        decodedToken.exp &&
+        decodedToken.exp * 1000 < Date.now()
+      ) {
+        // Token expired, logout user
+        handleLogoutAuto();
       }
     } else {
       setIsLoggedIn(false);
     }
   }, []);
+
+  const handleLogoutAuto = () => {
+    // Logout user
+    localStorage.removeItem("token");
+    setUserName(""); // Clear user name or any other relevant state
+
+    // Redirect to login page or perform any other action
+    navigate("/"); // Redirect to login page
+  };
+
+  const handleLogout = () => {
+    Swal.fire({
+      title: `คุณต้องการออกจากระบบใช่หรือไม่?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่",
+      cancelButtonText: "ไม่ใช่",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // ยืนยันออกจากระบบ
+        localStorage.removeItem("token");
+        setUserName("");
+
+        // ใช้ useNavigate เพื่อนำผู้ใช้กลับไปยังหน้าหลัก
+        navigate("/"); // ลิงก์ไปยังหน้าหลัก
+      }
+    });
+  };
+
+  // Function to convert hex color to RGB
+  const hexToRgb = (hexColor) => {
+    const hex = hexColor.replace(
+      /^#?([a-f\d])([a-f\d])([a-f\d])$/i,
+      (m, r, g, b) => {
+        return r + r + g + g + b + b;
+      }
+    );
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result
+      ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16),
+        }
+      : null;
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -88,6 +161,9 @@ function CustomPage() {
             price: productData.price,
             image: productData.image,
           });
+
+          const rgbColor = hexToRgb(productData.color);
+          setBackground(rgbColor);
         }
       } catch (error) {
         console.error(error);
@@ -96,29 +172,12 @@ function CustomPage() {
     fetchData();
   }, [productId]);
 
-  const handleLogout = () => {
-    Swal.fire({
-      title: `คุณต้องการออกจากระบบใช่หรือไม่?`,
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "ใช่",
-      cancelButtonText: "ไม่ใช่",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // ยืนยันออกจากระบบ
-        localStorage.removeItem("token");
-        setUserName("");
-
-        // ใช้ useNavigate เพื่อนำผู้ใช้กลับไปยังหน้าหลัก
-        navigate("/"); // ลิงก์ไปยังหน้าหลัก
-        window.location.reload();
-      }
-    });
-  };
   //login
   const [selectedType, setSelectedType] = useState("");
+
+  const handleCustom = (productId, productName) => {
+    navigate(`/custom-product/${productId}`);
+  };
 
   const handleRadioChange = (event) => {
     setSelectedType(event.target.value);
@@ -133,19 +192,18 @@ function CustomPage() {
     const cartFromStorage = localStorage.getItem("cart");
     console.log("localStorage.getItem('cart'):", cartFromStorage);
 
-  
     try {
       // พยายามแปลงข้อมูลใน localStorage เป็น JSON object
       if (cartFromStorage) {
-          cart = JSON.parse(cartFromStorage);
+        cart = JSON.parse(cartFromStorage);
       }
-  } catch (error) {
+    } catch (error) {
       console.error("Error parsing JSON:", error);
       // กรณีที่เกิดข้อผิดพลาดในการแปลง JSON
       // ลบข้อมูลที่ไม่ถูกต้องออกจาก localStorage
       localStorage.removeItem("cart");
-  }
-    
+    }
+
     console.log("cart before push:", cart);
 
     const productData = {
@@ -163,59 +221,34 @@ function CustomPage() {
     if (localStorage.getItem("cart")) {
       cart = JSON.parse(localStorage.getItem("cart"));
     }
-    
-    // ตรวจสอบค่าของ cart ก่อนที่จะ push ข้อมูลเข้าไป
-    console.log("cart before push:", cart);
 
     cart.push({
       ...productData,
       count: 1,
     });
+    let unique = _.uniqWith(cart, _.isEqual);
 
-    localStorage.setItem("cart", JSON.stringify(cart));
+    localStorage.setItem("cart", JSON.stringify(unique));
 
     // ตรวจสอบค่า cart หลังจาก push ข้อมูลเข้าไป
     console.log("cart after push:", cart);
-};
-
-
-  // ตัวอย่างการเรียกใช้
-  // const data = { /* ข้อมูลของสินค้า */ };
-  // handleAddToCart(data); // ส่งข้อมูล data เข้าไปในฟังก์ชัน handleAddToCart
+  };
 
   const default_product = {
     id: 1,
     main: "test2_ocvii1",
   };
 
-  // const index = "curtain-";
-  // const [curtain, setCurtain] = useState([
-  //   default_product,
-  //   { id: 2, main: "test1_gvyquf" },
-  //   { id: 3, main: "curtain_fev3fs" },
-  // ]);
+  const index = "curtain-";
+  const [curtain, setCurtain] = useState([
+    default_product,
+    { id: 2, main: "test1_gvyquf" },
+    { id: 3, main: "curtain_fev3fs" },
+  ]);
 
   const [selectedCurtain, setSelectedCurtain] = useState(default_product);
 
-  const [background, setBackground] = useState({
-    rgb: { r: 160, g: 25, b: 25 },
-  });
-
-  const [currentColor, setCurrentColor] = useState("#3D3D44");
-  const appStyle = {
-    height: "100vh",
-    color: "white",
-    backgroundColor: currentColor.hex,
-    transition: "ease all 300ms",
-  };
-
-  const selectProduct = (productThumbail) => {
-    selectedCurtain(productThumbail);
-  };
-
-  const changeProductColor = (color) => {
-    setBackground(color);
-  };
+  const [background, setBackground] = useState(data.color);
 
   const [product, setProduct] = useState([]);
 
@@ -287,13 +320,12 @@ function CustomPage() {
                   {product.name}
                 </div>
               </div>
-              <Link
-                to="/product-detail"
-                className="pl-5 mt-3 text-brown-500 text-sm md:base hover:text-browntop inline-flex items-center"
+              <button
+                onClick={() => handleCustom(product._id, product.name)}
+                className=" mt-10 mb-3 px-4 py-2 rounded-lg inline-block text-base  text-browntop focus:outline-none focus:shadow-outline"
               >
-                อ่านพิ่มเติม
-                <HiOutlineArrowSmRight />
-              </Link>
+                เลือกสินค้า
+              </button>
             </div>
           </div>
         ))}
@@ -313,45 +345,67 @@ function CustomPage() {
             <div className="image__container">
               <div className="image">
                 <TransformedImage
-                  rgb={background.rgb}
+                  rgb={background}
                   selectedCurtain={selectedCurtain}
                 />
-              </div>
+              </div>{" "}
             </div>
           </CloudinaryContext>
+          <div className="pl-10 pr-10 pt-5 ">
+            <p className="text-lg mx-4 my-4 text-brown-400">
+              ชื่อสินค้า : {data.name}
+            </p>
+            <p className="text-base my-2 text-brown-400">
+              ยี่ห้อสินค้า : {data.brand}
+            </p>
+            <p className="text-base my-2 text-brown-400">
+              ประเภทของผ้าม่าน : {data.p_type}
+            </p>
+            <div
+              style={{ backgroundColor: data.color }}
+              className="h-7 w-[60%] text-white rounded-full shadow-xl inline-block pl-5 ml-4 mr-2"
+            >
+              {" "}
+              {data.color}{" "}
+            </div>
+            <div className="text-base mt-4 text-brown-400 whitespace-pre-wrap">
+              {data.detail}
+            </div>
+            <p className="mt-4 text-base text-brown-400">
+              ราคาสินค้า : {data.price} บาท/หลา
+            </p>
+          </div>
         </div>
       </div>
 
       <div className="flex flex-row mb-10">
-        <div className="basis-1/3">
+        <div className=" basis-1/3">
           <p className="text-gray-700 md:text-base mt-4 pl-5">
             ต้องการสั่งตัดผ้าม่านแบบใด
           </p>
 
-          {["ม่านจีบ", "ม่านพับ", "ม่านตาไก่", "ม่านลอน", "ม่านหลุยส์"].map(
-            (type) => (
-              <div
-                key={type}
-                className="basis-1/3 text-browntop text-lg mt-2 ml-10 mb-2"
-              >
-                <input
-                  className="ml-2"
-                  type="radio"
-                  id={type}
-                  name="selectedType"
-                  value={type}
-                  checked={selectedType === type}
-                  onChange={handleRadioChange}
-                />
-                <label className="ml-2" htmlFor={type}>
-                  {type}
-                </label>
-              </div>
-            )
-          )}
+          {["ม่านจีบ", "ม่านพับ", "ม่านตาไก่", "ม่านลอน"].map((type) => (
+            <div
+              key={type}
+              className="basis-1/3 text-browntop text-lg mt-2 ml-10 mb-2"
+            >
+              <input
+                className="ml-2"
+                type="radio"
+                id={type}
+                name="selectedType"
+                value={type}
+                checked={selectedType === type}
+                onChange={handleRadioChange}
+              />
+              <label className="ml-2" htmlFor={type}>
+                {type}
+              </label>
+            </div>
+          ))}
 
           <p className="text-gray-700 md:text-base mt-4 pl-5">
-            ** หากเป็นม่านหลุยด์แนะนำให้สอบถามลายระเอียดเพิ่มเติม
+            ** ทางร้านมีบริการรับตัดม่านหลุดย์
           </p>
         </div>
         <div className="w-3/5 flex flex-nowrap overflow-x-auto">
@@ -381,6 +435,20 @@ function CustomPage() {
         </p>
       </div>
 
+      <p className="mt-4 text-center text-base text-brown-400">
+        ขนาดของหน้าต่างที่ต้องการสั่งตัดผ้าม่าน{" "}
+        <span>
+          {" "}
+          <Link
+            to="/gauging-curtain"
+            className=" mt-2 mb-3 px-4 py-2 rounded-lg inline-block text-base  text-brown-500 hover:text-brown-300 hover:text-lg"
+            // onClick={() => handleEditProduct(product._id, product.name)}
+          >
+            สามารถดูวิธีการวัดขนาดของผ้าม่านได้ที่นี่
+          </Link>
+        </span>
+      </p>
+
       <div className="flex justify-center w-full">
         <div>
           <p className="mt-4 ml-5 text-sm text-brown-400">กว้าง</p>
@@ -390,6 +458,7 @@ function CustomPage() {
           <p className="mt-4 text-sm ml-5 text-brown-400">ยาว</p>
           <input class="appearance-none  rounded w-[150px] py-2 px-3 ml-2 my-2  text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
         </div>
+        <p className="  mt-14 text-sm ml-5 text-brown-400"> เซนติเมตร</p>
       </div>
 
       <div className="flex justify-center">
