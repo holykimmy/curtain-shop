@@ -17,13 +17,14 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+
+import { useSelector, useDispatch } from "react-redux";
 import _ from "lodash";
 
 var { Alpha } = require("react-color/lib/components/common");
 
 function CustomPage() {
   //login
-
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
@@ -153,6 +154,7 @@ function CustomPage() {
         if (productData) {
           setData({
             ...data,
+            id: productData._id,
             brand: productData.brand,
             p_type: productData.p_type,
             name: productData.name,
@@ -174,17 +176,69 @@ function CustomPage() {
 
   //login
   const [selectedType, setSelectedType] = useState("");
+  const [selectedRail, setSelectedRail] = useState("");
 
   const handleCustom = (productId, productName) => {
     navigate(`/custom-product/${productId}`);
+  };
+
+  const handleRadioChangeRail = (event) => {
+    setSelectedRail(event.target.value);
   };
 
   const handleRadioChange = (event) => {
     setSelectedType(event.target.value);
   };
 
-  const handleAddToCart = (data) => {
+  //add to cart
+
+  const dispatch = useDispatch();
+
+  const [width, setWidth] = useState("");
+  const [height, setHeight] = useState("");
+
+  const handleAddToCart = ({
+    selectedRail,
+    selectedType,
+    width,
+    height,
+    ...data
+  }) => {
     console.log("data in ", data);
+    console.log("width: ", width);
+    console.log("height: ", height);
+    console.log("tyjpe", selectedType);
+    console.log("set", setSelectedRail);
+
+    if (!selectedType) {
+      Swal.fire({
+        icon: "warning",
+        title: "กรุณาเลือกประเภทของสินค้าที่ต้องการสั่งตัด",
+        showConfirmButton: false,
+        timer: 1500, // 1.5 วินาที
+      });
+      return;
+    }
+
+    if (!width || !height) {
+      Swal.fire({
+        icon: "warning",
+        title: "กรุณาระบุขนาดของสินค้า",
+        showConfirmButton: false,
+        timer: 1500, // 1.5 วินาที
+      });
+      return;
+    }
+
+    if (!selectedRail) {
+      Swal.fire({
+        icon: "warning",
+        title: "กรุณาเลือกว่าจะรับรางหรือไม่",
+        showConfirmButton: false,
+        timer: 1500, // 1.5 วินาที
+      });
+      return;
+    }
 
     let cart = [];
 
@@ -204,34 +258,59 @@ function CustomPage() {
       localStorage.removeItem("cart");
     }
 
-    console.log("cart before push:", cart);
+    // ค้นหาสินค้าที่มี productId เดียวกันในตะกร้า
+    const existingProductIndex = cart.findIndex(
+      (item) =>
+        item.productId === data.id &&
+        item.selectedType === selectedType &&
+        item.width === width &&
+        item.height === height &&
+        item.selectedRail === selectedRail
+    );
 
-    const productData = {
-      productId: data.productId,
-      brand: data.brand,
-      p_type: data.p_type,
-      name: data.name,
-      color: data.color,
-      detail: data.detail,
-      price: data.price,
-      image: data.image,
-    };
-    console.log("p data : ", productData);
+    if (existingProductIndex !== -1) {
+      // เพิ่มค่า count ของสินค้านี้
+      cart[existingProductIndex].count++;
+    } else {
+      const productData = {
+        productId: data.id,
+        brand: data.brand,
+        p_type: data.p_type,
+        name: data.name,
+        color: data.color,
+        detail: data.detail,
+        width: width,
+        height: height,
+        price: data.price,
+        image: data.image,
+        type: selectedType,
+        rail: selectedRail,
+      };
 
-    if (localStorage.getItem("cart")) {
-      cart = JSON.parse(localStorage.getItem("cart"));
+      if (localStorage.getItem("cart")) {
+        cart = JSON.parse(localStorage.getItem("cart"));
+      }
+
+      cart.push({
+        ...productData,
+        count: 1,
+      });
     }
-
-    cart.push({
-      ...productData,
-      count: 1,
-    });
     let unique = _.uniqWith(cart, _.isEqual);
 
     localStorage.setItem("cart", JSON.stringify(unique));
 
-    // ตรวจสอบค่า cart หลังจาก push ข้อมูลเข้าไป
-    console.log("cart after push:", cart);
+    dispatch({
+      type: "ADD_TO_CART",
+      payload: unique,
+    });
+
+    Swal.fire({
+      icon: "success",
+      title: "เพิ่มสินค้าในตระกร้าเรียบร้อยแล้ว",
+      showConfirmButton: false,
+      timer: 1500, // 1.5 วินาที
+    });
   };
 
   const default_product = {
@@ -297,6 +376,7 @@ function CustomPage() {
         isLoggedIn={isLoggedIn}
         handleLogout={handleLogout}
         userName={userName}
+        idUser={idUser}
       ></Navbar>
       <div class="titlea bg-brown-bg  w-full  h-full py-1 shadow-md">
         <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-9 xl:h-9 text-b-font"></BsPinFill>
@@ -379,15 +459,15 @@ function CustomPage() {
       </div>
 
       <div className="flex flex-row mb-10">
-        <div className=" basis-1/3">
-          <p className="text-gray-700 md:text-base mt-4 pl-5">
+        <div className=" basis-1/3 items-center">
+          <p className="text-gray-700 md:text-base mt-4 pl-5 text-center ">
             ต้องการสั่งตัดผ้าม่านแบบใด
           </p>
 
           {["ม่านจีบ", "ม่านพับ", "ม่านตาไก่", "ม่านลอน"].map((type) => (
             <div
               key={type}
-              className="basis-1/3 text-browntop text-lg mt-2 ml-10 mb-2"
+              className=" basis-1/3 text-center  text-browntop text-lg mt-2  mb-2"
             >
               <input
                 className="ml-2"
@@ -404,7 +484,7 @@ function CustomPage() {
             </div>
           ))}
 
-          <p className="text-gray-700 md:text-base mt-4 pl-5">
+          <p className="text-center text-gray-700 md:text-base mt-4 pl-5">
             ** ทางร้านมีบริการรับตัดม่านหลุดย์
           </p>
         </div>
@@ -452,21 +532,57 @@ function CustomPage() {
       <div className="flex justify-center w-full">
         <div>
           <p className="mt-4 ml-5 text-sm text-brown-400">กว้าง</p>
-          <input class="appearance-none  rounded w-[150px] py-2 px-3 ml-2 my-2  text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+          <input
+            class="appearance-none  rounded w-[150px] py-2 px-3 ml-2 my-2  text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            value={width}
+            required
+            onChange={(e) => setWidth(e.target.value)}
+          />
         </div>
         <div>
           <p className="mt-4 text-sm ml-5 text-brown-400">ยาว</p>
-          <input class="appearance-none  rounded w-[150px] py-2 px-3 ml-2 my-2  text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+          <input
+            class="appearance-none  rounded w-[150px] py-2 px-3 ml-2 my-2  text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            value={height}
+            required
+            onChange={(e) => setHeight(e.target.value)}
+          />
         </div>
         <p className="  mt-14 text-sm ml-5 text-brown-400"> เซนติเมตร</p>
       </div>
 
+      {["รับราง", "ไม่รับราง"].map((rail) => (
+        <div
+          key={rail}
+          className=" flex-row text-center  text-browntop text-lg mt-2  mb-2"
+        >
+          <input
+            className="ml-2"
+            type="radio"
+            id={rail}
+            name="selectedRail"
+            value={rail}
+            checked={selectedRail === rail}
+            onChange={handleRadioChangeRail}
+          />
+          <label className="ml-2" htmlFor={rail}>
+            {rail}
+          </label>
+        </div>
+      ))}
+
       <div className="flex justify-center">
         <button
-          onClick={() => handleAddToCart(data)}
-          // onClick={handleAddToCart}
+          onClick={() =>
+            handleAddToCart({
+              ...data,
+              width,
+              height,
+              selectedType,
+              selectedRail,
+            })
+          }
           className=" mt-10  mb-3 px-4 py-2 rounded-lg inline-block text-base bg-brown-200 hover:bg-browntop hover:shadow-xl text-white focus:outline-none focus:shadow-outline"
-          // onClick={() => handleAddToCart(data)}
         >
           เพิ่มลงลงตระกร้าสินค้า
         </button>

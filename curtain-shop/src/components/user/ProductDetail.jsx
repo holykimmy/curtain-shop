@@ -44,7 +44,7 @@ function ContactPage() {
           productData = await productAPI.getProductTypeBlackout();
         } else if (data.p_type === "ม่อนลอน (wave)") {
           productData = await productAPI.getProductTypeWave();
-        } 
+        }
 
         setProduct(productData);
       } catch (err) {
@@ -108,9 +108,6 @@ function ContactPage() {
         // Token expired, logout user
         handleLogoutAuto();
       }
-
-
-
     } else {
       setIsLoggedIn(false);
     }
@@ -145,7 +142,6 @@ function ContactPage() {
       }
     });
   };
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -194,8 +190,6 @@ function ContactPage() {
   const handleCustom = (productId, productName) => {
     navigate(`/custom-product/${productId}`);
   };
-
-
 
   return (
     <>
@@ -255,7 +249,6 @@ function ContactPage() {
                 </Link>
                 <div>
                   <button
-                  
                     onClick={() => handleCustom(data.productId, data.name)}
                     className=" mt-10  mb-3 px-4 py-2 rounded-lg inline-block text-base bg-brown-200 hover:bg-browntop hover:shadow-xl text-white focus:outline-none focus:shadow-outline"
                     // onClick={() => handleEditProduct(product._id, product.name)}
