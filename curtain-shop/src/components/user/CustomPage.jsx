@@ -67,7 +67,7 @@ function CustomPage() {
         const id = decodedToken.id;
         setUserName(`${f_name} ${l_name}`);
         setIdUser(`${id}`);
-        console.log("addresssjhf", decodedToken.user.addres);
+        console.log("address", decodedToken.address);
         setUser({
           f_name: f_name,
           l_name: l_name,
@@ -160,6 +160,7 @@ function CustomPage() {
             name: productData.name,
             color: productData.color,
             detail: productData.detail,
+            p_width: productData.p_width,
             price: productData.price,
             image: productData.image,
           });
@@ -204,11 +205,8 @@ function CustomPage() {
     height,
     ...data
   }) => {
-    console.log("data in ", data);
-    console.log("width: ", width);
-    console.log("height: ", height);
-    console.log("tyjpe", selectedType);
-    console.log("set", setSelectedRail);
+    console.log("log", selectedType);
+    // console.table(selectedRail, selectedType, width, height, data);
 
     if (!selectedType) {
       Swal.fire({
@@ -258,16 +256,37 @@ function CustomPage() {
       localStorage.removeItem("cart");
     }
 
-    // ค้นหาสินค้าที่มี productId เดียวกันในตะกร้า
+    console.log("data.id", data.id);
+
+  
+    console.log("------------data--------");
+    cart.forEach((item) => {
+      console.table(
+        item.productId,
+        item.type,
+        item.rail,
+        item.width,
+        item.height
+      );
+    });
+    console.log("------------end--------");
+    console.table(data.id, selectedType, selectedRail, width, height);
+
     const existingProductIndex = cart.findIndex(
       (item) =>
         item.productId === data.id &&
-        item.selectedType === selectedType &&
+        item.type === selectedType &&
         item.width === width &&
         item.height === height &&
-        item.selectedRail === selectedRail
+        item.rail === selectedRail
     );
 
+    console.log("existingProductIndex:", existingProductIndex);
+
+    function generateCartId() {
+      return Math.floor(Math.random() * 1000000); // สร้างเลขสุ่ม 6 หลักเป็น cartId
+    }
+    
     if (existingProductIndex !== -1) {
       // เพิ่มค่า count ของสินค้านี้
       cart[existingProductIndex].count++;
@@ -285,6 +304,7 @@ function CustomPage() {
         image: data.image,
         type: selectedType,
         rail: selectedRail,
+        cartId: generateCartId(),
       };
 
       if (localStorage.getItem("cart")) {
@@ -452,6 +472,9 @@ function CustomPage() {
               {data.detail}
             </div>
             <p className="mt-4 text-base text-brown-400">
+              ความกว้างของหน้าผ้า : {data.p_width} เซนติเมตร
+            </p>
+            <p className="mt-4 text-base text-brown-400">
               ราคาสินค้า : {data.price} บาท/หลา
             </p>
           </div>
@@ -534,6 +557,8 @@ function CustomPage() {
           <p className="mt-4 ml-5 text-sm text-brown-400">กว้าง</p>
           <input
             class="appearance-none  rounded w-[150px] py-2 px-3 ml-2 my-2  text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            type="number"
+
             value={width}
             required
             onChange={(e) => setWidth(e.target.value)}
@@ -544,6 +569,7 @@ function CustomPage() {
           <input
             class="appearance-none  rounded w-[150px] py-2 px-3 ml-2 my-2  text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             value={height}
+            type="number"
             required
             onChange={(e) => setHeight(e.target.value)}
           />

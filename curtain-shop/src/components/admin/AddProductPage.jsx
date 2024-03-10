@@ -12,6 +12,7 @@ function AddProductPage() {
     name: "",
     color: "",
     detail: "",
+    p_width:"",
     price: "",
   });
 
@@ -20,7 +21,7 @@ function AddProductPage() {
   const [brandOptions, setBrandOptions] = useState([]);
   const [pTypeOptions, setPTypeOptions] = useState([]);
   const [price, setPrice] = useState("");
-  const { brand, p_type, name, color, detail } = state;
+  const { brand, p_type, name, color, detail, p_width } = state;
 
   const fetchBrands = async () => {
     try {
@@ -120,6 +121,7 @@ function AddProductPage() {
     formData.append("name", state.name);
     formData.append("color", state.color);
     formData.append("detail", state.detail);
+    formData.append("p_width", state.p_width);
     formData.append("price", price); // ใช้ state หรือตัวแปร price ตรงนี้ตามที่คุณต้องการ
     formData.append("image", image);
 
@@ -129,6 +131,7 @@ function AddProductPage() {
     console.log(formData.get("name"));
     console.log(formData.get("color"));
     console.log(formData.get("detail"));
+    console.log(formData.get("p_width"));
     console.log(formData.get("price"));
     console.log(formData.get("image"));
     console.log("endl");
@@ -302,6 +305,18 @@ function AddProductPage() {
               placeholder="รายละเอียดสินค้า"
             />
           </div>
+
+          <div class="input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline my-6">
+            <input
+              class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="p_width"
+              type="number"
+              value={p_width}
+              onChange={inputValue("p_width")}
+              placeholder="ความกว้างของหน้าผ้า"
+            />
+          </div>
+        
           <div class="input-groupfle shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2">
             <input
               class="appearance-none border-none rounded w-[90%] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"

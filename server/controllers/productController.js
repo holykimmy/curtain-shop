@@ -29,7 +29,9 @@ exports.create = (req, res) => {
     return res.status(400).json({ error: "กรุณาเลือกสีสินค้า" });
   } else if (!data.detail) {
     return res.status(400).json({ error: "กรุณากรอกลายละเอียดของสินค้า" });
-  } else if (!data.price) {
+  } else if (!data.p_width) {
+    return res.status(400).json({ error: "กรุณาระบุความกว้างของหน้าผ้า" });
+  }else if (!data.price) {
     return res.status(400).json({ error: "กรุณาระบุราคาสินค้า" });
   }
 
@@ -63,6 +65,7 @@ exports.create = (req, res) => {
           color: data.color,
           detail: data.detail,
           price: data.price,
+          p_width :data.p_width,
           image: req.file.filename,
           slug,
         });
@@ -233,6 +236,7 @@ exports.updateProduct = (req, res) => {
         product.name = newData.name || product.name;
         product.color = newData.color || product.color;
         product.detail = newData.detail || product.detail;
+        product.p_width = newData.p_width || product.p_width;
         product.price = newData.price || product.price;
         product.image = newData.image || product.image;
         product.visibility = newData.visibility || product.visibility;

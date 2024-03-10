@@ -123,7 +123,7 @@ function CartPage() {
   const showCartItems = () => {
     return (
       <div className="flex items-center justify-center mb-[10%]">
-        <table class="table-auto w-[75%] border-collapse border border-gray-300 ">
+        <table class="table-auto w-[100%] border-collapse border border-gray-300 ">
           <thead>
             <tr>
               <th className="text-browntop px-2 py-1 border border-gray-300 ...">
