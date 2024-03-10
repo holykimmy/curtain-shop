@@ -18,13 +18,13 @@ import EditAddressPage from "./components/user/EditAddressPage";
 
 import ProductDetail from "./components/user/ProductDetail";
 import CategoryPage from "./components/user/CategoryPage";
-//import CartPage from "./components/user/CartPage";
 import CheckOrder from "./components/user/CheckOrderPage";
 import Recommend from "./components/user/RecommendPage";
 import Gauging from "./components/user/GaugingPage";
 import CustomPage from "./components/user/CustomPage";
 import FabricType from "./components/user/TypeCurtainsPage";
 import Achievement from "./components/user/AchievementPage";
+import Payment from "./components/user/PaymentPage";
 
 //product
 import Polyester from "./components/user/product/Polyester";
@@ -67,13 +67,13 @@ const router = createBrowserRouter([
 
   { path: "/product-detail/:productId", element: <ProductDetail /> },
   { path: "/category", element: <CategoryPage /> },
-  //{ path: "/cart", element: <CartPage /> },
   { path: "/check-order", element: <CheckOrder /> },
   { path: "/recommended-curtain", element: <Recommend /> },
   { path: "/gauging-curtain", element: <Gauging /> },
   {path: "/custom-product", element: <CustomPage />},
   {path: "/Fabric-Type", element: <FabricType />},
   {path: "/Achievements", element: <Achievement />},
+  {path: "/payment", element: <Payment />},
 
   { path: "/custom-product/:productId", element: <CustomPage /> },
   //product

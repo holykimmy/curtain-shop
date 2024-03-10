@@ -67,4 +67,30 @@ p {
   margin-block-end: 1em;
   margin-inline-start: 0px;
   margin-inline-end: 0px;
+  line-height: 1.5;
+}
+*{
+  padding: 0;
+  margin: 0;
+}
+.container{
+  max-width: 1224px;
+  width: 50%;
+  margin: auto;
+  padding: 40px 0;
+}
+.photo-gallery{
+  display: flex;
+  gap: 30px;
+}
+.column{
+  display: flex;
+  flex-direction: column;
+  gap: 30px
+}
+.photo img{
+  width: 100%;
+  height: 100%;
+  border-radius: 15px;
+  object-fit: cover;
 }

@@ -99,7 +99,7 @@ function ServicePage() {
             <div class="sideabout flex-[35%]">
               <img class="shadow-2xl" src={r1} alt="about" width="100%" />
             </div>
-            <div class="sideabout flex-[65%] text-xl md:text-3xl xl:text-3xl text-b-font p-20 justify-center">
+            <div class="sideabout flex-[65%] text-xl md:text-3xl xl:text-3xl text-b-font p-10 justify-center">
               <p>
                 <h1 class=" mt-0 mx-auto text-center ">
                   จุดประสงค์หลักของผ้าม่านคือเพื่อป้องกันแสงส่วนเกิน
@@ -122,7 +122,7 @@ function ServicePage() {
         </div>
         <div className=" bg-brown-blog">
           <div class="about flex shadow-md">
-            <div class="sideabout flex-[65%] text-xl md:text-2xl xl:text-3xl text-b-font p-20 justify-center">
+            <div class="sideabout flex-[65%] text-xl md:text-2xl xl:text-3xl text-b-font p-10 justify-center">
               <h1 class="mt-0 mx-auto text-center">
                 1. ม่านจีบ : คราสสิค ร่วมสมัย มีความสวยหรู
               </h1>
@@ -157,7 +157,7 @@ function ServicePage() {
             <div class="sideabout flex-[35%]">
               <img class="shadow-2xl" src={r3} alt="about" width="100%" />
             </div>
-            <div class="sideabout flex-[65%] text-xl md:text-3xl xl:text-3xl text-b-font p-40 justify-center">
+            <div class="sideabout flex-[65%] text-xl md:text-3xl xl:text-3xl text-b-font p-20 justify-center">
               <h1 class=" mt-0 mx-auto text-center ">
                 2. ผ้าม่านตาไก่ : โดดเด่น ดีไซน์สวย ไม่ตกยุค
               </h1>
@@ -216,7 +216,7 @@ function ServicePage() {
             <div class="sideabout flex-[35%]">
               <img class="shadow-2xl" src={r5} alt="about" width="100%" />
             </div>
-            <div class="sideabout flex-[65%] text-xl md:text-3xl xl:text-3xl text-b-font p-40 justify-center">
+            <div class="sideabout flex-[65%] text-xl md:text-3xl xl:text-3xl text-b-font p-20 justify-center">
               <h1 class=" mt-0 mx-auto text-center ">
                 4. ผ้าม่านพับ : รูปแบบทันสมัย เรียบหรู
               </h1>
@@ -332,7 +332,7 @@ function ServicePage() {
               <p class="p-5 xl:text-4xl text-b-font text-lg"></p>
               <img class="shadow-2xl" src={r9} alt="about" width="100%" />
             </div>
-            <div class="sideabout flex-[65%] text-xl md:text-3xl xl:text-3xl text-b-font p-40 justify-center">
+            <div class="sideabout flex-[65%] text-xl md:text-3xl xl:text-3xl text-b-font p-20 justify-center">
               <h1 class=" mt-0 mx-auto text-center ">
               2. รางม่านแบบรางโชว์ : นิยมใช้กับม่านตาไก่
               </h1>
@@ -375,7 +375,7 @@ function ServicePage() {
             <div class="sideabout flex-[35%]">
               <img class="shadow-2xl" src={r10} alt="about" width="100%" />
             </div>
-            <div class="sideabout flex-[65%] text-xl md:text-3xl xl:text-3xl text-b-font p-40 justify-center">
+            <div class="sideabout flex-[65%] text-xl md:text-3xl xl:text-3xl text-b-font p-20 justify-center">
               <h1 class=" mt-0 mx-auto text-center ">
               3. รางผ้าม่านแบบพับ : ใช้กับม่านพับโดยเฉพาะ
               </h1>
@@ -398,7 +398,7 @@ function ServicePage() {
               <p class="p-5 xl:text-4xl text-b-font text-lg"></p>
               <img class="shadow-2xl" src={r13} alt="about" width="100%" />
             </div>
-            <div class="sideabout flex-[65%] text-xl md:text-3xl xl:text-3xl text-b-font p-40 justify-center">
+            <div class="sideabout flex-[65%] text-xl md:text-3xl xl:text-3xl text-b-font p-20 justify-center">
               <h1 class=" mt-0 mx-auto text-center ">
                 4. รางม่านลอน : รางเฉพาะของม่านลอน
               </h1>
