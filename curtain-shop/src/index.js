@@ -18,13 +18,15 @@ import EditAddressPage from "./components/user/EditAddressPage";
 
 import ProductDetail from "./components/user/ProductDetail";
 import CategoryPage from "./components/user/CategoryPage";
-//import CartPage from "./components/user/CartPage";
+import CartPage from "./components/user/CartPage";
 import CheckOrder from "./components/user/CheckOrderPage";
 import Recommend from "./components/user/RecommendPage";
 import Gauging from "./components/user/GaugingPage";
 import CustomPage from "./components/user/CustomPage";
 import FabricType from "./components/user/TypeCurtainsPage";
 import Achievement from "./components/user/AchievementPage";
+
+import CheckOutPage from "./components/user/CheckOutPage";
 
 //product
 import Polyester from "./components/user/product/Polyester";
@@ -36,8 +38,6 @@ import Blackout from "./components/user/product/Blackout";
 import Wave from "./components/user/product/Wave";
 import Satin from "./components/user/product/Satin";
 import Equipment from "./components/user/product/Equipment";
-
-
 
 //admin
 import DashboardPage from "./components/admin/DashboardPage";
@@ -54,6 +54,15 @@ import OrderDetail from "./components/admin/OrderDetail";
 import Products from "./components/admin/Products";
 import UpdateProduct from "./components/admin/UpdateProduct";
 
+// import { store } from "./app/store";
+import { Provider } from "react-redux";
+import { createStore } from "redux";
+import rootReducer from "./components/reducers/indexReducer";
+import { composeWithDevTools } from "@redux-devtools/extension";
+
+// import { StrictMode } from "react";
+// import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
 const router = createBrowserRouter([
   { path: "/", element: <HomePage /> },
   { path: "/login", element: <LoginPage /> },
@@ -67,13 +76,14 @@ const router = createBrowserRouter([
 
   { path: "/product-detail/:productId", element: <ProductDetail /> },
   { path: "/category", element: <CategoryPage /> },
-  //{ path: "/cart", element: <CartPage /> },
+  { path: "/cart", element: <CartPage /> },
   { path: "/check-order", element: <CheckOrder /> },
   { path: "/recommended-curtain", element: <Recommend /> },
   { path: "/gauging-curtain", element: <Gauging /> },
   {path: "/custom-product", element: <CustomPage />},
   {path: "/Fabric-Type", element: <FabricType />},
   {path: "/Achievements", element: <Achievement />},
+  { path: "/checkout", element: <CheckOutPage /> },
 
   { path: "/custom-product/:productId", element: <CustomPage /> },
   //product
@@ -82,7 +92,7 @@ const router = createBrowserRouter([
   { path: "/product/satin", element: <Satin /> },
   { path: "/product/cotton", element: <Cotton /> },
   { path: "/product/linen", element: <Linen /> },
-  { path: "/product/blackout", element: <Blackout/> },
+  { path: "/product/blackout", element: <Blackout /> },
   { path: "/product/mixed", element: <Mixed /> },
   { path: "/product/wave", element: <Wave /> },
   { path: "/product/equipment", element: <Equipment /> },
@@ -102,12 +112,16 @@ const router = createBrowserRouter([
   { path: "/update-product/:productId", element: <UpdateProduct /> },
 ]);
 
+const store = createStore(rootReducer, composeWithDevTools());
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <ThemeProvider>
-      <RouterProvider router={router} />
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider>
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    </Provider>
   </React.StrictMode>
 );
 

@@ -28,6 +28,10 @@ const ProdusctSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    p_width: {
+      type: Number,
+      required: true,
+    },
     price: {
       type: Number,
       required: true,

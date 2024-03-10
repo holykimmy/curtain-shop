@@ -19,6 +19,7 @@ function UpdateProductPage() {
     detail: "",
     price: "",
     image: "",
+    p_width:"",
   });
 
   const [form, setForm] = useState([]);
@@ -29,7 +30,7 @@ function UpdateProductPage() {
   const [price, setPrice] = useState("");
   const [selectedBrandSlug, setSelectedBrandSlug] = useState("");
 
-  const { brand, p_type, name, color, detail } = data;
+  const { brand, p_type, name, color, detail ,p_width } = data;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,6 +53,7 @@ function UpdateProductPage() {
             name: productData.name,
             color: productData.color,
             detail: productData.detail,
+            p_width: productData.p_width,
             price: productData.price,
             image: productData.image,
           });
@@ -162,6 +164,8 @@ function UpdateProductPage() {
     formData.append("name", data.name);
     formData.append("color", data.color);
     formData.append("detail", data.detail);
+    formData.append("p_width", data.p_width);
+
     formData.append("price", data.price);
     if (image) {
       formData.append("image", image);
@@ -172,6 +176,7 @@ function UpdateProductPage() {
     console.log(formData.get("name"));
     console.log(formData.get("color"));
     console.log(formData.get("detail"));
+    console.log(formData.get("p_width"));
     console.log(formData.get("price"));
     console.log(formData.get("image"));
     console.log("endl");
@@ -330,6 +335,18 @@ function UpdateProductPage() {
               placeholder="รายละเอียดสินค้า"
             />
           </div>
+
+          <div class="input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline my-6">
+            <input
+              class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="p_name"
+              type="number"
+              value={data.p_width}
+              onChange={inputValue("p_width")}
+              placeholder="ชื่อสินค้า"
+            />
+          </div>
+
           <div class="input-groupfle shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2">
             <input
               class="appearance-none border-none rounded w-[90%] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"

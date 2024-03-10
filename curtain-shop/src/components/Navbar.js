@@ -25,6 +25,7 @@ import { CiUser } from "react-icons/ci";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { GiShoppingCart } from "react-icons/gi";
 
 // profile menu component
 
@@ -85,6 +86,9 @@ function ProfileMenu({ isLoggedIn, handleLogout, userName, idUser }) {
           />
         </Button>
       </MenuHandler>
+      <Link to="/cart">
+        <GiShoppingCart className="w-10 h-10 p-1 rounded-full hover:shadow-3xl " />
+      </Link>
 
       <MenuList className="p-1">
         {profileMenuItems.map(({ label, icon, to, onClick }, key) => (
@@ -287,9 +291,6 @@ function NavList() {
 }
 
 function ComplexNavbar({ isLoggedIn, idUser, userName, handleLogout }) {
-
-  
-
   const [isNavOpen, setIsNavOpen] = React.useState(false);
   const toggleIsNavOpen = () => setIsNavOpen((cur) => !cur);
 

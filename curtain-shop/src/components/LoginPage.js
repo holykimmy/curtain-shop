@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { IoMdEyeOff } from "react-icons/io";
 // import "./login.css";
 function LoginPage() {
@@ -14,6 +14,9 @@ function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+  console.log("test");
+  console.log("loca", location.state);
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -43,15 +46,23 @@ function LoginPage() {
       if (response.data.Status === "Success") {
         console.log(response.data.role);
 
-        // หากบทบาทของผู้ใช้เป็น "admin" ให้นำผู้ใช้ไปยังหน้า "/menu"
-        if (response.data.role === "admin") {
+        let intended = location.state; //redirec to path
+        if (intended) {
+
           localStorage.setItem("token", response.data.token);
           axios.defaults.headers.common["authtoken"] = response.data.token; // Set token as a default header
-          navigate("/dashboard");
+          navigate('../'+intended);
         } else {
-          localStorage.setItem("token", response.data.token);
-          axios.defaults.headers.common['authtoken'] = response.data.token; // Set token as a default header
-          navigate("/");
+          // หากบทบาทของผู้ใช้เป็น "admin" ให้นำผู้ใช้ไปยังหน้า "/menu"
+          if (response.data.role === "admin") {
+            localStorage.setItem("token", response.data.token);
+            axios.defaults.headers.common["authtoken"] = response.data.token; // Set token as a default header
+            navigate("/dashboard");
+          } else {
+            localStorage.setItem("token", response.data.token);
+            axios.defaults.headers.common["authtoken"] = response.data.token; // Set token as a default header
+            navigate("/");
+          }
         }
       } else {
         // หากการเข้าสู่ระบบไม่สำเร็จ แสดงข้อความผิดพลาดที่ได้จากเซิร์ฟเวอร์
