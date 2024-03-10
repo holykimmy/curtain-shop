@@ -25,6 +25,7 @@ import Gauging from "./components/user/GaugingPage";
 import CustomPage from "./components/user/CustomPage";
 import FabricType from "./components/user/TypeCurtainsPage";
 import Achievement from "./components/user/AchievementPage";
+import Payment from "./components/user/PaymentPage";
 
 import CheckOutPage from "./components/user/CheckOutPage";
 
@@ -84,6 +85,7 @@ const router = createBrowserRouter([
   {path: "/Fabric-Type", element: <FabricType />},
   {path: "/Achievements", element: <Achievement />},
   { path: "/checkout", element: <CheckOutPage /> },
+  {path: "/payment", element: <Payment />},
 
   { path: "/custom-product/:productId", element: <CustomPage /> },
   //product

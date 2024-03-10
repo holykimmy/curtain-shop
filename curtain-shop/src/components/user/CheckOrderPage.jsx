@@ -111,7 +111,9 @@ function CheckOrdeerPage() {
                 <p class="text-lg font-semibold text-gray-900">3000 บาท</p>
               </div>
             </div>
-            <button class="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white">ยืนยันคำสั่งซื้อ</button>
+            <Link to = '/payment'>
+              <button class="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white">ยืนยันคำสั่งซื้อ</button>
+            </Link>
           </div>
         </div>
         <div className="flex justify-center items-center ">

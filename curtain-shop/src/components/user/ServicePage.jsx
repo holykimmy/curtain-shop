@@ -3,6 +3,7 @@ import Navbar from "../Navbar";
 import { BsPinFill } from "react-icons/bs";
 import serimg1 from "../img/serimg1.jpeg";
 import serimg2 from "../img/serimg2.jpeg";
+import serimg3 from "../img/serimg3.JPG";
 import Footer from "../Footer";
 import about from "../img/about.jpeg";
 import Slideshow from "./Slideshow";
@@ -118,15 +119,17 @@ function ServicePage() {
         </div>
 
         <div className="flex justify-center items-center ">
-          <p class="p-5 text-b-font text-lg">บริการติดตั้งวอลเปเปอร์</p>
+          <p class="p-5 text-b-font text-lg">บริการลงพื้นที่หน้างาน</p>
         </div>
         <div className=" bg-brown-blog">
           <div class="about flex shadow-md">
-            <div class="sideabout flex-[35%]">
-              <img class="shadow-2xl" src={serimg1} alt="about" width="100%" />
+            <div class="sideabout flex-[25%]">
+              <img class="shadow-2xl" src={serimg3} alt="about" width="100%" />
             </div>
-            <div class="sideabout flex-[65%] text-xl md:text-2xl xl:text-3xl text-b-font p-10 justify-center">
-              <h1 class="mt-0 mx-auto text-center">jiktuyi</h1>
+            <div class="sideabout flex-[65%] text-xl md:text-2xl xl:text-2xl text-b-font p-20 justify-center">
+              <h1 class="mt-0 mx-auto text-center">
+                ร้านของเรามีบริการลงพื้นที่ถึงหน้างานของลูกค้า ไม่ว่าจะเป็นการให้คำปรึกษา
+               </h1>
             </div>
           </div>
         </div>
@@ -135,11 +138,24 @@ function ServicePage() {
         </div>
         <div className=" bg-brown-blog">
           <div class="about flex shadow-md">
-            <div class="sideabout flex-[65%] text-xl md:text-2xl xl:text-3xl text-b-font p-10 justify-center">
+            <div class="sideabout flex-[65%] text-xl md:text-2xl xl:text-2xl text-b-font p-20 justify-center">
               <h1 class="mt-0 mx-auto text-center">jiktuyi</h1>
             </div>
-            <div class="sideabout flex-[35%]">
+            <div class="sideabout flex-[25%]">
               <img class="shadow-2xl" src={serimg2} alt="about" width="100%" />
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-center items-center ">
+          <p class="p-5 text-b-font text-lg">บริการติดตั้งวอลเปเปอร์</p>
+        </div>
+        <div className=" bg-brown-blog">
+          <div class="about flex shadow-md">
+            <div class="sideabout flex-[25%]">
+              <img class="shadow-2xl" src={serimg1} alt="about" width="100%" />
+            </div>
+            <div class="sideabout flex-[65%] text-xl md:text-2xl xl:text-2xl text-b-font p-20 justify-center">
+              <h1 class="mt-0 mx-auto text-center">jiktuyi</h1>
             </div>
           </div>
         </div>

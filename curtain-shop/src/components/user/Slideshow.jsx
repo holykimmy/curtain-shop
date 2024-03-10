@@ -3,6 +3,14 @@ import { Slide } from "react-slideshow-image";
 import img1 from "../img/img1.jpg";
 import img2 from "../img/img2.jpg";
 import img3 from "../img/img3.jpg";
+import img4 from "../img/img4.jpg";
+import img5 from "../img/img5.jpg";
+import img6 from "../img/img6.jpg";
+import img7 from "../img/img7.jpg";
+import img8 from "../img/img8.jpg";
+import img9 from "../img/img9.png";
+import img10 from "../img/img10.jpg";
+
 
 import "react-slideshow-image/dist/styles.css";
 
@@ -33,6 +41,41 @@ const Slideshow = () => {
         <div className="each-slide items-center">
           <div>
             <img class="flex relative self-center h-[400px] md:h-[450px] justify-center" src={img3} alt="img3" />
+          </div>
+        </div>
+        <div className="each-slide items-center">
+          <div>
+            <img class="flex relative self-center h-[400px] md:h-[450px] justify-center" src={img4} alt="img4" />
+          </div>
+        </div>
+        <div className="each-slide items-center">
+          <div>
+            <img class="flex relative self-center h-[400px] md:h-[450px] justify-center" src={img5} alt="img5" />
+          </div>
+        </div>
+        <div className="each-slide items-center">
+          <div>
+            <img class="flex relative self-center h-[400px] md:h-[450px] justify-center" src={img6} alt="img6" />
+          </div>
+        </div>
+        <div className="each-slide items-center">
+          <div>
+            <img class="flex relative self-center h-[400px] md:h-[450px] justify-center" src={img7} alt="img7" />
+          </div>
+        </div>
+        <div className="each-slide items-center">
+          <div>
+            <img class="flex relative self-center h-[400px] md:h-[450px] justify-center" src={img8} alt="img8" />
+          </div>
+        </div>
+        <div className="each-slide items-center">
+          <div>
+            <img class="flex relative self-center h-[400px] md:h-[450px] justify-center" src={img9} alt="img9" />
+          </div>
+        </div>
+        <div className="each-slide items-center">
+          <div>
+            <img class="flex relative self-center h-[400px] md:h-[450px] justify-center" src={img10} alt="img10" />
           </div>
         </div>
       </Slide>
