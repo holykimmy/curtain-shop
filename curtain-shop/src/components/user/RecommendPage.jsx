@@ -6,6 +6,14 @@ import r2 from "../img/r2.jpg";
 import r3 from "../img/r3.jpg";
 import r4 from "../img/r4.jpg";
 import r5 from "../img/r5.jpg";
+import r6 from "../img/r6.jpg";
+import r7 from "../img/r7.jpg";
+import r8 from "../img/r8.JPG";
+import r9 from "../img/r9.JPG";
+import r10 from "../img/r10.JPG";
+import r11 from "../img/r11.JPG";
+import r12 from "../img/r12.jpg";
+import r13 from "../img/r13.jpeg";
 import Footer from "../Footer";
 import arrow from "../img/icon/arrow.png";
 import about from "../img/about.jpeg";
@@ -117,6 +125,9 @@ function ServicePage() {
             <div class="sideabout flex-[65%] text-xl md:text-2xl xl:text-3xl text-b-font p-20 justify-center">
               <h1 class="mt-0 mx-auto text-center">
                 1. ม่านจีบ : คราสสิค ร่วมสมัย มีความสวยหรู
+              </h1>
+              <p class="p-5 xl:text-2xl text-b-font text-lg"></p>
+              <h1 class="mt-0 mx-auto text-center">
                 ผ้าม่านจีบเป็นรูปแบบผ้าม่านที่ได้รับความนิยม
                 โดยมีเอกลักษณ์ที่หัวผ้าม่านด้านบนมีการจับจีบเรียงกันให้ได้ความสวยงาม
                 ผ้าม่านจีบแสดงออกถึงความประณีต บรรจง
@@ -149,6 +160,9 @@ function ServicePage() {
             <div class="sideabout flex-[65%] text-xl md:text-3xl xl:text-3xl text-b-font p-40 justify-center">
               <h1 class=" mt-0 mx-auto text-center ">
                 2. ผ้าม่านตาไก่ : โดดเด่น ดีไซน์สวย ไม่ตกยุค
+              </h1>
+              <p class="p-5 xl:text-2xl text-b-font text-lg"></p>
+              <h1 class=" mt-0 mx-auto text-center ">
                 เป็นรูปแบบผ้าม่านอีกแบบนึงที่กำลังได้รับความนิยมในปัจจุบันมากเหมือนกัน
                 โดยผ้าม่านด้านบนใส่ห่วงตาไก่ และร้อยเข้ากับรางโชว์
                 ทำให้ผ้าม่านตาไก่มีความพริ้วไหวเป็นอิสระ
@@ -173,6 +187,9 @@ function ServicePage() {
             <div class="sideabout flex-[65%] text-xl md:text-2xl xl:text-3xl text-b-font p-20 justify-center">
               <h1 class="mt-0 mx-auto text-center">
                 3. ผ้าม่านลอน : เรียบง่าย ดูดี ไม่หรูจนเกินไป
+              </h1>
+              <p class="p-5 xl:text-2xl text-b-font text-lg"></p>
+              <h1 class="mt-0 mx-auto text-center">
                 ลักษณะผ้าม่านที่เป็นลอนโค้ง ช่วยปรับอารมณ์ให้ห้องดูดี หรูหรา
                 เข้ากับการตกแต่งได้ทุกสไตล์ ลักษณะของม่านลอน
                 ผสมผสานระหว่างม่านตาไก่ และม่านจีบเข้าไว้ด้วยกัน
@@ -202,6 +219,9 @@ function ServicePage() {
             <div class="sideabout flex-[65%] text-xl md:text-3xl xl:text-3xl text-b-font p-40 justify-center">
               <h1 class=" mt-0 mx-auto text-center ">
                 4. ผ้าม่านพับ : รูปแบบทันสมัย เรียบหรู
+              </h1>
+              <p class="p-5 xl:text-2xl text-b-font text-lg"></p>
+              <h1 class=" mt-0 mx-auto text-center ">
                 ลักษณะการใช้งานโดยใช้เชือกดึงในการเปิด-ปิดผ้าม่าน
                 เมื่อต้องการเปิดผ้าม่าน เป็นม่านที่ใช้รางสำหรับม่านพับโดยเฉพาะ
                 เป็นรูปแบบผ้าม่านที่ดูเรียบๆ ทำให้ห้องดูกว้างขึ้น
@@ -219,7 +239,196 @@ function ServicePage() {
           </div>
         </div>
         <div className="flex justify-center items-center ">
-          <p class="p-5 xl:text-2xl text-b-font text-lg"></p>
+          <p class="p-5 xl:text-4xl text-b-font text-lg"></p>
+        </div>
+        <div className=" bg-brown-blog">
+          <div class="about flex shadow-md">
+            <div class="sideabout flex-[65%] text-xl md:text-2xl xl:text-3xl text-b-font p-20 justify-center">
+              <h1 class="mt-0 mx-auto text-center">
+                5. ผ้าม่านลอน : ผ้าม่านหรู อลังการ
+              </h1>
+              <p class="p-5 xl:text-2xl text-b-font text-lg"></p>
+              <h1 class="mt-0 mx-auto text-center">
+              ผ้าม่านหลุยส์ เป็นผ้าม่านที่มีดีไซน์หรูหรา คลาสิค สวยงาม ดูอลังการ 
+              โดยมีเอกลักษณ์ที่ ลูกหลุยส์เป็นม่านทรงโค้งหรือหยดน้ำอยู่ด้านบนและ
+              มีหางหลุยส์เป็นชายผ้าที่เรียงซ้อนกันเป็นชั้นๆ ซ้าย-ขวาอย่างลงตัว 
+              ให้ความรู้สึกที่หรูหรา สวยงามอย่างมีระดับ เป็นผ้าม่านหรูที่เหมาะมากเลยทีเดียว
+              เหมาะสมกับสไตล์การตกแต่งที่หรูหรา มีระดับ
+              แสดงถึงรสนิยมการตกแต่งของเจ้าของได้อย่างชัดเจน
+              </h1>
+              <p class="p-5 xl:text-2xl text-b-font text-lg"></p>
+              <h1 class="mt-0 mx-auto text-center">
+              จุดเด่นสำคัญของผ้าม่านหลุยส์อยู่ที่ 4 องค์ประกอบสำคัญ คือ 
+              ‘ลูกหลุยส์’ หรือ บริเวณม่านทรงโค้ง รูปทรงหยดน้ำ 
+              ที่ถูกจับจีบอย่างละเมียดละไมอยู่ด้านบน และ ‘หางหลุยส์’ หรือ 
+              ชายผ้าที่เรียงซ้อนกันเป็นชั้น ๆ ที่บริเวณซ้าย-ขวาของลูกหลุยส์อย่างลงตัว 
+              ที่บริเวณปลายของผ้าม่านหลุยส์ส่วนใหญ่ยังอาจประดับด้วย 
+              ‘ชายครุย’ (อุปกรณ์ประดับที่ชายระบาย) และหากมีหลากลูกหลุยส์ซ้อนกัน 
+              บางครั้งยังอาจมีการจับจีบที่บริเวณตรงกลางรวมกันเรียกว่า ‘ไทด์’
+              </h1>
+            </div>
+            <div class="sideabout flex-[35%]">
+              <img class="shadow-2xl" src={r6} alt="about" width="100%" />
+            </div>
+          </div>
+        </div>
+
+        <div class="titlea  py-1 shadow-md">
+          <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-9 xl:h-9 text-b-font"></BsPinFill>
+          <h5 className=" inline-block text-lg md:text-xl xl:text-3xl text-b-font  pl-4 p-2 my-1">
+            เลือกรางให้เหมาะกับผ้าม่าน
+          </h5>
+        </div>
+        <div className="flex justify-center items-center ">
+          <p class="p-5 xl:text-4xl text-b-font text-lg">รางของผ้าม่านแต่ละประเภท</p>
+        </div>
+        <div className=" bg-brown-blog">
+          <div class="about flex shadow-md">
+            <div class="sideabout flex-[35%]">
+              <img class="shadow-2xl" src={r7} alt="about" width="100%" />
+              <p class="p-5 xl:text-4xl text-b-font text-lg"></p>
+              <img class="shadow-2xl" src={r11} alt="about" width="100%" />
+            </div>
+            <div class="sideabout flex-[65%] text-xl md:text-3xl xl:text-3xl text-b-font p-40 justify-center">
+              <h1 class=" mt-0 mx-auto text-center ">
+                1. รางผ้าม่านระบบลูกล้อ : นิยมใช้กับม่านจีบหรือม่านลอน
+              </h1>
+              <p class="p-5 xl:text-2xl text-b-font text-lg"></p>
+              <h1 class=" mt-0 mx-auto text-center ">
+              เป็นระบบติดตั้งผ้าม่านที่เมื่อปิดม่านแล้ว มีลักษณะเป็นระบบล้ออยู่ในราง 
+              ใช้ด้ามจูงผ้าม่านเพื่อเปิด-ปิด ตัวม่านจะปิดรางม่านทั้งหมดไม่สามารถมองเห็นได้ 
+              เป็นรางที่ใช้งานสะดวก แม้เปิดปิดบ่อย ๆ ก็ไม่เป็นปัญหา เมื่อลากม่านปิดแล้วจะมองไม่เห็นตัวรางเลย 
+              ใช้ติดตั้งได้ทั้งประตูและหน้าต่างที่มีการเปิดปิดใช้งานบ่อยๆ ต้องการความคล่องตัว หรือ 
+              หน้างานที่เตรียมหลุมฝ้าไว้สำหรับติดตั้งผ้าม่าน เป็นรางที่ไม่เน้นความสวยงามของรางผ้าม่านมากนัก
+              </h1>
+              <p class="p-5 xl:text-2xl text-b-font text-lg"></p>
+              <h1 class=" mt-0 mx-auto text-left ">
+              1.1 รางตัวซี : เป็นรางม่านที่ใช้กับม่านจีบเพียงอย่างเดียว 
+              เหมาะสำหรับผู้ที่มีงบประมาณจำกัด เพราะตัวรางมีราคาถูก 
+              แต่วัสดุค่อนข้างบาง อาจเปิด-ปิดได้ไม่สะดวกมากนัก
+              </h1>
+              <p class="p-5 xl:text-2xl text-b-font text-lg"></p>
+              <h1 class=" mt-0 mx-auto text-left ">
+              1.2 รางตัวยูหรือรางไมโคร : เหมาะสำหรับติดตั้งม่านโดยไม่ต้องโชว์ตัวราง 
+              นิยมใช้คู่กับกล่องม่านเพื่อบังตัวรางเอาไว้ มักเป็นขาจับอลูมิเนียม 
+              คู่กับห่วงแบบพลาสติกมีลูกล้อ มีให้เลือกหลายเกรดตามงบประมาณที่ต้องการ
+              </h1>
+              <p class="p-5 xl:text-2xl text-b-font text-lg"></p>
+              <h1 class=" mt-0 mx-auto text-left ">
+              1.3 รางตัวเอ็ม : รางม่านนิยมใช้มากที่สุด ให้ความคล่องต้วในการใช้งาน รูดง่าย 
+              ลื่นไหลดีกว่า เบาแรง ทั้งแบบใช้เชือกดึง และมือรูด รวมทั้งแบบใช้คู่กับด้ามจูงม่านได้ 
+              มีให้เลือกหลายรุ่นตามการใช้งาน แบบเก็บข้างและแยกกลาง  
+              </h1>
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-center items-center ">
+          <p class="p-5 xl:text-4xl text-b-font text-lg"></p>
+        </div>
+        <div className=" bg-brown-blog">
+          <div class="about flex shadow-md">
+            <div class="sideabout flex-[35%]">
+              <img class="shadow-2xl" src={r8} alt="about" width="100%" />
+              <p class="p-5 xl:text-4xl text-b-font text-lg"></p>
+              <img class="shadow-2xl" src={r9} alt="about" width="100%" />
+            </div>
+            <div class="sideabout flex-[65%] text-xl md:text-3xl xl:text-3xl text-b-font p-40 justify-center">
+              <h1 class=" mt-0 mx-auto text-center ">
+              2. รางม่านแบบรางโชว์ : นิยมใช้กับม่านตาไก่
+              </h1>
+              <p class="p-5 xl:text-2xl text-b-font text-lg"></p>
+              <h1 class=" mt-0 mx-auto text-center ">
+              รางม่านแบบรางโชว์ เป็นรางผ้าม่านที่เมื่อติดตั้งออกมาแล้วจะได้ออกมาตามชื่อ 
+              โดยจะโชว์ตัวรางอยู่ตลอดเวลา ไม่ว่าจะเปิดหรือปิดผ้าม่าน 
+              ก็ยังคงเห็นรางม่านชัดเจนสวยงาม สามารถเลือกวัสดุให้เข้ากับการตกแต่งได้หลากหลายแบบ
+              </h1>
+              <p class="p-5 xl:text-2xl text-b-font text-lg"></p>
+              <h1 class=" mt-0 mx-auto text-left ">
+              2.1 เหล็ก : รางม่านเหล็กมักมาคู่กับห่วงม่านและขาจับเหล็กเช่นเดียวกัน 
+              นิยมใช้สีดำ สีเงิน สีทอง สีบรอนซ์ ซึ่งทำขึ้นโดยการพ่นสี เหมาะสำหรับบ้านสไตล์ลอฟท์ ย้อนยุค หรือแบบร่วมสมัย
+              </h1>
+              <p class="p-5 xl:text-2xl text-b-font text-lg"></p>
+              <h1 class=" mt-0 mx-auto text-left ">
+              2.2 ไม้ : รางม่านไม้เป็นรางที่เหมาะกับบ้านสไตล์คลาสสิกหรือรีสอร์ท 
+              เพราะให้ความรู้สึกเป็นธรรมชาติ มีโทนสีให้เลือกหลากหลาย 
+              แต่มีจุดอ่อนที่หากใช้กับหน้าต่างบานใหญ่มาก ๆ ไม้อาจโก่งตัว ทำให้เปิด-ปิดได้ไม่สะดวกนัก
+              </h1>
+              <p class="p-5 xl:text-2xl text-b-font text-lg"></p>
+              <h1 class=" mt-0 mx-auto text-left ">
+              2.3 อลูมิเนียม : เป็นรางโชว์อีกประเภทหนึ่งที่มีความแข็งแรงทนทาน 
+              นิยมทำสีให้เป็นลายไม้ และใช้คู่กับห่วงพลาสติก หาซื้อง่ายและมีราคาไม่แพง 
+              แต่มีจุดอ่อนที่เปิด-ปิดได้ไม่สะดวกเท่ารางระบบลูกล้อ  
+              </h1>
+              <p class="p-5 xl:text-2xl text-b-font text-lg"></p>
+              <h1 class=" mt-0 mx-auto text-left ">
+              2.4 สแตนเลส : เป็นรางม่านที่ทำจากสแตนเลส โดยใช้คู่กับห่วงและขาจับเหล็ก 
+              มีจุดเด่นที่ความแข็งแรง ไม่เป็นสนิม ไม่ต้องกังวลเรื่องความชื้น  
+              </h1>
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-center items-center ">
+          <p class="p-5 xl:text-4xl text-b-font text-lg"></p>
+        </div>
+        <div className=" bg-brown-blog">
+          <div class="about flex shadow-md">
+            <div class="sideabout flex-[35%]">
+              <img class="shadow-2xl" src={r10} alt="about" width="100%" />
+            </div>
+            <div class="sideabout flex-[65%] text-xl md:text-3xl xl:text-3xl text-b-font p-40 justify-center">
+              <h1 class=" mt-0 mx-auto text-center ">
+              3. รางผ้าม่านแบบพับ : ใช้กับม่านพับโดยเฉพาะ
+              </h1>
+              <p class="p-5 xl:text-2xl text-b-font text-lg"></p>
+              <h1 class=" mt-0 mx-auto text-center ">
+              รางม่านแบบพับ เป็นการติดตั้งผ้าม่านที่มีลักษณะต่างจากรางประเภทอื่น โดยวิธีการเปิด-ปิดม่านประเภทนี้ 
+              จะเป็นการดึงตัวม่านขึ้นลง แทนที่การเปิดออกด้านข้าง นิยมใช้อลูมิเนียมผลิตเป็นตัวราง 
+              และอุปกรณ์ส่วนอื่น ๆ มักทำจากพลาสติก ใช้กับการตกแต่งบ้านได้หลายแบบขึ้นอยู่กับประเภทผ้าม่านที่เลือกใช้
+              </h1>
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-center items-center ">
+          <p class="p-5 xl:text-4xl text-b-font text-lg"></p>
+        </div>
+        <div className=" bg-brown-blog">
+          <div class="about flex shadow-md">
+            <div class="sideabout flex-[35%]">
+              <img class="shadow-2xl" src={r12} alt="about" width="100%" />
+              <p class="p-5 xl:text-4xl text-b-font text-lg"></p>
+              <img class="shadow-2xl" src={r13} alt="about" width="100%" />
+            </div>
+            <div class="sideabout flex-[65%] text-xl md:text-3xl xl:text-3xl text-b-font p-40 justify-center">
+              <h1 class=" mt-0 mx-auto text-center ">
+                4. รางม่านลอน : รางเฉพาะของม่านลอน
+              </h1>
+              <p class="p-5 xl:text-2xl text-b-font text-lg"></p>
+              <h1 class=" mt-0 mx-auto text-center ">
+                ม่านลอนสามารถใช้รางที่เป็นรางระบบลูกล้อได้แต่รางของม่านลอนสามารถนั้น
+                ก็มีลักษณะเฉพาะที่เป็นนิยมใช้กันเป็นอย่างมากเช่นกัน โดยแบ่งเป็น 
+              </h1>
+              <p class="p-5 xl:text-2xl text-b-font text-lg"></p>
+              <h1 class=" mt-0 mx-auto text-left ">
+                4.1 ม่านลอนโซ่ไข่ปลา : มีลักษณะการทิ้งตัวของชายผ้าที่เป็นระเบียบ ทำให้ลอนมีทรงชัด 
+                มีระยะลอนที่เป็นระยะตายตัว เพราะล็อคระยะด้วยโซ่ไข่ปลาด้วยการนำโซ่ไปเกี่ยวไว้ที่ลูกล้อ 
+                โดยจะเย็บม่านลอนแล้วใช้ตะขอเกี่ยวตัวผ้าม่านเข้ากับลูกล้ออีกทีหนึ่ง เป็นตะขอแบบเดียวกับม่านจีบ
+                สามารถปรับขนาดให้เข้ากับพื้นที่ที่ต้องการติดได้ โดยหากต้องการลอนที่มีความลึกมากขึ้นก็สามารถปรับแต่งได้ตามต้องการ
+                เหมาะมากสำหรับพื้นที่ที่มีการบิ้วอิน หรือพื้นที่ที่มีข้อจำกัด เพราะสามารถปรับแต่งขนาด ความลึก-ความกว้าง ของผ้าม่านให้เข้ากับพื้นที่ดังกล่าวได้
+                หากอุปกรณ์ชำรุดเสียหาย สามารถเข้าไปแก้ไขที่หน้างานได้เลย แต่เวลาติดตั้งเสร็จจะมองเห็นอุปกรณ์ที่เป็นโซ่ไข่ปลา
+              </h1>
+              <p class="p-5 xl:text-2xl text-b-font text-lg"></p>
+              <h1 class=" mt-0 mx-auto text-left ">
+                4.2 ม่านลอนรางเทป : มีลักษณะคล้ายม่านลอนโซ่ไข่ปลา แตกต่างกันตรงที่ม่านลอนรางเทปจะใช้เทปผ้าเป็นตัวล็อคระยะแทนโซ่ไข่ปลา 
+                ตัวเทปซึ่งเป็นผ้าจะถูกผลิตมาพร้อมกับตัวราง โดยเทปตัวนี้จะยึดเข้ากับลูกล้อที่อยู่ในรางอีกที 
+                ซึ่งเป็นหมุดที่เทปเข้าไปเกี่ยวกับลูกล้อ โดยใช้เย็บเติดกับผ้าม่านบริเวณด้านหลัง
+                แต่การปรับขนาดให้เข้ากับพื้นที่ที่ต้องการติดนั้นค่อนข้างยาก และ หากเทปลอนเกิดการชำรุด 
+                จะต้องถอดผ้าม่านออกมาเพื่อเย็บใหม่ ไม่สามารถแก้ไขได้ที่หน้างาน ทำให้เสียเวลา และค่าใช้จ่ายเพิ่มขึ้น
+              </h1>
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-center items-center ">
+          <p class="p-5 xl:text-4xl text-b-font text-lg"></p>
         </div>
         <Footer></Footer>
       </div>

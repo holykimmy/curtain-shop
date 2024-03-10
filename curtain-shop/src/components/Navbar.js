@@ -243,9 +243,19 @@ const navListItems = [
     to: "/service",
   },
   {
-    label: "แนะนำผ้าม่าน",
+    label: "ผลงานของร้าน",
+    icon: CubeTransparentIcon,
+    to: "/Achievements",
+  },
+  {
+    label: "ผ้าม่านและราง",
     icon: CubeTransparentIcon,
     to: "/recommended-curtain",
+  },
+  {
+    label: "ประเภทของผ้า",
+    icon: CubeTransparentIcon,
+    to: "/Fabric-Type",
   },
   {
     label: "วิธีการวัดผ้าม่าน",
