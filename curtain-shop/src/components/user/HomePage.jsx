@@ -177,7 +177,6 @@ function HomePage() {
       <div class="create font-[500px] text-xl md:text-3xl xl:text-4xl text-b-font text-center py-[30px] md:py-[50px]  ">
         <p>นอกการติดตั้งผ้าม่านแล้ว ทางร้านเรายังมีมู่ลี่ </p>
         <p>และวอลเปเปอร์ติดผนังห้องอีกด้วย</p>
-        <p>และวอลเปเปอร์ติดผนังห้องอีกด้วย</p>
       </div>
       <Showing></Showing>
 
