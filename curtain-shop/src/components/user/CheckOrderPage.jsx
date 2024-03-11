@@ -204,12 +204,16 @@ function CheckOrdeerPage() {
                     <span class="float-right text-gray-600">
                       รหัสสี : {item.color}
                     </span>
-                    <span class="float-right text-gray-600">
-                      ผ้าม่านที่สั่งตัด :{item.tyjpe}
-                    </span>
+                    {/* <span class="float-right font-bold text-gray-600">
+                      ผ้าม่านที่สั่งตัด : {item.type}
+                    </span> */}
                     <div class="float-right text-gray-600 whitespace-pre-wrap">
                       รายละเอียดเพิ่มเติม :{item.detail}
                     </div>
+                    <p class="text-md font-bold">
+                      {" "}
+                      การสั่งตัดผ้าม่าน : {item.type}  เซนติเมตร{" "}
+                    </p>
                     <p class="text-md font-bold"> ราคา/หลา : {item.price} </p>
                     <p class="text-md font-bold">
                       {" "}
