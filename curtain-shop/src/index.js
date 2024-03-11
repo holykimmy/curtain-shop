@@ -81,11 +81,11 @@ const router = createBrowserRouter([
   { path: "/check-order", element: <CheckOrder /> },
   { path: "/recommended-curtain", element: <Recommend /> },
   { path: "/gauging-curtain", element: <Gauging /> },
-  {path: "/custom-product", element: <CustomPage />},
-  {path: "/Fabric-Type", element: <FabricType />},
-  {path: "/Achievements", element: <Achievement />},
+  { path: "/custom-product", element: <CustomPage /> },
+  { path: "/Fabric-Type", element: <FabricType /> },
+  { path: "/Achievements", element: <Achievement /> },
   { path: "/checkout", element: <CheckOutPage /> },
-  {path: "/payment", element: <Payment />},
+  { path: "/payment", element: <Payment /> },
 
   { path: "/custom-product/:productId", element: <CustomPage /> },
   //product

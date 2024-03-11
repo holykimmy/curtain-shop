@@ -117,13 +117,13 @@ function CartPage() {
       showConfirmButton: false,
       timer: 1500,
     });
-    navigate("/checkout");
+    navigate("/check-order");
   };
 
   const showCartItems = () => {
     return (
-      <div className="flex items-center justify-center mb-[10%]">
-        <table class="table-auto w-[100%] border-collapse border border-gray-300 ">
+      <div className="flex items-center justify-center mb-5">
+        <table class="table-auto w-[90%] border-collapse border border-gray-300 ">
           <thead>
             <tr>
               <th className="text-browntop px-2 py-1 border border-gray-300 ...">
@@ -187,25 +187,26 @@ function CartPage() {
           {" "}
           ตระกร้าสินค้า / {cart.length} product
         </div>
-        <div className="flex flex-row justify-between">
+        <div className="flex flex-col justify-between ">
 
           {!cart.length ? <p>no product in cart</p> : showCartItems()}
 
-          <div className="flex-col mr-10  w-[25%]">
+          <div className="flex-col items-center mr-10 justify-center">
             {" "}
             <hr />
-            <h4 className=" text-brown-400 my-2" >รายการสินค้า </h4>
+            <h4 className=" text-center text-brown-400 my-3" >รายการสินค้า </h4>
             <hr />
             <hr />
             {cart.map((item, index) => (
-              <p key={index} className=" text-brown-400 my-1">
+              <p key={index} className="ml-10  text-brown-400 my-2">
                 {item.name} ขนาด {item.width} x {item.height} เซนติเมตร x {item.count} = {item.price * item.count}
               </p>
             ))}
             <hr />
             <hr />
-            <h4 className=" text-brown-400 my-2 " >ราคารวม : {getTotal()} บาท </h4>
+            <h4 className=" ml-10 text-brown-400 my-2 " >ราคารวม : {getTotal()} บาท </h4>
             <hr />
+            <div className="flex items-center justify-center">
             {isLoggedIn ? (
               <button
                 className="my-4 text-white hover:shadow-2xl bg-green-400 rounded-xl p-2 w-[150px]"
@@ -222,6 +223,7 @@ function CartPage() {
                 </button>
               </Link>
             )}
+            </div>
           </div>
         </div>
 

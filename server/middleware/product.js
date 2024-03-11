@@ -2,7 +2,26 @@ const express = require('express');
 const multer = require("multer");
 const path = require("path");
 const slugify = require('slugify');
+// const AWS = require('aws-sdk');
 const { v4: uuidv4 } = require('uuid');
+
+
+// // Configure AWS SDK
+// AWS.config.update({
+//   accessKeyId: 'AKIAQ3EGS6PRLXNBIQQV',
+//   secretAccessKey: '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',
+//   region: 'ap-southeast-1'
+// });
+
+// const s3 = new AWS.S3();
+
+
+// const upload = multer({
+//   storage: multer.memoryStorage(),
+//   limits: { fileSize: 5 * 961 * 1080 } // Limit file size to 5MB
+// }).single('image');
+
+// module.exports = upload;
 
 const storage = multer.diskStorage({
   destination: function (req, file, callback) {
@@ -26,5 +45,11 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage }).single("image");
 
+
+
+// const upload = multer(storageObject).single("image");
+
 module.exports = upload;
+
+
 

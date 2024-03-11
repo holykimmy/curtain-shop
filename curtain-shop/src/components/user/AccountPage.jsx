@@ -97,6 +97,8 @@ function ContactPage() {
       }
     });
   };
+
+  
   const [address, setAddress] = useState([]);
 
   useEffect(() => {

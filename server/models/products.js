@@ -39,7 +39,7 @@ const ProdusctSchema = mongoose.Schema(
       set: (value) => parseFloat(value).toFixed(2), // Ensure the stored value always has two decimal places
     },
     image: {
-      type: String,
+      type: String, 
       default: 'noimage.jpg'
     },
     author: { 

@@ -14,8 +14,12 @@ const {
   getProductById,
   deleteProduct,
 } = require("../controllers/productController");
+const multer = require("multer");
+
 //middleware
 const upload = require("../middleware/product");
+// const upload = multer(storageObject).single("image");
+
 const { auth } = require("../middleware/auth");
 
 router.post("/create", auth, upload, create);

@@ -35,7 +35,6 @@ function HomePage() {
     tell: "",
     address: "",
   });
-
   useEffect(() => {
     const authToken = localStorage.getItem("token");
 
@@ -51,7 +50,7 @@ function HomePage() {
         const id = decodedToken.id;
         setUserName(`${f_name} ${l_name}`);
         setIdUser(`${id}`);
-        console.log("addresssjhf", decodedToken.user.addres);
+        console.log("address", decodedToken.address);
         setUser({
           f_name: f_name,
           l_name: l_name,
@@ -73,9 +72,6 @@ function HomePage() {
         // Token expired, logout user
         handleLogoutAuto();
       }
-
-
-
     } else {
       setIsLoggedIn(false);
     }
@@ -106,11 +102,11 @@ function HomePage() {
         setUserName("");
 
         // ใช้ useNavigate เพื่อนำผู้ใช้กลับไปยังหน้าหลัก
-        navigate("/"); // ลิงก์ไปยังหน้าหลัก
+        navigate("/"); 
+        window.location.reload();//refresh
       }
     });
   };
-
 
   return (
     <>
