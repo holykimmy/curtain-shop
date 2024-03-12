@@ -16,6 +16,7 @@ import r6 from "../img/r6.jpg";
 function CheckOrdeerPage() {
   const dispatch = useDispatch();
 
+  console.log("check order");
   //calculator
   const { cart } = useSelector((state) => ({ ...state }));
 
@@ -25,6 +26,13 @@ function CheckOrdeerPage() {
       return currenValue + nextValue.count * nextValue.price;
     }, 0); // const start
   };
+  const totalPrice = getTotal();
+
+  const totalItem = cart.reduce(
+    (total, item) => total + item.count * item.price,
+    0
+  );
+  console.log(totalItem);
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
@@ -34,6 +42,7 @@ function CheckOrdeerPage() {
   const [idUser, setIdUser] = React.useState("");
 
   const [user, setUser] = React.useState({
+    username: "",
     f_name: "",
     l_name: "",
     email: "",
@@ -42,50 +51,52 @@ function CheckOrdeerPage() {
   });
 
   useEffect(() => {
-    const authToken = localStorage.getItem("token");
+    const fetchData = () => {
+      const authToken = localStorage.getItem("token");
 
-    if (authToken) {
-      // Set up axios default headers
-      axios.defaults.headers.common["authtoken"] = authToken;
+      if (authToken) {
+        // Set up axios default headers
+        axios.defaults.headers.common["authtoken"] = authToken;
 
-      const decodedToken = jwtDecode(authToken); // Decode the token
+        const decodedToken = jwtDecode(authToken); // Decode the token
+        console.log(decodedToken);
 
-      if (decodedToken && decodedToken.user) {
-        const { f_name, l_name } = decodedToken.user;
+        if (decodedToken && decodedToken.user) {
+          const { f_name, l_name } = decodedToken.user;
 
-        const id = decodedToken.id;
-        setUserName(`${f_name} ${l_name}`);
-        setIdUser(`${id}`);
-        console.log("addresssjhf", decodedToken.user.addres);
-        setUser({
-          f_name: f_name,
-          l_name: l_name,
-          email: decodedToken.user.email,
-          tell: decodedToken.user.tell,
-          address: decodedToken.user.address,
-        });
+          const id = decodedToken.id;
+          setUserName(`${f_name} ${l_name}`);
+          setIdUser(`${id}`);
+          setUser({
+            username: decodedToken.user.username,
+            f_name: f_name,
+            l_name: l_name,
+            email: decodedToken.user.email,
+            tell: decodedToken.user.tell,
+            address: decodedToken.user.address,
+          });
 
-        setIsLoggedIn(true);
+          setIsLoggedIn(true);
+        } else {
+          setUserData(decodedToken.user);
+        }
+
+        if (
+          decodedToken &&
+          decodedToken.exp &&
+          decodedToken.exp * 1000 < Date.now()
+        ) {
+          // Token expired, logout user
+          handleLogoutAuto();
+        }
       } else {
-        setUserData(decodedToken.user);
+        setIsLoggedIn(false);
       }
+    };
 
-      console.log("log1", isLoggedIn);
-
-      if (
-        decodedToken &&
-        decodedToken.exp &&
-        decodedToken.exp * 1000 < Date.now()
-      ) {
-        // Token expired, logout user
-        handleLogoutAuto();
-      }
-    } else {
-      setIsLoggedIn(false);
-    }
+    fetchData();
   }, []);
 
-  console.log("outside logh", isLoggedIn);
   if (!isLoggedIn) {
     console.log("hellotest tset ");
     navigate("/");
@@ -94,10 +105,10 @@ function CheckOrdeerPage() {
   const handleLogoutAuto = () => {
     // Logout user
     localStorage.removeItem("token");
-    setUserName(""); // Clear user name or any other relevant state
+    setUserName(""); 
 
-    // Redirect to login page or perform any other action
-    navigate("/"); // Redirect to login page
+
+    navigate("/"); 
   };
 
   const handleLogout = () => {
@@ -121,45 +132,146 @@ function CheckOrdeerPage() {
     });
   };
 
-  //login check
+ //see address
   const [address, setAddress] = useState([]);
+  console.log(idUser);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const authToken = localStorage.getItem("token");
-        console.log("token: ", authToken);
-        if (authToken) {
-          // Set up axios default headers
-          axios.defaults.headers.common["authtoken"] = authToken;
-
-          const decodedToken = jwtDecode(authToken); // Decode the token
-
-          if (decodedToken && decodedToken.user) {
-            const { username } = decodedToken.user;
-            const addressData = await customerAPI.getAddress(username); // ส่งชื่อผู้ใช้ไปยังฟังก์ชัน getAddress()
-            setAddress(addressData);
-          }
-        }
-      } catch (err) {
-        console.error("เกิดข้อผิดพลาดในการดึงข้อมูล", err);
-      }
+    const fetchData = () => {
+      customerAPI
+        .getCustomerAddressById(idUser)
+        .then((addressData) => {
+          setAddress(addressData);
+        })
+        .catch((err) => {
+          console.error("error", err);
+        });
     };
-
-    const interval = setInterval(() => {
-      fetchData();
-    }, 5000);
-
     fetchData();
-    return () => clearInterval(interval);
-  }, []);
 
-  console.log(address);
+    // Return a cleanup function to clear the interval
+    return () => clearInterval();
+  }, [idUser]);
 
-  const handleAddressSelect = (selectedIndex) => {
-    const selectedAddress = address[selectedIndex];
-    console.log("Selected Address:", selectedAddress);
-    // ทำสิ่งที่ต้องการเมื่อเลือกที่อยู่
+ 
+  // useEffect(() => {
+  //   const fetchData = () => {
+  //     customerAPI
+  //       .getOrderById(idUser)
+  //       .then((addressData) => {
+  //         setAddress(addressData);
+  //       })
+  //       .catch((err) => {
+  //         console.error("error", err);
+  //       });
+  //   };
+  //   fetchData();
+
+  //   // Return a cleanup function to clear the interval
+  //   return () => clearInterval();
+  // }, [idOrder]);
+
+ 
+
+  const [sendAddress, setSendAddress] = useState("");
+
+  const handleAddressSelect = (selectedId) => {
+    const selectedAddress = address.find(
+      (addressData) => addressData.id === selectedId
+    );
+    setSendAddress(selectedAddress);
+    // console.log("Selected Address:", selectedAddress);
+  };
+
+  useEffect(() => {}, [sendAddress]);
+
+  // console.log("send",sendAddress);
+
+  const deliveryOptions = [
+    {
+      id: 500,
+      title: "ทางร้านขนส่งพร้อมติดตั้ง",
+      duration: "ระยะเวลา: 7-14 วัน",
+    },
+    {
+      id: 200,
+      title: "จัดส่งสินค้าทางขนส่ง",
+      duration: "ระยะเวลา: 7-14 วัน",
+    },
+  ];
+
+  const [selectedDelivery, setSelecteDelivery] = useState("");
+  // console.log("testtt deli");
+  const handleDeliveryChange = (optionId) => {
+    setSelecteDelivery(optionId);
+  };
+
+  // console.log("select", selectedDelivery);
+  const deliveryIs = deliveryOptions.find(
+    (option) => option.id === selectedDelivery
+  );
+
+  const submitForm = async (e) => {
+    e.preventDefault();
+
+    if (!deliveryIs) {
+      Swal.fire({
+        icon: "warning",
+        title: "กรุณาเลือกการจัดส่ง",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      return; // หยุดการทำงานของฟังก์ชันหลังจากแสดงแจ้งเตือน
+    }
+
+    if (!sendAddress) {
+      Swal.fire({
+        icon: "warning",
+        title: "กรุณาเลือกที่อยู่ที่ต้องการจัดส่ง",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      return; // หยุดการทำงานของฟังก์ชันหลังจากแสดงแจ้งเตือน
+    }
+
+    const formData = {
+      customerId: idUser,
+      products: cart.map((item) => ({
+        product: item._id,
+        count: item.count,
+        width: item.width,
+        height: item.height,
+      })),
+      sendAddress: sendAddress._id,
+      deliveryIs: selectedDelivery,
+      totalPrice: totalPrice,
+      confirmed: true,
+    };
+    console.log("----addresses ----");
+    console.log(formData);
+    console.log("----addresses ----");
+
+    try {
+      const response = await axios.put(
+        `${process.env.REACT_APP_API}/customer/cart-to-order/`,
+        formData
+      );
+      console.log(response.data); // แสดงข้อมูลที่ API ตอบกลับ
+      Swal.fire({
+        icon: "success",
+        title: "บันทึกข้อมูลเรียบร้อย",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } catch (err) {
+      console.error(err);
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดพลาดในการบันทึกข้อมูล",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
   };
 
   return (
@@ -178,177 +290,173 @@ function CheckOrdeerPage() {
             ยืนยันคำสั่งซื้อ
           </h5>
         </div>
-        <div class="grid sm:px-10 lg:grid-cols-2 lg:px-20 xl:px-32">
-          <div class="px-4 pt-8">
-            <p class="text-2xl text-b-font">ข้อมูลคำสั่งซื้อ</p>
-            <p class="text-gray-400">กรุณาตรวจสอบรายการสินค้าของคุณ</p>
-            <div class="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6">
-              {cart.map((item, index) => (
-                <div
-                  key={index}
-                  class="flex flex-col shadow-xl  rounded-lg bg-white sm:flex-row"
-                >
-                  <img
-                    class="m-5 h-50 w-40 rounded-md border object-cover object-center"
-                    src={`${process.env.REACT_APP_API}/images/${item.image}`}
-                    alt="product"
-                  />
-                  <div class="flex w-full flex-col px-4 py-4">
-                    <span class="font-semibold">{item.name}</span>
-                    {/* <span class="float-right text-gray-600">
+        <form onSubmit={submitForm}>
+          <div class="grid sm:px-10 lg:grid-cols-2 lg:px-20 xl:px-32">
+            <div class="px-4 pt-8">
+              <p class="text-2xl text-b-font">ข้อมูลคำสั่งซื้อ</p>
+              <p class="text-gray-400">กรุณาตรวจสอบรายการสินค้าของคุณ</p>
+
+              <div class="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6">
+                {cart.map((item, index) => (
+                  <div
+                    key={index}
+                    class="flex flex-col shadow-xl  rounded-lg bg-white sm:flex-row"
+                  >
+                    <img
+                      class="m-5 h-50 w-40 rounded-md border object-cover object-center"
+                      src={`${process.env.REACT_APP_API}/images/${item.image}`}
+                      alt="product"
+                    />
+                    <div class="flex w-full flex-col px-4 py-4">
+                      <span class="font-semibold">{item.name}</span>
+                      {/* <span class="float-right text-gray-600">
                       ความกว้าง :{item.width}
                     </span>
                     <span class="float-right text-gray-600">
                       ความยาว :{item.height}
                     </span> */}
-                    <span class="float-right text-gray-600">
-                      รหัสสี : {item.color}
-                    </span>
-                    {/* <span class="float-right font-bold text-gray-600">
+                      <span class="float-right text-gray-600">
+                        รหัสสี : {item.color}
+                      </span>
+                      {/* <span class="float-right font-bold text-gray-600">
                       ผ้าม่านที่สั่งตัด : {item.type}
                     </span> */}
-                    <div class="float-right text-gray-600 whitespace-pre-wrap">
-                      รายละเอียดเพิ่มเติม :{item.detail}
+                      <div class="float-right text-gray-600 whitespace-pre-wrap">
+                        รายละเอียดเพิ่มเติม :{item.detail}
+                      </div>
+                      <p class="text-md font-bold">
+                        {" "}
+                        การสั่งตัดผ้าม่าน : {item.type} เซนติเมตร{" "}
+                      </p>
+                      <p class="text-md font-bold"> ราคา/หลา : {item.price} </p>
+                      <p class="text-md font-bold">
+                        {" "}
+                        ขนาด : {item.width} x {item.height} เซนติเมตร{" "}
+                      </p>
+                      <p class="text-md font-bold">จำนวน : {item.count} หลา </p>
+                      <p class="text-md font-bold">
+                        รวม : {item.price * item.count} บาท{" "}
+                      </p>
                     </div>
-                    <p class="text-md font-bold">
-                      {" "}
-                      การสั่งตัดผ้าม่าน : {item.type}  เซนติเมตร{" "}
-                    </p>
-                    <p class="text-md font-bold"> ราคา/หลา : {item.price} </p>
-                    <p class="text-md font-bold">
-                      {" "}
-                      ขนาด : {item.width} x {item.height} เซนติเมตร{" "}
-                    </p>
-                    <p class="text-md font-bold">จำนวน : {item.count} หลา </p>
-                    <p class="text-md font-bold">
-                      รวม : {item.price * item.count} บาท{" "}
-                    </p>
                   </div>
+                ))}
+              </div>
+
+              <p class="mt-8 text-2xl text-b-font">เลือกการขนส่ง</p>
+              {deliveryOptions.map((option) => (
+                <div key={option.id} className="relative mt-4">
+                  <input
+                    className="peer hidden"
+                    id={`radio_${option.id}`}
+                    type="radio"
+                    name="deliveryOption"
+                    value={option.id}
+                    checked={selectedDelivery === option.id}
+                    onChange={() =>
+                      handleDeliveryChange(
+                        option.id,
+                        option.title,
+                        option.duration
+                      )
+                    }
+                  />
+                  <span className="peer-checked:border-gray-700 absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-8 border-gray-300 bg-white"></span>
+                  <label
+                    className="peer-checked:border-2 peer-checked:border-gray-700 peer-checked:bg-gray-50 flex cursor-pointer select-none rounded-lg border border-gray-300 p-4"
+                    htmlFor={`radio_${option.id}`}
+                  >
+                    <img
+                      className="w-14 object-contain"
+                      src="/images/naorrAeygcJzX0SyNI4Y0.png"
+                      alt=""
+                    />
+                    <div className="ml-5">
+                      <span className="mt-2 font-semibold">{option.title}</span>
+                      <p className="text-slate-500 text-sm leading-6">
+                        {option.duration}
+                      </p>
+                    </div>
+                  </label>
                 </div>
               ))}
             </div>
+            <div class="bg-brown-blog mt-10  px-4 pt-8 lg:mt-0">
+              <select
+                className="mb-2 rounded-lg"
+                onChange={(e) => handleAddressSelect(e.target.value)}
+              >
+                <option value="">โปรดเลือกที่อยู่ที่ต้องการจัดส่ง</option>
+                {address.map((addressData) => (
+                  <option key={addressData._id} value={addressData._id}>
+                    <div>
+                      ชื่อ {addressData.name} <hr />
+                    </div>
+                    <div>เบอร์โทร {addressData.tell} </div>
+                    <div>
+                      {addressData.houseNo} {addressData.sub_district}{" "}
+                      {addressData.district} {addressData.province}{" "}
+                      {addressData.postcode}
+                    </div>
+                  </option>
+                ))}
+              </select>
 
-            <p class="mt-8 text-2xl text-b-font">เลือกการขนส่ง</p>
-            <form class="mt-5 grid gap-6">
-              <div class="relative">
-                <input
-                  class="peer hidden"
-                  id="radio_1"
-                  type="radio"
-                  name="radio"
-                  checked
-                />
-                <span class="peer-checked:border-gray-700 absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-8 border-gray-300 bg-white"></span>
-                <label
-                  class="peer-checked:border-2 peer-checked:border-gray-700 peer-checked:bg-gray-50 flex cursor-pointer select-none rounded-lg border border-gray-300 p-4"
-                  for="radio_1"
+              <p>
+                <Link
+                  to="/address"
+                  className=" mt-2 mb-3 px-4 py-2 rounded-lg text-base  text-gray-900 hover:text-gray-600"
+                  // onClick={() => handleEditProduct(product._id, product.name)}
                 >
-                  <img
-                    class="w-14 object-contain"
-                    src="/images/naorrAeygcJzX0SyNI4Y0.png"
-                    alt=""
-                  />
-                  <div class="ml-5">
-                    <span class="mt-2 font-semibold">
-                      ทางร้านขนส่งพร้อมติดตั้ง
-                    </span>
-                    <p class="text-slate-500 text-sm leading-6">
-                      ระยะเวลา: 7-14 วัน
+                  เพิ่มที่อยู่ใหม่ ->
+                </Link>
+              </p>
+
+              <p class="text-2xl font-medium">ข้อมูลการชำระเงิน</p>
+              <p class=" text-gray-1000">รายละเอียดการชำระเงินของท่าน</p>
+
+              <div class="">
+                <div class="mt-6 border-t border-b py-2">
+                  <div class="flex-col items-center justify-between">
+                    {cart.map((item, index) => (
+                      <p
+                        key={index}
+                        className="ml-10 font-semibold text-lg text-gray-900 my-2"
+                      >
+                        {item.name} ขนาด {item.width} x {item.height} เซนติเมตร
+                        x {item.count} = {item.price * item.count}
+                      </p>
+                    ))}
+
+                    <p class="mt-4 text-lg font-medium text-gray-900">
+                      {" "}
+                      ราคารวม : {totalPrice} บาท{" "}
                     </p>
                   </div>
-                </label>
-              </div>
-              <div class="relative">
-                <input
-                  class="peer hidden"
-                  id="radio_2"
-                  type="radio"
-                  name="radio"
-                  checked
-                />
-                <span class="peer-checked:border-gray-700 absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-8 border-gray-300 bg-white"></span>
-                <label
-                  class="peer-checked:border-2 peer-checked:border-gray-700 peer-checked:bg-gray-50 flex cursor-pointer select-none rounded-lg border border-gray-300 p-4"
-                  for="radio_2"
-                >
-                  <img
-                    class="w-14 object-contain"
-                    src="/images/oG8xsl3xsOkwkMsrLGKM4.png"
-                    alt=""
-                  />
-                  <div class="ml-5">
-                    <span class="mt-2 font-semibold">จัดส่งสินค้าทางขนส่ง</span>
-                    <p class="text-slate-500 text-sm leading-6">
-                      ระยะเวลา: 7-14 วัน
-                    </p>
+                  <div class="flex items-center justify-between">
+                    <p class="text-lg font-medium text-gray-900">ค่าจัดส่ง</p>
+                    <p class="font-semibold text-lg text-gray-900">200</p>
                   </div>
-                </label>
-              </div>
-            </form>
-          </div>
-          <div class="bg-brown-blog mt-10  px-4 pt-8 lg:mt-0">
-            <select
-              className="mb-2 rounded-lg"
-              onChange={(e) => handleAddressSelect(e.target.value)}
-            >
-              <option value="">โปรดเลือกที่อยู่ที่ต้องการจัดส่ง</option>
-              {address.map((addressData, index) => (
-                <option key={index} value={addressData._id}>
-                  {addressData.houseNo} {addressData.sub_district}{" "}
-                  {addressData.district} {addressData.province}{" "}
-                  {addressData.postcode}
-                </option>
-              ))}
-            </select>
-            <p>
-            <Link
-              to="/address"
-              className=" mt-2 mb-3 px-4 py-2 rounded-lg text-base  text-gray-900 hover:text-gray-600"
-              // onClick={() => handleEditProduct(product._id, product.name)}
-            >
-              เพิ่มที่อยู่ใหม่ ->
-            </Link></p>
-
-            <p class="text-2xl font-medium">ข้อมูลการชำระเงิน</p>
-            <p class=" text-gray-1000">รายละเอียดการชำระเงินของท่าน</p>
-
-            <div class="">
-              <div class="mt-6 border-t border-b py-2">
-                <div class="flex-col items-center justify-between">
-                  {cart.map((item, index) => (
-                    <p
-                      key={index}
-                      className="ml-10 font-semibold text-lg text-gray-900 my-2"
-                    >
-                      {item.name} ขนาด {item.width} x {item.height} เซนติเมตร x{" "}
-                      {item.count} = {item.price * item.count}
-                    </p>
-                  ))}
-
-                  <p class="mt-4 text-lg font-medium text-gray-900">
-                    {" "}
-                    ราคารวม : {getTotal()} บาท{" "}
+                </div>
+                <div class="mt-6 flex items-center justify-between">
+                  <p class="text-lg font-medium text-gray-900">
+                    ราคารวมทั้งหมด
+                  </p>
+                  <p class="text-lg font-semibold text-gray-900">
+                    {getTotal() + 200} บาท
                   </p>
                 </div>
-                <div class="flex items-center justify-between">
-                  <p class="text-lg font-medium text-gray-900">ค่าจัดส่ง</p>
-                  <p class="font-semibold text-lg text-gray-900">200</p>
-                </div>
               </div>
-              <div class="mt-6 flex items-center justify-between">
-                <p class="text-lg font-medium text-gray-900">ราคารวมทั้งหมด</p>
-                <p class="text-lg font-semibold text-gray-900">
-                  {getTotal() + 200} บาท
-                </p>
-              </div>
-            </div>
-            <Link to="/payment">
-              <button class="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white">
+
+              <button
+                value="save"
+                type="submit"
+                class="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white"
+              >
                 ยืนยันคำสั่งซื้อ
               </button>
-            </Link>
+            </div>
           </div>
-        </div>
+        </form>
         <div className="flex justify-center items-center ">
           <p class="p-5 xl:text-2xl text-b-font text-lg"></p>
         </div>

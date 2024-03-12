@@ -23,15 +23,3 @@ const categorySchema = mongoose.Schema(
 );
 module.exports = mongoose.model("Categorys", categorySchema);
 
-// const typeOfPSchema =mongoose.Schema(
-//     {
-//         p_type: {
-//             type: String,
-//             unique: true,
-//             required: true,
-//           },
-
-//     }, { timestamps: true }
-
-// )
-// module.exports = mongoose.model("TypeOfPs", typeOfPSchema);

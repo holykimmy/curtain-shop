@@ -10,25 +10,16 @@ import { useDispatch, useSelector } from "react-redux";
 import ProductInCart from "./ProductIncart";
 function CartPage() {
   const dispatch = useDispatch();
-
-  //calculator
+  // const { cart } = useSelector((state) => ({ ...state }));
   const { cart } = useSelector((state) => ({ ...state }));
 
-  const getTotal = () => {
-    return cart.reduce((currenValue, nextValue) => {
-      return currenValue + nextValue.count * nextValue.price;
-
-    }, 0); // const start
-  };
-
-  
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
-
   const [userData, setUserData] = useState(null);
-  const [userName, setUserName] = React.useState("");
-  const [idUser, setIdUser] = React.useState("");
-
+  // const [userName, setUserName] = React.useState("");
+  const [userName, setUserName] = useState("");
+  // const [idUser, setIdUser] = React.useState("");
+  const [idUser, setIdUser] = useState("");
   const [user, setUser] = React.useState({
     f_name: "",
     l_name: "",
@@ -36,6 +27,7 @@ function CartPage() {
     tell: "",
     address: "",
   });
+
   useEffect(() => {
     const authToken = localStorage.getItem("token");
 
@@ -77,6 +69,12 @@ function CartPage() {
     }
   }, []);
 
+  const getTotal = () => {
+    return cart.reduce((currenValue, nextValue) => {
+      return currenValue + nextValue.count * nextValue.price;
+    }, 0); // const start
+  };
+
   const handleLogoutAuto = () => {
     // Logout user
     localStorage.removeItem("token");
@@ -99,6 +97,7 @@ function CartPage() {
       if (result.isConfirmed) {
         // ยืนยันออกจากระบบ
         localStorage.removeItem("token");
+
         setUserName("");
 
         // ใช้ useNavigate เพื่อนำผู้ใช้กลับไปยังหน้าหลัก
@@ -109,15 +108,38 @@ function CartPage() {
   //login check
 
   //save order
-  const handleSaveOrder = () => {
-    Swal.fire({
-      position: "top-end",
-      icon: "success",
-      title: "บันทึกคำสั่งซื้อสำเร็จ",
-      showConfirmButton: false,
-      timer: 1500,
-    });
-    navigate("/check-order");
+
+  const handleSaveOrder = async (e) => {
+    console.log(idUser);
+    console.log(cart);
+    try {
+      // เรียกใช้ API ด้วย Axios
+      const response = await axios.post(
+        `${process.env.REACT_APP_API}/customer/cart`,
+        { idUser, cart }
+      );
+
+      // ตรวจสอบการตอบกลับจาก API
+      if (response.status === 200) {
+        console.log("บันทึกสำเร็จ!");
+        Swal.fire({
+          icon: "success",
+          title: "บันทึกสำเร็จ!",
+          text: "ข้อมูลของคุณได้รับการบันทึกเรียบร้อยแล้ว",
+        }).then(() => {
+          
+          localStorage.removeItem("cart");
+          navigate("/check-order");
+          // ทำอื่นๆ ตามที่ต้องการหลังจากบันทึกสำเร็จ
+        });
+      } else {
+        console.log("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+        // จัดการเรื่องข้อผิดพลาดตามที่คุณต้องการ
+      }
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาดในการเรียกใช้ API:", error);
+      // จัดการเรื่องข้อผิดพลาดตามที่คุณต้องการ
+    }
   };
 
   const showCartItems = () => {
@@ -136,11 +158,12 @@ function CartPage() {
                 ยี่ห้อสินค้า
               </th>
               <th className="text-browntop px-2 py-1 border border-gray-300 ...">
-               รายการสินค้า
+                รายการสินค้า
               </th>
               <th className="text-browntop px-2 py-1 border border-gray-300 ...">
                 ประเภท
-              </th> <th className="text-browntop px-2 py-1 border border-gray-300 ...">
+              </th>{" "}
+              <th className="text-browntop px-2 py-1 border border-gray-300 ...">
                 ราง
               </th>
               <th className="text-browntop px-2 py-1 border border-gray-300 ...">
@@ -152,9 +175,7 @@ function CartPage() {
               <th className="text-browntop px-2 py-1 border border-gray-300 ...">
                 จำนวนสินค้า
               </th>
-              <th className="text-browntop px-2 py-1 border border-gray-300 ...">
-                
-              </th>
+              <th className="text-browntop px-2 py-1 border border-gray-300 ..."></th>
             </tr>
           </thead>
 
@@ -188,45 +209,46 @@ function CartPage() {
           ตระกร้าสินค้า / {cart.length} product
         </div>
         <div className="flex flex-col justify-between ">
-
           {!cart.length ? <p>no product in cart</p> : showCartItems()}
 
           <div className="flex-col items-center mr-10 justify-center">
             {" "}
             <hr />
-            <h4 className=" text-center text-brown-400 my-3" >รายการสินค้า </h4>
+            <h4 className=" text-center text-brown-400 my-3">รายการสินค้า </h4>
             <hr />
             <hr />
             {cart.map((item, index) => (
               <p key={index} className="ml-10  text-brown-400 my-2">
-                {item.name} ขนาด {item.width} x {item.height} เซนติเมตร x {item.count} = {item.price * item.count}
+                {item.name} ขนาด {item.width} x {item.height} เซนติเมตร x{" "}
+                {item.count} = {item.price * item.count}
               </p>
             ))}
             <hr />
             <hr />
-            <h4 className=" ml-10 text-brown-400 my-2 " >ราคารวม : {getTotal()} บาท </h4>
+            <h4 className=" ml-10 text-brown-400 my-2 ">
+              ราคารวม : {getTotal()} บาท{" "}
+            </h4>
             <hr />
             <div className="flex items-center justify-center">
-            {isLoggedIn ? (
-              <button
-                className="my-4 text-white hover:shadow-2xl bg-green-400 rounded-xl p-2 w-[150px]"
-                disable={!cart.length}
-                onClick={handleSaveOrder}
-              >
-                ชำระเงิน
-              </button>
-            ) : (
-              <Link to="/login" state="cart">
-                <button className="my-4 text-white hover:shadow-2xl bg-red-400 rounded-xl p-2 w-[150px]">
-                  {" "}
-                  เข้าสู่ระบบเพื่อทำรายการต่อ{" "}
+              {isLoggedIn ? (
+                <button
+                  className="my-4 text-white hover:shadow-2xl bg-green-400 rounded-xl p-2 w-[150px]"
+                  disabled={!cart.length}
+                  onClick={handleSaveOrder}
+                >
+                  ชำระเงิน
                 </button>
-              </Link>
-            )}
+              ) : (
+                <Link to="/login" state="cart">
+                  <button className="my-4 text-white hover:shadow-2xl bg-red-400 rounded-xl p-2 w-[150px]">
+                    {" "}
+                    เข้าสู่ระบบเพื่อทำรายการต่อ{" "}
+                  </button>
+                </Link>
+              )}
             </div>
           </div>
         </div>
-
       </div>
       <Footer></Footer>
     </>

@@ -33,34 +33,17 @@ const customerSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    role: { 
-      type: String, 
-    
-      default: "user" // กำหนดค่าเริ่มต้นเป็น "user"
+    role: {
+      type: String,
+
+      default: "user", // กำหนดค่าเริ่มต้นเป็น "user"
     },
-    address: [
-      {
-        houseNo: { type: String },
-        sub_district: { type: String },
-        district: { type: String },
-        province: { type: String },
-        postcode: { type: String },
-      },
-    ],
-    tokens: [
-      {
-        token: {
-          type: String,
-          required: true,
-        },
-      },
-    ],
+ 
   },
   { timestamps: true }
 );
 
 // Hashing password before saving
-
 
 const User = mongoose.model("Customers", customerSchema);
 

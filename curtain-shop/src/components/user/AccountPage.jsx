@@ -17,6 +17,7 @@ function ContactPage() {
   const [idUser, setIdUser] = React.useState("");
 
   const [user, setUser] = React.useState({
+    username:"",
     f_name: "",
     l_name: "",
     email: "",
@@ -31,6 +32,8 @@ function ContactPage() {
       axios.defaults.headers.common["authtoken"] = authToken;
 
       const decodedToken = jwtDecode(authToken); // Decode the token
+      console.log(decodedToken);
+
 
       if (decodedToken && decodedToken.user) {
         const { f_name, l_name } = decodedToken.user;
@@ -38,8 +41,8 @@ function ContactPage() {
         const id = decodedToken.id;
         setUserName(`${f_name} ${l_name}`);
         setIdUser(`${id}`);
-        console.log("addresssjhf", decodedToken.user.addres);
         setUser({
+          username: decodedToken.user.username,
           f_name: f_name,
           l_name: l_name,
           email: decodedToken.user.email,
@@ -60,9 +63,6 @@ function ContactPage() {
         // Token expired, logout user
         handleLogoutAuto();
       }
-
-
-
     } else {
       setIsLoggedIn(false);
     }
@@ -98,48 +98,31 @@ function ContactPage() {
     });
   };
 
-  
   const [address, setAddress] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const authToken = localStorage.getItem("token");
-        console.log("token: ", authToken);
-        if (authToken) {
-          // Set up axios default headers
-          axios.defaults.headers.common["authtoken"] = authToken;
-
-          const decodedToken = jwtDecode(authToken); // Decode the token
-
-          if (decodedToken && decodedToken.user) {
-            const { username } = decodedToken.user;
-            const addressData = await customerAPI.getAddress(username); // ส่งชื่อผู้ใช้ไปยังฟังก์ชัน getAddress()
-            setAddress(addressData);
-          }
-        }
+        const addressData = await customerAPI.getCustomerAddressById(idUser);
+        setAddress(addressData);
       } catch (err) {
-        console.error("เกิดข้อผิดพลาดในการดึงข้อมูล", err);
+        console.error("erro", err);
       }
     };
-
     const interval = setInterval(() => {
       fetchData();
     }, 5000);
 
     fetchData();
-    return () => clearInterval(interval);
-  }, []);
-
-  
+    return ()=> clearInterval(interval);
+  }, [idUser]);
 
   const handleEditAddress = (addressData) => {
-    const { _id } = addressData;
-    navigate(`/edit-address/${_id}`);
+    const { id } = addressData;
+    navigate(`/edit-address/${id}`);
   };
-  
 
-  const handleDeleteAddress = async (_id) => {
+  const handleDeleteAddress = async (id) => {
     // แสดง Confirm Dialog เพื่อยืนยันการลบที่อยู่
     const confirmation = await Swal.fire({
       title: "คุณแน่ใจหรือไม่?",
@@ -155,13 +138,13 @@ function ContactPage() {
       try {
         // ทำการลบที่อยู่โดยส่งคำขอไปยังเซิร์ฟเวอร์
         const response = await axios.delete(
-          `${process.env.REACT_APP_API}/customer/delete-address/${idUser}/${_id}`
+          `${process.env.REACT_APP_API}/customer/delete-address/${idUser}/${id}`
         );
 
         // ถ้าการลบสำเร็จ
         if (response.status === 200) {
           // อัปเดต UI และแสดงข้อความแจ้งเตือน
-          setAddress(address.filter((addr) => addr._id !== _id));
+          setAddress(address.filter((addr) => addr.id !== id));
           Swal.fire({
             icon: "success",
             title: "ลบที่อยู่สำเร็จ",
@@ -234,6 +217,13 @@ function ContactPage() {
               <p className="mt-3 text-base text-brown-400">
                 ที่อยู่ : {index + 1}
               </p>
+
+              <p className="mt-3 text-base text-brown-400">
+                ชื่อ : {addressData.name}
+              </p>
+              <p className="mt-3 text-base text-brown-400">
+                เบอร์โทร : {addressData.tell}
+              </p>
               <p className="mt-3 text-base text-brown-400">
                 บ้านเลขที่ : {addressData.houseNo}
               </p>
@@ -261,7 +251,7 @@ function ContactPage() {
                 <div className="flex">
                   <button
                     className="mx-4 mt-4 mb-2 px-4 py-2 rounded-lg inline-block text-base bg-red-400 hover:bg-browntop hover:shadow-xl text-white focus:outline-none focus:shadow-outline"
-                    onClick={() => handleDeleteAddress(addressData._id)}
+                    onClick={() => handleDeleteAddress(addressData.id)}
                   >
                     ลบที่อยู่
                   </button>

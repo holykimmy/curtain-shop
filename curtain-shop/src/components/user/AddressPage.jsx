@@ -17,6 +17,7 @@ function AddressPage() {
   const [userName, setUserName] = React.useState("");
   const [idUser, setIdUser] = React.useState("");
   const [user, setUser] = React.useState({
+    username:"",
     f_name: "",
     l_name: "",
     email: "",
@@ -40,6 +41,7 @@ function AddressPage() {
         setIdUser(`${id}`);
         console.log("addresssjhf", decodedToken.user.addres);
         setUser({
+          username: decodedToken.user.username,
           f_name: f_name,
           l_name: l_name,
           email: decodedToken.user.email,
@@ -60,9 +62,6 @@ function AddressPage() {
         // Token expired, logout user
         handleLogoutAuto();
       }
-
-
-
     } else {
       setIsLoggedIn(false);
     }
@@ -99,6 +98,8 @@ function AddressPage() {
   };
 
   const [address, setAddress] = useState({
+    name: "",
+    tell: "",
     houseNo: "",
     sub_district: "",
     district: "",
@@ -125,7 +126,6 @@ function AddressPage() {
       window.jQuery(document).on("thailand:autocomplete:end", function (event) {
         const data = event.originalEvent.data;
         setAddress({
-          houseNo: data.district[0].parent_name,
           sub_district: data.district[0].name,
           district: data.amphoe[0].name,
           province: data.province[0].name,
@@ -135,35 +135,36 @@ function AddressPage() {
     }
   }, []);
 
-  const handleChange = (e) => {
-    const { id, value } = e.target;
-    setAddress((prevState) => ({
-      ...prevState,
-      [id]: value,
-    }));
-  };
-  
+  // const handleChange = (e) => {
+  //   const { id, value } = e.target;
+  //   setAddress((prevState) => ({
+  //     ...prevState,
+  //     [id]: value,
+  //   }));
+  // };
+
   const inputValue = (name) => (event) => {
     const value = event.target.value;
     console.log(name, "=", value);
     setAddress((prevState) => ({ ...prevState, [name]: value }));
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       // Update address based on selected autocomplete values
       const updatedAddress = {
-        houseNo: document.getElementById('houseNo').value,
-        sub_district: document.getElementById('sub_district').value,
-        district: document.getElementById('district').value,
-        province: document.getElementById('province').value,
-        postcode: document.getElementById('postcode').value
+        name: address.name,
+        tell: address.tell,
+        houseNo: address.houseNo,
+        sub_district: document.getElementById("sub_district").value,
+        district: document.getElementById("district").value,
+        province: document.getElementById("province").value,
+        postcode: document.getElementById("postcode").value,
       };
-  
+
       setAddress(updatedAddress); // Update the address state
-  
+
       // Send updated address to the API
       const response = await axios.post(
         `${process.env.REACT_APP_API}/customer/add-address`,
@@ -172,7 +173,7 @@ function AddressPage() {
           address: [updatedAddress], // Send the updated address
         }
       );
-  
+
       // Handle response based on status
       if (response.status === 200) {
         // Show success message
@@ -198,9 +199,6 @@ function AddressPage() {
       });
     }
   };
-  
-
- 
 
   return (
     <>
@@ -221,6 +219,25 @@ function AddressPage() {
               className="m-auto mt-2 mb-3 items-center shadow appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="houseNo"
               type="text"
+              value={address.name}
+              required
+              onChange={inputValue("name")}
+              placeholder="ชื่อ - นามสกุล"
+            />
+            <input
+              className="m-auto mt-2 mb-3 items-center shadow appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="houseNo"
+              type="text"
+              value={address.tell}
+              required
+              onChange={inputValue("tell")}
+              placeholder="เพิ่มเบอร์มือถือ"
+            />
+
+            <input
+              className="m-auto mt-2 mb-3 items-center shadow appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="houseNo"
+              type="text"
               value={address.houseNo}
               required
               onChange={inputValue("houseNo")}
@@ -235,7 +252,7 @@ function AddressPage() {
               type="text"
               value={address.sub_district}
               required
-              onChange={handleChange}
+              onChange={inputValue("sub_district")}
               placeholder="แขวง/ตำบล"
             />
 
@@ -246,7 +263,7 @@ function AddressPage() {
               value={address.district}
               type="text"
               required
-              onChange={handleChange}
+              onChange={inputValue("district")}
               placeholder="เขต/อำเภอ"
             />
 
@@ -257,7 +274,7 @@ function AddressPage() {
               type="text"
               value={address.province}
               required
-              onChange={handleChange}
+              onChange={inputValue("province")}
               placeholder="จังหวัด"
             />
             <p class="text-browntop mt-3 ml-2 ">รหัสไปรษณีย์</p>
@@ -267,7 +284,7 @@ function AddressPage() {
               type="text"
               value={address.postcode}
               required
-              onChange={handleChange}
+              onChange={inputValue("postcode")}
               placeholder="10000"
             />
 

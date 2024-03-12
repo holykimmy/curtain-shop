@@ -19,6 +19,8 @@ function EditAddressPage() {
   const [idUser, setIdUser] = React.useState("");
   // const [addressData, setAddressData] = useState(null);
   const [addressData, setAddressData] = useState({
+    name: "",
+    tell: "",
     houseNo: "",
     sub_district: "",
     district: "",
@@ -73,9 +75,6 @@ function EditAddressPage() {
         // Token expired, logout user
         handleLogoutAuto();
       }
-
-
-
     } else {
       setIsLoggedIn(false);
     }
@@ -154,7 +153,9 @@ function EditAddressPage() {
       window.jQuery(document).on("thailand:autocomplete:end", function (event) {
         const data = event.originalEvent.data;
         setAddress({
-          houseNo: data.district[0].parent_name,
+          name: address.name,
+          tell: address.tell,
+          houseNo: address.houseNo,
           sub_district: data.district[0].name,
           district: data.amphoe[0].name,
           province: data.province[0].name,
@@ -182,6 +183,8 @@ function EditAddressPage() {
     e.preventDefault();
     try {
       const updatedAddress = {
+        name: address.name,
+        tell: address.tell,
         houseNo: address.houseNo,
         sub_district: address.sub_district,
         district: address.district,

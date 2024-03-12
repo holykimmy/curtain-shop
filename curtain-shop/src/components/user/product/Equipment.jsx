@@ -138,6 +138,8 @@ function Equipment() {
     return () => clearInterval(interval);
   }, []);
 
+  
+
   return (
     <>
       <Navbar

@@ -303,16 +303,16 @@ function ComplexNavbar({ isLoggedIn, idUser, userName, handleLogout }) {
 
   useEffect(() => {
     // Check isLoggedIn and userName changes
-    console.log("isLoggedIn:", isLoggedIn);
-    console.log("userName:", userName);
-    console.log("idUser nav:", idUser);
+    // console.log("isLoggedIn:", isLoggedIn);
+    // console.log("userName:", userName);
+    // console.log("idUser nav:", idUser);
   }, [isLoggedIn, userName, idUser]);
 
   const navigate = useNavigate();
 
-  console.log("c isLoggedIn:", isLoggedIn);
-  console.log("c handleLogout:", handleLogout);
-  console.log("c userName: ", userName);
+  // console.log("c isLoggedIn:", isLoggedIn);
+  // console.log("c handleLogout:", handleLogout);
+  // console.log("c userName: ", userName);
 
   return (
     <>

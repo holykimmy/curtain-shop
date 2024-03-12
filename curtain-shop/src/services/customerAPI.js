@@ -11,15 +11,26 @@ const CustomerAPI = {
       });
   },
 
-  getAddress: async (username) => {
+  getCustomerAddressById: async (customerId) => {
     return axios
-      .get(`${process.env.REACT_APP_API}/customer/address`,{ params: { username } }) 
+      .get(`${process.env.REACT_APP_API}/customer/address/${customerId}`) 
       .then((response) => response.data)
       .catch((error) => {
         console.error(error);
         throw error;
       });
   },
+  
+  getOrderById: async (customerId) => {
+    return axios
+      .get(`${process.env.REACT_APP_API}/customer/order/${customerId}`) 
+      .then((response) => response.data)
+      .catch((error) => {
+        console.error(error);
+        throw error;
+      });
+  },
+  
 
   getSearch: (search) => {
     return axios
@@ -41,6 +52,8 @@ const CustomerAPI = {
       throw error;
     }
   },
+
+
 
 };
 export default CustomerAPI;
