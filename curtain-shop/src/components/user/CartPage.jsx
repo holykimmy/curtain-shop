@@ -12,6 +12,8 @@ function CartPage() {
   const dispatch = useDispatch();
   // const { cart } = useSelector((state) => ({ ...state }));
   const { cart } = useSelector((state) => ({ ...state }));
+  // const cart = useSelector((state) => state.cart);
+
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();

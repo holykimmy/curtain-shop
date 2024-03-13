@@ -1,8 +1,8 @@
 let initialState = [];
 
 if (typeof window !== "undefined") {
-  if (localStorage.getItem("cart")) {
-    initialState = JSON.parse(localStorage.getItem("cart"));
+  if (sessionStorage.getItem("cart")) {
+    initialState = JSON.parse(sessionStorage.getItem("cart"));
   } else {
     initialState = [];
   }
@@ -16,3 +16,4 @@ export function cartReducer(state = initialState, action) {
       return state;
   }
 }
+export default cartReducer;

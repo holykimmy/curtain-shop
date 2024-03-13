@@ -53,6 +53,13 @@ function CustomPage() {
     address: "",
   });
 
+  // // เพิ่มข้อมูลลงใน sessionStorage
+  // const myData = { key: "value" };
+  // sessionStorage.setItem("myGlobalData", JSON.stringify(myData));
+
+  // // ดึงข้อมูลจาก sessionStorage
+  // const cookiedata = JSON.parse(sessionStorage.getItem("myGlobalData"));
+
   useEffect(() => {
     const authToken = localStorage.getItem("token");
 
@@ -98,22 +105,12 @@ function CustomPage() {
   const handleLogoutAuto = () => {
     // Logout user
 
-
     localStorage.removeItem("token");
     setUserName(""); // Clear user name or any other relevant state
 
     // Redirect to login page or perform any other action
     navigate("/"); // Redirect to login page
   };
-
-  // useEffect(() => {
-  //   if (isLoggedIn) {
-  //     const userCart = JSON.parse(localStorage.getItem("cart")) || {};
-  //     const currentUserCart = userCart[idUser] || [];
-  //     dispatch({ type: "SET_CART", payload: currentUserCart });
-  //   }
-  // }, [isLoggedIn, idUser, dispatch]);
-
 
   const handleLogout = () => {
     Swal.fire({
@@ -205,11 +202,12 @@ function CustomPage() {
 
   //add to cart
 
+  const cart = useSelector((state) => state.cart);
+
   const dispatch = useDispatch();
 
   const [width, setWidth] = useState("");
   const [height, setHeight] = useState("");
-
 
   const addToCartForGuest = ({
     selectedRail,
@@ -218,16 +216,15 @@ function CustomPage() {
     height,
     ...data
   }) => {
-    
     // ดำเนินการเพิ่มสินค้าในตะกร้าสำหรับผู้ใช้ที่ยังไม่ได้เข้าสู่ระบบ
     // ตัวอย่างเช่นการเพิ่มสินค้าลงใน localStorage หรือในรูปแบบอื่น ๆ
-  
+
     let cart = [];
-  
+
     // ตรวจสอบค่า localStorage.getItem('cart')
     const cartFromStorage = localStorage.getItem("cart");
     console.log("localStorage.getItem('cart'):", cartFromStorage);
-  
+
     try {
       // พยายามแปลงข้อมูลใน localStorage เป็น JSON object
       if (cartFromStorage) {
@@ -239,9 +236,9 @@ function CustomPage() {
       // ลบข้อมูลที่ไม่ถูกต้องออกจาก localStorage
       localStorage.removeItem("cart");
     }
-  
+
     console.log("data.id", data.id);
-  
+
     console.log("------------data--------");
     cart.forEach((item) => {
       console.table(
@@ -254,7 +251,7 @@ function CustomPage() {
     });
     console.log("------------end--------");
     console.table(data.id, selectedType, selectedRail, width, height);
-  
+
     const existingProductIndex = cart.findIndex(
       (item) =>
         item.productId === data.id &&
@@ -263,13 +260,13 @@ function CustomPage() {
         item.height === height &&
         item.rail === selectedRail
     );
-  
+
     console.log("existingProductIndex:", existingProductIndex);
-  
+
     function generateCartId() {
       return Math.floor(Math.random() * 1000000); // สร้างเลขสุ่ม 6 หลักเป็น cartId
     }
-  
+
     if (existingProductIndex !== -1) {
       // เพิ่มค่า count ของสินค้านี้
       cart[existingProductIndex].count++;
@@ -289,25 +286,25 @@ function CustomPage() {
         rail: selectedRail,
         cartId: generateCartId(),
       };
-  
+
       if (localStorage.getItem("cart")) {
         cart = JSON.parse(localStorage.getItem("cart"));
       }
-  
+
       cart.push({
         ...productData,
         count: 1,
       });
     }
     let unique = _.uniqWith(cart, _.isEqual);
-  
+
     localStorage.setItem("cart", JSON.stringify(unique));
-  
+
     dispatch({
       type: "ADD_TO_CART",
       payload: unique,
     });
-  
+
     Swal.fire({
       icon: "success",
       title: "เพิ่มสินค้าในตระกร้าเรียบร้อยแล้ว",
@@ -316,6 +313,59 @@ function CustomPage() {
     });
   };
 
+  // const addToCartForLoggedInUser = ({
+  //   selectedRail,
+  //   selectedType,
+  //   width,
+  //   height,
+  //   ...data
+  // }) => {
+  //   // ดำเนินการเพิ่มสินค้าในตะกร้าสำหรับผู้ใช้ที่เข้าสู่ระบบแล้ว
+  //   // สร้างข้อมูลสินค้าที่จะเพิ่มลงในตะกร้า
+  //   const productData = {
+  //     productId: data.id,
+  //     brand: data.brand,
+  //     p_type: data.p_type,
+  //     name: data.name,
+  //     color: data.color,
+  //     detail: data.detail,
+  //     width: width,
+  //     height: height,
+  //     price: data.price,
+  //     image: data.image,
+  //     type: selectedType,
+  //     rail: selectedRail,
+  //   };
+
+  //   sessionStorage.setItem('cartData', JSON.stringify(productData));
+
+  //   // ดึงข้อมูลตะกร้าที่เชื่อมต่อกับผู้ใช้ที่เข้าสู่ระบบ
+  //   let userCart = JSON.parse(localStorage.getItem("cart")) || {};
+
+  //   // ตรวจสอบว่ามีข้อมูลตะกร้าสำหรับผู้ใช้นี้ใน localStorage หรือไม่
+  //   if (userCart[idUser]) {
+  //     // มีข้อมูลตะกร้าสำหรับผู้ใช้นี้ใน localStorage ให้ใช้ข้อมูลตะกร้านี้
+  //     userCart[idUser].push(productData);
+  //   } else {
+  //     // ไม่มีข้อมูลตะกร้าสำหรับผู้ใช้นี้ใน localStorage ให้สร้างข้อมูลตะกร้าใหม่
+  //     userCart[idUser] = [productData];
+  //   }
+
+  //   // บันทึกข้อมูลตะกร้าลงใน localStorage
+  //   localStorage.setItem("cart", JSON.stringify(userCart));
+
+  //   // แสดงข้อความแจ้งเตือนว่าสินค้าถูกเพิ่มลงในตะกร้าเรียบร้อยแล้ว
+  //   Swal.fire({
+  //     icon: "success",
+  //     title: "เพิ่มสินค้าในตะกร้าเรียบร้อยแล้ว",
+  //     showConfirmButton: false,
+  //     timer: 1500, // 1.5 วินาที
+  //   });
+  // };
+
+console.log("testcart");
+  const cartData = sessionStorage.getItem("cart");
+  console.log(JSON.parse(cartData));
 
   const addToCartForLoggedInUser = ({
     selectedRail,
@@ -340,22 +390,24 @@ function CustomPage() {
       type: selectedType,
       rail: selectedRail,
     };
-  
+
+    sessionStorage.setItem("cartData", JSON.stringify(productData));
+
     // ดึงข้อมูลตะกร้าที่เชื่อมต่อกับผู้ใช้ที่เข้าสู่ระบบ
-    let userCart = JSON.parse(localStorage.getItem("cart")) || {};
-  
-    // ตรวจสอบว่ามีข้อมูลตะกร้าสำหรับผู้ใช้นี้ใน localStorage หรือไม่
+    let userCart = JSON.parse(sessionStorage.getItem("cart")) || {};
+
+    // ตรวจสอบว่ามีข้อมูลตะกร้าสำหรับผู้ใช้นี้ใน sessionStorage หรือไม่
     if (userCart[idUser]) {
-      // มีข้อมูลตะกร้าสำหรับผู้ใช้นี้ใน localStorage ให้ใช้ข้อมูลตะกร้านี้
+      // มีข้อมูลตะกร้าสำหรับผู้ใช้นี้ใน sessionStorage ให้ใช้ข้อมูลตะกร้านี้
       userCart[idUser].push(productData);
     } else {
-      // ไม่มีข้อมูลตะกร้าสำหรับผู้ใช้นี้ใน localStorage ให้สร้างข้อมูลตะกร้าใหม่
+      // ไม่มีข้อมูลตะกร้าสำหรับผู้ใช้นี้ใน sessionStorage ให้สร้างข้อมูลตะกร้าใหม่
       userCart[idUser] = [productData];
     }
-  
-    // บันทึกข้อมูลตะกร้าลงใน localStorage
-    localStorage.setItem("cart", JSON.stringify(userCart));
-  
+
+    // บันทึกข้อมูลตะกร้าลงใน sessionStorage
+    sessionStorage.setItem("cart", JSON.stringify(userCart));
+
     // แสดงข้อความแจ้งเตือนว่าสินค้าถูกเพิ่มลงในตะกร้าเรียบร้อยแล้ว
     Swal.fire({
       icon: "success",
@@ -364,6 +416,7 @@ function CustomPage() {
       timer: 1500, // 1.5 วินาที
     });
   };
+
 
 
   const handleAddToCart = ({
@@ -412,14 +465,16 @@ function CustomPage() {
       addToCartForGuest({ selectedRail, selectedType, width, height, ...data });
     } else {
       // กรณีที่ผู้ใช้เข้าสู่ระบบแล้ว
-      addToCartForGuest({ selectedRail, selectedType, width, height, ...data });
+      addToCartForLoggedInUser({
+        selectedRail,
+        selectedType,
+        width,
+        height,
+        ...data,
+      });
     }
-
   };
 
-
-
-  
   const default_product = {
     id: 1,
     main: "test2_ocvii1",
@@ -645,7 +700,6 @@ function CustomPage() {
           <input
             class="appearance-none  rounded w-[150px] py-2 px-3 ml-2 my-2  text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             type="number"
-
             value={width}
             required
             onChange={(e) => setWidth(e.target.value)}
