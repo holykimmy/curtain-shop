@@ -23,13 +23,22 @@ const {
   getOrderByIdPrepair,
   getOrderByIdSend,
   getOrderByIdComplete,
-  updateOrderEnable,
-  updateOrderComplete,
   getOrderApprove,
   getOrderPayment,
   getOrderPrepare,
   getOrderSend,
   getOrderComplete,
+  searchOrderApprove,
+  searchOrderPayment,
+  searchOrderPrepare,
+  searchOrderSend,
+  searchOrderComplete,
+  updateOrderEnable,
+  updateOrderComplete,
+  updateOrderApprove,
+  updateOrderSend,
+  updateOrderVerifyPayment,
+  updateOrderPandding
 } = require("../controllers/customerController");
 
 //middleware
@@ -54,9 +63,7 @@ router.get("/order/waiting-payment/:id", auth, getOrderByIdWaitPayment);
 router.get("/order/prepare/:id", auth, getOrderByIdPrepair);
 router.get("/order/send/:id", auth, getOrderByIdSend);
 router.get("/order/complete/:id", auth, getOrderByIdComplete);
-//update
-router.put("/order/enable/:id", auth, updateOrderEnable);
-router.put("/order/complete/:id", auth, updateOrderComplete);
+
 
 //get for admin
 router.get("/all/order", auth, getOrderAll);
@@ -65,6 +72,22 @@ router.get("/all/order/payment",auth,getOrderPayment)
 router.get("/all/order/prepare",auth,getOrderPrepare)
 router.get("/all/order/send",auth,getOrderSend)
 router.get("/all/order/complete",auth,getOrderComplete)
+
+//----search 
+router.get("/all/order/approve-s",auth,searchOrderApprove)
+router.get("/all/order/payment-s",auth,searchOrderPayment)
+router.get("/all/order/prepare-s",auth,searchOrderPrepare)
+router.get("/all/order/send-s",auth,searchOrderSend)
+router.get("/all/order/complete-s",auth,searchOrderComplete)
+
+//update
+router.put("/order/enable/:id", auth, updateOrderEnable);
+router.put("/order/approve/:id", auth, updateOrderApprove);
+router.put("/order/verifypayment/:id", auth, updateOrderVerifyPayment);
+router.put("/order/pandding/:id", auth, updateOrderPandding);
+router.put("/order/send/:id", auth, updateOrderSend);
+router.put("/order/complete/:id", auth, updateOrderComplete);
+
 
 
 router.post("/cart", auth, userCart);

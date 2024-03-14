@@ -599,6 +599,8 @@ exports.getOrderById = async (req, res) => {
       endble,
       confirmed,
       payment,
+      verifypayment,
+      pandding,
       approve,
       sendproduct,
       createdAt,
@@ -624,7 +626,8 @@ exports.getOrderByIdWaitPayment = async (req, res) => {
       endble: true,
       confirmed: true,
       payment: false,
-      approve: true,
+      verifypayment:false,
+      pandding:false,
       sendproduct: false,
       complete: false,
     })
@@ -695,8 +698,9 @@ exports.getOrderByIdPrepair = async (req, res) => {
       orderBy: idUser,
       endble: true,
       confirmed: true,
-      payment: true,
       approve: true,
+      payment: true,
+      verifypayment:true,
       sendproduct: false,
       complete: false,
     })
@@ -726,6 +730,8 @@ exports.getOrderByIdPrepair = async (req, res) => {
       endble,
       confirmed,
       payment,
+      verifypayment,
+      pandding,
       approve,
       sendproduct,
       createdAt,
@@ -751,6 +757,8 @@ exports.getOrderByIdSend = async (req, res) => {
       confirmed: true,
       payment: true,
       approve: true,
+      verifypayment:true,
+      pandding: true,
       sendproduct: true,
       complete: false,
     })
@@ -779,6 +787,8 @@ exports.getOrderByIdSend = async (req, res) => {
       deliveryIs,
       endble,
       confirmed,
+      verifypayment,
+      pandding,
       payment,
       approve,
       sendproduct,
@@ -804,6 +814,8 @@ exports.getOrderByIdComplete = async (req, res) => {
       endble: true,
       confirmed: true,
       payment: true,
+      verifypayment:true,
+      pandding: true,
       approve: true,
       sendproduct: true,
       complete: true,
@@ -833,6 +845,8 @@ exports.getOrderByIdComplete = async (req, res) => {
       deliveryIs,
       endble,
       confirmed,
+      verifypayment,
+      pandding,
       payment,
       approve,
       sendproduct,
@@ -982,6 +996,8 @@ exports.getOrderApprove = async (req, res) => {
       confirmed: true,
       approve: false,
       payment: false,
+      verifypayment:false,
+      pandding: false,
       sendproduct: false,
       complete: false,
     })
@@ -1011,6 +1027,8 @@ exports.getOrderApprove = async (req, res) => {
       endble,
       confirmed,
       payment,
+      verifypayment,
+      pandding,
       approve,
       sendproduct,
       createdAt,
@@ -1033,7 +1051,9 @@ exports.getOrderPayment = async (req, res) => {
       endble: true,
       confirmed: true,
       approve: true,
-      payment: false,
+      payment: true,
+      verifypayment:false,
+      pandding: false,
       sendproduct: false,
       complete: false,
     })
@@ -1062,6 +1082,8 @@ exports.getOrderPayment = async (req, res) => {
       deliveryIs,
       endble,
       confirmed,
+      verifypayment,
+      pandding,
       payment,
       approve,
       sendproduct,
@@ -1086,6 +1108,8 @@ exports.getOrderPrepare = async (req, res) => {
       confirmed: true,
       approve: true,
       payment: true,
+      verifypayment: true,
+      pandding: false,
       sendproduct: false,
       complete: false,
     })
@@ -1114,6 +1138,8 @@ exports.getOrderPrepare = async (req, res) => {
       deliveryIs,
       endble,
       confirmed,
+      verifypayment,
+      pandding,
       payment,
       approve,
       sendproduct,
@@ -1138,7 +1164,9 @@ exports.getOrderSend = async (req, res) => {
       confirmed: true,
       approve: true,
       payment: true,
-      sendproduct: true,
+      verifypayment:true,
+      pandding: true,
+      sendproduct: false,
       complete: false,
     })
       .populate([
@@ -1166,6 +1194,8 @@ exports.getOrderSend = async (req, res) => {
       deliveryIs,
       endble,
       confirmed,
+      verifypayment,
+      pandding,
       payment,
       approve,
       sendproduct,
@@ -1190,8 +1220,10 @@ exports.getOrderComplete = async (req, res) => {
       confirmed: true,
       approve: true,
       payment: true,
+      verifypayment:true,
+      pandding: true,
       sendproduct: true,
-      complete: true,
+      
     })
       .populate([
         {
@@ -1218,7 +1250,9 @@ exports.getOrderComplete = async (req, res) => {
       deliveryIs,
       endble,
       confirmed,
-      payment,
+     
+      payment, verifypayment,
+      pandding,
       approve,
       sendproduct,
       createdAt,
@@ -1231,6 +1265,308 @@ exports.getOrderComplete = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+exports.searchOrderApprove = async (req, res) => {
+  const { name } = req.query;
+  const regex = new RegExp(name, "i");
+
+  try {
+    // ค้นหาข้อมูลคำสั่งซื้อตามเงื่อนไขที่กำหนด
+    let cart = await Cart.find({
+      endble: true,
+      confirmed: true,
+      approve: false,
+      payment: false,
+      verifypayment:false,
+      pandding:false,
+      sendproduct: false,
+      complete: false,
+    })
+      .populate([
+        {
+          path: "products.product",
+          select: "productId brand name p_width price color image detail",
+        },
+        {
+          path: "orderBy",
+          select: "_id f_name l_name username email tell createdAt updatedAt",
+        },
+        {
+          path: "sendAddress",
+          select:
+            "id name tell houseNo sub_district district province postcode idUser",
+        },
+      ])
+      .exec();
+
+    // กรองข้อมูลที่ต้องการแสดงเฉพาะข้อมูลที่ตรงกับเงื่อนไข
+    const filteredCart = cart.filter((order) => {
+      const { f_name, l_name } = order.orderBy;
+      const {_id } = order
+      return f_name.match(regex) || l_name.match(regex) || _id.toString().match(regex);
+    });
+
+    res.json(filteredCart);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.searchOrderPayment = async (req, res) => {
+  const { name } = req.query;
+  const regex = new RegExp(name, "i");
+
+  try {
+    // ค้นหาข้อมูลคำสั่งซื้อตามเงื่อนไขที่กำหนด
+    let cart = await Cart.find({
+      endble: true,
+      confirmed: true,
+      approve: true,
+      payment: true,
+      verifypayment:false,
+      pandding:false,
+      sendproduct: false,
+      complete: false,
+    })
+      .populate([
+        {
+          path: "products.product",
+          select: "productId brand name p_width price color image detail",
+        },
+        {
+          path: "orderBy",
+          select: "_id f_name l_name username email tell createdAt updatedAt",
+        },
+        {
+          path: "sendAddress",
+          select:
+            "id name tell houseNo sub_district district province postcode idUser",
+        },
+      ])
+      .exec();
+
+    // กรองข้อมูลที่ต้องการแสดงเฉพาะข้อมูลที่ตรงกับเงื่อนไข
+    const filteredCart = cart.filter((order) => {
+      const { f_name, l_name } = order.orderBy;
+      const {_id } = order
+      return f_name.match(regex) || l_name.match(regex) || _id.toString().match(regex);
+    });
+
+    res.json(filteredCart);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.searchOrderPrepare = async (req, res) => {
+  const { name } = req.query;
+  const regex = new RegExp(name, "i");
+
+  try {
+    // ค้นหาข้อมูลคำสั่งซื้อตามเงื่อนไขที่กำหนด
+    let cart = await Cart.find({
+      endble: true,
+      confirmed: true,
+      approve: true,
+      payment: true,
+      verifypayment: true,
+      pandding:false,
+      sendproduct: false,
+      complete: false,
+    })
+      .populate([
+        {
+          path: "products.product",
+          select: "productId brand name p_width price color image detail",
+        },
+        {
+          path: "orderBy",
+          select: "_id f_name l_name username email tell createdAt updatedAt",
+        },
+        {
+          path: "sendAddress",
+          select:
+            "id name tell houseNo sub_district district province postcode idUser",
+        },
+      ])
+      .exec();
+
+    // กรองข้อมูลที่ต้องการแสดงเฉพาะข้อมูลที่ตรงกับเงื่อนไข
+    const filteredCart = cart.filter((order) => {
+      const { f_name, l_name } = order.orderBy;
+      const {_id } = order
+      return f_name.match(regex) || l_name.match(regex) || _id.toString().match(regex);
+    });
+
+    res.json(filteredCart);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.searchOrderSend = async (req, res) => {
+  const { name } = req.query;
+  const regex = new RegExp(name, "i");
+
+  try {
+    // ค้นหาข้อมูลคำสั่งซื้อตามเงื่อนไขที่กำหนด
+    let cart = await Cart.find({
+      endble: true,
+      confirmed: true,
+      approve: true,
+      payment: true,
+      verifypayment:true,
+      pandding:true,
+      sendproduct: false,
+      complete:false
+   
+    })
+      .populate([
+        {
+          path: "products.product",
+          select: "productId brand name p_width price color image detail",
+        },
+        {
+          path: "orderBy",
+          select: "_id f_name l_name username email tell createdAt updatedAt",
+        },
+        {
+          path: "sendAddress",
+          select:
+            "id name tell houseNo sub_district district province postcode idUser",
+        },
+      ])
+      .exec();
+
+    // กรองข้อมูลที่ต้องการแสดงเฉพาะข้อมูลที่ตรงกับเงื่อนไข
+    const filteredCart = cart.filter((order) => {
+      const { f_name, l_name } = order.orderBy;
+      const {_id } = order
+      return f_name.match(regex) || l_name.match(regex) || _id.toString().match(regex);
+    });
+
+    res.json(filteredCart);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.searchOrderComplete = async (req, res) => {
+  const { name } = req.query;
+  const regex = new RegExp(name, "i");
+
+  try {
+    // ค้นหาข้อมูลคำสั่งซื้อตามเงื่อนไขที่กำหนด
+    let cart = await Cart.find({
+      endble: true,
+      confirmed: true,
+      approve: true,
+      payment: true,
+      verifypayment:true,
+      pandding:true,
+      sendproduct: true,
+    })
+      .populate([
+        {
+          path: "products.product",
+          select: "productId brand name p_width price color image detail",
+        },
+        {
+          path: "orderBy",
+          select: "_id f_name l_name username email tell createdAt updatedAt",
+        },
+        {
+          path: "sendAddress",
+          select:
+            "id name tell houseNo sub_district district province postcode idUser",
+        },
+      ])
+      .exec();
+
+    // กรองข้อมูลที่ต้องการแสดงเฉพาะข้อมูลที่ตรงกับเงื่อนไข
+    const filteredCart = cart.filter((order) => {
+      const { f_name, l_name } = order.orderBy;
+      const {_id } = order
+      return f_name.match(regex) || l_name.match(regex) || _id.toString().match(regex);
+    });
+
+    res.json(filteredCart);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.updateOrderApprove = async (req, res) => {
+  try {
+    const idOrder = req.params.id;
+    const { approve } = req.body;
+    console.log("Update order endble for order:", idOrder);
+
+    // ดำเนินการอัปเดตค่า endble ในคำสั่งซื้อที่ระบุ
+    await Cart.updateOne({ _id: idOrder }, { approve: approve });
+
+    res.status(200).json({ message: "Order endble updated successfully." });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.updateOrderVerifyPayment = async (req, res) => {
+  try {
+    const idOrder = req.params.id;
+    const { verifypayment } = req.body;
+    console.log("Update order endble for order:", idOrder);
+
+    // ดำเนินการอัปเดตค่า endble ในคำสั่งซื้อที่ระบุ
+    await Cart.updateOne({ _id: idOrder }, { verifypayment: verifypayment });
+
+    res.status(200).json({ message: "Order endble updated successfully." });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.updateOrderPandding = async (req, res) => {
+  try {
+    const idOrder = req.params.id;
+    const { pandding } = req.body;
+    console.log("Update order endble for order:", idOrder);
+
+    // ดำเนินการอัปเดตค่า endble ในคำสั่งซื้อที่ระบุ
+    await Cart.updateOne({ _id: idOrder }, { pandding: pandding});
+
+    res.status(200).json({ message: "Order endble updated successfully." });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.updateOrderSend = async (req, res) => {
+  try {
+    const idOrder = req.params.id;
+    const { send} = req.body;
+    console.log("Update order endble for order:", idOrder);
+
+    // ดำเนินการอัปเดตค่า endble ในคำสั่งซื้อที่ระบุ
+    await Cart.updateOne({ _id: idOrder }, { sendproduct : send  });
+console.log(sendproduct);
+    res.status(200).json({ message: "Order endble updated successfully." });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+
 
 process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection at:", promise, "reason:", reason);

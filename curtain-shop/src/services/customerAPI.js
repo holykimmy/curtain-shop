@@ -80,27 +80,8 @@ const CustomerAPI = {
         throw error;
       });
   },
+//----ad
 
-  getOrderApprove: async () => {
-    return axios
-      .get(`${process.env.REACT_APP_API}/customer/all/order/approve`)
-      .then((response) => response.data)
-      .catch((error) => {
-        console.error(error);
-        throw error;
-      });
-  },
-  
-  getOrderPayment: async () => {
-    return axios
-      .get(`${process.env.REACT_APP_API}/customer/all/order/payment`)
-      .then((response) => response.data)
-      .catch((error) => {
-        console.error(error);
-        throw error;
-      });
-  },
-  
 
   getSearch: (search) => {
     return axios

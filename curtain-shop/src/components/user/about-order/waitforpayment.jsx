@@ -150,10 +150,17 @@ const WaitForPayment = ({ idUser }) => {
               <p className="text-sm sm:text-sm md:text-md md:text-lg lg:text-lg text-brown-400">
                 ราคารวม : {order.totalPrice} บาท
               </p>
-
+              <p className="text-sm sm:text-sm md:text-md md:text-lg lg:text-lg text-brown-400 mt-[10px]">
+                สถานะ:{" "}
+                {order.approve
+                  ? "ได้รับการอนุมัติแล้ว"
+                  : "รอการอนุมัติจากร้านค้า"}
+              </p>
               <div className="flex justify-end ">
+             
                 <button
                   className=" bg-blue-200 py-2 px-auto w-[100px] rounded-full shadow-xl mx-2 hover:bg-blue-400 text-center md:mt-3 md:mb-3 md:inline-block text-base sm:text-base md:text-md lg:text-md xl:text-md  text-white "
+                  disabled={!order.approve}
                   onClick={() => handlePaymentOrder(order._id)}
                 >
                   ชำระเงิน

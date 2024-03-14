@@ -7,7 +7,7 @@ import axios from "axios";
 import orderAPI from "../../../services/orderAPI";
 import customerAPI from "../../../services/customerAPI";
 
-const CompleteOrder = ({ idUser }) => {
+const ReceiveOrder = ({ idUser }) => {
   const navigate = useNavigate();
 
   const [userOrder, setUserOrder] = useState([]);
@@ -19,7 +19,7 @@ const CompleteOrder = ({ idUser }) => {
   useEffect(() => {
     const fetchData = () => {
       orderAPI
-        .getOrderComplete()
+        .getOrderSend()
         .then((orderData) => {
           setUserOrder(orderData);
         })
@@ -68,7 +68,7 @@ const CompleteOrder = ({ idUser }) => {
 
   const handleSearch = async () => {
     try {
-      const searchData = await orderAPI.searchOrderApprove(searchTerm);
+      const searchData = await orderAPI.searchOrderSend(searchTerm);
       console.log("search", searchTerm);
       setSearchResults(searchData); // เซตค่า searchResults ที่ได้จากการค้นหาเข้า state
     } catch (error) {
@@ -77,11 +77,11 @@ const CompleteOrder = ({ idUser }) => {
     }
   };
 
-  const handleApproveOrder = async (idOrder) => {
+  const handleSendOrder = async (idOrder) => {
     // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
     const confirmation = await Swal.fire({
       title: "ยืนยันคำสั่งซื้อ",
-      text: "คุณต้องการอนุมัติคำสั่งซื้อใช่หรือไม่?",
+      text: "จัดส่งสินค้าแล้วใช่หรือไม่?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -93,11 +93,11 @@ const CompleteOrder = ({ idUser }) => {
     // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
       try {
-        const response = await orderAPI.updateOrderApprove(idOrder, true);
+        const response = await orderAPI.updateOrderSend(idOrder, true);
         console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
         await Swal.fire({
           title: "ยืนยันคำสั่งซื้อ",
-          text: "คำสั่งซื้อได้รับการยืนยันแล้ว",
+          text: "จัดส่งสินค้าเรียบร้อยแล้ว",
           icon: "success",
         });
         window.location.reload();
@@ -220,9 +220,9 @@ const CompleteOrder = ({ idUser }) => {
                 <div className="flex justify-end ">
                   <button
                     className=" bg-blue-200 py-2 px-auto w-[100px] rounded-full shadow-xl mx-2 hover:bg-blue-400 text-center md:mt-3 md:mb-3 md:inline-block text-base sm:text-base md:text-md lg:text-md xl:text-md  text-white "
-                    onClick={() => handleApproveOrder(order._id)}
+                    onClick={() => handleSendOrder(order._id)}
                   >
-                    ชำระเงิน
+                    จัดส่งสินค้า
                   </button>
 
                   <button
@@ -324,9 +324,9 @@ const CompleteOrder = ({ idUser }) => {
               <div className="flex justify-end ">
                 <button
                   className=" bg-blue-200 py-2 px-auto w-[150px] rounded-full shadow-xl mx-2 hover:bg-blue-400 text-center md:mt-3 md:mb-3 md:inline-block text-base sm:text-base md:text-md lg:text-md xl:text-md  text-white "
-                  onClick={() => handleApproveOrder(order._id)}
+                  onClick={() => handleSendOrder(order._id)}
                 >
-                  อนุมัติคำสั่งซื้อ
+                  จัดส่งสินค้า
                 </button>
 
                 <button
@@ -343,4 +343,4 @@ const CompleteOrder = ({ idUser }) => {
     </>
   );
 };
-export default CompleteOrder;
+export default ReceiveOrder;

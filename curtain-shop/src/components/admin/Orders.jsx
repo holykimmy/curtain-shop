@@ -14,7 +14,7 @@ import { BsPinFill } from "react-icons/bs";
 import ApproveOrder from "./about-order/approveorder";
 import WaitForPayment from "./about-order/waitforpayment";
 import PrepareOrder from "./about-order/prepareorder";
-import RecieveOrder from "./about-order/receiveorder";
+import SendOrder from "./about-order/sendorder";
 import CompleteOrder from "./about-order/completeorder";
 
 
@@ -37,7 +37,7 @@ function Orders() {
       case "prepareDelivery":
         return <PrepareOrder />;
       case "pendingDelivery":
-        return <RecieveOrder />;
+        return <SendOrder />;
       case "completed":
         return <CompleteOrder />;
       default:
@@ -120,45 +120,8 @@ function Orders() {
     });
   };
 
-  const handleSearch = async () => {
-    try {
-      const searchData = await productAPI.getSearch(searchTerm);
-      setSearchResults(searchData); // เซตค่า searchResults ที่ได้จากการค้นหาเข้า state
-    } catch (error) {
-      console.error("Error fetching search results:", error);
-      // แสดงข้อความผิดพลาดหรือจัดการข้อผิดพลาดตามที่ต้องการ
-    }
-  };
 
-  const handleDeleteProduct = (productId, productName) => {
-    console.log(productId);
-    Swal.fire({
-      title: `คุณต้องการลบข้อมูลสินค้า ${productName} ใช่หรือไม่?`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "ใช่",
-      cancelButtonText: "ไม่ใช่",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // ทำการลบสินค้าโดยใช้ ID ของสินค้า
-        productAPI
-          .deleteProduct(productId)
-          .then((response) => {
-            console.log("Product deleted successfully");
-            // อัพเดท state หรือทำอื่น ๆ ตามต้องการหลังจากลบสินค้าเสร็จสิ้น
-            // เรียก fetchData เพื่ออัพเดทข้อมูลใหม่หลังจากลบสินค้า
-          })
-          .catch((error) => {
-            console.error("Error deleting product:", error);
-          });
-      } else {
-        // ผู้ใช้เลือกยกเลิกการลบสินค้า
-        console.log("Cancelled delete operation");
-      }
-    });
-  };
+
 
   return (
     <>
@@ -186,7 +149,7 @@ function Orders() {
           }`}
           onClick={() => setSelectedButton("waitPayment")}
         >
-          กำลังรอการชำระเงิน
+          ตรวจสอบการชำระเงิน
         </button>
 
         <button

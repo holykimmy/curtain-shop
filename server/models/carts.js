@@ -35,6 +35,8 @@ const CartSchema = mongoose.Schema(
     confirmed: { type: Boolean, default: false },
     payment: { type: Boolean, default: false },
     approve: { type: Boolean, default: false },
+    verifypayment: { type: Boolean, default: false },
+    pandding: { type: Boolean, default: false },
     sendproduct: { type: Boolean, default: false },
     complete: { type: Boolean, default: false },
 

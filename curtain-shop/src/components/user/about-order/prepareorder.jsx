@@ -153,7 +153,7 @@ const PrepareOrder = ({ idUser }) => {
 
               <div className="flex justify-end ">
                 <button
-                  className=" bg-blue-200 py-2 px-auto w-[15px] rounded-full shadow-xl mx-2 hover:bg-blue-400 text-center md:mt-3 md:mb-3 md:inline-block text-base sm:text-base md:text-md lg:text-md xl:text-md  text-white "
+                  className=" bg-blue-200 py-2 px-auto w-[150px] rounded-full shadow-xl mx-2 hover:bg-blue-400 text-center md:mt-3 md:mb-3 md:inline-block text-base sm:text-base md:text-md lg:text-md xl:text-md  text-white "
                   onClick={() => handlePaymentOrder(order._id)}
                 >
                                    ดูรายละเอียดคำสั่งซื้อ
