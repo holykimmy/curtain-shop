@@ -33,15 +33,15 @@ const ReceiveOrder = ({ idUser }) => {
 
   console.log(userOrder);
 
-  const handleCancelOrder = async (idOrder) => {
+  const handleCompleteOrder = async (idOrder) => {
     // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
     const confirmation = await Swal.fire({
-      title: "ยืนยันการยกเลิกคำสั่งซื้อ",
-      text: "คุณแน่ใจหรือไม่ที่ต้องการยกเลิกคำสั่งซื้อนี้?",
+      title: "ยืนยันคำสั่งซื้อ",
+      text: "คุณได้รับคำสั่งซื้อเรียบร้อยแล้วใช่หรือไม่?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor:  "#d33",
       confirmButtonText: "ยืนยัน",
       cancelButtonText: "ยกเลิก",
     });
@@ -49,11 +49,11 @@ const ReceiveOrder = ({ idUser }) => {
     // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
       try {
-        const response = await customerAPI.updateOrderEnable(idOrder, false);
+        const response = await customerAPI.updateOrderComplete(idOrder, true);
         console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
         await Swal.fire({
-          title: "ยกเลิกสำเร็จ",
-          text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
+          title: "ยืนยันคำสั่งซื้อ",
+          text: "คำสั่งซื้อสำเร็จสำเร็จแล้ว",
           icon: "success",
         });
         window.location.reload();
@@ -153,14 +153,14 @@ const ReceiveOrder = ({ idUser }) => {
 
               <div className="flex justify-end ">
                 <button
-                  className=" bg-blue-200 py-2 px-auto w-[100px] rounded-full shadow-xl mx-2 hover:bg-blue-400 text-center md:mt-3 md:mb-3 md:inline-block text-base sm:text-base md:text-md lg:text-md xl:text-md  text-white "
+                  className=" bg-blue-200 py-2 px-auto w-[150px] rounded-full shadow-xl mx-2 hover:bg-blue-400 text-center md:mt-3 md:mb-3 md:inline-block text-base sm:text-base md:text-md lg:text-md xl:text-md  text-white "
                   onClick={() => handlePaymentOrder(order._id)}
                 >
                   ดูรายละเอียดคำสั่งซื้อ
                 </button>
                 <button
-                  className="bg-red-300 mt-3 py-2 px-auto w-[120px] rounded-full shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-block text-base sm:text-base md:text-md lg:text-md xl:text-md text-white"
-                  onClick={() => handleCancelOrder(order._id)}
+                  className="bg-green-300 mt-3 py-2 px-auto w-[180px] rounded-full shadow-xl hover:bg-green-400 text-center md:mt-3 md:mb-3 md:inline-block text-base sm:text-base md:text-md lg:text-md xl:text-md text-white"
+                  onClick={() => handleCompleteOrder(order._id)}
                 >
                   ได้รับคำสั่งซื้อเรียนร้อยแล้ว
                 </button>

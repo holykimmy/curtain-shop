@@ -113,6 +113,16 @@ const CustomerAPI = {
       console.error('Error updating order enable:', error);
       throw error; 
     }
+  },
+
+  updateOrderComplete: async (idOrder, complete) => {
+    try {
+      const response = await axios.put(`${process.env.REACT_APP_API}/customer/order/complete/${idOrder}`, { complete });
+      return response.data;
+    } catch (error) {
+      console.error('Error updating order enable:', error);
+      throw error; 
+    }
   }
   
 

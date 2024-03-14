@@ -945,6 +945,23 @@ exports.updateOrderEnable = async (req, res) => {
   }
 };
 
+exports.updateOrderComplete = async (req, res) => {
+  try {
+    const idOrder = req.params.id;
+    const {complete} = req.body;
+    console.log("Update order endble for order:", idOrder);
+
+    // ดำเนินการอัปเดตค่า endble ในคำสั่งซื้อที่ระบุ
+    await Cart.updateOne({ _id: idOrder }, { complete: complete });
+
+    res.status(200).json({ message: "Order endble updated successfully." });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
 
 
 process.on("unhandledRejection", (reason, promise) => {
