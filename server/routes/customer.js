@@ -25,6 +25,11 @@ const {
   getOrderByIdComplete,
   updateOrderEnable,
   updateOrderComplete,
+  getOrderApprove,
+  getOrderPayment,
+  getOrderPrepare,
+  getOrderSend,
+  getOrderComplete,
 } = require("../controllers/customerController");
 
 //middleware
@@ -53,7 +58,15 @@ router.get("/order/complete/:id", auth, getOrderByIdComplete);
 router.put("/order/enable/:id", auth, updateOrderEnable);
 router.put("/order/complete/:id", auth, updateOrderComplete);
 
+//get for admin
 router.get("/all/order", auth, getOrderAll);
+router.get("/all/order/approve",auth,getOrderApprove)
+router.get("/all/order/approve",auth,getOrderPayment)
+router.get("/all/order/approve",auth,getOrderPrepare)
+router.get("/all/order/approve",auth,getOrderSend)
+router.get("/all/order/approve",auth,getOrderComplete)
+
+
 router.post("/cart", auth, userCart);
 router.put("/cart-to-order/:id", auth, userUpdateADCart);
 

@@ -203,6 +203,8 @@ function CheckOrdeerPage() {
     console.table("tetst", sendAddress);
 
     const confirmed = true;
+
+    
     try {
       const response = await axios.put(
         `${process.env.REACT_APP_API}/customer/cart-to-order/${idOrder}`,
@@ -213,12 +215,15 @@ function CheckOrdeerPage() {
         }
       );
       console.log(response.data); // แสดงข้อมูลที่ API ตอบกลับ
+
       Swal.fire({
         icon: "success",
         title: "บันทึกข้อมูลเรียบร้อย",
         showConfirmButton: false,
         timer: 1500,
-      });
+      });     
+       navigate(`/payment/${idOrder}`);
+
     } catch (err) {
       console.error(err);
       Swal.fire({
@@ -228,10 +233,16 @@ function CheckOrdeerPage() {
         timer: 1500,
       });
     }
+
   };
 
   const handlePaymentOrder = async (idOrder) => {
     navigate(`/payment/${idOrder}`);
+    Swal.fire({
+      icon: "success",
+      title: "ยืนยันคำสั่งซื้อสำเร็จ",
+      text: "คำสั่งซื้อของคุณได้รับการยืนยันแล้ว",
+    });
   };
 
   return (
@@ -419,7 +430,6 @@ function CheckOrdeerPage() {
                     value="save"
                     type="submit"
                     class="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white"
-                    onClick={() => handlePaymentOrder(order._id)}
                   >
                     ยืนยันคำสั่งซื้อ
                   </button>

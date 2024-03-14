@@ -565,14 +565,14 @@ exports.userUpdateADCart = async (req, res) => {
   }
 };
 
-
+//------------user---------------//
 exports.getOrderById = async (req, res) => {
   try {
     const idUser = req.params.id;
     console.log("get by id");
     console.log(idUser);
     // const user = await User.findOne({ idUser }).exec();
-    let cart = await Cart.find({ orderBy: idUser,endble: true })
+    let cart = await Cart.find({ orderBy: idUser, endble: true })
       .populate([
         {
           path: "products.product",
@@ -612,69 +612,78 @@ exports.getOrderById = async (req, res) => {
   }
 };
 
-
 exports.getOrderByIdWaitPayment = async (req, res) => {
   try {
     const idUser = req.params.id;
     console.log("get by id");
     console.log(idUser);
-    
+
     // ตรวจสอบรายการคำสั่งซื้อที่รอการชำระเงิน
     let carts = await Cart.find({
       orderBy: idUser,
       endble: true,
       confirmed: true,
       payment: false,
-      approve: false,
+      approve: true,
       sendproduct: false,
       complete: false,
     })
-    .populate([
-      {
-        path: "products.product",
-        select: "productId brand name p_width price color image detail",
-      },
-      {
-        path: "orderBy",
-        select: "_id f_name l_name username email tell createdAt updatedAt",
-      },
-      {
-        path: "sendAddress",
-        select: "id name tell houseNo sub_district district province postcode idUser",
-      },
-    ])
-    .exec();
+      .populate([
+        {
+          path: "products.product",
+          select: "productId brand name p_width price color image detail",
+        },
+        {
+          path: "orderBy",
+          select: "_id f_name l_name username email tell createdAt updatedAt",
+        },
+        {
+          path: "sendAddress",
+          select:
+            "id name tell houseNo sub_district district province postcode idUser",
+        },
+      ])
+      .exec();
 
-    
     const now = Date.now();
     const twoDaysInMillis = 2 * 24 * 60 * 60 * 1000; // 2 วันในหน่วยมิลลิวินาที
-    
+
     for (let i = 0; i < carts.length; i++) {
       const createdAt = new Date(carts[i].createdAt);
       const elapsedTime = now - createdAt.getTime(); // เวลาที่ผ่านไปตั้งแต่รายการคำสั่งซื้อถูกสร้าง
-      if (elapsedTime >= 0 && elapsedTime < twoDaysInMillis) { // ตรวจสอบหากเกิน 2 วัน
-        carts[i].paymentDeadline = `Order will be cancelled on ${createdAt.toLocaleTimeString('en-US', {hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit'})} ${createdAt.toLocaleDateString()}`; // เพิ่มข้อความแสดงถึงวันที่และเวลาที่ออเดอร์นี้จะถูกยกเลิก
+      if (elapsedTime >= 0 && elapsedTime < twoDaysInMillis) {
+        // ตรวจสอบหากเกิน 2 วัน
+        carts[
+          i
+        ].paymentDeadline = `Order will be cancelled on ${createdAt.toLocaleTimeString(
+          "en-US",
+          {
+            hour12: false,
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+          }
+        )} ${createdAt.toLocaleDateString()}`; // เพิ่มข้อความแสดงถึงวันที่และเวลาที่ออเดอร์นี้จะถูกยกเลิก
       }
-      if (elapsedTime >= twoDaysInMillis) { // ตรวจสอบหากเกิน 2 วัน
+      if (elapsedTime >= twoDaysInMillis) {
+        // ตรวจสอบหากเกิน 2 วัน
         carts[i].endble = false; // ยกเลิกรายการคำสั่งซื้อ
         await carts[i].save(); // บันทึกการเปลี่ยนแปลงลงในฐานข้อมูล
         console.log(`Order ID ${carts[i]._id} has been cancelled.`);
       }
     }
-    
-    
 
-    res.json(carts.map(cart => ({
-      ...cart._doc,
-      paymentDeadline: cart.paymentDeadline // เพิ่ม property paymentDeadline
-    })));
-
+    res.json(
+      carts.map((cart) => ({
+        ...cart._doc,
+        paymentDeadline: cart.paymentDeadline, // เพิ่ม property paymentDeadline
+      }))
+    );
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
 
 exports.getOrderByIdPrepair = async (req, res) => {
   try {
@@ -884,6 +893,40 @@ exports.getOrderByIdOrder = async (req, res) => {
   }
 };
 
+exports.updateOrderEnable = async (req, res) => {
+  try {
+    const idOrder = req.params.id;
+    const { enable } = req.body;
+    console.log("Update order endble for order:", idOrder);
+
+    // ดำเนินการอัปเดตค่า endble ในคำสั่งซื้อที่ระบุ
+    await Cart.updateOne({ _id: idOrder }, { endble: enable });
+
+    res.status(200).json({ message: "Order endble updated successfully." });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.updateOrderComplete = async (req, res) => {
+  try {
+    const idOrder = req.params.id;
+    const { complete } = req.body;
+    console.log("Update order endble for order:", idOrder);
+
+    // ดำเนินการอัปเดตค่า endble ในคำสั่งซื้อที่ระบุ
+    await Cart.updateOne({ _id: idOrder }, { complete: complete });
+
+    res.status(200).json({ message: "Order endble updated successfully." });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+//----------user----------//
+
 exports.getOrderAll = async (req, res) => {
   console.log("get ---------------- all");
   try {
@@ -929,40 +972,265 @@ exports.getOrderAll = async (req, res) => {
   }
 };
 
-exports.updateOrderEnable = async (req, res) => {
+exports.getOrderApprove = async (req, res) => {
+  console.log("get ---------------- all");
   try {
-    const idOrder = req.params.id;
-    const {enable } = req.body;
-    console.log("Update order endble for order:", idOrder);
+    console.log("get al  git ffl");
+    // const user = await User.findOne({ idUser }).exec();
+    let cart = await Cart.find({
+      endble: true,
+      confirmed: true,
+      approve: false,
+      payment: false,
+      sendproduct: false,
+      complete: false,
+    })
+      .populate([
+        {
+          path: "products.product",
+          select: "productId brand name p_width price color image detail",
+        },
+        {
+          path: "orderBy",
+          select: "_id f_name l_name username email tell createdAt updatedAt",
+        },
+        {
+          path: "sendAddress",
+          select:
+            "id name tell houseNo sub_district district province postcode idUser",
+        },
+      ])
+      .exec();
 
-    // ดำเนินการอัปเดตค่า endble ในคำสั่งซื้อที่ระบุ
-    await Cart.updateOne({ _id: idOrder }, { endble: enable });
+    const {
+      products,
+      orderBy,
+      totalPrice,
+      sendAddress,
+      deliveryIs,
+      endble,
+      confirmed,
+      payment,
+      approve,
+      sendproduct,
+      createdAt,
+    } = cart;
 
-    res.status(200).json({ message: "Order endble updated successfully." });
+    res.json(cart);
+    // res.json({ products, orderBy,totalPrice, sendAddress, deliveryIs,endble, confirmed ,payment,approve,sendproduct,createdAt});
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-exports.updateOrderComplete = async (req, res) => {
+exports.getOrderPayment = async (req, res) => {
+  console.log("get ---------------- all");
   try {
-    const idOrder = req.params.id;
-    const {complete} = req.body;
-    console.log("Update order endble for order:", idOrder);
+    console.log("get al  git ffl");
+    // const user = await User.findOne({ idUser }).exec();
+    let cart = await Cart.find({
+      endble: true,
+      confirmed: true,
+      approve: true,
+      payment: false,
+      sendproduct: false,
+      complete: false,
+    })
+      .populate([
+        {
+          path: "products.product",
+          select: "productId brand name p_width price color image detail",
+        },
+        {
+          path: "orderBy",
+          select: "_id f_name l_name username email tell createdAt updatedAt",
+        },
+        {
+          path: "sendAddress",
+          select:
+            "id name tell houseNo sub_district district province postcode idUser",
+        },
+      ])
+      .exec();
 
-    // ดำเนินการอัปเดตค่า endble ในคำสั่งซื้อที่ระบุ
-    await Cart.updateOne({ _id: idOrder }, { complete: complete });
+    const {
+      products,
+      orderBy,
+      totalPrice,
+      sendAddress,
+      deliveryIs,
+      endble,
+      confirmed,
+      payment,
+      approve,
+      sendproduct,
+      createdAt,
+    } = cart;
 
-    res.status(200).json({ message: "Order endble updated successfully." });
+    res.json(cart);
+    // res.json({ products, orderBy,totalPrice, sendAddress, deliveryIs,endble, confirmed ,payment,approve,sendproduct,createdAt});
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
+exports.getOrderPrepare = async (req, res) => {
+  console.log("get ---------------- all");
+  try {
+    console.log("get al  git ffl");
+    // const user = await User.findOne({ idUser }).exec();
+    let cart = await Cart.find({
+      endble: true,
+      confirmed: true,
+      approve: true,
+      payment: true,
+      sendproduct: false,
+      complete: false,
+    })
+      .populate([
+        {
+          path: "products.product",
+          select: "productId brand name p_width price color image detail",
+        },
+        {
+          path: "orderBy",
+          select: "_id f_name l_name username email tell createdAt updatedAt",
+        },
+        {
+          path: "sendAddress",
+          select:
+            "id name tell houseNo sub_district district province postcode idUser",
+        },
+      ])
+      .exec();
 
+    const {
+      products,
+      orderBy,
+      totalPrice,
+      sendAddress,
+      deliveryIs,
+      endble,
+      confirmed,
+      payment,
+      approve,
+      sendproduct,
+      createdAt,
+    } = cart;
 
+    res.json(cart);
+    // res.json({ products, orderBy,totalPrice, sendAddress, deliveryIs,endble, confirmed ,payment,approve,sendproduct,createdAt});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.getOrderSend = async (req, res) => {
+  console.log("get ---------------- all");
+  try {
+    console.log("get al  git ffl");
+    // const user = await User.findOne({ idUser }).exec();
+    let cart = await Cart.find({
+      endble: true,
+      confirmed: true,
+      approve: true,
+      payment: true,
+      sendproduct: true,
+      complete: false,
+    })
+      .populate([
+        {
+          path: "products.product",
+          select: "productId brand name p_width price color image detail",
+        },
+        {
+          path: "orderBy",
+          select: "_id f_name l_name username email tell createdAt updatedAt",
+        },
+        {
+          path: "sendAddress",
+          select:
+            "id name tell houseNo sub_district district province postcode idUser",
+        },
+      ])
+      .exec();
+
+    const {
+      products,
+      orderBy,
+      totalPrice,
+      sendAddress,
+      deliveryIs,
+      endble,
+      confirmed,
+      payment,
+      approve,
+      sendproduct,
+      createdAt,
+    } = cart;
+
+    res.json(cart);
+    // res.json({ products, orderBy,totalPrice, sendAddress, deliveryIs,endble, confirmed ,payment,approve,sendproduct,createdAt});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.getOrderComplete = async (req, res) => {
+  console.log("get ---------------- all");
+  try {
+    console.log("get al  git ffl");
+    // const user = await User.findOne({ idUser }).exec();
+    let cart = await Cart.find({
+      endble: true,
+      confirmed: true,
+      approve: true,
+      payment: true,
+      sendproduct: true,
+      complete: true,
+    })
+      .populate([
+        {
+          path: "products.product",
+          select: "productId brand name p_width price color image detail",
+        },
+        {
+          path: "orderBy",
+          select: "_id f_name l_name username email tell createdAt updatedAt",
+        },
+        {
+          path: "sendAddress",
+          select:
+            "id name tell houseNo sub_district district province postcode idUser",
+        },
+      ])
+      .exec();
+
+    const {
+      products,
+      orderBy,
+      totalPrice,
+      sendAddress,
+      deliveryIs,
+      endble,
+      confirmed,
+      payment,
+      approve,
+      sendproduct,
+      createdAt,
+    } = cart;
+
+    res.json(cart);
+    // res.json({ products, orderBy,totalPrice, sendAddress, deliveryIs,endble, confirmed ,payment,approve,sendproduct,createdAt});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection at:", promise, "reason:", reason);
