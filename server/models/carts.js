@@ -36,6 +36,8 @@ const CartSchema = mongoose.Schema(
     payment: { type: Boolean, default: false },
     approve: { type: Boolean, default: false },
     sendproduct: { type: Boolean, default: false },
+    complete: { type: Boolean, default: false },
+
     createdAt: { type: Date, default: Date.now },
   },
   { timestamps: true}

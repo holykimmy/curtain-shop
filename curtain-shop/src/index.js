@@ -87,7 +87,7 @@ const router = createBrowserRouter([
   { path: "/Achievements", element: <Achievement /> },
   { path: "/checkout", element: <CheckOutPage /> },
   { path: "/about-order", element: <AboutOrderPage /> },
-  { path: "/payment", element: <Payment /> },
+  { path: "/payment/:id", element: <Payment /> },
 
   { path: "/custom-product/:productId", element: <CustomPage /> },
   //product

@@ -13,11 +13,8 @@ function CartPage() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
-  // const history =  useHistory();
   const [userData, setUserData] = useState(null);
-  // const [userName, setUserName] = React.useState("");
   const [userName, setUserName] = useState("");
-  // const [idUser, setIdUser] = React.useState("");
   const [idUser, setIdUser] = useState("");
   const [user, setUser] = React.useState({
     f_name: "",

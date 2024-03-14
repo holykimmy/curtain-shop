@@ -50,51 +50,46 @@ function CheckOrdeerPage() {
   console.log("check order");
 
   useEffect(() => {
-    const fetchData = () => {
-      const authToken = localStorage.getItem("token");
+    const authToken = localStorage.getItem("token");
 
-      if (authToken) {
-        // Set up axios default headers
-        axios.defaults.headers.common["authtoken"] = authToken;
+    if (authToken) {
+      // Set up axios default headers
+      axios.defaults.headers.common["authtoken"] = authToken;
 
-        const decodedToken = jwtDecode(authToken); // Decode the token
-        console.log(decodedToken);
+      const decodedToken = jwtDecode(authToken); // Decode the token
 
-        if (decodedToken && decodedToken.user) {
-          const { f_name, l_name } = decodedToken.user;
+      if (decodedToken && decodedToken.user) {
+        const { f_name, l_name } = decodedToken.user;
 
-          const id = decodedToken.id;
-          setUserName(`${f_name} ${l_name}`);
-          setIdUser(`${id}`);
-          setUser({
-            username: decodedToken.user.username,
-            f_name: f_name,
-            l_name: l_name,
-            email: decodedToken.user.email,
-            tell: decodedToken.user.tell,
-            address: decodedToken.user.address,
-          });
+        const id = decodedToken.id;
+        setUserName(`${f_name} ${l_name}`);
+        setIdUser(`${id}`);
+        setUser({
+          f_name: f_name,
+          l_name: l_name,
+          email: decodedToken.user.email,
+          tell: decodedToken.user.tell,
+          address: decodedToken.user.address,
+        });
 
-          setIsLoggedIn(true);
-        } else {
-          setUserData(decodedToken.user);
-        }
-
-        if (
-          decodedToken &&
-          decodedToken.exp &&
-          decodedToken.exp * 1000 < Date.now()
-        ) {
-          // Token expired, logout user
-          handleLogoutAuto();
-        }
+        setIsLoggedIn(true);
       } else {
-        setIsLoggedIn(false);
+        setUserData(decodedToken.user);
       }
-    };
 
-    fetchData();
-  }, []);
+      if (
+        decodedToken &&
+        decodedToken.exp &&
+        decodedToken.exp * 1000 < Date.now()
+      ) {
+        // Token expired, logout user
+        handleLogoutAuto();
+      }
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, [idUser]);
+  console.log("testtt");
 
   if (!isLoggedIn) {
     console.log("hellotest tset ");
@@ -155,7 +150,6 @@ function CheckOrdeerPage() {
 
   const [sendAddress, setSendAddress] = useState("");
 
-  
   const handleAddressSelect = (selectedId) => {
     setSendAddress(selectedId);
     console.log("Selected Address ID:", selectedId);
@@ -181,7 +175,6 @@ function CheckOrdeerPage() {
   };
 
   console.log("select", selectedDelivery);
-
 
   const submitForm = async (e) => {
     e.preventDefault();
@@ -237,6 +230,10 @@ function CheckOrdeerPage() {
     }
   };
 
+  const handlePaymentOrder = async (idOrder) => {
+    navigate(`/payment/${idOrder}`);
+  };
+
   return (
     <>
       {" "}
@@ -245,6 +242,7 @@ function CheckOrdeerPage() {
           isLoggedIn={isLoggedIn}
           handleLogout={handleLogout}
           userName={userName}
+          idUser={idUser}
         ></Navbar>
 
         <div class="titlea bg-brown-bg py-1 shadow-md">
@@ -362,28 +360,6 @@ function CheckOrdeerPage() {
             </div>
 
             <div class="bg-brown-blog mt-10  px-4 pt-8 lg:mt-0">
-              {/* <select
-                className="mb-2 rounded-lg"
-                id="sendAddress"
-                type="text"
-                value={state.sendAddress}
-                onChange={inputValue("sendAddress")}
-                >
-                <option value="">โปรดเลือกที่อยู่ที่ต้องการจัดส่ง</option>
-                {address.map((addressData) => (
-                  <option key={addressData._id} value={addressData._id}>
-                    <div>
-                      ชื่อ {addressData.name} <hr />
-                    </div>
-                    <div>เบอร์โทร {addressData.tell} </div>
-                    <div>
-                      {addressData.houseNo} {addressData.sub_district}{" "}
-                      {addressData.district} {addressData.province}{" "}
-                      {addressData.postcode}
-                    </div>
-                  </option>
-                ))}
-              </select> */}
               <select
                 className="mb-2 rounded-lg"
                 onChange={(e) => handleAddressSelect(e.target.value)}
@@ -439,16 +415,16 @@ function CheckOrdeerPage() {
                       {order.totalPrice + 200} บาท
                     </p>
                   </div>
+                  <button
+                    value="save"
+                    type="submit"
+                    class="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white"
+                    onClick={() => handlePaymentOrder(order._id)}
+                  >
+                    ยืนยันคำสั่งซื้อ
+                  </button>
                 </div>
               ))}
-
-              <button
-                value="save"
-                type="submit"
-                class="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white"
-              >
-                ยืนยันคำสั่งซื้อ
-              </button>
             </div>
           </div>
         </form>

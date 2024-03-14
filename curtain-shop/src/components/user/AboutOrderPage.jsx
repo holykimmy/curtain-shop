@@ -7,6 +7,10 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import Footer from "../Footer";
 import WaitForPayment from "./about-order/waitforpayment";
+import PrepareOrder from "./about-order/prepareorder";
+import RecieveOrder from "./about-order/receiveorder";
+import CompleteOrder from "./about-order/completeorder";
+
 import customerAPI from "../../services/customerAPI";
 function AboutOrderPage() {
   //login
@@ -33,11 +37,11 @@ function AboutOrderPage() {
       case 'waitPayment':
         return <WaitForPayment idUser={idUser}/>;
       case 'prepareDelivery':
-        return <div>เนื้อหาสำหรับเตรียมการจัดส่ง</div>;
+        return <PrepareOrder idUser={idUser}/>
       case 'pendingDelivery':
-        return <div>เนื้อหาสำหรับที่ต้องได้รับ</div>;
+        return <RecieveOrder idUser={idUser}/>
       case 'completed':
-        return <div>เนื้อหาสำหรับสำเร็จ</div>;
+        return <CompleteOrder idUser={idUser}/>
       default:
         return null;
     }

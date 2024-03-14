@@ -17,7 +17,13 @@ const {
   userCart,
   userUpdateADCart,
   getOrderAll,
-  getAddressByUserId
+  getAddressByUserId,
+  getOrderByIdOrder,
+  getOrderByIdWaitPayment,
+  getOrderByIdPrepair,
+  getOrderByIdSend
+,getOrderByIdComplete
+,updateOrderEnable
 } = require("../controllers/customerController");
 
 //middleware
@@ -38,6 +44,14 @@ router.delete("/delete-address/:id/:addressId", auth , deleteAddress);
 router.post("/add-order/",auth,createOrder);
 // router.get("/all/order",auth,getOrder);
 router.get("/order/:id",auth,getOrderById);
+router.get("/check-order/order/:id",auth,getOrderByIdOrder);
+router.get("/order/waiting-payment/:id",auth,getOrderByIdWaitPayment);
+router.get("/order/prepare/:id",auth,getOrderByIdPrepair);
+router.get("/order/send/:id",auth,getOrderByIdSend);
+router.get("/order/complete/:id",auth,getOrderByIdComplete);
+//update
+router.put("/order/enable/:id",auth,updateOrderEnable);
+
 router.get("/all/order",auth,getOrderAll);
 router.post("/cart",auth,userCart);
 router.put("/cart-to-order/:id",auth,userUpdateADCart);
