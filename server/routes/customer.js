@@ -61,10 +61,10 @@ router.put("/order/complete/:id", auth, updateOrderComplete);
 //get for admin
 router.get("/all/order", auth, getOrderAll);
 router.get("/all/order/approve",auth,getOrderApprove)
-router.get("/all/order/approve",auth,getOrderPayment)
-router.get("/all/order/approve",auth,getOrderPrepare)
-router.get("/all/order/approve",auth,getOrderSend)
-router.get("/all/order/approve",auth,getOrderComplete)
+router.get("/all/order/payment",auth,getOrderPayment)
+router.get("/all/order/prepare",auth,getOrderPrepare)
+router.get("/all/order/semd",auth,getOrderSend)
+router.get("/all/order/complete",auth,getOrderComplete)
 
 
 router.post("/cart", auth, userCart);
