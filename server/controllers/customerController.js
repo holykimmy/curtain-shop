@@ -1051,7 +1051,7 @@ exports.getOrderPayment = async (req, res) => {
       endble: true,
       confirmed: true,
       approve: true,
-      payment: false,
+     
       verifypayment:false,
       pandding: false,
       sendproduct: false,
