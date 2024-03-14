@@ -21,15 +21,6 @@ function HomePage() {
     "https://i.ibb.co/XXR8kzF/3.png",
   ];
 
-  useEffect(() => {
-    // เพิ่มข้อมูลลงใน session storage
-    const myData = { key: "value" };
-    sessionStorage.setItem("myGlobalData", JSON.stringify(myData));
-
-    // ดึงข้อมูลจาก session storage
-    const data = JSON.parse(sessionStorage.getItem("myGlobalData"));
-  }, []);
-
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 

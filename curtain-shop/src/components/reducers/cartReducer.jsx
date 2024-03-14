@@ -1,8 +1,8 @@
 let initialState = [];
 
 if (typeof window !== "undefined") {
-  if (sessionStorage.getItem("cart")) {
-    initialState = JSON.parse(sessionStorage.getItem("cart"));
+  if (localStorage.getItem("cart")) {
+    initialState = JSON.parse(localStorage.getItem("cart"));
   } else {
     initialState = [];
   }

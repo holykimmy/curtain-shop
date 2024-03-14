@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../Navbar";
 import { BsPinFill } from "react-icons/bs";
 import Footer from "../Footer";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate ,useHistory } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import axios from "axios";
@@ -10,13 +10,10 @@ import { useDispatch, useSelector } from "react-redux";
 import ProductInCart from "./ProductIncart";
 function CartPage() {
   const dispatch = useDispatch();
-  // const { cart } = useSelector((state) => ({ ...state }));
-  const { cart } = useSelector((state) => ({ ...state }));
-  // const cart = useSelector((state) => state.cart);
-
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+  // const history =  useHistory();
   const [userData, setUserData] = useState(null);
   // const [userName, setUserName] = React.useState("");
   const [userName, setUserName] = useState("");
@@ -69,7 +66,19 @@ function CartPage() {
     } else {
       setIsLoggedIn(false);
     }
-  }, []);
+  }, [idUser]);
+  console.log("testtt");
+
+  console.log(idUser);
+  const cartObject = useSelector((state) => state.cart);
+  console.log(cartObject);
+  const cart = Object.values(cartObject[idUser] || {});
+  console.table(cart);
+  // const userCartArray = useSelector((state) => state.cart);
+  // const cart = Object.values(userCartArray[idUser] || {});
+  // console.log(userCartArray);
+  // console.table(cart);
+  // console.log("table");
 
   const getTotal = () => {
     return cart.reduce((currenValue, nextValue) => {
@@ -113,25 +122,26 @@ function CartPage() {
 
   const handleSaveOrder = async (e) => {
     console.log(idUser);
-    console.log(cart);
+    // console.log(cart);
     try {
       // เรียกใช้ API ด้วย Axios
       const response = await axios.post(
         `${process.env.REACT_APP_API}/customer/cart`,
         { idUser, cart }
       );
-
       // ตรวจสอบการตอบกลับจาก API
       if (response.status === 200) {
         console.log("บันทึกสำเร็จ!");
+
         Swal.fire({
           icon: "success",
           title: "บันทึกสำเร็จ!",
           text: "ข้อมูลของคุณได้รับการบันทึกเรียบร้อยแล้ว",
         }).then(() => {
-          
           localStorage.removeItem("cart");
-          navigate("/check-order");
+          const idOrder = response.data._id ;
+          navigate(`/check-order/${idOrder}`);      
+              // navigate("/check-order");
           // ทำอื่นๆ ตามที่ต้องการหลังจากบันทึกสำเร็จ
         });
       } else {
@@ -180,9 +190,8 @@ function CartPage() {
               <th className="text-browntop px-2 py-1 border border-gray-300 ..."></th>
             </tr>
           </thead>
-
           {cart.map((item) => (
-            <ProductInCart key={item.productId} item={item} />
+            <ProductInCart idUser={idUser} key={item.productId} item={item} />
           ))}
         </table>
       </div>

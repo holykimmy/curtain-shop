@@ -30,6 +30,18 @@ const CustomerAPI = {
         throw error;
       });
   },
+
+    
+  getOrderByIdOrder: async (idOrder) => {
+    return axios
+      .get(`${process.env.REACT_APP_API}/customer/check-order/order/${idOrder}`) 
+      .then((response) => response.data)
+      .catch((error) => {
+        console.error(error);
+        throw error;
+      });
+  },
+  
   
 
   getSearch: (search) => {

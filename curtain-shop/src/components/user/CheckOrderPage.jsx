@@ -1,45 +1,23 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../Navbar";
 import { BsPinFill } from "react-icons/bs";
-import { Link, useNavigate } from "react-router-dom";
-import { HiOutlineArrowSmRight } from "react-icons/hi";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import blackout from "../img/products/blackout.jpeg";
 import Footer from "../Footer";
 import Swal from "sweetalert2";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
 import customerAPI from "../../services/customerAPI";
-import ProductDetail from "./ProductDetail";
 import r6 from "../img/r6.jpg";
 
 function CheckOrdeerPage() {
-  const dispatch = useDispatch();
-
-  console.log("check order");
-  //calculator
-  const { cart } = useSelector((state) => ({ ...state }));
-
-  const getTotal = () => {
-    return cart.reduce((currenValue, nextValue) => {
-      // const deliverly = 200;
-      return currenValue + nextValue.count * nextValue.price;
-    }, 0); // const start
-  };
-  const totalPrice = getTotal();
-
-  const totalItem = cart.reduce(
-    (total, item) => total + item.count * item.price,
-    0
-  );
-  console.log(totalItem);
+  const { idOrder } = useParams();
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
-
   const [userData, setUserData] = useState(null);
   const [userName, setUserName] = React.useState("");
   const [idUser, setIdUser] = React.useState("");
+  const [currentOrder, setCurrentOrder] = useState([]);
 
   const [user, setUser] = React.useState({
     username: "",
@@ -49,6 +27,27 @@ function CheckOrdeerPage() {
     tell: "",
     address: "",
   });
+
+  useEffect(() => {
+    const fetchData = () => {
+      customerAPI
+        .getOrderByIdOrder(idOrder)
+        .then((orderData) => {
+          setCurrentOrder(orderData);
+        })
+        .catch((err) => {
+          console.error("error", err);
+        });
+    };
+    fetchData();
+
+    // Return a cleanup function to clear the interval
+    return () => clearInterval();
+  }, [idOrder]);
+
+  console.log(currentOrder);
+
+  console.log("check order");
 
   useEffect(() => {
     const fetchData = () => {
@@ -105,10 +104,9 @@ function CheckOrdeerPage() {
   const handleLogoutAuto = () => {
     // Logout user
     localStorage.removeItem("token");
-    setUserName(""); 
+    setUserName("");
 
-
-    navigate("/"); 
+    navigate("/");
   };
 
   const handleLogout = () => {
@@ -132,7 +130,7 @@ function CheckOrdeerPage() {
     });
   };
 
- //see address
+  //see address
   const [address, setAddress] = useState([]);
   console.log(idUser);
 
@@ -152,40 +150,16 @@ function CheckOrdeerPage() {
     // Return a cleanup function to clear the interval
     return () => clearInterval();
   }, [idUser]);
-
- 
-  // useEffect(() => {
-  //   const fetchData = () => {
-  //     customerAPI
-  //       .getOrderById(idUser)
-  //       .then((addressData) => {
-  //         setAddress(addressData);
-  //       })
-  //       .catch((err) => {
-  //         console.error("error", err);
-  //       });
-  //   };
-  //   fetchData();
-
-  //   // Return a cleanup function to clear the interval
-  //   return () => clearInterval();
-  // }, [idOrder]);
-
- 
+  console.log("dkjhafkdsj");
+  console.log(address);
 
   const [sendAddress, setSendAddress] = useState("");
 
+  
   const handleAddressSelect = (selectedId) => {
-    const selectedAddress = address.find(
-      (addressData) => addressData.id === selectedId
-    );
-    setSendAddress(selectedAddress);
-    // console.log("Selected Address:", selectedAddress);
+    setSendAddress(selectedId);
+    console.log("Selected Address ID:", selectedId);
   };
-
-  useEffect(() => {}, [sendAddress]);
-
-  // console.log("send",sendAddress);
 
   const deliveryOptions = [
     {
@@ -206,14 +180,13 @@ function CheckOrdeerPage() {
     setSelecteDelivery(optionId);
   };
 
-  // console.log("select", selectedDelivery);
-  const deliveryIs = deliveryOptions.find(
-    (option) => option.id === selectedDelivery
-  );
+  console.log("select", selectedDelivery);
+
 
   const submitForm = async (e) => {
     e.preventDefault();
-
+    const deliveryIs = selectedDelivery;
+    console.table("deliveryis", deliveryIs);
     if (!deliveryIs) {
       Swal.fire({
         icon: "warning",
@@ -223,6 +196,7 @@ function CheckOrdeerPage() {
       });
       return; // หยุดการทำงานของฟังก์ชันหลังจากแสดงแจ้งเตือน
     }
+    console.table(deliveryIs);
 
     if (!sendAddress) {
       Swal.fire({
@@ -233,28 +207,17 @@ function CheckOrdeerPage() {
       });
       return; // หยุดการทำงานของฟังก์ชันหลังจากแสดงแจ้งเตือน
     }
+    console.table("tetst", sendAddress);
 
-    const formData = {
-      customerId: idUser,
-      products: cart.map((item) => ({
-        product: item._id,
-        count: item.count,
-        width: item.width,
-        height: item.height,
-      })),
-      sendAddress: sendAddress._id,
-      deliveryIs: selectedDelivery,
-      totalPrice: totalPrice,
-      confirmed: true,
-    };
-    console.log("----addresses ----");
-    console.log(formData);
-    console.log("----addresses ----");
-
+    const confirmed = true;
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_API}/customer/cart-to-order/`,
-        formData
+        `${process.env.REACT_APP_API}/customer/cart-to-order/${idOrder}`,
+        {
+          sendAddress,
+          deliveryIs,
+          confirmed,
+        }
       );
       console.log(response.data); // แสดงข้อมูลที่ API ตอบกลับ
       Swal.fire({
@@ -290,57 +253,74 @@ function CheckOrdeerPage() {
             ยืนยันคำสั่งซื้อ
           </h5>
         </div>
+
         <form onSubmit={submitForm}>
           <div class="grid sm:px-10 lg:grid-cols-2 lg:px-20 xl:px-32">
             <div class="px-4 pt-8">
               <p class="text-2xl text-b-font">ข้อมูลคำสั่งซื้อ</p>
               <p class="text-gray-400">กรุณาตรวจสอบรายการสินค้าของคุณ</p>
+              {currentOrder.map((order) => (
+                <div key={order._id}>
+                  <h2>Order ID: {order._id}</h2>
+                  <h3>Total Price: {order.totalPrice}</h3>
+                  <h3>Confirmed: {order.confirmed ? "Yes" : "No"}</h3>
+                  {/* Add more details as needed */}
+                  <div class="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6">
+                    {order.products.map((item) => (
+                      <div
+                        key={item._id}
+                        class="flex flex-col shadow-xl  rounded-lg bg-white sm:flex-row"
+                      >
+                        <img
+                          class="m-5 h-50 w-40 rounded-md border object-cover object-center"
+                          src={`${process.env.REACT_APP_API}/images/${item.product.image}`}
+                          alt="product"
+                        />
+                        <div class="flex w-full flex-col px-4 py-4">
+                          <span class="font-semibold">
+                            {" "}
+                            ชื่อสินค้า : {item.product.name}
+                          </span>
+                          <span class="font-semibold">
+                            {" "}
+                            ยี่ห้อ : {item.product.brand}
+                          </span>
 
-              <div class="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6">
-                {cart.map((item, index) => (
-                  <div
-                    key={index}
-                    class="flex flex-col shadow-xl  rounded-lg bg-white sm:flex-row"
-                  >
-                    <img
-                      class="m-5 h-50 w-40 rounded-md border object-cover object-center"
-                      src={`${process.env.REACT_APP_API}/images/${item.image}`}
-                      alt="product"
-                    />
-                    <div class="flex w-full flex-col px-4 py-4">
-                      <span class="font-semibold">{item.name}</span>
-                      {/* <span class="float-right text-gray-600">
-                      ความกว้าง :{item.width}
-                    </span>
-                    <span class="float-right text-gray-600">
-                      ความยาว :{item.height}
-                    </span> */}
-                      <span class="float-right text-gray-600">
-                        รหัสสี : {item.color}
-                      </span>
-                      {/* <span class="float-right font-bold text-gray-600">
-                      ผ้าม่านที่สั่งตัด : {item.type}
-                    </span> */}
-                      <div class="float-right text-gray-600 whitespace-pre-wrap">
-                        รายละเอียดเพิ่มเติม :{item.detail}
+                          <span class="float-right text-gray-600">
+                            รหัสสี : {item.product.color}
+                          </span>
+
+                          <p class="text-md font-bold">
+                            {" "}
+                            ความกว้างของหน้าผ้า : {item.product.p_width}
+                          </p>
+                          <div class="float-right text-gray-600 whitespace-pre-wrap">
+                            รายละเอียดเพิ่มเติม :{item.product.detail}
+                          </div>
+                          <p class="text-md font-bold">
+                            {" "}
+                            การสั่งตัดผ้าม่าน : {item.type}
+                          </p>
+                          <p class="text-md font-bold">
+                            {" "}
+                            ราคา/หลา : {item.product.price}{" "}
+                          </p>
+                          <p class="text-md font-bold">
+                            {" "}
+                            ขนาด : {item.width} x {item.height} เซนติเมตร{" "}
+                          </p>
+                          <p class="text-md font-bold">
+                            จำนวน : {item.count} หลา{" "}
+                          </p>
+                          <p class="text-md font-bold">
+                            รวม : {item.product.price * item.count} บาท{" "}
+                          </p>
+                        </div>
                       </div>
-                      <p class="text-md font-bold">
-                        {" "}
-                        การสั่งตัดผ้าม่าน : {item.type} เซนติเมตร{" "}
-                      </p>
-                      <p class="text-md font-bold"> ราคา/หลา : {item.price} </p>
-                      <p class="text-md font-bold">
-                        {" "}
-                        ขนาด : {item.width} x {item.height} เซนติเมตร{" "}
-                      </p>
-                      <p class="text-md font-bold">จำนวน : {item.count} หลา </p>
-                      <p class="text-md font-bold">
-                        รวม : {item.price * item.count} บาท{" "}
-                      </p>
-                    </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
 
               <p class="mt-8 text-2xl text-b-font">เลือกการขนส่ง</p>
               {deliveryOptions.map((option) => (
@@ -380,11 +360,15 @@ function CheckOrdeerPage() {
                 </div>
               ))}
             </div>
+
             <div class="bg-brown-blog mt-10  px-4 pt-8 lg:mt-0">
-              <select
+              {/* <select
                 className="mb-2 rounded-lg"
-                onChange={(e) => handleAddressSelect(e.target.value)}
-              >
+                id="sendAddress"
+                type="text"
+                value={state.sendAddress}
+                onChange={inputValue("sendAddress")}
+                >
                 <option value="">โปรดเลือกที่อยู่ที่ต้องการจัดส่ง</option>
                 {address.map((addressData) => (
                   <option key={addressData._id} value={addressData._id}>
@@ -399,13 +383,23 @@ function CheckOrdeerPage() {
                     </div>
                   </option>
                 ))}
+              </select> */}
+              <select
+                className="mb-2 rounded-lg"
+                onChange={(e) => handleAddressSelect(e.target.value)}
+              >
+                <option value="">โปรดเลือกที่อยู่ที่ต้องการจัดส่ง</option>
+                {address.map((address) => (
+                  <option key={address.id} value={address.id}>
+                    {`${address.name}, ${address.houseNo}, ${address.sub_district}, ${address.district}, ${address.province} ${address.postcode}`}
+                  </option>
+                ))}
               </select>
 
               <p>
                 <Link
                   to="/address"
                   className=" mt-2 mb-3 px-4 py-2 rounded-lg text-base  text-gray-900 hover:text-gray-600"
-                  // onClick={() => handleEditProduct(product._id, product.name)}
                 >
                   เพิ่มที่อยู่ใหม่ ->
                 </Link>
@@ -413,39 +407,40 @@ function CheckOrdeerPage() {
 
               <p class="text-2xl font-medium">ข้อมูลการชำระเงิน</p>
               <p class=" text-gray-1000">รายละเอียดการชำระเงินของท่าน</p>
-
-              <div class="">
-                <div class="mt-6 border-t border-b py-2">
-                  <div class="flex-col items-center justify-between">
-                    {cart.map((item, index) => (
-                      <p
-                        key={index}
-                        className="ml-10 font-semibold text-lg text-gray-900 my-2"
-                      >
-                        {item.name} ขนาด {item.width} x {item.height} เซนติเมตร
-                        x {item.count} = {item.price * item.count}
+              {currentOrder.map((order) => (
+                <div key={order._item}>
+                  <div class="mt-6 border-t border-b py-2">
+                    <div class="flex-col items-center justify-between">
+                      {order.products.map((item) => (
+                        <div key={item._id}>
+                          <p className="ml-10 font-semibold text-lg text-gray-900 my-2">
+                            {item.product.name} ขนาด {item.width} x{" "}
+                            {item.height} เซนติเมตร x {item.count} ={" "}
+                            {item.product.price * item.count}
+                          </p>
+                        </div>
+                      ))}
+                      <p class="mt-4 text-lg font-medium text-gray-900">
+                        {" "}
+                        ราคารวม : {order.totalPrice} บาท{" "}
                       </p>
-                    ))}
+                    </div>
 
-                    <p class="mt-4 text-lg font-medium text-gray-900">
-                      {" "}
-                      ราคารวม : {totalPrice} บาท{" "}
+                    <div class="flex items-center justify-between">
+                      <p class="text-lg font-medium text-gray-900">ค่าจัดส่ง</p>
+                      <p class="font-semibold text-lg text-gray-900">200</p>
+                    </div>
+                  </div>
+                  <div class="mt-6 flex items-center justify-between">
+                    <p class="text-lg font-medium text-gray-900">
+                      ราคารวมทั้งหมด
+                    </p>
+                    <p class="text-lg font-semibold text-gray-900">
+                      {order.totalPrice + 200} บาท
                     </p>
                   </div>
-                  <div class="flex items-center justify-between">
-                    <p class="text-lg font-medium text-gray-900">ค่าจัดส่ง</p>
-                    <p class="font-semibold text-lg text-gray-900">200</p>
-                  </div>
                 </div>
-                <div class="mt-6 flex items-center justify-between">
-                  <p class="text-lg font-medium text-gray-900">
-                    ราคารวมทั้งหมด
-                  </p>
-                  <p class="text-lg font-semibold text-gray-900">
-                    {getTotal() + 200} บาท
-                  </p>
-                </div>
-              </div>
+              ))}
 
               <button
                 value="save"

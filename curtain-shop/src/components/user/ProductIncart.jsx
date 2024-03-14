@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { MdDeleteForever } from "react-icons/md";
+import Swal from "sweetalert2";
 
-const ProductInCart = ({ item }) => {
+const ProductInCart = ({ item, idUser }) => {
   const dispatch = useDispatch();
   const [updatedItem, setUpdatedItem] = useState(item);
   const [cart, setCart] = useState([]);
@@ -29,11 +30,17 @@ const ProductInCart = ({ item }) => {
   //   });
   // };
 
-  const handleMergeProducts = (updatedCart) => {
+  // console.log(idUser);
+  // const cartObject = useSelector((state) => state.cart);
+  // console.log(cartObject);
+  // const cart = Object.values(cartObject[idUser] || {});
+  // console.log(cart);
+
+  const handleMergeProductsOld = (updatedCart) => {
     let mergedCart = [];
 
     updatedCart.forEach((product) => {
-      console.log("test",product.productId);
+      console.log("test", product.productId);
       const existingProductIndex = mergedCart.findIndex(
         (item) =>
           item.productId === product.productId &&
@@ -55,16 +62,80 @@ const ProductInCart = ({ item }) => {
     return mergedCart;
   };
 
-  useEffect(() => {
-    // ดึงข้อมูลจาก localStorage
-    const cartFromLocalStorage = JSON.parse(localStorage.getItem("cart")) || [];
-    setCart(cartFromLocalStorage);
-    // อัปเดตข้อมูลใน Redux
-    dispatch({
-      type: "ADD_TO_CART",
-      payload: cartFromLocalStorage,
+  const handleMergeProducts = (updatedCart) => {
+    let mergedCart = {};
+
+    updatedCart.forEach((product) => {
+      if (!mergedCart[idUser]) {
+        mergedCart[idUser] = []; // สร้าง array สำหรับ idUser ถ้ายังไม่มี
+      }
+
+      const existingProductIndex = mergedCart[idUser].findIndex(
+        (item) =>
+          item.productId === product.productId &&
+          item.type === product.type &&
+          item.width === product.width &&
+          item.height === product.height &&
+          item.rail === product.rail
+      );
+
+      if (existingProductIndex !== -1) {
+        // หากพบสินค้าที่มีข้อมูลเหมือนกันใน mergedCart
+        mergedCart[idUser][existingProductIndex].count += product.count; // เพิ่มจำนวนสินค้า
+      } else {
+        // หากไม่พบสินค้าที่มีข้อมูลเหมือนกันใน mergedCart
+        mergedCart[idUser].push(product); // เพิ่มสินค้าใหม่เข้าไปในตะกร้า
+      }
     });
-  }, []);
+
+    return mergedCart;
+  };
+
+  // useEffect(() => {
+  //   // ดึงข้อมูลจาก localStorage
+  //   const cartFromLocalStorage = JSON.parse(localStorage.getItem("cart")) || [];
+  //   setCart(cartFromLocalStorage);
+  //   // อัปเดตข้อมูลใน Redux
+  //   dispatch({
+  //     type: "ADD_TO_CART",
+  //     payload: cartFromLocalStorage,
+  //   });
+  // }, [cart]);
+
+  //   useEffect(() => {
+  //     // ดึงข้อมูลจาก localStorage
+  //     const cartFromLocalStorage = JSON.parse(localStorage.getItem("cart")) || {};
+
+  //     // ดึงเฉพาะ array ใน cart object ที่มีชื่อเป็น idUser
+  //     const cartArray = Object.values(cartFromLocalStorage);
+
+  //     setCart(cartArray);
+
+  //     // อัปเดตข้อมูลใน Redux
+  //     dispatch({
+  //         type: "ADD_TO_CART",
+  //         payload: cartArray,
+  //     });
+  // }, [cart]);
+
+  // useEffect(() => {
+  //   // ดึงข้อมูลจาก localStorage
+  //   const cartFromLocalStorage = JSON.parse(localStorage.getItem("cart")) || {};
+
+  //   // ดึงเฉพาะ array ใน cart object ที่มีชื่อเป็น idUser
+  //   // const idUser = "65e5aacf6f455e922446b734"; // หรือให้เป็นค่าที่ต้องการ
+  //   const cartArray = cartFromLocalStorage[idUser] || [];
+
+  //   setCart(cartArray);
+
+  //   // อัปเดตข้อมูลใน Redux
+  //   dispatch({
+  //     type: "ADD_TO_CART",
+  //     payload: cartArray,
+  //   });
+  // }, [cart]);
+
+  console.log("after ", cart);
 
   const handleChangeCount = (e) => {
     const count = e.target.value < 1 ? 1 : e.target.value;
@@ -75,21 +146,27 @@ const ProductInCart = ({ item }) => {
       return;
     }
 
-    let cart = [];
+    let cart = {};
+
     if (localStorage.getItem("cart")) {
       cart = JSON.parse(localStorage.getItem("cart"));
     }
 
     //update count
-    cart.map((product, i) => {
+    const updatedCart = cart[idUser].map((product) => {
       if (product.cartId === item.cartId) {
-        cart[i].count = count;
+        return {
+          ...product,
+          count: count,
+        };
       }
+      return product;
     });
 
-    //maege
-    const mergedCart = handleMergeProducts(cart);
+    cart[idUser] = updatedCart;
 
+    //maege
+    const mergedCart = handleMergeProducts(updatedCart);
     //save to localStorage
     localStorage.setItem("cart", JSON.stringify(mergedCart));
 
@@ -108,15 +185,20 @@ const ProductInCart = ({ item }) => {
     }
 
     //update count
-    cart.map((product, i) => {
+    const updatedCart = cart[idUser].map((product) => {
       if (product.cartId === item.cartId) {
-        cart[i].width = width;
+        return {
+          ...product,
+          width: width,
+        };
       }
+      return product;
     });
 
-    //maege
-    const mergedCart = handleMergeProducts(cart);
+    cart[idUser] = updatedCart;
 
+    //maege
+    const mergedCart = handleMergeProducts(updatedCart);
     //save to localStorage
     localStorage.setItem("cart", JSON.stringify(mergedCart));
 
@@ -135,14 +217,21 @@ const ProductInCart = ({ item }) => {
     }
 
     //update count
-    cart.map((product, i) => {
+
+    const updatedCart = cart[idUser].map((product) => {
       if (product.cartId === item.cartId) {
-        cart[i].height = height;
+        return {
+          ...product,
+          height: height,
+        };
       }
+      return product;
     });
 
+    cart[idUser] = updatedCart;
+
     //maege
-    const mergedCart = handleMergeProducts(cart);
+    const mergedCart = handleMergeProducts(updatedCart);
 
     //save to localStorage
     localStorage.setItem("cart", JSON.stringify(mergedCart));
@@ -164,17 +253,21 @@ const ProductInCart = ({ item }) => {
     if (localStorage.getItem("cart")) {
       cart = JSON.parse(localStorage.getItem("cart"));
     }
-    const updatedCart = cart.map((product) => {
+
+    const updatedCart = cart[idUser].map((product) => {
       if (product.cartId === item.cartId) {
-        return { ...product, rail: value };
+        return {
+          ...product,
+          rail: value,
+        };
       }
       return product;
     });
 
-
+    cart[idUser] = updatedCart;
+    //merge
     const mergedCart = handleMergeProducts(updatedCart);
-
-
+    //save
     localStorage.setItem("cart", JSON.stringify(mergedCart));
 
     dispatch({
@@ -194,15 +287,21 @@ const ProductInCart = ({ item }) => {
     if (localStorage.getItem("cart")) {
       cart = JSON.parse(localStorage.getItem("cart"));
     }
-    const updatedCart = cart.map((product) => {
+
+
+    const updatedCart = cart[idUser].map((product) => {
       if (product.cartId === item.cartId) {
-        return { ...product, type: value };
+        return {
+          ...product,
+          type: value,
+        };
       }
       return product;
     });
 
-    const mergedCart = handleMergeProducts(updatedCart);
+    cart[idUser] = updatedCart;
 
+    const mergedCart = handleMergeProducts(updatedCart);
 
     localStorage.setItem("cart", JSON.stringify(mergedCart));
 
@@ -212,30 +311,34 @@ const ProductInCart = ({ item }) => {
     });
   };
 
+
   const handleRemove = () => {
-    let cart = [];
+    let cart = {};
     if (localStorage.getItem("cart")) {
       cart = JSON.parse(localStorage.getItem("cart"));
     }
 
-    //update count
-    cart.map((product, i) => {
-      if (product.productId == item.productId) {
-        cart.splice(i, 1); // remove
-      }
-    });
+    // Check if the cart exists for the current user
+    if (cart[idUser]) {
+      // Filter out the product to remove from the cart
+      cart[idUser] = cart[idUser].filter(
+        (product) => product.cartId !== item.cartId
+      );
 
-    //save to localStorage
-    localStorage.setItem("cart", JSON.stringify(cart));
+      // Save updated cart to localStorage
+      localStorage.setItem("cart", JSON.stringify(cart));
 
-    dispatch({
-      type: "ADD_TO_CART",
-      payload: cart,
-    });
+      // Update Redux store
+      dispatch({
+        type: "ADD_TO_CART",
+        payload: cart,
+      });
+    }
   };
 
   return (
     <tbody>
+      
       <tr className="text-center ">
         <td className="text-browntop px-2 py-1 border  border-gray-300 ...">
           {" "}

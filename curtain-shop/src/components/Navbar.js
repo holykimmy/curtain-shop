@@ -50,9 +50,9 @@ function ProfileMenu({ isLoggedIn, handleLogout, userName, idUser }) {
           to: "/edit-profile",
         },
         {
-          label: "ตระกร้าสินค้า",
+          label: "ดูคำสั่งซื้อ",
           icon: InboxArrowDownIcon,
-          to: "/cart",
+          to: "/about-order",
         },
         {
           label: "ออกจากระบบ",

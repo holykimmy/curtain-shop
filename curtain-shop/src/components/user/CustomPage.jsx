@@ -1,15 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { CloudinaryContext } from "cloudinary-react";
-import {
-  SliderPicker,
-  SwatchesPicker,
-  ChromePicker,
-  CirclePicker,
-  SketchPicker,
-} from "react-color";
 import Navbar from "../Navbar";
 import { BsPinFill } from "react-icons/bs";
-import { HiOutlineArrowSmRight } from "react-icons/hi";
 import productAPI from "../../services/productAPI";
 import Footer from "../Footer";
 import TransformedImage from "./Tranformedimage";
@@ -17,11 +9,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-
 import { useSelector, useDispatch } from "react-redux";
 import _ from "lodash";
-
-var { Alpha } = require("react-color/lib/components/common");
 
 function CustomPage() {
   //login
@@ -32,7 +21,6 @@ function CustomPage() {
   const [idUser, setIdUser] = React.useState("");
 
   const { productId } = useParams();
-  // console.log(productId);
 
   const [data, setData] = useState({
     productId: productId,
@@ -52,13 +40,6 @@ function CustomPage() {
     tell: "",
     address: "",
   });
-
-  // // เพิ่มข้อมูลลงใน sessionStorage
-  // const myData = { key: "value" };
-  // sessionStorage.setItem("myGlobalData", JSON.stringify(myData));
-
-  // // ดึงข้อมูลจาก sessionStorage
-  // const cookiedata = JSON.parse(sessionStorage.getItem("myGlobalData"));
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");
@@ -100,7 +81,7 @@ function CustomPage() {
     } else {
       setIsLoggedIn(false);
     }
-  }, []);
+  }, [idUser]);
 
   const handleLogoutAuto = () => {
     // Logout user
@@ -151,6 +132,7 @@ function CustomPage() {
       : null;
   };
 
+  //product
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -202,8 +184,7 @@ function CustomPage() {
 
   //add to cart
 
-  const cart = useSelector((state) => state.cart);
-
+  // const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
 
   const [width, setWidth] = useState("");
@@ -313,13 +294,20 @@ function CustomPage() {
     });
   };
 
+  console.log("--------", idUser);
   // const addToCartForLoggedInUser = ({
+  //   idUser,
   //   selectedRail,
   //   selectedType,
   //   width,
   //   height,
   //   ...data
   // }) => {
+  //   function generateCartId() {
+  //     return Math.floor(Math.random() * 1000000); // สร้างเลขสุ่ม 6 หลักเป็น cartId
+  //   }
+  // console.log("--------",idUser);
+
   //   // ดำเนินการเพิ่มสินค้าในตะกร้าสำหรับผู้ใช้ที่เข้าสู่ระบบแล้ว
   //   // สร้างข้อมูลสินค้าที่จะเพิ่มลงในตะกร้า
   //   const productData = {
@@ -335,17 +323,36 @@ function CustomPage() {
   //     image: data.image,
   //     type: selectedType,
   //     rail: selectedRail,
+  //     cartId: generateCartId(),
+  //     count: 1, // เพิ่ม count เริ่มต้นที่ 1
   //   };
 
-  //   sessionStorage.setItem('cartData', JSON.stringify(productData));
+  //   localStorage.setItem("cartData", JSON.stringify(productData));
 
   //   // ดึงข้อมูลตะกร้าที่เชื่อมต่อกับผู้ใช้ที่เข้าสู่ระบบ
   //   let userCart = JSON.parse(localStorage.getItem("cart")) || {};
 
   //   // ตรวจสอบว่ามีข้อมูลตะกร้าสำหรับผู้ใช้นี้ใน localStorage หรือไม่
   //   if (userCart[idUser]) {
-  //     // มีข้อมูลตะกร้าสำหรับผู้ใช้นี้ใน localStorage ให้ใช้ข้อมูลตะกร้านี้
-  //     userCart[idUser].push(productData);
+  //     // ตรวจสอบว่ามีสินค้าที่มีคุณสมบัติเหมือนกันอยู่ในตะกร้าแล้วหรือไม่
+  //     const existingProduct = userCart[idUser].findIndex(
+  //       (item) =>
+  //         item.productId === productData.productId &&
+  //         item.type === productData.type &&
+  //         item.rail === productData.rail &&
+  //         item.width === productData.width &&
+  //         item.height === productData.height
+  //     );
+
+  //     if (existingProduct !== -1) {
+  //       // มีสินค้าที่มีคุณสมบัติเหมือนกันอยู่ในตะกร้าแล้ว
+  //       // เพิ่มจำนวนสินค้าในตะกร้า
+  //       userCart[idUser][existingProduct].count++;
+  //     } else {
+  //       // ไม่มีสินค้าที่มีคุณสมบัติเหมือนกันอยู่ในตะกร้า
+  //       // เพิ่มสินค้าใหม่เข้าไปในตะกร้า
+  //       userCart[idUser].push(productData);
+  //     }
   //   } else {
   //     // ไม่มีข้อมูลตะกร้าสำหรับผู้ใช้นี้ใน localStorage ให้สร้างข้อมูลตะกร้าใหม่
   //     userCart[idUser] = [productData];
@@ -353,6 +360,11 @@ function CustomPage() {
 
   //   // บันทึกข้อมูลตะกร้าลงใน localStorage
   //   localStorage.setItem("cart", JSON.stringify(userCart));
+
+  //   // เช็คว่าสินค้าเป็นชิ้นเดียวกันหรือไม่
+  //   let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  //   let unique = _.uniqWith(cart, _.isEqual);
+  //   localStorage.setItem("cart", JSON.stringify(unique));
 
   //   // แสดงข้อความแจ้งเตือนว่าสินค้าถูกเพิ่มลงในตะกร้าเรียบร้อยแล้ว
   //   Swal.fire({
@@ -363,62 +375,541 @@ function CustomPage() {
   //   });
   // };
 
-console.log("testcart");
-  const cartData = sessionStorage.getItem("cart");
-  console.log(JSON.parse(cartData));
+  // const addToCartForLoggedInUser = ({
+  //   idUser,
+  //   selectedRail,
+  //   selectedType,
+  //   width,
+  //   height,
+  //   ...data
+  // }) => {
+
+  //   function generateCartId() {
+  //     return Math.floor(Math.random() * 1000000); // สร้างเลขสุ่ม 6 หลักเป็น cartId
+  //   }
+  //   console.log("---in-----",idUser);
+
+  //   // ดำเนินการเพิ่มสินค้าในตะกร้าสำหรับผู้ใช้ที่เข้าสู่ระบบแล้ว
+  //   // สร้างข้อมูลสินค้าที่จะเพิ่มลงในตะกร้า
+  //   const productData = {
+  //     productId: data.id,
+  //     brand: data.brand,
+  //     p_type: data.p_type,
+  //     name: data.name,
+  //     color: data.color,
+  //     detail: data.detail,
+  //     width: width,
+  //     height: height,
+  //     price: data.price,
+  //     image: data.image,
+  //     type: selectedType,
+  //     rail: selectedRail,
+  //     cartId: generateCartId(),
+  //     count: 1, // เพิ่ม count เริ่มต้นที่ 1
+  //   };
+
+  //   localStorage.setItem("cartData", JSON.stringify(productData));
+
+  //   // ดึงข้อมูลตะกร้าที่เชื่อมต่อกับผู้ใช้ที่เข้าสู่ระบบ
+  //   let userCart = JSON.parse(localStorage.getItem("cart")) || {};
+
+  //   // ตรวจสอบว่ามีข้อมูลตะกร้าสำหรับผู้ใช้นี้ใน localStorage หรือไม่
+  //   if (!userCart[idUser]) {
+  //     // ไม่มีข้อมูลตะกร้าสำหรับผู้ใช้นี้ใน localStorage ให้สร้างข้อมูลตะกร้าใหม่
+  //     userCart[idUser] = [];
+  //   }
+
+  //   // ตรวจสอบว่า userCart ว่างหรือไม่ ถ้าไม่ว่างให้ใช้รายการสินค้าเดิม
+  //   if (userCart[idUser].length > 0) {
+  //     const existingProduct = userCart[idUser].findIndex(
+  //       (item) =>
+  //         item.productId === productData.productId &&
+  //         item.type === productData.type &&
+  //         item.rail === productData.rail &&
+  //         item.width === productData.width &&
+  //         item.height === productData.height
+  //     );
+
+  //     if (existingProduct !== -1) {
+  //       // มีสินค้าที่มีคุณสมบัติเหมือนกันอยู่ในตะกร้าแล้ว
+  //       // เพิ่มจำนวนสินค้าในตะกร้า
+  //       userCart[idUser][existingProduct].count++;
+  //     } else {
+  //       // ไม่มีสินค้าที่มีคุณสมบัติเหมือนกันอยู่ในตะกร้า
+  //       // เพิ่มสินค้าใหม่เข้าไปในตะกร้า
+  //       userCart[idUser].push(productData);
+  //     }
+  //   } else {
+  //     // ถ้าตะกร้าว่างให้เพิ่มสินค้าใหม่
+  //     userCart[idUser].push(productData);
+  //   }
+
+  //   // บันทึกข้อมูลตะกร้าลงใน localStorage
+  //   localStorage.setItem("cart", JSON.stringify(userCart));
+
+  //   // เช็คว่าสินค้าเป็นชิ้นเดียวกันหรือไม่
+  //   let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  //   let unique = _.uniqWith(cart, _.isEqual);
+  //   localStorage.setItem("cart", JSON.stringify(unique));
+
+  //   // แสดงข้อความแจ้งเตือนว่าสินค้าถูกเพิ่มลงในตะกร้าเรียบร้อยแล้ว
+  //   Swal.fire({
+  //     icon: "success",
+  //     title: "เพิ่มสินค้าในตะกร้าเรียบร้อยแล้ว",
+  //     showConfirmButton: false,
+  //     timer: 1500, // 1.5 วินาที
+  //   });
+  // };
+
+  // const addToCartForLoggedInUser = ({
+  //   idUser,
+  //   selectedRail,
+  //   selectedType,
+  //   width,
+  //   height,
+  //   ...data
+  // }) => {
+  //   //object
+  //   let userCart = {};
+
+  //   // ตรวจสอบค่า localStorage.getItem('cart')
+  //   const cartFromStorage = localStorage.getItem("cart");
+  //   console.log("localStorage.getItem('cart'):", cartFromStorage);
+
+  //   try {
+  //     // พยายามแปลงข้อมูลใน localStorage เป็น JSON object
+  //     if (cartFromStorage) {
+  //       userCart = JSON.parse(cartFromStorage);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error parsing JSON:", error);
+  //     // กรณีที่เกิดข้อผิดพลาดในการแปลง JSON
+  //     // ลบข้อมูลที่ไม่ถูกต้องออกจาก localStorage
+  //     localStorage.removeItem("cart");
+  //   }
+
+  //   console.log("data.id", data.id);
+
+  //   console.log("------------data--------");
+  //   Object.keys(userCart).forEach((userId) => {
+  //     userCart[userId].forEach((item) => {
+  //       console.table(
+  //         item.productId,
+  //         item.type,
+  //         item.rail,
+  //         item.width,
+  //         item.height
+  //       );
+  //     });
+  //   });
+  //   console.log("------------end--------");
+  //   console.table(data.id, selectedType, selectedRail, width, height);
+  //   const existingProductIndex = userCart[idUser]?.findIndex(
+  //     (item) =>
+  //       item.productId === data.id &&
+  //       item.type === selectedType &&
+  //       item.width === width &&
+  //       item.height === height &&
+  //       item.rail === selectedRail
+  //   );
+
+  //   console.log("existingProductIndex:", existingProductIndex);
+
+  //   function generateCartId() {
+  //     return Math.floor(Math.random() * 1000000); // สร้างเลขสุ่ม 6 หลักเป็น cartId
+  //   }
+
+  //   if (existingProductIndex !== -1) {
+  //     // เพิ่มค่า count ของสินค้านี้
+  //     userCart[idUser][existingProductIndex].count++;
+  //   } else {
+  //     const productData = {
+  //       productId: data.id,
+  //       brand: data.brand,
+  //       p_type: data.p_type,
+  //       name: data.name,
+  //       color: data.color,
+  //       detail: data.detail,
+  //       width: width,
+  //       height: height,
+  //       price: data.price,
+  //       image: data.image,
+  //       type: selectedType,
+  //       rail: selectedRail,
+  //       cartId: generateCartId(),
+  //     };
+
+  //     // if (localStorage.getItem("cart")) {
+  //     //   cart = JSON.parse(localStorage.getItem("cart"));
+  //     // }
+  //     if (!userCart[idUser]) {
+  //       userCart[idUser] = [];
+  //     }
+
+  //     userCart[idUser].push({
+  //       ...productData,
+  //       count: 1,
+  //     });
+  //   }
+  //   let unique = _.uniqWith(userCart[idUser], _.isEqual);
+
+  //   localStorage.setItem("cart", JSON.stringify(unique));
+
+  //   dispatch({
+  //     type: "ADD_TO_CART",
+  //     payload: unique,
+  //   });
+
+  //   Swal.fire({
+  //     icon: "success",
+  //     title: "เพิ่มสินค้าในตระกร้าเรียบร้อยแล้ว",
+  //     showConfirmButton: false,
+  //     timer: 1500, // 1.5 วินาที
+  //   });
+  // };
+
+  // const addToCartForLoggedInUser = ({
+  //   idUser,
+  //   selectedRail,
+  //   selectedType,
+  //   width,
+  //   height,
+  //   ...data
+  //  }) => {
+
+  //   let cart = {};
+
+  //   // ตรวจสอบค่า localStorage.getItem('cart')
+  // const cartFromStorage = localStorage.getItem("cart");
+  // console.log("localStorage.getItem('cart'):", cartFromStorage);
+
+  //   try {
+  //     // พยายามแปลงข้อมูลใน localStorage เป็น JSON object
+  //     if (cartFromStorage) {
+  //       cart = JSON.parse(cartFromStorage);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error parsing JSON:", error);
+  //     // กรณีที่เกิดข้อผิดพลาดในการแปลง JSON
+  //     // ลบข้อมูลที่ไม่ถูกต้องออกจาก localStorage
+  //     localStorage.removeItem("cart");
+  //   }
+
+  //   console.log("data.id", data.id);
+
+  //   console.log("------------data--------");
+  //   if (cart[idUser]) {
+  //     cart[idUser].forEach((item) => {
+  //       console.table(
+  //         item.productId,
+  //         item.type,
+  //         item.rail,
+  //         item.width,
+  //         item.height
+  //       );
+  //     });
+  //   }
+  //   console.log("------------end--------");
+  //   console.table(data.id, selectedType, selectedRail, width, height);
+
+  //   if (!cart[idUser]) {
+  //     cart[idUser] = [];
+  //   }
+
+  //   const existingProductIndex = cart[idUser].findIndex(
+  //     (item) =>
+  //       item.productId === data.id &&
+  //       item.type === selectedType &&
+  //       item.width === width &&
+  //       item.height === height &&
+  //       item.rail === selectedRail
+  //   );
+
+  //   console.log("existingProductIndex:", existingProductIndex);
+
+  //   function generateCartId() {
+  //     return Math.floor(Math.random() * 1000000); // สร้างเลขสุ่ม 6 หลักเป็น cartId
+  //   }
+
+  //   if (existingProductIndex !== -1) {
+  //     // เพิ่มค่า count ของสินค้านี้
+  //     cart[existingProductIndex].count++;
+  //   } else {
+  //     const productData = {
+  //       productId: data.id,
+  //       brand: data.brand,
+  //       p_type: data.p_type,
+  //       name: data.name,
+  //       color: data.color,
+  //       detail: data.detail,
+  //       width: width,
+  //       height: height,
+  //       price: data.price,
+  //       image: data.image,
+  //       type: selectedType,
+  //       rail: selectedRail,
+  //       cartId: generateCartId(),
+  //       count: 1,
+  //     };
+
+  //     if (localStorage.getItem("cart")) {
+  //       cart = JSON.parse(localStorage.getItem("cart"));
+  //     }
+
+  //     // if (!cart[idUser]) {
+  //     //   cart[idUser] = [];
+  //     // }
+
+  //     // cart[idUser].push({
+  //     //   ...productData,
+  //     //   count: 1,
+  //     // });
+  //     cart[idUser].push(productData);
+  //   }
+  //   // let unique = _.uniqWith(cart, _.isEqual);
+  //   let unique = {};
+  //   for (const key in cart) {
+  //     if (Object.hasOwnProperty.call(cart, key)) {
+  //       unique[key] = _.uniqWith(cart[key], _.isEqual);
+  //     }
+  //   }
+
+  //   localStorage.setItem("cart", JSON.stringify(unique));
+
+  //   dispatch({
+  //     type: "ADD_TO_CART",
+  //     payload: unique,
+  //   });
+
+  //   Swal.fire({
+  //     icon: "success",
+  //     title: "เพิ่มสินค้าในตระกร้าเรียบร้อยแล้ว",
+  //     showConfirmButton: false,
+  //     timer: 1500, // 1.5 วินาที
+  //   });
+  // };
+  // const addToCartForLoggedInUser = ({
+  //   idUser,
+  //   selectedRail,
+  //   selectedType,
+  //   width,
+  //   height,
+  //   ...data
+  // }) => {
+
+  //   let cart = {};
+  //   // ตรวจสอบค่า localStorage.getItem('cart')
+  //   const cartFromStorage = localStorage.getItem("cart");
+  //   console.log("localStorage.getItem('cart'):", cartFromStorage);
+
+  //   try {
+  //     // พยายามแปลงข้อมูลใน localStorage เป็น JSON object
+  //     if (cartFromStorage) {
+  //       cart = JSON.parse(cartFromStorage);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error parsing JSON:", error);
+  //     // กรณีที่เกิดข้อผิดพลาดในการแปลง JSON
+  //     // ลบข้อมูลที่ไม่ถูกต้องออกจาก localStorage
+  //     localStorage.removeItem("cart");
+  //   }
+
+  //   console.log("data.id", data.id);
+
+  //   console.log("------------data--------");
+  //   if (cart[idUser]) {
+  //     cart[idUser].forEach((item) => {
+  //       console.table(
+  //         item.productId,
+  //         item.type,
+  //         item.rail,
+  //         item.width,
+  //         item.height
+  //       );
+  //     });
+  //   }
+  //   console.log("------------end--------");
+  //   console.table(data.id, selectedType, selectedRail, width, height);
+
+  //   if (!cart[idUser]) {
+  //     cart[idUser] = [];
+  //   }
+
+  //   const existingProductIndex = cart[idUser].findIndex(
+  //     (item) =>
+  //       item.productId === data.id &&
+  //       item.type === selectedType &&
+  //       item.width === width &&
+  //       item.height === height &&
+  //       item.rail === selectedRail
+  //   );
+
+  //   console.log("existingProductIndex:", existingProductIndex);
+
+  //   function generateCartId() {
+  //     return Math.floor(Math.random() * 1000000); // สร้างเลขสุ่ม 6 หลักเป็น cartId
+  //   }
+
+  //   if (existingProductIndex !== -1) {
+  //     // เพิ่มค่า count ของสินค้านี้
+  //     cart[idUser][existingProductIndex].count++;
+  //   } else {
+  //     const productData = {
+  //       productId: data.id,
+  //       brand: data.brand,
+  //       p_type: data.p_type,
+  //       name: data.name,
+  //       color: data.color,
+  //       detail: data.detail,
+  //       width: width,
+  //       height: height,
+  //       price: data.price,
+  //       image: data.image,
+  //       type: selectedType,
+  //       rail: selectedRail,
+  //       cartId: generateCartId(),
+  //       count: 1,
+  //     };
+
+  //     if (localStorage.getItem("cart")) {
+  //       cart = JSON.parse(localStorage.getItem("cart"));
+  //     }
+
+  //     cart[idUser].push(productData);
+  //   }
+
+  //   let unique = {};
+  //   for (const key in cart) {
+  //     if (Object.hasOwnProperty.call(cart, key)) {
+  //       unique[key] = _.uniqWith(cart[key], _.isEqual);
+  //     }
+  //   }
+
+  //   localStorage.setItem("cart", JSON.stringify(unique));
+
+  //   dispatch({
+  //     type: "ADD_TO_CART",
+  //     payload: unique,
+  //   });
+
+  //   Swal.fire({
+  //     icon: "success",
+  //     title: "เพิ่มสินค้าในตระกร้าเรียบร้อยแล้ว",
+  //     showConfirmButton: false,
+  //     timer: 1500, // 1.5 วินาที
+  //   });
+  // };
+
 
   const addToCartForLoggedInUser = ({
+    idUser,
     selectedRail,
     selectedType,
     width,
     height,
     ...data
   }) => {
-    // ดำเนินการเพิ่มสินค้าในตะกร้าสำหรับผู้ใช้ที่เข้าสู่ระบบแล้ว
-    // สร้างข้อมูลสินค้าที่จะเพิ่มลงในตะกร้า
-    const productData = {
-      productId: data.id,
-      brand: data.brand,
-      p_type: data.p_type,
-      name: data.name,
-      color: data.color,
-      detail: data.detail,
-      width: width,
-      height: height,
-      price: data.price,
-      image: data.image,
-      type: selectedType,
-      rail: selectedRail,
-    };
-
-    sessionStorage.setItem("cartData", JSON.stringify(productData));
-
-    // ดึงข้อมูลตะกร้าที่เชื่อมต่อกับผู้ใช้ที่เข้าสู่ระบบ
-    let userCart = JSON.parse(sessionStorage.getItem("cart")) || {};
-
-    // ตรวจสอบว่ามีข้อมูลตะกร้าสำหรับผู้ใช้นี้ใน sessionStorage หรือไม่
-    if (userCart[idUser]) {
-      // มีข้อมูลตะกร้าสำหรับผู้ใช้นี้ใน sessionStorage ให้ใช้ข้อมูลตะกร้านี้
-      userCart[idUser].push(productData);
-    } else {
-      // ไม่มีข้อมูลตะกร้าสำหรับผู้ใช้นี้ใน sessionStorage ให้สร้างข้อมูลตะกร้าใหม่
-      userCart[idUser] = [productData];
+    let cart = {};
+  
+    // ตรวจสอบค่า localStorage.getItem('cart')
+    const cartFromStorage = localStorage.getItem("cart");
+    console.log("localStorage.getItem('cart'):", cartFromStorage);
+  
+    try {
+      // พยายามแปลงข้อมูลใน localStorage เป็น JSON object
+      if (cartFromStorage) {
+        cart = JSON.parse(cartFromStorage);
+      }
+    } catch (error) {
+      console.error("Error parsing JSON:", error);
+      // กรณีที่เกิดข้อผิดพลาดในการแปลง JSON
+      // ลบข้อมูลที่ไม่ถูกต้องออกจาก localStorage
+      localStorage.removeItem("cart");
     }
-
-    // บันทึกข้อมูลตะกร้าลงใน sessionStorage
-    sessionStorage.setItem("cart", JSON.stringify(userCart));
-
-    // แสดงข้อความแจ้งเตือนว่าสินค้าถูกเพิ่มลงในตะกร้าเรียบร้อยแล้ว
+  
+    console.log("data.id", data.id);
+  
+    console.log("------------data--------");
+    if (cart[idUser]) {
+      cart[idUser].forEach((item) => {
+        console.table(
+          item.productId,
+          item.type,
+          item.rail,
+          item.width,
+          item.height
+        );
+      });
+    }
+    console.log("------------end--------");
+    console.table(data.id, selectedType, selectedRail, width, height);
+  
+    if (!cart[idUser]) {
+      // ถ้าไม่มีข้อมูลตะกร้าสำหรับผู้ใช้นี้ใน localStorage สร้างตะกร้าใหม่
+      cart[idUser] = [];
+    }
+  
+    const existingProductIndex = cart[idUser].findIndex(
+      (item) =>
+        item.productId === data.id &&
+        item.type === selectedType &&
+        item.width === width &&
+        item.height === height &&
+        item.rail === selectedRail
+    );
+  
+    console.log("existingProductIndex:", existingProductIndex);
+  
+    function generateCartId() {
+      return Math.floor(Math.random() * 1000000); // สร้างเลขสุ่ม 6 หลักเป็น cartId
+    }
+  
+    if (existingProductIndex !== -1) {
+      // เพิ่มค่า count ของสินค้านี้
+      cart[idUser][existingProductIndex].count++;
+    } else {
+      const productData = {
+        productId: data.id,
+        brand: data.brand,
+        p_type: data.p_type,
+        name: data.name,
+        color: data.color,
+        detail: data.detail,
+        width: width,
+        height: height,
+        price: data.price,
+        image: data.image,
+        type: selectedType,
+        rail: selectedRail,
+        cartId: generateCartId(),
+        count: 1,
+      };
+  
+      cart[idUser].push(productData);
+    }
+  
+    let unique = {};
+    for (const key in cart) {
+      if (Object.hasOwnProperty.call(cart, key)) {
+        unique[key] = _.uniqWith(cart[key], _.isEqual);
+      }
+    }
+  
+    localStorage.setItem("cart", JSON.stringify(unique));
+  
+    dispatch({
+      type: "ADD_TO_CART",
+      payload: unique,
+    });
+  
     Swal.fire({
       icon: "success",
-      title: "เพิ่มสินค้าในตะกร้าเรียบร้อยแล้ว",
+      title: "เพิ่มสินค้าในตระกร้าเรียบร้อยแล้ว",
       showConfirmButton: false,
       timer: 1500, // 1.5 วินาที
     });
   };
-
-
-
+  
   const handleAddToCart = ({
     selectedRail,
     selectedType,
@@ -426,7 +917,6 @@ console.log("testcart");
     height,
     ...data
   }) => {
-    console.log("log", selectedType);
     // console.table(selectedRail, selectedType, width, height, data);
 
     if (!selectedType) {
@@ -459,13 +949,22 @@ console.log("testcart");
       return;
     }
 
+    console.log("idUSer=====", idUser);
     // ตรวจสอบว่าผู้ใช้เข้าสู่ระบบหรือไม่
     if (!isLoggedIn) {
       // กรณีที่ผู้ใช้ยังไม่ได้เข้าสู่ระบบ
-      addToCartForGuest({ selectedRail, selectedType, width, height, ...data });
+      addToCartForGuest({
+        idUser,
+        selectedRail,
+        selectedType,
+        width,
+        height,
+        ...data,
+      });
     } else {
       // กรณีที่ผู้ใช้เข้าสู่ระบบแล้ว
       addToCartForLoggedInUser({
+        idUser,
         selectedRail,
         selectedType,
         width,

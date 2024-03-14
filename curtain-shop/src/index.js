@@ -26,8 +26,8 @@ import CustomPage from "./components/user/CustomPage";
 import FabricType from "./components/user/TypeCurtainsPage";
 import Achievement from "./components/user/AchievementPage";
 import Payment from "./components/user/PaymentPage";
-
 import CheckOutPage from "./components/user/CheckOutPage";
+import AboutOrderPage from "./components/user/AboutOrderPage";
 
 //product
 import Polyester from "./components/user/product/Polyester";
@@ -60,6 +60,7 @@ import { Provider } from "react-redux";
 import { createStore } from "redux";
 import rootReducer from "./components/reducers/indexReducer";
 import { composeWithDevTools } from "@redux-devtools/extension";
+import { useDispatch, useSelector } from "react-redux";
 
 // import { StrictMode } from "react";
 // import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -78,13 +79,14 @@ const router = createBrowserRouter([
   { path: "/product-detail/:productId", element: <ProductDetail /> },
   { path: "/category", element: <CategoryPage /> },
   { path: "/cart", element: <CartPage /> },
-  { path: "/check-order", element: <CheckOrder /> },
+  { path: "/check-order/:idOrder", element: <CheckOrder /> },
   { path: "/recommended-curtain", element: <Recommend /> },
   { path: "/gauging-curtain", element: <Gauging /> },
   { path: "/custom-product", element: <CustomPage /> },
   { path: "/Fabric-Type", element: <FabricType /> },
   { path: "/Achievements", element: <Achievement /> },
   { path: "/checkout", element: <CheckOutPage /> },
+  { path: "/about-order", element: <AboutOrderPage /> },
   { path: "/payment", element: <Payment /> },
 
   { path: "/custom-product/:productId", element: <CustomPage /> },
