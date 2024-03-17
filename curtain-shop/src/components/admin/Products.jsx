@@ -203,7 +203,7 @@ function Products() {
         </button>
       </label>
 
-      {searchResults.length > 0 ? (
+      { searchResults.length > 0 ? (
         searchResults.map((product) => (
           <div key={product._id} className="flex justify-center">
             <div className="flex justify-between w-[97%] sm:w-[97%] md:w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
@@ -266,7 +266,7 @@ function Products() {
           </div>
         ))
       ) : (
-        <p>ไม่พบข้อมูล</p>
+        ""
       )}
 
       <div class="titlea bg-gray-100 py-1 shadow-md">

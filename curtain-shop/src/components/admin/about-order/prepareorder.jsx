@@ -135,7 +135,7 @@ const PrepareOrder = ({ idUser }) => {
         </button>
       </label>
 
-      {searchResults.length > 0 ? (
+      {!searchResults.length > 0 ? (
         searchResults.map((order) => (
           <div key={order._id} className="flex justify-center">
             <div className="flex justify-between w-[97%] sm:w-[97%] md:w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">

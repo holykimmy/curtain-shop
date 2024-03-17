@@ -8,6 +8,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { Transition } from "@headlessui/react";
+import { RefreshIcon } from "@heroicons/react/outline";
 function ContactPage() {
   const { productId } = useParams();
   const [data, setData] = useState({
@@ -20,8 +22,11 @@ function ContactPage() {
     price: "",
     image: "",
   });
+  const isInitialMount = useRef(true);
 
   const [product, setProduct] = useState([]);
+
+  const [isloading, setIsloading] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -71,6 +76,7 @@ function ContactPage() {
     tell: "",
     address: "",
   });
+
   useEffect(() => {
     const authToken = localStorage.getItem("token");
 
@@ -111,7 +117,7 @@ function ContactPage() {
     } else {
       setIsLoggedIn(false);
     }
-  }, []);
+  }, [idUser]);
 
   const handleLogoutAuto = () => {
     // Logout user
@@ -143,8 +149,50 @@ function ContactPage() {
     });
   };
 
+  // useEffect(() => {
+  //   console.log("loading in :", isloading);
+
+  //   const fetchData = async () => {
+  //     setIsloadging(true);
+
+  //     try {
+  //       const res = await axios.get(
+  //         `${process.env.REACT_APP_API}/product/${productId}`
+  //       );
+  //       const productData = res.data;
+  //       // console.log("Product Data:", productData); // ให้ดูค่า productData ที่ได้รับมา
+  //       //ถ้าเจอ
+  //       if (productData) {
+  //         setData({
+  //           ...data,
+  //           brand: productData.brand,
+  //           p_type: productData.p_type,
+  //           name: productData.name,
+  //           color: productData.color,
+  //           detail: productData.detail,
+  //           price: productData.price,
+  //           image: productData.image,
+  //         });
+  //       }
+  //       setIsloadging(false);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, [productId]);
+
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    console.log("loading in :", isloading);
+
     const fetchData = async () => {
+      setIsloading(true);
+
       try {
         const res = await axios.get(
           `${process.env.REACT_APP_API}/product/${productId}`
@@ -166,8 +214,11 @@ function ContactPage() {
         }
       } catch (error) {
         console.error(error);
+      } finally {
+        setIsloading(false);
       }
     };
+
     fetchData();
   }, [productId]);
 
@@ -191,122 +242,145 @@ function ContactPage() {
     navigate(`/custom-product/${productId}`);
   };
 
+  if (isloading) {
+    <p className="text-center text-black">Loading...</p>;
+  }
+  console.log("loading :", isloading);
+
   return (
     <>
-      <Navbar
-        isLoggedIn={isLoggedIn}
-        handleLogout={handleLogout}
-        userName={userName}
-      ></Navbar>
-      <div class="titlea bg-brown-bg  w-full  h-full py-1 shadow-md">
-        <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-9 xl:h-9 text-b-font"></BsPinFill>
-        <h5 className=" inline-block text-lg md:text-xl xl:text-2xl text-b-font  pl-4 p-2 my-1">
-          {data.p_type}
-        </h5>
-      </div>
-      {/* {product.map((product) => ( */}
-      <div className="flex overflow-x-auto max-w-screen justify-center m-5 ">
-        <div className=" p-2 md:p-4 w-[90%]">
-          <div key={data.productId} className="flex justify-center">
-            <div className="flex justify-between w-[90%] h-auto shadow-md border rounded mt-2 mb-4 p-3">
-              <img
-                className="w-[40%] rounded"
-                src={`${process.env.REACT_APP_API}/images/${data.image}`}
-                alt="product"
-              />
+      {isloading ? (
+       <div className="flex justify-center items-center h-screen">
+       {isloading && (
+         <>
+           <div className="overlay"></div>
+           <div className="spinner">
+             <i className="fas fa-sync-alt fa-spin"></i>
+             <p>Loading...</p>
+           </div>
+         </>
+       )}
+     </div>
+      ) : (
+        <div className="">
+          <Navbar
+            isLoggedIn={isLoggedIn}
+            handleLogout={handleLogout}
+            userName={userName}
+          ></Navbar>
+          <div class="titlea bg-brown-bg  w-full  h-full py-1 shadow-md">
+            <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-9 xl:h-9 text-b-font"></BsPinFill>
+            <h5 className=" inline-block text-lg md:text-xl xl:text-2xl text-b-font  pl-4 p-2 my-1">
+              {data.p_type}
+            </h5>
+          </div>
+          {/* {product.map((product) => ( */}
+          <div className="flex overflow-x-auto max-w-screen justify-center m-5 ">
+            <div className=" p-2 md:p-4 w-[90%]">
+              <div key={data.productId} className="flex justify-center">
+                <div className="flex justify-between w-[90%] h-auto shadow-md border rounded mt-2 mb-4 p-3">
+                  <img
+                    className="w-[40%] rounded"
+                    src={`${process.env.REACT_APP_API}/images/${data.image}`}
+                    alt="product"
+                  />
 
-              <div className="pl-10 pr-10 pt-5 ">
-                <p className="text-lg mx-4 my-4 text-brown-400">
-                  ชื่อสินค้า : {data.name}
-                </p>
-                <p className="text-base my-2 text-brown-400">
-                  ยี่ห้อสินค้า : {data.brand}
-                </p>
-                <p className="text-base my-2 text-brown-400">
-                  ประเภทของผ้าม่าน : {data.p_type}
-                </p>
-                <div
-                  style={{ backgroundColor: data.color }}
-                  className="h-7 w-[60%] text-white rounded-full shadow-xl inline-block pl-5 ml-4 mr-2"
-                >
-                  {" "}
-                  {data.color}{" "}
-                </div>
-                <div className="text-base mt-4 text-brown-400 whitespace-pre-wrap">
-                  {data.detail}
-                </div>
-                <p className="mt-4 text-base text-brown-400">
-                  ราคาสินค้า : 350 {data.price} บาท/หลา
-                </p>
+                  <div className="pl-10 pr-10 pt-5 ">
+                    <p className="text-lg mx-4 my-4 text-brown-400">
+                      ชื่อสินค้า : {data.name}
+                    </p>
+                    <p className="text-base my-2 text-brown-400">
+                      ยี่ห้อสินค้า : {data.brand}
+                    </p>
+                    <p className="text-base my-2 text-brown-400">
+                      ประเภทของผ้าม่าน : {data.p_type}
+                    </p>
+                    <div
+                      style={{ backgroundColor: data.color }}
+                      className="h-7 w-[60%] text-white rounded-full shadow-xl inline-block pl-5 ml-4 mr-2"
+                    >
+                      {" "}
+                      {data.color}{" "}
+                    </div>
+                    <div className="text-base mt-4 text-brown-400 whitespace-pre-wrap">
+                      {data.detail}
+                    </div>
+                    <p className="mt-4 text-base text-brown-400">
+                      ราคาสินค้า : 350 {data.price} บาท/หลา
+                    </p>
 
-                <Link
-                  to="/gauging-curtain"
-                  className=" mt-2 mb-3 px-4 py-2 rounded-lg inline-block text-sm  text-brown-500 hover:text-brown-300 hover:text-base"
-                  // onClick={() => handleEditProduct(product._id, product.name)}
-                >
-                  สามารถดูวิธีการวัดขนาดของผ้าม่านได้ที่นี่
-                  <HiOutlineCursorClick className="inline-block h-5 w-auto ml-2" />
-                </Link>
-                <div>
-                  <button
-                    onClick={() => handleCustom(data.productId, data.name)}
-                    className=" mt-10  mb-3 px-4 py-2 rounded-lg inline-block text-base bg-brown-200 hover:bg-browntop hover:shadow-xl text-white focus:outline-none focus:shadow-outline"
-                    // onClick={() => handleEditProduct(product._id, product.name)}
-                  >
-                    เพิ่มลงลงตระกร้าสินค้า
-                  </button>
+                    <Link
+                      to="/gauging-curtain"
+                      className=" mt-2 mb-3 px-4 py-2 rounded-lg inline-block text-sm  text-brown-500 hover:text-brown-300 hover:text-base"
+                      // onClick={() => handleEditProduct(product._id, product.name)}
+                    >
+                      สามารถดูวิธีการวัดขนาดของผ้าม่านได้ที่นี่
+                      <HiOutlineCursorClick className="inline-block h-5 w-auto ml-2" />
+                    </Link>
+                    <div>
+                      <button
+                        onClick={() => handleCustom(data.productId, data.name)}
+                        className=" mt-10  mb-3 px-4 py-2 rounded-lg inline-block text-base bg-brown-200 hover:bg-browntop hover:shadow-xl text-white focus:outline-none focus:shadow-outline"
+                        // onClick={() => handleEditProduct(product._id, product.name)}
+                      >
+                        เพิ่มลงลงตระกร้าสินค้า
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      {/* ))} */}
+          {/* ))} */}
 
-      <div className="font-semibold text-brown-600 text-base md:text-lg lg:text-lg ml-10 my-5 ">
-        {" "}
-        สินค้าแนะนำเพิ่มเติมเกี่ยวกับสินค้าในหมวด {data.p_type}
-      </div>
-      <div className="flex flex-nowrap overflow-x-auto max-w-screen">
-        {product &&
-          product.map((product) => (
-            <div key={product._id} className="p-2 md:p-4">
-              <div className="rounded-lg w-[230px] shadow-3xl hover:shadow-2xl h-auto md:h-full flex-col md:pb-5 bg-white ">
-                <div className="relative ">
-                  <img
-                    className="w-full rounded-t-lg bg-contain bg-center"
-                    src={`${process.env.REACT_APP_API}/images/${product.image}`}
-                    alt="product"
-                  />
-                  <div className="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25  rounded-t-lg "></div>
-                  <div className="absolute shadow-md rounded-r-lg bottom-0 left-0 bg-white/30 px-4 py-2 text-white text-sm hover:bg-white hover:text-browntop transition duration-500 ease-in-out">
-                    {product.p_type}
+          <div className="font-semibold text-brown-600 text-base md:text-lg lg:text-lg ml-10 my-5 ">
+            {" "}
+            สินค้าแนะนำเพิ่มเติมเกี่ยวกับสินค้าในหมวด {data.p_type}
+          </div>
+          <div className="flex flex-nowrap overflow-x-auto max-w-screen">
+            {product &&
+              product.map((product) => (
+                <div key={product._id} className="p-2 md:p-4">
+                  <div className="rounded-lg w-[230px] shadow-3xl hover:shadow-2xl h-auto md:h-full flex-col md:pb-5 bg-white ">
+                    <div className="relative ">
+                      <img
+                        className="w-full rounded-t-lg bg-contain bg-center"
+                        src={`${process.env.REACT_APP_API}/images/${product.image}`}
+                        alt="product"
+                      />
+                      <div className="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25  rounded-t-lg "></div>
+                      <div className="absolute shadow-md rounded-r-lg bottom-0 left-0 bg-white/30 px-4 py-2 text-white text-sm hover:bg-white hover:text-browntop transition duration-500 ease-in-out">
+                        {product.p_type}
+                      </div>
+                    </div>
+
+                    <div className="pt-4 px-4 font-semibold text-brown-600 text-base md:text-base lg:text-lg inline-block hover:text-browntop transition duration-500 ease-in-out">
+                      รายละเอียด
+                    </div>
+                    <div className="pt-2 px-4 font-semibold text-brown-600 text-sm md:text-base lg:text-base inline-block hover:text-browntop transition duration-500 ease-in-out">
+                      ยี่ห้อ : {product.brand}
+                    </div>
+                    <div className="pt-2 pb-4 px-4  text-xs md:text-sm lg:text-sm xl:text-base text-brown-400 whitespace-pre-wrap">
+                      {product.detail.split("\r\n")[0]}
+                    </div>
+
+                    <button
+                      onClick={() =>
+                        handleDetailProduct(product._id, product.name)
+                      }
+                      className="pl-5 mt-3 text-brown-500 text-sm md:base hover:text-browntop inline-flex items-center"
+                    >
+                      อ่านพิ่มเติม
+                      <HiOutlineArrowSmRight />
+                    </button>
                   </div>
                 </div>
+              ))}
+          </div>
 
-                <div className="pt-4 px-4 font-semibold text-brown-600 text-base md:text-base lg:text-lg inline-block hover:text-browntop transition duration-500 ease-in-out">
-                  รายละเอียด
-                </div>
-                <div className="pt-2 px-4 font-semibold text-brown-600 text-sm md:text-base lg:text-base inline-block hover:text-browntop transition duration-500 ease-in-out">
-                  ยี่ห้อ : {product.brand}
-                </div>
-                <div className="pt-2 pb-4 px-4  text-xs md:text-sm lg:text-sm xl:text-base text-brown-400 whitespace-pre-wrap">
-                  {product.detail.split("\r\n")[0]}
-                </div>
-
-                <button
-                  onClick={() => handleDetailProduct(product._id, product.name)}
-                  className="pl-5 mt-3 text-brown-500 text-sm md:base hover:text-browntop inline-flex items-center"
-                >
-                  อ่านพิ่มเติม
-                  <HiOutlineArrowSmRight />
-                </button>
-              </div>
-            </div>
-          ))}
-      </div>
-
-      <Footer></Footer>
+          <Footer></Footer>
+        </div>
+      )}
     </>
   );
 }

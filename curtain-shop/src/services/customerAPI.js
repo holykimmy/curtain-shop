@@ -105,9 +105,9 @@ const CustomerAPI = {
   },
 
  
-  updateOrderEnable: async (idOrder, enable) => {
+  updateOrderEnable: async (idOrder,cancelReasonAd) => {
     try {
-      const response = await axios.put(`${process.env.REACT_APP_API}/customer/order/enable/${idOrder}`, { enable });
+      const response = await axios.put(`${process.env.REACT_APP_API}/customer/order/enable/${idOrder}`, false , { cancelReason: cancelReasonAd });
       return response.data;
     } catch (error) {
       console.error('Error updating order enable:', error);

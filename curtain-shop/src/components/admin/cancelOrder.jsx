@@ -142,48 +142,43 @@ function CancelOrder() {
     }
   };
 
- 
   const handleCancelOrder = async (idOrder, cancelReasonAd) => {
     if (!cancelReasonAd.trim()) {
-        Swal.fire({
-            text: "กรุณาระบุเหตุผลที่ต้องการยกเลิก",
-            icon: "success",
-        });
-        return;
+      Swal.fire({
+        text: "กรุณาระบุเหตุผลที่ต้องการยกเลิก",
+        icon: "success",
+      });
+      return;
     }
 
     const confirmation = await Swal.fire({
-        title: "ยกเลิกคำสั่งซื้อ",
-        text: `คุณแน่ใจหรือไม่ที่ต้องการยกเลิกด้วยเหตุผล ${cancelReasonAd}?`,
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6",
-        confirmButtonText: "ยืนยัน",
-        cancelButtonText: "ยกเลิก",
+      title: "ยกเลิกคำสั่งซื้อ",
+      text: `คุณแน่ใจหรือไม่ที่ต้องการยกเลิกด้วยเหตุผล ${cancelReasonAd}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "ยืนยัน",
+      cancelButtonText: "ยกเลิก",
     });
 
     if (confirmation.isConfirmed) {
-        try {
-            const response = await customerAPI.updateOrderEnable(
-                idOrder,
-                false,
-                { cancelReason: cancelReasonAd }
-            ); // ส่ง cancelReasonAd ในรูปแบบของ request body
-            console.log(response);
-            await Swal.fire({
-                title: "ยกเลิกสำเร็จ",
-                text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
-                icon: "success",
-            });
-            navigate(`/order-detail/${idOrder}`, {});
-                } catch (error) {
-            console.error("Error cancelling order:", error);
-        }
+      try {
+        const response = await customerAPI.updateOrderEnable(idOrder, {
+          cancelReason: cancelReasonAd,
+        }); // ส่ง cancelReasonAd ในรูปแบบของ request body
+        console.log(response);
+        await Swal.fire({
+          title: "ยกเลิกสำเร็จ",
+          text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
+          icon: "success",
+        });
+        navigate(`/order-detail/${idOrder}`, {});
+      } catch (error) {
+        console.error("Error cancelling order:", error);
+      }
     }
-};
-
-
+  };
 
   return (
     <>
