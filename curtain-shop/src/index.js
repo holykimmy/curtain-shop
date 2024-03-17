@@ -26,6 +26,8 @@ import CustomPage from "./components/user/CustomPage";
 import FabricType from "./components/user/TypeCurtainsPage";
 import Achievement from "./components/user/AchievementPage";
 import Payment from "./components/user/PaymentPage";
+import OrderDetailPage from "./components/user/OrderDetailPage";
+
 import CheckOutPage from "./components/user/CheckOutPage";
 import AboutOrderPage from "./components/user/AboutOrderPage";
 
@@ -51,6 +53,8 @@ import CategoryProduct from "./components/admin/AddCategoryAndType";
 import Customers from "./components/admin/Customers";
 import Orders from "./components/admin/Orders";
 import OrderDetail from "./components/admin/OrderDetail";
+import CancelOrder from "./components/admin/cancelOrder";
+
 
 import Products from "./components/admin/Products";
 import UpdateProduct from "./components/admin/UpdateProduct";
@@ -87,7 +91,9 @@ const router = createBrowserRouter([
   { path: "/Achievements", element: <Achievement /> },
   { path: "/checkout", element: <CheckOutPage /> },
   { path: "/about-order", element: <AboutOrderPage /> },
-  { path: "/payment/:id", element: <Payment /> },
+  { path: "/payment/:idOrder", element: <Payment /> },
+  { path: "/order-detail/:idOrder", element: <OrderDetailPage /> },
+
 
   { path: "/custom-product/:productId", element: <CustomPage /> },
   //product
@@ -111,7 +117,8 @@ const router = createBrowserRouter([
   { path: "/add-category", element: <CategoryProduct /> },
   { path: "/customers", element: <Customers /> },
   { path: "/orders", element: <Orders /> },
-  { path: "/order-detail", element: <OrderDetail /> },
+  { path: "/order-detail-ad/:idOrder", element: <OrderDetail /> },
+  { path: "/order-cancel/:idOrder", element: <CancelOrder /> },
   { path: "/products-ad", element: <Products /> },
   { path: "/update-product/:productId", element: <UpdateProduct /> },
 ]);

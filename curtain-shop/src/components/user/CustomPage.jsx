@@ -295,511 +295,6 @@ function CustomPage() {
   };
 
   console.log("--------", idUser);
-  // const addToCartForLoggedInUser = ({
-  //   idUser,
-  //   selectedRail,
-  //   selectedType,
-  //   width,
-  //   height,
-  //   ...data
-  // }) => {
-  //   function generateCartId() {
-  //     return Math.floor(Math.random() * 1000000); // สร้างเลขสุ่ม 6 หลักเป็น cartId
-  //   }
-  // console.log("--------",idUser);
-
-  //   // ดำเนินการเพิ่มสินค้าในตะกร้าสำหรับผู้ใช้ที่เข้าสู่ระบบแล้ว
-  //   // สร้างข้อมูลสินค้าที่จะเพิ่มลงในตะกร้า
-  //   const productData = {
-  //     productId: data.id,
-  //     brand: data.brand,
-  //     p_type: data.p_type,
-  //     name: data.name,
-  //     color: data.color,
-  //     detail: data.detail,
-  //     width: width,
-  //     height: height,
-  //     price: data.price,
-  //     image: data.image,
-  //     type: selectedType,
-  //     rail: selectedRail,
-  //     cartId: generateCartId(),
-  //     count: 1, // เพิ่ม count เริ่มต้นที่ 1
-  //   };
-
-  //   localStorage.setItem("cartData", JSON.stringify(productData));
-
-  //   // ดึงข้อมูลตะกร้าที่เชื่อมต่อกับผู้ใช้ที่เข้าสู่ระบบ
-  //   let userCart = JSON.parse(localStorage.getItem("cart")) || {};
-
-  //   // ตรวจสอบว่ามีข้อมูลตะกร้าสำหรับผู้ใช้นี้ใน localStorage หรือไม่
-  //   if (userCart[idUser]) {
-  //     // ตรวจสอบว่ามีสินค้าที่มีคุณสมบัติเหมือนกันอยู่ในตะกร้าแล้วหรือไม่
-  //     const existingProduct = userCart[idUser].findIndex(
-  //       (item) =>
-  //         item.productId === productData.productId &&
-  //         item.type === productData.type &&
-  //         item.rail === productData.rail &&
-  //         item.width === productData.width &&
-  //         item.height === productData.height
-  //     );
-
-  //     if (existingProduct !== -1) {
-  //       // มีสินค้าที่มีคุณสมบัติเหมือนกันอยู่ในตะกร้าแล้ว
-  //       // เพิ่มจำนวนสินค้าในตะกร้า
-  //       userCart[idUser][existingProduct].count++;
-  //     } else {
-  //       // ไม่มีสินค้าที่มีคุณสมบัติเหมือนกันอยู่ในตะกร้า
-  //       // เพิ่มสินค้าใหม่เข้าไปในตะกร้า
-  //       userCart[idUser].push(productData);
-  //     }
-  //   } else {
-  //     // ไม่มีข้อมูลตะกร้าสำหรับผู้ใช้นี้ใน localStorage ให้สร้างข้อมูลตะกร้าใหม่
-  //     userCart[idUser] = [productData];
-  //   }
-
-  //   // บันทึกข้อมูลตะกร้าลงใน localStorage
-  //   localStorage.setItem("cart", JSON.stringify(userCart));
-
-  //   // เช็คว่าสินค้าเป็นชิ้นเดียวกันหรือไม่
-  //   let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  //   let unique = _.uniqWith(cart, _.isEqual);
-  //   localStorage.setItem("cart", JSON.stringify(unique));
-
-  //   // แสดงข้อความแจ้งเตือนว่าสินค้าถูกเพิ่มลงในตะกร้าเรียบร้อยแล้ว
-  //   Swal.fire({
-  //     icon: "success",
-  //     title: "เพิ่มสินค้าในตะกร้าเรียบร้อยแล้ว",
-  //     showConfirmButton: false,
-  //     timer: 1500, // 1.5 วินาที
-  //   });
-  // };
-
-  // const addToCartForLoggedInUser = ({
-  //   idUser,
-  //   selectedRail,
-  //   selectedType,
-  //   width,
-  //   height,
-  //   ...data
-  // }) => {
-
-  //   function generateCartId() {
-  //     return Math.floor(Math.random() * 1000000); // สร้างเลขสุ่ม 6 หลักเป็น cartId
-  //   }
-  //   console.log("---in-----",idUser);
-
-  //   // ดำเนินการเพิ่มสินค้าในตะกร้าสำหรับผู้ใช้ที่เข้าสู่ระบบแล้ว
-  //   // สร้างข้อมูลสินค้าที่จะเพิ่มลงในตะกร้า
-  //   const productData = {
-  //     productId: data.id,
-  //     brand: data.brand,
-  //     p_type: data.p_type,
-  //     name: data.name,
-  //     color: data.color,
-  //     detail: data.detail,
-  //     width: width,
-  //     height: height,
-  //     price: data.price,
-  //     image: data.image,
-  //     type: selectedType,
-  //     rail: selectedRail,
-  //     cartId: generateCartId(),
-  //     count: 1, // เพิ่ม count เริ่มต้นที่ 1
-  //   };
-
-  //   localStorage.setItem("cartData", JSON.stringify(productData));
-
-  //   // ดึงข้อมูลตะกร้าที่เชื่อมต่อกับผู้ใช้ที่เข้าสู่ระบบ
-  //   let userCart = JSON.parse(localStorage.getItem("cart")) || {};
-
-  //   // ตรวจสอบว่ามีข้อมูลตะกร้าสำหรับผู้ใช้นี้ใน localStorage หรือไม่
-  //   if (!userCart[idUser]) {
-  //     // ไม่มีข้อมูลตะกร้าสำหรับผู้ใช้นี้ใน localStorage ให้สร้างข้อมูลตะกร้าใหม่
-  //     userCart[idUser] = [];
-  //   }
-
-  //   // ตรวจสอบว่า userCart ว่างหรือไม่ ถ้าไม่ว่างให้ใช้รายการสินค้าเดิม
-  //   if (userCart[idUser].length > 0) {
-  //     const existingProduct = userCart[idUser].findIndex(
-  //       (item) =>
-  //         item.productId === productData.productId &&
-  //         item.type === productData.type &&
-  //         item.rail === productData.rail &&
-  //         item.width === productData.width &&
-  //         item.height === productData.height
-  //     );
-
-  //     if (existingProduct !== -1) {
-  //       // มีสินค้าที่มีคุณสมบัติเหมือนกันอยู่ในตะกร้าแล้ว
-  //       // เพิ่มจำนวนสินค้าในตะกร้า
-  //       userCart[idUser][existingProduct].count++;
-  //     } else {
-  //       // ไม่มีสินค้าที่มีคุณสมบัติเหมือนกันอยู่ในตะกร้า
-  //       // เพิ่มสินค้าใหม่เข้าไปในตะกร้า
-  //       userCart[idUser].push(productData);
-  //     }
-  //   } else {
-  //     // ถ้าตะกร้าว่างให้เพิ่มสินค้าใหม่
-  //     userCart[idUser].push(productData);
-  //   }
-
-  //   // บันทึกข้อมูลตะกร้าลงใน localStorage
-  //   localStorage.setItem("cart", JSON.stringify(userCart));
-
-  //   // เช็คว่าสินค้าเป็นชิ้นเดียวกันหรือไม่
-  //   let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  //   let unique = _.uniqWith(cart, _.isEqual);
-  //   localStorage.setItem("cart", JSON.stringify(unique));
-
-  //   // แสดงข้อความแจ้งเตือนว่าสินค้าถูกเพิ่มลงในตะกร้าเรียบร้อยแล้ว
-  //   Swal.fire({
-  //     icon: "success",
-  //     title: "เพิ่มสินค้าในตะกร้าเรียบร้อยแล้ว",
-  //     showConfirmButton: false,
-  //     timer: 1500, // 1.5 วินาที
-  //   });
-  // };
-
-  // const addToCartForLoggedInUser = ({
-  //   idUser,
-  //   selectedRail,
-  //   selectedType,
-  //   width,
-  //   height,
-  //   ...data
-  // }) => {
-  //   //object
-  //   let userCart = {};
-
-  //   // ตรวจสอบค่า localStorage.getItem('cart')
-  //   const cartFromStorage = localStorage.getItem("cart");
-  //   console.log("localStorage.getItem('cart'):", cartFromStorage);
-
-  //   try {
-  //     // พยายามแปลงข้อมูลใน localStorage เป็น JSON object
-  //     if (cartFromStorage) {
-  //       userCart = JSON.parse(cartFromStorage);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error parsing JSON:", error);
-  //     // กรณีที่เกิดข้อผิดพลาดในการแปลง JSON
-  //     // ลบข้อมูลที่ไม่ถูกต้องออกจาก localStorage
-  //     localStorage.removeItem("cart");
-  //   }
-
-  //   console.log("data.id", data.id);
-
-  //   console.log("------------data--------");
-  //   Object.keys(userCart).forEach((userId) => {
-  //     userCart[userId].forEach((item) => {
-  //       console.table(
-  //         item.productId,
-  //         item.type,
-  //         item.rail,
-  //         item.width,
-  //         item.height
-  //       );
-  //     });
-  //   });
-  //   console.log("------------end--------");
-  //   console.table(data.id, selectedType, selectedRail, width, height);
-  //   const existingProductIndex = userCart[idUser]?.findIndex(
-  //     (item) =>
-  //       item.productId === data.id &&
-  //       item.type === selectedType &&
-  //       item.width === width &&
-  //       item.height === height &&
-  //       item.rail === selectedRail
-  //   );
-
-  //   console.log("existingProductIndex:", existingProductIndex);
-
-  //   function generateCartId() {
-  //     return Math.floor(Math.random() * 1000000); // สร้างเลขสุ่ม 6 หลักเป็น cartId
-  //   }
-
-  //   if (existingProductIndex !== -1) {
-  //     // เพิ่มค่า count ของสินค้านี้
-  //     userCart[idUser][existingProductIndex].count++;
-  //   } else {
-  //     const productData = {
-  //       productId: data.id,
-  //       brand: data.brand,
-  //       p_type: data.p_type,
-  //       name: data.name,
-  //       color: data.color,
-  //       detail: data.detail,
-  //       width: width,
-  //       height: height,
-  //       price: data.price,
-  //       image: data.image,
-  //       type: selectedType,
-  //       rail: selectedRail,
-  //       cartId: generateCartId(),
-  //     };
-
-  //     // if (localStorage.getItem("cart")) {
-  //     //   cart = JSON.parse(localStorage.getItem("cart"));
-  //     // }
-  //     if (!userCart[idUser]) {
-  //       userCart[idUser] = [];
-  //     }
-
-  //     userCart[idUser].push({
-  //       ...productData,
-  //       count: 1,
-  //     });
-  //   }
-  //   let unique = _.uniqWith(userCart[idUser], _.isEqual);
-
-  //   localStorage.setItem("cart", JSON.stringify(unique));
-
-  //   dispatch({
-  //     type: "ADD_TO_CART",
-  //     payload: unique,
-  //   });
-
-  //   Swal.fire({
-  //     icon: "success",
-  //     title: "เพิ่มสินค้าในตระกร้าเรียบร้อยแล้ว",
-  //     showConfirmButton: false,
-  //     timer: 1500, // 1.5 วินาที
-  //   });
-  // };
-
-  // const addToCartForLoggedInUser = ({
-  //   idUser,
-  //   selectedRail,
-  //   selectedType,
-  //   width,
-  //   height,
-  //   ...data
-  //  }) => {
-
-  //   let cart = {};
-
-  //   // ตรวจสอบค่า localStorage.getItem('cart')
-  // const cartFromStorage = localStorage.getItem("cart");
-  // console.log("localStorage.getItem('cart'):", cartFromStorage);
-
-  //   try {
-  //     // พยายามแปลงข้อมูลใน localStorage เป็น JSON object
-  //     if (cartFromStorage) {
-  //       cart = JSON.parse(cartFromStorage);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error parsing JSON:", error);
-  //     // กรณีที่เกิดข้อผิดพลาดในการแปลง JSON
-  //     // ลบข้อมูลที่ไม่ถูกต้องออกจาก localStorage
-  //     localStorage.removeItem("cart");
-  //   }
-
-  //   console.log("data.id", data.id);
-
-  //   console.log("------------data--------");
-  //   if (cart[idUser]) {
-  //     cart[idUser].forEach((item) => {
-  //       console.table(
-  //         item.productId,
-  //         item.type,
-  //         item.rail,
-  //         item.width,
-  //         item.height
-  //       );
-  //     });
-  //   }
-  //   console.log("------------end--------");
-  //   console.table(data.id, selectedType, selectedRail, width, height);
-
-  //   if (!cart[idUser]) {
-  //     cart[idUser] = [];
-  //   }
-
-  //   const existingProductIndex = cart[idUser].findIndex(
-  //     (item) =>
-  //       item.productId === data.id &&
-  //       item.type === selectedType &&
-  //       item.width === width &&
-  //       item.height === height &&
-  //       item.rail === selectedRail
-  //   );
-
-  //   console.log("existingProductIndex:", existingProductIndex);
-
-  //   function generateCartId() {
-  //     return Math.floor(Math.random() * 1000000); // สร้างเลขสุ่ม 6 หลักเป็น cartId
-  //   }
-
-  //   if (existingProductIndex !== -1) {
-  //     // เพิ่มค่า count ของสินค้านี้
-  //     cart[existingProductIndex].count++;
-  //   } else {
-  //     const productData = {
-  //       productId: data.id,
-  //       brand: data.brand,
-  //       p_type: data.p_type,
-  //       name: data.name,
-  //       color: data.color,
-  //       detail: data.detail,
-  //       width: width,
-  //       height: height,
-  //       price: data.price,
-  //       image: data.image,
-  //       type: selectedType,
-  //       rail: selectedRail,
-  //       cartId: generateCartId(),
-  //       count: 1,
-  //     };
-
-  //     if (localStorage.getItem("cart")) {
-  //       cart = JSON.parse(localStorage.getItem("cart"));
-  //     }
-
-  //     // if (!cart[idUser]) {
-  //     //   cart[idUser] = [];
-  //     // }
-
-  //     // cart[idUser].push({
-  //     //   ...productData,
-  //     //   count: 1,
-  //     // });
-  //     cart[idUser].push(productData);
-  //   }
-  //   // let unique = _.uniqWith(cart, _.isEqual);
-  //   let unique = {};
-  //   for (const key in cart) {
-  //     if (Object.hasOwnProperty.call(cart, key)) {
-  //       unique[key] = _.uniqWith(cart[key], _.isEqual);
-  //     }
-  //   }
-
-  //   localStorage.setItem("cart", JSON.stringify(unique));
-
-  //   dispatch({
-  //     type: "ADD_TO_CART",
-  //     payload: unique,
-  //   });
-
-  //   Swal.fire({
-  //     icon: "success",
-  //     title: "เพิ่มสินค้าในตระกร้าเรียบร้อยแล้ว",
-  //     showConfirmButton: false,
-  //     timer: 1500, // 1.5 วินาที
-  //   });
-  // };
-  // const addToCartForLoggedInUser = ({
-  //   idUser,
-  //   selectedRail,
-  //   selectedType,
-  //   width,
-  //   height,
-  //   ...data
-  // }) => {
-
-  //   let cart = {};
-  //   // ตรวจสอบค่า localStorage.getItem('cart')
-  //   const cartFromStorage = localStorage.getItem("cart");
-  //   console.log("localStorage.getItem('cart'):", cartFromStorage);
-
-  //   try {
-  //     // พยายามแปลงข้อมูลใน localStorage เป็น JSON object
-  //     if (cartFromStorage) {
-  //       cart = JSON.parse(cartFromStorage);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error parsing JSON:", error);
-  //     // กรณีที่เกิดข้อผิดพลาดในการแปลง JSON
-  //     // ลบข้อมูลที่ไม่ถูกต้องออกจาก localStorage
-  //     localStorage.removeItem("cart");
-  //   }
-
-  //   console.log("data.id", data.id);
-
-  //   console.log("------------data--------");
-  //   if (cart[idUser]) {
-  //     cart[idUser].forEach((item) => {
-  //       console.table(
-  //         item.productId,
-  //         item.type,
-  //         item.rail,
-  //         item.width,
-  //         item.height
-  //       );
-  //     });
-  //   }
-  //   console.log("------------end--------");
-  //   console.table(data.id, selectedType, selectedRail, width, height);
-
-  //   if (!cart[idUser]) {
-  //     cart[idUser] = [];
-  //   }
-
-  //   const existingProductIndex = cart[idUser].findIndex(
-  //     (item) =>
-  //       item.productId === data.id &&
-  //       item.type === selectedType &&
-  //       item.width === width &&
-  //       item.height === height &&
-  //       item.rail === selectedRail
-  //   );
-
-  //   console.log("existingProductIndex:", existingProductIndex);
-
-  //   function generateCartId() {
-  //     return Math.floor(Math.random() * 1000000); // สร้างเลขสุ่ม 6 หลักเป็น cartId
-  //   }
-
-  //   if (existingProductIndex !== -1) {
-  //     // เพิ่มค่า count ของสินค้านี้
-  //     cart[idUser][existingProductIndex].count++;
-  //   } else {
-  //     const productData = {
-  //       productId: data.id,
-  //       brand: data.brand,
-  //       p_type: data.p_type,
-  //       name: data.name,
-  //       color: data.color,
-  //       detail: data.detail,
-  //       width: width,
-  //       height: height,
-  //       price: data.price,
-  //       image: data.image,
-  //       type: selectedType,
-  //       rail: selectedRail,
-  //       cartId: generateCartId(),
-  //       count: 1,
-  //     };
-
-  //     if (localStorage.getItem("cart")) {
-  //       cart = JSON.parse(localStorage.getItem("cart"));
-  //     }
-
-  //     cart[idUser].push(productData);
-  //   }
-
-  //   let unique = {};
-  //   for (const key in cart) {
-  //     if (Object.hasOwnProperty.call(cart, key)) {
-  //       unique[key] = _.uniqWith(cart[key], _.isEqual);
-  //     }
-  //   }
-
-  //   localStorage.setItem("cart", JSON.stringify(unique));
-
-  //   dispatch({
-  //     type: "ADD_TO_CART",
-  //     payload: unique,
-  //   });
-
-  //   Swal.fire({
-  //     icon: "success",
-  //     title: "เพิ่มสินค้าในตระกร้าเรียบร้อยแล้ว",
-  //     showConfirmButton: false,
-  //     timer: 1500, // 1.5 วินาที
-  //   });
-  // };
-
 
   const addToCartForLoggedInUser = ({
     idUser,
@@ -810,11 +305,11 @@ function CustomPage() {
     ...data
   }) => {
     let cart = {};
-  
+
     // ตรวจสอบค่า localStorage.getItem('cart')
     const cartFromStorage = localStorage.getItem("cart");
     console.log("localStorage.getItem('cart'):", cartFromStorage);
-  
+
     try {
       // พยายามแปลงข้อมูลใน localStorage เป็น JSON object
       if (cartFromStorage) {
@@ -826,9 +321,9 @@ function CustomPage() {
       // ลบข้อมูลที่ไม่ถูกต้องออกจาก localStorage
       localStorage.removeItem("cart");
     }
-  
+
     console.log("data.id", data.id);
-  
+
     console.log("------------data--------");
     if (cart[idUser]) {
       cart[idUser].forEach((item) => {
@@ -843,12 +338,12 @@ function CustomPage() {
     }
     console.log("------------end--------");
     console.table(data.id, selectedType, selectedRail, width, height);
-  
+
     if (!cart[idUser]) {
       // ถ้าไม่มีข้อมูลตะกร้าสำหรับผู้ใช้นี้ใน localStorage สร้างตะกร้าใหม่
       cart[idUser] = [];
     }
-  
+
     const existingProductIndex = cart[idUser].findIndex(
       (item) =>
         item.productId === data.id &&
@@ -857,13 +352,13 @@ function CustomPage() {
         item.height === height &&
         item.rail === selectedRail
     );
-  
+
     console.log("existingProductIndex:", existingProductIndex);
-  
+
     function generateCartId() {
       return Math.floor(Math.random() * 1000000); // สร้างเลขสุ่ม 6 หลักเป็น cartId
     }
-  
+
     if (existingProductIndex !== -1) {
       // เพิ่มค่า count ของสินค้านี้
       cart[idUser][existingProductIndex].count++;
@@ -884,24 +379,24 @@ function CustomPage() {
         cartId: generateCartId(),
         count: 1,
       };
-  
+
       cart[idUser].push(productData);
     }
-  
+
     let unique = {};
     for (const key in cart) {
       if (Object.hasOwnProperty.call(cart, key)) {
         unique[key] = _.uniqWith(cart[key], _.isEqual);
       }
     }
-  
+
     localStorage.setItem("cart", JSON.stringify(unique));
-  
+
     dispatch({
       type: "ADD_TO_CART",
       payload: unique,
     });
-  
+
     Swal.fire({
       icon: "success",
       title: "เพิ่มสินค้าในตระกร้าเรียบร้อยแล้ว",
@@ -909,7 +404,7 @@ function CustomPage() {
       timer: 1500, // 1.5 วินาที
     });
   };
-  
+
   const handleAddToCart = ({
     selectedRail,
     selectedType,
@@ -1073,9 +568,9 @@ function CustomPage() {
       </div>
 
       <div className="flex flex-wrap justify-center">
-        <div className="flex p-11">
+        <div className="flex p-11 justify-center ">
           <img
-            className="w-[300px] rounded shadow-xl "
+            className="w-[200px] h-[280px] mt-[25px] rounded shadow-xl "
             src={`${process.env.REACT_APP_API}/images/${data.image}`}
             alt="product"
           />
@@ -1093,29 +588,29 @@ function CustomPage() {
             </div>
           </CloudinaryContext>
           <div className="pl-10 pr-10 pt-5 ">
-            <p className="text-lg mx-4 my-4 text-brown-400">
+            <p className="text-base mx-4 my-4 text-brown-400">
               ชื่อสินค้า : {data.name}
             </p>
-            <p className="text-base my-2 text-brown-400">
+            <p className="text-sm my-2 text-brown-400">
               ยี่ห้อสินค้า : {data.brand}
             </p>
-            <p className="text-base my-2 text-brown-400">
+            <p className="text-sm my-2 text-brown-400">
               ประเภทของผ้าม่าน : {data.p_type}
             </p>
             <div
               style={{ backgroundColor: data.color }}
-              className="h-7 w-[60%] text-white rounded-full shadow-xl inline-block pl-5 ml-4 mr-2"
+              className="h-7 w-[60%] text-white text-sm rounded-full shadow-xl inline-block pl-5 ml-4 mr-2"
             >
               {" "}
               {data.color}{" "}
             </div>
-            <div className="text-base mt-4 text-brown-400 whitespace-pre-wrap">
+            <div className="text-sm mt-4 text-brown-400 whitespace-pre-wrap">
               {data.detail}
             </div>
-            <p className="mt-4 text-base text-brown-400">
+            <p className="mt-4 text-sm text-brown-400">
               ความกว้างของหน้าผ้า : {data.p_width} เซนติเมตร
             </p>
-            <p className="mt-4 text-base text-brown-400">
+            <p className="mt-4 text-sm text-brown-400">
               ราคาสินค้า : {data.price} บาท/หลา
             </p>
           </div>
@@ -1156,7 +651,7 @@ function CustomPage() {
           {images.map((image, index) => (
             <div key={index} className="p-2">
               <div className="rounded-lg shadow-3xl hover:shadow-2xl md:h-full flex-col md:pb-2 bg-white">
-                <div className="relative h-[280px] w-[340px]">
+                <div className="relative h-[200px] w-[300px]">
                   <img
                     className="w-auto h-full object-cover rounded-t-lg bg-contain bg-center"
                     src={require(`../img/type-cut/${image}`)}
@@ -1175,7 +670,7 @@ function CustomPage() {
       <div className="justify-center items-center test-center">
         {" "}
         <p className="mt-4 mb-4 text-base text-center text-brown-400">
-          ราคาสินค้าต่อหลา : {data.price}
+          ราคาสินค้าต่อหลา : {data.price} บาท
         </p>
       </div>
 
@@ -1197,10 +692,11 @@ function CustomPage() {
         <div>
           <p className="mt-4 ml-5 text-sm text-brown-400">กว้าง</p>
           <input
-            class="appearance-none  rounded w-[150px] py-2 px-3 ml-2 my-2  text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            class="appearance-none rounded w-[150px] py-2 px-3 ml-2 my-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             type="number"
             value={width}
             required
+            min="0"
             onChange={(e) => setWidth(e.target.value)}
           />
         </div>

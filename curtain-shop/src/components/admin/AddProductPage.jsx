@@ -21,7 +21,8 @@ function AddProductPage() {
   const [brandOptions, setBrandOptions] = useState([]);
   const [pTypeOptions, setPTypeOptions] = useState([]);
   const [price, setPrice] = useState("");
-  const { brand, p_type, name, color, detail, p_width } = state;
+  const [p_width,setP_width]=useState("");
+  const { brand, p_type, name, color, detail } = state;
 
   const fetchBrands = async () => {
     try {
@@ -89,13 +90,21 @@ function AddProductPage() {
     }));
   };
 
-  const handlePriceChange = (event) => {
-    let inputValue = event.target.value;
-    inputValue = inputValue.replace(/^0+/, "");
-    const numericValue = Math.abs(Number(inputValue));
 
-    setPrice(numericValue);
-  };
+    const handlePriceChange = (e) => {
+      const inputNumber = e.target.value;
+      // ตรวจสอบว่า inputNumber เป็นตัวเลขและมีค่ามากกว่าหรือเท่ากับ 0 หรือไม่
+      if (!isNaN(inputNumber) && Number(inputNumber) >= 0) {
+        setPrice(inputNumber);
+      }
+    };
+    const handlePwidtchChange = (e) => {
+      const inputNumber = e.target.value;
+      // ตรวจสอบว่า inputNumber เป็นตัวเลขและมีค่ามากกว่าหรือเท่ากับ 0 หรือไม่
+      if (!isNaN(inputNumber) && Number(inputNumber) >= 0) {
+        setP_width(inputNumber);
+      }
+    };
 
   // Function to handle file selection and preview
   const handleFileSelection = (e) => {
@@ -179,35 +188,7 @@ function AddProductPage() {
           {/* {JSON.stringify(state)} */}
           <p class="text-center text-2xl text-b-font font-bold">เพิ่มสินค้า</p>
           <p className="text-gray-700 md:text-base mt-4 pl-5">แบรนด์สินค้า</p>
-          {/* <select
-            className="input-group w-full data-te-select-init shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-5"
-            id="brand"
-            type="text"
-            value={state.brand}
-            onChange={handleBrandChange}
-          >
-            <option value="">เลือกแบรนด์สินค้า</option>
-            {brandOptions.map((brand) => (
-              <option key={brand.slug} value={brand.slug}>
-                {brand.brand}
-              </option>
-            ))}
-          </select> */}
-          {/* <select
-            className="input-group w-full data-te-select-init shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-5"
-            id="brand"
-            type="text"
-            value={state.brand}
-            onChange={handleBrandChange}
-          >
-            <option value="">เลือกแบรนด์สินค้า</option>
-            {brandOptions &&
-              brandOptions.map((brand) => (
-                <option key={brand.slug} value={brand.slug}>
-                  {brand.brand}
-                </option>
-              ))}
-          </select> */}
+      
             <select
             class="input-group w-full data-te-select-init shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-5"
             id="brand"
@@ -306,15 +287,19 @@ function AddProductPage() {
             />
           </div>
 
-          <div class="input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline my-6">
+          <div class="input-groupfle shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2">
             <input
-              class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="p_width"
-              type="number"
+              class="appearance-none border-none rounded w-[90%] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="p_price"
               value={p_width}
-              onChange={inputValue("p_width")}
+              onChange={handlePwidtchChange}
+              type="number"
+              step="0.01"
               placeholder="ความกว้างของหน้าผ้า"
             />
+            <span className=" w-[10%] text-center text-gray-500 ml-2 m-auto p-auto ">
+              เซนติเมตร
+            </span>
           </div>
         
           <div class="input-groupfle shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2">

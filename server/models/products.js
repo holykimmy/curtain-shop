@@ -53,4 +53,10 @@ const ProdusctSchema = mongoose.Schema(
   },
   { timestamps: true }
 );
+ProdusctSchema.pre('save', function(next) {
+  if (!this.createdAt) {
+    this.createdAt = moment().locale('th').format('YYYY-MM-DD HH:mm:ss');
+  }
+  next();
+});
 module.exports = mongoose.model("Products", ProdusctSchema);

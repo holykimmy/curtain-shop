@@ -1,10 +1,9 @@
-const express = require('express');
+const express = require("express");
 const multer = require("multer");
 const path = require("path");
-const slugify = require('slugify');
+const slugify = require("slugify");
 // const AWS = require('aws-sdk');
-const { v4: uuidv4 } = require('uuid');
-
+const { v4: uuidv4 } = require("uuid");
 
 // // Configure AWS SDK
 // AWS.config.update({
@@ -14,7 +13,6 @@ const { v4: uuidv4 } = require('uuid');
 // });
 
 // const s3 = new AWS.S3();
-
 
 // const upload = multer({
 //   storage: multer.memoryStorage(),
@@ -34,22 +32,15 @@ const storage = multer.diskStorage({
     const slugPType = slugify(p_type, { lower: true });
     const slugName = slugify(name, { lower: true });
 
-   const newFilename = `${slugBrand}-${slugPType}-${slugName}-${uuidv4()}-${path.extname(file.originalname)}`;
+    const newFilename = `${slugBrand}-${slugPType}-${slugName}-${uuidv4()}-${path.extname(
+      file.originalname
+    )}`;
 
-    cb(
-      null,
-      newFilename
-    );
+    cb(null, newFilename);
   },
 });
 
+//Middleware for uploading product
 const upload = multer({ storage: storage }).single("image");
 
-
-
-// const upload = multer(storageObject).single("image");
-
 module.exports = upload;
-
-
-

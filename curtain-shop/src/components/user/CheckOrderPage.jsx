@@ -222,7 +222,7 @@ function CheckOrdeerPage() {
         showConfirmButton: false,
         timer: 1500,
       });     
-       navigate(`/payment/${idOrder}`);
+       navigate(`/payment/${idOrder}`,idOrder);
 
     } catch (err) {
       console.error(err);
@@ -236,14 +236,7 @@ function CheckOrdeerPage() {
 
   };
 
-  const handlePaymentOrder = async (idOrder) => {
-    navigate(`/payment/${idOrder}`);
-    Swal.fire({
-      icon: "success",
-      title: "ยืนยันคำสั่งซื้อสำเร็จ",
-      text: "คำสั่งซื้อของคุณได้รับการยืนยันแล้ว",
-    });
-  };
+
 
   return (
     <>

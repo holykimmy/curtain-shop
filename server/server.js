@@ -67,6 +67,8 @@ app.use(morgan("dev"));
 
 // Serve images statically
 app.use("/api/images", express.static(path.join(__dirname, "images")));
+app.use("/api/images/slip", express.static(path.join(__dirname, "slip")));
+
 
 // Routes
 app.use("/api/customer", CustomerRoute);

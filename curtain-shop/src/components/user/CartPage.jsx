@@ -156,35 +156,35 @@ function CartPage() {
       <div className="flex items-center justify-center mb-5">
         <table class="table-auto w-[90%] border-collapse border border-gray-300 ">
           <thead>
-            <tr>
-              <th className="text-browntop px-2 py-1 border border-gray-300 ...">
+            <tr className="">
+              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
                 รูปภาพ
               </th>
-              <th className="text-browntop px-2 py-1 border border-gray-300 ...">
+              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
                 รหัสสินค้า
               </th>
-              <th className="text-browntop px-2 py-1 border border-gray-300 ...">
+              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
                 ยี่ห้อสินค้า
               </th>
-              <th className="text-browntop px-2 py-1 border border-gray-300 ...">
+              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
                 รายการสินค้า
               </th>
-              <th className="text-browntop px-2 py-1 border border-gray-300 ...">
+              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
                 ประเภท
               </th>{" "}
-              <th className="text-browntop px-2 py-1 border border-gray-300 ...">
+              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
                 ราง
               </th>
-              <th className="text-browntop px-2 py-1 border border-gray-300 ...">
+              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
                 ขนาด
               </th>
-              <th className="text-browntop px-2 py-1 border border-gray-300 ...">
+              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
                 ราคา/หลา
               </th>
-              <th className="text-browntop px-2 py-1 border border-gray-300 ...">
+              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
                 จำนวนสินค้า
               </th>
-              <th className="text-browntop px-2 py-1 border border-gray-300 ..."></th>
+              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ..."></th>
             </tr>
           </thead>
           {cart.map((item) => (
@@ -227,8 +227,8 @@ function CartPage() {
             <hr />
             {cart.map((item, index) => (
               <p key={index} className="ml-10  text-brown-400 my-2">
-                {item.name} ขนาด {item.width} x {item.height} เซนติเมตร x{" "}
-                {item.count} = {item.price * item.count}
+                {item.name} ขนาด {item.width} x {item.height} เซนติเมตร  จำนวน {" "}
+                {item.count} ชุด  ราคา {item.price * item.count} บาท
               </p>
             ))}
             <hr />

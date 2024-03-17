@@ -75,4 +75,10 @@ const QuotationSchema = mongoose.Schema(
   },
   { timestamps: true }
 );
+QuotationSchema.pre('save', function(next) {
+  if (!this.createdAt) {
+    this.createdAt = moment().locale('th').format('YYYY-MM-DD HH:mm:ss');
+  }
+  next();
+});
 module.exports = mongoose.model("Quotations", QuotationSchema);

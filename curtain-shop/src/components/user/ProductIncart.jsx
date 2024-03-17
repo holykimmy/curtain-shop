@@ -348,16 +348,16 @@ const ProductInCart = ({ item, idUser }) => {
             alt="product"
           />
         </td>
-        <td className="w-[100px] text-browntop px-2 py-1 border border-gray-300 ...">
+        <td className="w-[100px] text-sm text-browntop px-2 py-1 border border-gray-300 ...">
           {item.name}
         </td>
-        <td className="text-browntop px-2 py-1 border border-gray-300 ...">
+        <td className="text-browntop text-sm  px-2 py-1 border border-gray-300 ...">
           {item.brand}
         </td>
-        <td className="text-browntop px-2 py-1 border border-gray-300 ...">
+        <td className="text-browntop text-xs text-left px-2 py-1 border border-gray-300 ...">
           {item.detail}
         </td>
-        <td className="w-[100px] text-browntop px-2 py-1 border border-gray-300 ...">
+        <td className="w-[100px] text-browntop  text-sm px-2 py-1 border border-gray-300 ...">
           <select value={item.type} onChange={handleTypeChange}>
             <option value="ม่านจีบ">ม่านจีบ</option>
             <option value="ม่านพับ">ม่านพับ</option>
@@ -365,13 +365,13 @@ const ProductInCart = ({ item, idUser }) => {
             <option value="ม่านลอน">ม่านลอน</option>
           </select>
         </td>
-        <td className="w-[100px] text-browntop px-2 py-1 border border-gray-300 ...">
+        <td className="w-[100px] text-browntop text-sm px-2 py-1 border border-gray-300 ...">
           <select value={item.rail} onChange={handleRailChange}>
             <option value="รับราง">รับราง</option>
             <option value="ไม่รับราง">ไม่รับราง</option>
           </select>
         </td>
-        <td className="w-[280px] text-browntop px-2 py-1 border border-gray-300 ...">
+        <td className="w-[280px] text-browntop text-sm px-2 py-1 border border-gray-300 ...">
           <input
             onChange={handleChangeWidth}
             className="form-control w-[100px]"
@@ -386,10 +386,10 @@ const ProductInCart = ({ item, idUser }) => {
           />
           / cm
         </td>
-        <td className=" w-[100px] text-browntop px-2 py-1 border border-gray-300 ...">
+        <td className=" w-[100px] text-browntop text-sm px-2 py-1 border border-gray-300 ...">
           {item.price} บาท
         </td>
-        <td className="text-browntop px-2 py-1 border border-gray-300 ...">
+        <td className="text-browntop  text-sm px-2 py-1 border border-gray-300 ...">
           <input
             onChange={handleChangeCount}
             className="form-control w-[75px]"

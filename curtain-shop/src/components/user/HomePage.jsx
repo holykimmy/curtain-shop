@@ -128,7 +128,7 @@ function HomePage() {
       </div>
       {/* <p className="m-5 text-xl">{userName}</p> */}
       <Link to="/custom-product">
-        <div class="create font-[500px] text-2xl md:text-3xl xl:text-4xl text-b-font text-center  p-[30px]">
+        <div class="text-xl md:text-2xl xl:text-2xl text-b-font text-center  p-[30px]">
           {" "}
           ออกแบบผ้าม่านของคุณ{" "}
         </div>
@@ -140,7 +140,7 @@ function HomePage() {
         <div class=" py-4">
           <div class="titlea bg-white/60 py-1 shadow-md">
             <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-9 xl:h-9 text-b-font"></BsPinFill>
-            <h5 className=" inline-block text-lg md:text-xl xl:text-2xl text-b-font  pl-4 p-2 my-1">
+            <h5 className=" inline-block text-base md:text-xl xl:text-2xl text-b-font  pl-4 p-2 my-1">
               เกี่ยวกับร้านของเรา
             </h5>
           </div>
@@ -149,7 +149,7 @@ function HomePage() {
           <div class="sideabout  flex-[50%]">
             <img class="shadow-2xl" src={about} alt="about" width="95%" />
           </div>
-          <div class="sideabout flex-[75%] text-xl md:text-2xl xl:text-3xl text-b-font md:py-[100px] ">
+          <div class="sideabout flex-[75%] text-xs md:text-base xl:text-xl text-b-font md:py-[100px] ">
             <p class="py-[30px] text-center ">
               ร้านค้าเจริญกิจผ้าม่าน
               ร้านของเราเป็นหน้าร้านสำหรับการสั่งตัดผ้าม่านตามออเดอร์โดยเฉพาะ
@@ -180,7 +180,7 @@ function HomePage() {
         </div>
       </div>
 
-      <div class="create font-[500px] text-xl md:text-3xl xl:text-4xl text-b-font text-center py-[30px] md:py-[50px]  ">
+      <div class=" text-xs md:text-base xl:text-xl text-b-font text-center py-[30px] md:py-[50px]  ">
         <p>นอกการติดตั้งผ้าม่านแล้ว ทางร้านเรายังมีมู่ลี่ </p>
         <p>และวอลเปเปอร์ติดผนังห้องอีกด้วย</p>
       </div>

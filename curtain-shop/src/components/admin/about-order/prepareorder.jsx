@@ -222,7 +222,7 @@ const PrepareOrder = ({ idUser }) => {
                     className=" bg-blue-200 py-2 px-auto w-[100px] rounded-full shadow-xl mx-2 hover:bg-blue-400 text-center md:mt-3 md:mb-3 md:inline-block text-base sm:text-base md:text-md lg:text-md xl:text-md  text-white "
                     onClick={() => handlePanddingOrder(order._id)}
                   >
-                    สินค้าพร้อมแล้ว
+                    จัดทำสินค้าสำเร็จแล้ว
                   </button>
 
                   <button
@@ -326,7 +326,7 @@ const PrepareOrder = ({ idUser }) => {
                   className=" bg-blue-200 py-2 px-auto w-[150px] rounded-full shadow-xl mx-2 hover:bg-blue-400 text-center md:mt-3 md:mb-3 md:inline-block text-base sm:text-base md:text-md lg:text-md xl:text-md  text-white "
                   onClick={() => handlePanddingOrder(order._id)}
                 >
-                  สินค้าพร้อมแล้ว
+                  จัดทำสินค้าสำเร็จแล้ว
                 </button>
 
                 <button

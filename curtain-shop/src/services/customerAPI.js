@@ -123,7 +123,11 @@ const CustomerAPI = {
       console.error('Error updating order enable:', error);
       throw error; 
     }
-  }
+  },
+
+  updateSlip:async (idOrder,formData) => {
+    return axios.post(`${process.env.REACT_APP_API}/customer/order/payment/${idOrder}`,formData);
+  },
   
 
 

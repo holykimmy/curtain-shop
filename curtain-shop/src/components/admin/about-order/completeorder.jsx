@@ -320,21 +320,47 @@ const CompleteOrder = ({ idUser }) => {
               <p className="text-sm sm:text-sm md:text-md md:text-lg lg:text-lg text-brown-400">
                 ราคารวม : {order.totalPrice} บาท
               </p>
+              <p className="text-sm sm:text-sm md:text-md md:text-lg lg:text-lg text-brown-400 mt-[10px]">
+                สถานะ:{" "}
+                {order.approve
+                  ? "ได้รับการอนุมัติแล้ว"
+                  : "รอการอนุมัติจากร้านค้า"}
+              </p>
+              <p className="text-sm sm:text-sm md:text-md md:text-lg lg:text-lg text-brown-400 mt-[10px]">
+                สถานะการชำระเงิน :{" "}
+                {order.verifypayment
+                  ? "ยืนยันการชำระเงินแล้ว"
+                  : "รอการยืนยันจากทางร้านค้า"}
+              </p>
+              <p className="text-sm sm:text-sm md:text-md md:text-lg lg:text-lg text-brown-400 mt-[10px]">
+                สถานะการเตรียมสินค้า :{" "}
+                {order.pandding
+                  ? "ตัดผ้าม่านเสร็จแล้ว"
+                  : "กำลังดำเนินการ"}
+              </p>
+            
+              <p className="text-sm sm:text-sm md:text-md md:text-lg lg:text-lg text-brown-400 mt-[10px]">
+                สถานะการจัดส่ง :{" "}
+                {order.sendproduct
+                  ? "จัดส่งสินค้าแล้ว"
+                  : "กำลังรอการจัดส่ง"}
+              </p>
+              <p className="text-sm sm:text-sm md:text-md md:text-lg lg:text-lg text-brown-400 mt-[10px]">
+                 :{" "}
+                {order.complete
+                  ? "ได้รับสินค้าแล้ว"
+                  : "รอการยืนยันจากลูกค้า"}
+              </p>
+
 
               <div className="flex justify-end ">
                 <button
                   className=" bg-blue-200 py-2 px-auto w-[150px] rounded-full shadow-xl mx-2 hover:bg-blue-400 text-center md:mt-3 md:mb-3 md:inline-block text-base sm:text-base md:text-md lg:text-md xl:text-md  text-white "
-                  onClick={() => handleApproveOrder(order._id)}
                 >
-                  อนุมัติคำสั่งซื้อ
+                  ดูรายละเอียดคำสั่งซื้อ
                 </button>
 
-                <button
-                  className="bg-red-300 mt-3 py-2 px-auto w-[120px] rounded-full shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-block text-base sm:text-base md:text-md lg:text-md xl:text-md text-white"
-                  onClick={() => handleCancelOrder(order._id)}
-                >
-                  ยกเลิกคำสั่งซื้อ
-                </button>
+                
               </div>
             </div>
           </div>

@@ -43,6 +43,12 @@ const customerSchema = mongoose.Schema(
   { timestamps: true }
 );
 
+customerSchema.pre('save', function(next) {
+  if (!this.createdAt) {
+    this.createdAt = moment().locale('th').format('YYYY-MM-DD HH:mm:ss');
+  }
+  next();
+});
 // Hashing password before saving
 
 const User = mongoose.model("Customers", customerSchema);

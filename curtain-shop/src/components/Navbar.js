@@ -76,7 +76,7 @@ function ProfileMenu({ isLoggedIn, handleLogout, userName, idUser }) {
           color="white"
           className="flex items-center gap-1 rounded-full py-0.5 pr-2 pl-0.5 lg:ml-auto"
         >
-          <p className="pl-3 pr-3">{userName}</p>
+          <p className="pl-3 pr-3 text-xs font-normal">{userName}</p>
           <CiUser className="border bg-white/25 rounded-full border-white p-0.5 h-9 w-9" />
           <ChevronDownIcon
             strokeWidth={2.5}
@@ -184,7 +184,7 @@ function NavListMenu() {
   const renderItems = navListMenuItems.map(({ title, description, to }) => (
     <Link to={to} key={title}>
       <MenuItem>
-        <Typography variant="h7" className="mb-1 font-Kanit">
+        <Typography variant="h7" className="mb-1 text-xs font-Kanit">
           {title}
         </Typography>
         {/* <Typography variant="small" className="font-normal font-Kanit ">
@@ -205,7 +205,7 @@ function NavListMenu() {
             className="font-normal text-Kanit"
           >
             <MenuItem className="hidden items-center gap-2 text-base text-white text-Kanit lg:flex lg:rounded-full">
-              <p>สินค้า</p>
+              <p className="text-xs">สินค้า</p>
               <ChevronDownIcon
                 strokeWidth={2}
                 className={`h-3 w-3 transition-transform ${
@@ -219,7 +219,7 @@ function NavListMenu() {
           <ul className="col-span-5 flex w-full flex-col">{renderItems}</ul>
         </MenuList>
       </Menu>
-      <MenuItem className="flex items-center gap-2 text-Kanit text-lg lg:hidden">
+      <MenuItem className="flex text-xs items-center gap-2 text-Kanit lg:hidden">
         สินค้า
       </MenuItem>
       <ul className="ml-6 flex  text-sm flex-col gap-1 lg:hidden text-white">
@@ -246,21 +246,7 @@ const navListItems = [
     icon: CubeTransparentIcon,
     to: "/Achievements",
   },
-  {
-    label: "ผ้าม่านและราง",
-    icon: CubeTransparentIcon,
-    to: "/recommended-curtain",
-  },
-  {
-    label: "ประเภทของผ้า",
-    icon: CubeTransparentIcon,
-    to: "/Fabric-Type",
-  },
-  {
-    label: "วิธีการวัดผ้าม่าน",
-    icon: CubeTransparentIcon,
-    to: "/gauging-curtain",
-  },
+
   {
     label: "ติดต่อเรา",
     icon: CodeBracketSquareIcon,
@@ -268,24 +254,96 @@ const navListItems = [
   },
 ];
 
+// nav list menu about
+const navListMenuItemsAbout = [
+  {
+    title: "ผ้าม่านและราง",
+    description: "1",
+    to: "/recommended-curtain",
+  },
+  {
+    title: "ประเภทของผ้า",
+    description: "2",
+    to: "/Fabric-Type",
+  },
+  {
+    title: "วิธีการวัดผ้าม่าน",
+    description: "3",
+    to: "/gauging-curtain",
+  },
+];
+
+function NavListMenuAbout() {
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+
+  const renderItems = navListMenuItemsAbout.map(
+    ({ title, description, to }) => (
+      <Link to={to} key={title}>
+        <MenuItem>
+          <Typography variant="h7" className="mb-1 text-xs font-Kanit">
+            {title}
+          </Typography>
+          {/* <Typography variant="small" className="font-normal font-Kanit ">
+          {description}
+        </Typography> */}
+        </MenuItem>
+      </Link>
+    )
+  );
+
+  return (
+    <React.Fragment>
+      <Menu allowHover open={isMenuOpen} handler={setIsMenuOpen}>
+        <MenuHandler>
+          <Typography
+            as="a"
+            href="#"
+            variant="small"
+            className="font-normal text-Kanit"
+          >
+            <MenuItem className="hidden items-center gap-2 text-base text-white text-Kanit lg:flex lg:rounded-full">
+              <p className="text-xs">เกี่ยวกับผ้าม่าน</p>
+              <ChevronDownIcon
+                strokeWidth={2}
+                className={`h-3 w-3 transition-transform ${
+                  isMenuOpen ? "rotate-180" : ""
+                }`}
+              />
+            </MenuItem>
+          </Typography>
+        </MenuHandler>
+        <MenuList className="hidden grid-cols-5 gap-3 overflow-visible lg:grid text-b-font">
+          <ul className="col-span-5 flex w-full flex-col">{renderItems}</ul>
+        </MenuList>
+      </Menu>
+      <MenuItem className="flex text-xs items-center gap-2 text-Kanit lg:hidden">
+        เกี่ยวกับผ้าม่าน
+      </MenuItem>
+      <ul className="ml-6 flex  text-sm flex-col gap-1 lg:hidden text-white">
+        {renderItems}
+      </ul>
+    </React.Fragment>
+  );
+}
+
 function NavList() {
   return (
-    <ul className="mb-4 mt-2 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center">
+    <ul className="mb-4 mt-2 flex flex-col  lg:mb-0 lg:mt-0 lg:flex-row lg:items-center">
       <NavListMenu />
       {navListItems.map(({ label, to }, key) => (
         <Typography
           key={label}
           as="a"
           href={to}
-          variant="small"
           color="white"
-          className="font-Kanit text-base"
+          className="font-Kanit text-xs"
         >
           <MenuItem className="flex items-center gap-2 lg:rounded-full">
             {label}
           </MenuItem>
         </Typography>
       ))}
+      <NavListMenuAbout />
     </ul>
   );
 }
@@ -321,13 +379,15 @@ function ComplexNavbar({ isLoggedIn, idUser, userName, handleLogout }) {
           <Typography
             as="a"
             href="/"
-            className="mr-4 ml-2  text-2xl font-Kanit cursor-pointer py-1.5 font-medium"
+            className="mr-4 ml-2  text-xl font-Kanit cursor-pointer py-1.5 font-medium"
           >
             Curtain Shop
           </Typography>
           <div className="absolute top-2/4 left-2/4 hidden -translate-x-2/4 -translate-y-2/4 lg:block">
             <NavList />
           </div>
+
+          <div className="absolute top-2/4 left-2/4 hidden -translate-x-2/4 -translate-y-2/4 lg:block"></div>
 
           <IconButton
             size="sm"

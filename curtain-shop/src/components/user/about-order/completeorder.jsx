@@ -17,7 +17,7 @@ const CompleteOrder = ({ idUser }) => {
   useEffect(() => {
     const fetchData = () => {
       customerAPI
-        .getOrderByIdComplete(idUser)
+        .getOrderByIdSend(idUser)
         .then((orderData) => {
           setUserOrder(orderData);
         })
@@ -32,6 +32,37 @@ const CompleteOrder = ({ idUser }) => {
   }, [idUser]);
 
   console.log(userOrder);
+
+  const handleCancelOrder = async (idOrder) => {
+    // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
+    const confirmation = await Swal.fire({
+      title: "ยืนยันการยกเลิกคำสั่งซื้อ",
+      text: "คุณแน่ใจหรือไม่ที่ต้องการยกเลิกคำสั่งซื้อนี้?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "ยืนยัน",
+      cancelButtonText: "ยกเลิก",
+    });
+
+    // หากผู้ใช้กดปุ่มยืนยัน
+    if (confirmation.isConfirmed) {
+      try {
+        const response = await customerAPI.updateOrderEnable(idOrder, false);
+        console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
+        await Swal.fire({
+          title: "ยกเลิกสำเร็จ",
+          text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
+          icon: "success",
+        });
+        window.location.reload();
+      } catch (error) {
+        console.error("Error cancelling order:", error);
+        // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
+      }
+    }
+  };
 
   const handlePaymentOrder = async (idOrder) => {
     navigate(`/payment/${idOrder}`);
@@ -99,6 +130,8 @@ const CompleteOrder = ({ idUser }) => {
                       <p className="text-md font-bold">
                         รวม : {item.product.price * item.count} บาท
                       </p>
+
+                  
                     </div>
                   </div>
                 ))}
@@ -119,16 +152,47 @@ const CompleteOrder = ({ idUser }) => {
               <p className="text-sm sm:text-sm md:text-md md:text-lg lg:text-lg text-brown-400">
                 ราคารวม : {order.totalPrice} บาท
               </p>
+              <p className="text-sm sm:text-sm md:text-md md:text-lg lg:text-lg text-brown-400 mt-[10px]">
+                สถานะ:{" "}
+                {order.approve
+                  ? "ได้รับการอนุมัติแล้ว"
+                  : "รอการอนุมัติจากร้านค้า"}
+              </p>
+              <p className="text-sm sm:text-sm md:text-md md:text-lg lg:text-lg text-brown-400 mt-[10px]">
+                สถานะการชำระเงิน :{" "}
+                {order.verifypayment
+                  ? "ยืนยันการชำระเงินแล้ว"
+                  : "รอการยืนยันจากทางร้านค้า"}
+              </p>
+              <p className="text-sm sm:text-sm md:text-md md:text-lg lg:text-lg text-brown-400 mt-[10px]">
+                สถานะการเตรียมสินค้า :{" "}
+                {order.pandding
+                  ? "ตัดผ้าม่านเสร็จแล้ว"
+                  : "กำลังดำเนินการ"}
+              </p>
+            
+              <p className="text-sm sm:text-sm md:text-md md:text-lg lg:text-lg text-brown-400 mt-[10px]">
+                สถานะการจัดส่ง :{" "}
+                {order.sendproduct
+                  ? "จัดส่งสินค้าแล้ว"
+                  : "กำลังรอการจัดส่ง"}
+              </p>
+              <p className="text-sm sm:text-sm md:text-md md:text-lg lg:text-lg text-brown-400 mt-[10px]">
+                 :{" "}
+                {order.complete
+                  ? "ได้รับสินค้าแล้ว"
+                  : "รอการยืนยันจากลูกค้า"}
+              </p>
+
 
               <div className="flex justify-end ">
-                <button
+              <button
                   className=" bg-blue-200 py-2 px-auto w-[150px] rounded-full shadow-xl mx-2 hover:bg-blue-400 text-center md:mt-3 md:mb-3 md:inline-block text-base sm:text-base md:text-md lg:text-md xl:text-md  text-white "
-                  onClick={() => handlePaymentOrder(order._id)}
                 >
                   ดูรายละเอียดคำสั่งซื้อ
                 </button>
 
-               
+          
               </div>
             </div>
           </div>

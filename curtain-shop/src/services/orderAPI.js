@@ -133,15 +133,27 @@ const OrderAPI = {
   },
   
   
-  updateOrderSend: async (idOrder, send) => {
+  updateOrderSend: async (idOrder, sendproduct) => {
     try {
-      const response = await axios.put(`${process.env.REACT_APP_API}/customer/order/send/${idOrder}`, { send });
+      const response = await axios.put(`${process.env.REACT_APP_API}/customer/order/send/${idOrder}`, { sendproduct });
+      return response.data;
+    } catch (error) {
+      console.error('Error updating order enable:', error);
+      throw error; 
+    }
+  },
+
+  updateOrderVerifyCancelled: async (idOrder, veriflycancelled) => {
+    try {
+      const response = await axios.put(`${process.env.REACT_APP_API}/customer/order/cancelled/${idOrder}`, { veriflycancelled });
       return response.data;
     } catch (error) {
       console.error('Error updating order enable:', error);
       throw error; 
     }
   }
+  ,
+
 
 
   

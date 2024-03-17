@@ -38,11 +38,18 @@ const {
   updateOrderApprove,
   updateOrderSend,
   updateOrderVerifyPayment,
-  updateOrderPandding
+  updateOrderPandding,
+  updateSlip,
+  deleteSlip,
+  updateOrderCancelled,
+  updateOrderVerifyCancelled
 } = require("../controllers/customerController");
 
 //middleware
 const { auth } = require("../middleware/auth");
+const uploadslip = require("../middleware/slip");
+const uploadshow = require("../middleware/show");
+
 
 router.post("/register", register);
 router.post("/add-address", auth, createAddress);
@@ -82,6 +89,9 @@ router.get("/all/order/complete-s",auth,searchOrderComplete)
 
 //update
 router.put("/order/enable/:id", auth, updateOrderEnable);
+router.put("/order/cencelled/:id", auth, updateOrderCancelled);
+router.put("/order/verifycanceclled/:id", auth, updateOrderVerifyCancelled);
+
 router.put("/order/approve/:id", auth, updateOrderApprove);
 router.put("/order/verifypayment/:id", auth, updateOrderVerifyPayment);
 router.put("/order/pandding/:id", auth, updateOrderPandding);
@@ -92,5 +102,8 @@ router.put("/order/complete/:id", auth, updateOrderComplete);
 
 router.post("/cart", auth, userCart);
 router.put("/cart-to-order/:id", auth, userUpdateADCart);
+router.put("/order/payment/:id",auth,uploadslip,updateSlip)
+router.delete("/order/payment-d/:id",auth,uploadslip,deleteSlip)
+
 
 module.exports = router;

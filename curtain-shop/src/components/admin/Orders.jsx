@@ -13,6 +13,8 @@ import { BsPinFill } from "react-icons/bs";
 
 import ApproveOrder from "./about-order/approveorder";
 import WaitForPayment from "./about-order/waitforpayment";
+import CheckForPayment from "./about-order/checkforpayment";
+
 import PrepareOrder from "./about-order/prepareorder";
 import SendOrder from "./about-order/sendorder";
 import CompleteOrder from "./about-order/completeorder";
@@ -26,14 +28,16 @@ function Orders() {
   const [userName, setUserName] = React.useState("");
   const [userData, setUserData] = useState(null);
 
-  const [selectedButton, setSelectedButton] = useState("waitPayment"); // เริ่มต้นที่รอการชำระ
+  const [selectedButton, setSelectedButton] = useState(""); 
 
   const renderContent = () => {
     switch (selectedButton) {
       case "approve":
         return <ApproveOrder />;
-      case "waitPayment":
+        case "waitPayment":
         return <WaitForPayment />;
+      case "checkPayment":
+        return <CheckForPayment />;
       case "prepareDelivery":
         return <PrepareOrder />;
       case "pendingDelivery":
@@ -142,12 +146,20 @@ function Orders() {
         >
           ที่ต้องอนุมัติคำสั่งซื้อ
         </button>
-
         <button
           className={`bg-gray-200 w-[200px] shadow-md hover:bg-gray-400 hover:text-lg hover:shadow-2xl text-center text-base text-brown-600 my-4 p-2 ${
             selectedButton === "waitPayment" ? "bg-gray-400" : ""
           }`}
           onClick={() => setSelectedButton("waitPayment")}
+        >
+          รอชำระเงิน
+        </button>
+
+        <button
+          className={`bg-gray-200 w-[200px] shadow-md hover:bg-gray-400 hover:text-lg hover:shadow-2xl text-center text-base text-brown-600 my-4 p-2 ${
+            selectedButton === "checkPayment" ? "bg-gray-400" : ""
+          }`}
+          onClick={() => setSelectedButton("checkPayment")}
         >
           ตรวจสอบการชำระเงิน
         </button>
@@ -178,7 +190,7 @@ function Orders() {
         </button>
       </div>
 
-      <div className="">{renderContent()}</div>
+      <div className="">{renderContent("approve")}</div>
 
    
     </>

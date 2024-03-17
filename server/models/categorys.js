@@ -21,5 +21,13 @@ const categorySchema = mongoose.Schema(
   },
   { timestamps: true }
 );
+
+categorySchema.pre('save', function(next) {
+  if (!this.createdAt) {
+    this.createdAt = moment().locale('th').format('YYYY-MM-DD HH:mm:ss');
+  }
+  next();
+});
+
 module.exports = mongoose.model("Categorys", categorySchema);
 
