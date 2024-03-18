@@ -533,16 +533,21 @@ exports.userUpdateADCart = async (req, res) => {
   try {
     const idCart = req.params.id;
     console.log("idcart", idCart);
-    const { sendAddress, deliveryIs, confirmed } = req.body;
-    console.log("recive", sendAddress, deliveryIs, confirmed);
-    // ตรวจสอบค่าที่ส่งมา
+    const { sendAddress, deliveryIs, confirmed } = req.query;
+
+    console.log("data add ", req.file.filename);
+
+    console.log("Recieved data:", sendAddress, deliveryIs, confirmed);
+
+    if (!req.file) {
+      return res.status(400).send("No files were uploaded.");
+    }
     if (!sendAddress || !deliveryIs || !confirmed) {
       return res.status(400).send({
         error: "กรุณาส่งค่า sendAddress, deliveryIs, และ confirmed ให้ถูกต้อง",
       });
     }
 
-    // ค้นหาตะกร้าสินค้าด้วย idCart
     let existingCart = await Cart.findById(idCart).exec();
 
     if (existingCart) {
@@ -550,9 +555,10 @@ exports.userUpdateADCart = async (req, res) => {
       existingCart.sendAddress = sendAddress;
       existingCart.deliveryIs = deliveryIs;
       existingCart.confirmed = confirmed;
+      existingCart.windowimg =  req.file.filename ;
 
-      // คำนวณค่า totalPrice ใหม่โดยเพิ่ม deliveryIs เข้าไป
-      existingCart.totalPrice = existingCart.totalPrice + deliveryIs;
+
+      existingCart.totalPrice =  existingCart.totalPrice ;
 
       // บันทึกการเปลี่ยนแปลง
       await existingCart.save();
@@ -571,10 +577,10 @@ exports.userUpdateADCart = async (req, res) => {
 exports.getOrderById = async (req, res) => {
   try {
     const idUser = req.params.id;
-    console.log("get by id");
+    console.log("get by id all");
     console.log(idUser);
     // const user = await User.findOne({ idUser }).exec();
-    let cart = await Cart.find({ orderBy: idUser, endble: true })
+    let cart = await Cart.find({ orderBy: idUser})
       .populate([
         {
           path: "products.product",
@@ -599,7 +605,7 @@ exports.getOrderById = async (req, res) => {
       totalPrice,
       sendAddress,
       deliveryIs,
-      endble,
+      enable,
       confirmed,
       payment,
       verifypayment,
@@ -626,7 +632,7 @@ exports.getOrderByIdWaitPayment = async (req, res) => {
     // ตรวจสอบรายการคำสั่งซื้อที่รอการชำระเงิน
     let carts = await Cart.find({
       orderBy: idUser,
-      endble: true,
+      enable: true,
       confirmed: true,
       pandding: false,
       verifypayment: false,
@@ -691,7 +697,7 @@ exports.getOrderByIdWaitPayment = async (req, res) => {
   }
 };
 
-exports.getOrderByIdPrepair = async (req, res) => {
+exports.getOrderByIdPrepare = async (req, res) => {
   try {
     const idUser = req.params.id;
     console.log("get by id");
@@ -699,7 +705,7 @@ exports.getOrderByIdPrepair = async (req, res) => {
     // const user = await User.findOne({ idUser }).exec();
     let cart = await Cart.find({
       orderBy: idUser,
-      endble: true,
+      enable: true,
       confirmed: true,
       approve: true,
       payment: true,
@@ -757,12 +763,12 @@ exports.getOrderByIdSend = async (req, res) => {
     // const user = await User.findOne({ idUser }).exec();
     let cart = await Cart.find({
       orderBy: idUser,
-      endble: true,
+      enable: true,
       confirmed: true,
-      payment: true,
       approve: true,
+      payment: true,
       verifypayment: true,
-      pandding: true,
+      sendproduct: true,
       complete: false,
     })
       .populate([
@@ -810,12 +816,12 @@ exports.getOrderByIdSend = async (req, res) => {
 exports.getOrderByIdComplete = async (req, res) => {
   try {
     const idUser = req.params.id;
-    console.log("get by id");
+    console.log("get by id complete");
     console.log(idUser);
     // const user = await User.findOne({ idUser }).exec();
     let cart = await Cart.find({
       orderBy: idUser,
-      endble: true,
+      enable: true,
       confirmed: true,
       payment: true,
       verifypayment: true,
@@ -823,6 +829,7 @@ exports.getOrderByIdComplete = async (req, res) => {
       approve: true,
       sendproduct: true,
       complete: true,
+
     })
       .populate([
         {
@@ -914,26 +921,49 @@ exports.getOrderByIdOrder = async (req, res) => {
   }
 };
 
+// exports.updateOrderEnable = async (req, res) => {
+//   try {
+//       const idOrder = req.params.id;
+//       const { cancelReasonAd } = req.body; 
+//       console.log("cancel text",cancelReasonAd);
+
+//       console.log("Update order enable for order:", idOrder);
+//       if (!cancelReasonAd) {
+//           res.status(500).json({ error: "กรุณาใส่รายละเอียดการยกเลิก" });
+//           return; // คืนค่าเพื่อให้ไม่ทำงานต่อ
+//       }
+
+//       await Cart.updateOne({ _id: idOrder }, { enable: false, cancelReason: cancelReasonAd });
+
+//       res.status(200).json({ message: "Order enable updated successfully." });
+//   } catch (error) {
+//       console.log(error);
+//       res.status(500).json({ error: "Internal Server Error" });
+//   }
+// };
+
 exports.updateOrderEnable = async (req, res) => {
   try {
-    const idOrder = req.params.id;
-    const { enable, cancelReasonAd } = req.body;
-    console.log(cancelReasonAd);
-    console.log("Update order enable for order:", idOrder);
-    if(!cancelReasonAd){
-      res.status(500).json({ error: "กรุณาใส่รายละเอียดการยกเลิก" });
+      const idOrder = req.params.id;
+      const { enable,cancelReasonAd } = req.body;
+      console.log("cancel text", enable,cancelReasonAd);
 
-    }
+      console.log("Update order enable for order:", idOrder);
+      if (!cancelReasonAd) {
+          return res.status(500).json({ error: "กรุณาใส่รายละเอียดการยกเลิก" });
+      }
 
-    // ดำเนินการอัปเดตค่า enable และ cancelReason ในคำสั่งซื้อที่ระบุ
-    await Cart.updateOne({ _id: idOrder }, { enable: enable, cancelReason: cancelReasonAd });
+      await Cart.updateOne({ _id: idOrder }, { enable: false, cancelReason: cancelReasonAd });
+      await Cart.updateOne({ _id: idOrder }, { verifycancelled: true });
 
-    res.status(200).json({ message: "Order enable updated successfully." });
+      return res.status(200).json({ message: "Order enable updated successfully." });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Internal Server Error" });
+      console.log(error);
+      return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+
 
 exports.updateOrderComplete = async (req, res) => {
   try {
@@ -1005,7 +1035,7 @@ exports.getOrderApprove = async (req, res) => {
     console.log("get al  git ffl");
     // const user = await User.findOne({ idUser }).exec();
     let cart = await Cart.find({
-      endble: true,
+      enable: true,
       confirmed: true,
       approve: false,
       payment: false,
@@ -1062,10 +1092,10 @@ exports.getOrderPayment = async (req, res) => {
     console.log("get al  git ffl");
     // const user = await User.findOne({ idUser }).exec();
     let cart = await Cart.find({
-      endble: true,
+      enable: true,
       confirmed: true,
       approve: true,
-      payment: false,
+     
       verifypayment: false,
       pandding: false,
       sendproduct: false,
@@ -1119,7 +1149,7 @@ exports.getOrdertoVeriflyPayment = async (req, res) => {
     console.log("get al  git ffl");
     // const user = await User.findOne({ idUser }).exec();
     let cart = await Cart.find({
-      endble: true,
+      enable: true,
       confirmed: true,
       approve: true,
       payment: true,
@@ -1176,7 +1206,7 @@ exports.getOrderPrepare = async (req, res) => {
     console.log("get al  git ffl");
     // const user = await User.findOne({ idUser }).exec();
     let cart = await Cart.find({
-      endble: true,
+      enable: true,
       confirmed: true,
       approve: true,
       payment: true,
@@ -1233,13 +1263,12 @@ exports.getOrderSend = async (req, res) => {
     console.log("get al  git ffl");
     // const user = await User.findOne({ idUser }).exec();
     let cart = await Cart.find({
-      endble: true,
+      enable: true,
       confirmed: true,
       approve: true,
       payment: true,
       verifypayment: true,
       pandding: true,
-      sendproduct: false,
       complete: false,
     })
       .populate([
@@ -1290,7 +1319,7 @@ exports.getOrderComplete = async (req, res) => {
     console.log("get al  git ffl");
     // const user = await User.findOne({ idUser }).exec();
     let cart = await Cart.find({
-      endble: true,
+      enable: true,
       confirmed: true,
       approve: true,
       payment: true,
@@ -1348,7 +1377,7 @@ exports.searchOrderApprove = async (req, res) => {
   try {
     // ค้นหาข้อมูลคำสั่งซื้อตามเงื่อนไขที่กำหนด
     let cart = await Cart.find({
-      endble: true,
+      enable: true,
       confirmed: true,
       approve: false,
       payment: false,
@@ -1400,10 +1429,9 @@ exports.searchOrderPayment = async (req, res) => {
   try {
     // ค้นหาข้อมูลคำสั่งซื้อตามเงื่อนไขที่กำหนด
     let cart = await Cart.find({
-      endble: true,
+      enable: true,
       confirmed: true,
       approve: true,
-      payment: false,
       verifypayment: false,
       pandding: false,
       sendproduct: false,
@@ -1452,7 +1480,7 @@ exports.searchOrderPrepare = async (req, res) => {
   try {
     // ค้นหาข้อมูลคำสั่งซื้อตามเงื่อนไขที่กำหนด
     let cart = await Cart.find({
-      endble: true,
+      enable: true,
       confirmed: true,
       approve: true,
       payment: true,
@@ -1504,7 +1532,7 @@ exports.searchOrderSend = async (req, res) => {
   try {
     // ค้นหาข้อมูลคำสั่งซื้อตามเงื่อนไขที่กำหนด
     let cart = await Cart.find({
-      endble: true,
+      enable: true,
       confirmed: true,
       approve: true,
       payment: true,
@@ -1556,7 +1584,7 @@ exports.searchOrderComplete = async (req, res) => {
   try {
     // ค้นหาข้อมูลคำสั่งซื้อตามเงื่อนไขที่กำหนด
     let cart = await Cart.find({
-      endble: true,
+      enable: true,
       confirmed: true,
       approve: true,
       payment: true,
@@ -1654,12 +1682,12 @@ exports.updateOrderSend = async (req, res) => {
   try {
     const idOrder = req.params.id;
     const { sendproduct } = req.body;
-    console.log("Update order endble for order:", idOrder);
+    console.log("Update order enable for order:", idOrder);
 
-    // ดำเนินการอัปเดตค่า endble ในคำสั่งซื้อที่ระบุ
+    
     await Cart.updateOne({ _id: idOrder }, { sendproduct: sendproduct });
     console.log(sendproduct);
-    res.status(200).json({ message: "Order endble updated successfully." });
+    res.status(200).json({ message: "Order enable updated successfully." });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });

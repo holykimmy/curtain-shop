@@ -50,7 +50,7 @@ const PrepareOrder = ({ idUser }) => {
     if (confirmation.isConfirmed) {
       try {
         const response = await orderAPI.updateOrderCancelled(idOrder, true);
-        console.log(response); 
+        console.log(response);
         await Swal.fire({
           text: "รอการยืนยันจากทางร้านค้า",
           icon: "success",
@@ -92,10 +92,7 @@ const PrepareOrder = ({ idUser }) => {
     <>
       {userOrder.map((order) => (
         <div key={order._id} className="flex justify-center">
-          <div
-            onClick={() => handdleOrderdetail(order._id)}
-            className="flex justify-between w-[97%] sm:w-[97%] md:w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3"
-          >
+          <div className="flex justify-between w-[97%] sm:w-[97%] md:w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
             <div className="pl-5 w-full">
               <p className=" text-center text-sm sm:text-xs md:text-xs lg:text-base xl:text-xbasel text-brown-400">
                 Order Number : {order._id}
@@ -167,39 +164,65 @@ const PrepareOrder = ({ idUser }) => {
                   {order.sendAddress.postcode}
                 </p>
               )}
-
               <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
-                ค่าจัดส่ง : {numberWithCommas(order.deliveryIs)}บาท
+                ราคาสินค้า :{" "}
+                {numberWithCommas(order.totalPrice - order.deliveryIs)} บาท
+              </p>
+              <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
+                ค่าจัดส่ง : {numberWithCommas(order.deliveryIs)} บาท
               </p>
               <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
                 ราคารวม : {numberWithCommas(order.totalPrice)} บาท
               </p>
               <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
-                สถานะ:{" "}
-                {order.approve
-                  ? "ได้รับการอนุมัติแล้ว"
-                  : "รอการอนุมัติจากร้านค้า"}
+                สถานะ :{" "}
+                {!order.pandding
+                  ? "กำลังตัดแต่งผ้าม่าน"
+                  : "ตัดผ้านม่านเสร็จแล้ว"}
               </p>
-              {order.approve ? (
-                <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-1">
-                  สถานะการชำระเงิน :{" "}
-                  {order.payment
-                    ? order.verifypayment
-                      ? "ยืนยันการชำระเงินแล้ว"
-                      : "รอการยืนยันจากทางร้านค้า"
-                    : "กรุณาชำระเงิน"}
-                </p>
-              ) : (
-                ""
-              )}
 
-              <div className="flex justify-end ">
-                <button
-                  className="bg-red-300 mt-3  mx-2 py-2 px-auto w-[120px] rounded-full shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
-                  onClick={() => handleCancelOrder(order._id)}
-                >
-                  ยกเลิกคำสั่งซื้อ
-                </button>
+              <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
+                สถานะ :{" "}
+                {!order.sendproduct ? "รอการจัดส่ง" : "ส่งสินค้าเรียบร้อยแล้ว"}
+              </p>
+
+         
+              <div className="flex justify-between">
+                <div className="flex justify-start ">
+                  {" "}
+                  <button
+                    onClick={() => handdleOrderdetail(order._id)}
+                    className=" hover:text-brown-500 mx-2 py-2 px-auto  hover:text-shadow-xl text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-2 mr-4"
+                  >
+                    {" "}
+                    ดูรายละเอียดคำสั่งซื้อ{" "}
+                  </button>
+                </div>
+                <div className="flex justify-end ">
+                  {!order.payment ? (
+                    <button
+                      className="bg-blue-400 mt-3 mx-2 py-2 px-auto w-[100px] rounded-full shadow-xl hover:bg-blue-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
+                      disabled={!order.approve}
+                      onClick={() => handlePaymentOrder(order._id)}
+                    >
+                      ชำระเงิน
+                    </button>
+                  ) : (
+                    <p className="text-sm  text-brown-400 mt-6 mr-2">
+                      ชำระเงินเรียบร้อยแล้ว
+                    </p>
+                  )}
+                  {!order.payment ? (
+                    <button
+                      className="bg-red-300 mt-3  mx-2 py-2 px-auto w-[120px] rounded-full shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
+                      onClick={() => handleCancelOrder(order._id)}
+                    >
+                      ยกเลิกคำสั่งซื้อ
+                    </button>
+                  ) : (
+                    ""
+                  )}
+                </div>
               </div>
             </div>
           </div>{" "}

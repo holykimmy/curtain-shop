@@ -8,8 +8,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import axios from "axios";
-import { Transition } from "@headlessui/react";
-import { RefreshIcon } from "@heroicons/react/outline";
+
 function ContactPage() {
   const { productId } = useParams();
   const [data, setData] = useState({
@@ -57,11 +56,9 @@ function ContactPage() {
       }
     };
 
-    const interval = setInterval(fetchData, 5000);
-    fetchData(); // เรียก fetchData ครั้งแรกเมื่อ component โหลด
+    fetchData(); 
 
-    return () => clearInterval(interval); // เมื่อ component ถูกทำลายให้ clearInterval เพื่อหยุดการเรียก fetchData
-  }, [data.p_type]); // useEffect จะถูกเรียกเมื่อ data.p_type เปลี่ยนแปลง
+  }, [data.p_type]); 
 
   //login
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -111,7 +108,6 @@ function ContactPage() {
         decodedToken.exp &&
         decodedToken.exp * 1000 < Date.now()
       ) {
-        // Token expired, logout user
         handleLogoutAuto();
       }
     } else {
@@ -250,17 +246,17 @@ function ContactPage() {
   return (
     <>
       {isloading ? (
-       <div className="flex justify-center items-center h-screen">
-       {isloading && (
-         <>
-           <div className="overlay"></div>
-           <div className="spinner">
-             <i className="fas fa-sync-alt fa-spin"></i>
-             <p>Loading...</p>
-           </div>
-         </>
-       )}
-     </div>
+        <div className="flex justify-center items-center h-screen">
+          {isloading && (
+            <>
+              <div className="overlay"></div>
+              <div className="spinner">
+                <i className="fas fa-sync-alt fa-spin"></i>
+                <p>Loading...</p>
+              </div>
+            </>
+          )}
+        </div>
       ) : (
         <div className="">
           <Navbar

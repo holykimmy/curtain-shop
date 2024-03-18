@@ -182,6 +182,7 @@ function PaymentPage() {
           title: "การชำระเงินเรียบร้อย",
           text: "ขอบคุณสำหรับการชำระเงิน",
         });
+        navigate(`/order-detail/${idOrder}`, {});
       } else {
         // กรณีที่มีข้อผิดพลาด
         Swal.fire({
@@ -355,7 +356,7 @@ function PaymentPage() {
                           </p>
                           <p className="text-base leading-4 text-gray-600">
                             {numberWithCommas(
-                              order.totalPrice - order.deliveryIs
+                              order.totalPrice 
                             )}{" "}
                             บาท
                           </p>
@@ -375,7 +376,7 @@ function PaymentPage() {
                           ราคารวม
                         </p>
                         <p className="text-base font-semibold leading-4 text-gray-600">
-                          {numberWithCommas(order.totalPrice)} บาท
+                          {numberWithCommas(order.totalPrice + order.deliveryIs)} บาท
                         </p>
                       </div>
                     </div>
@@ -404,23 +405,31 @@ function PaymentPage() {
                         </div>
                       </div>
 
-                      <p className="text-lg font-semibold leading-6 text-gray-800">
-                        เลือกสลิปการโอนเงินของคุณ
-                      </p>
-                      <div className="flex items-center shadow-md space-x-6 bg-white p-3 rounded-md">
-                        <form id="uploadForm" encType="multipart/form-data">
-                          <label className="block">
-                            <span className="sr-only">เลือกรูป</span>
-                            <input
-                              id="fileInput"
-                              name="slipmoney"
-                              type="file"
-                              className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
-                              onChange={handleFileSelect}
-                            />
-                          </label>
-                        </form>
-                      </div>
+                      {order.approve ? (
+                        <>
+                          <p className="text-lg font-semibold leading-6 text-gray-800">
+                            เลือกสลิปการโอนเงินของคุณ
+                          </p>
+                          <div className="flex items-center shadow-md space-x-6 bg-white p-3 rounded-md">
+                            <form id="uploadForm" encType="multipart/form-data">
+                              <label className="block">
+                                <span className="sr-only">เลือกรูป</span>
+                                <input
+                                  id="fileInput"
+                                  name="slipmoney"
+                                  type="file"
+                                  className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+                                  onChange={handleFileSelect}
+                                />
+                              </label>
+                            </form>
+                          </div>
+                        </>
+                      ) : (
+                        <p className="text-sm leading-6 font-semibold text-gray-800">
+                          รอการอนุมัติคำสั่งซื้อจากทางร้าน
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -497,17 +506,20 @@ function PaymentPage() {
                           </p>
                         </div>
                       </div>
-                      <p className="flex w-full justify-center items-center md:justify-start md:items-start">                       
-                      {!order.approve ? "รอการอนุมัติคำสั่งซื้อจากทางร้าน": ""}</p> 
+                      {/* <p className="flex w-full justify-center items-center md:justify-start md:items-start">
+                        {!order.approve
+                          ? "รอการอนุมัติคำสั่งซื้อจากทางร้าน"
+                          : ""}
+                      </p> */}
 
                       <div className="flex w-full justify-center items-center md:justify-start md:items-start">
                         {!order.payment ? (
                           <button
                             onClick={() => handlePayment(order._id)}
-                            disabled={!order.aprove}
+                            disabled={!order.approve}
                             className="mt-6 md:mt-0 py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base leading-4 text-gray-800"
                           >
-                            ยืนยันการชำระเงิน
+                            ยืนยันการชำระ
                           </button>
                         ) : (
                           "ท่านได้ทำการชำระเงินเรียบร้อยแล้ว"
@@ -520,6 +532,10 @@ function PaymentPage() {
             </div>
           </div>
         ))}
+
+        <div className="py-14 px-4 md:px-100 2xl:px-100 2xl:container 2xl:mx-auto h-10">
+
+        </div>
 
         <Footer></Footer>
       </div>

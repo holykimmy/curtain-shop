@@ -20,7 +20,7 @@ const {
   getAddressByUserId,
   getOrderByIdOrder,
   getOrderByIdWaitPayment,
-  getOrderByIdPrepair,
+  getOrderByIdPrepare,
   getOrderByIdSend,
   getOrderByIdComplete,
   getOrderApprove,
@@ -49,6 +49,8 @@ const {
 const { auth } = require("../middleware/auth");
 const uploadslip = require("../middleware/slip");
 const uploadshow = require("../middleware/show");
+const uploadwindow = require("../middleware/window");
+
 
 
 router.post("/register", register);
@@ -67,7 +69,7 @@ router.post("/add-order/", auth, createOrder);
 router.get("/order/:id", auth, getOrderById);
 router.get("/check-order/order/:id", auth, getOrderByIdOrder);
 router.get("/order/waiting-payment/:id", auth, getOrderByIdWaitPayment);
-router.get("/order/prepare/:id", auth, getOrderByIdPrepair);
+router.get("/order/prepare/:id", auth, getOrderByIdPrepare);
 router.get("/order/send/:id", auth, getOrderByIdSend);
 router.get("/order/complete/:id", auth, getOrderByIdComplete);
 
@@ -101,7 +103,7 @@ router.put("/order/complete/:id", auth, updateOrderComplete);
 
 
 router.post("/cart", auth, userCart);
-router.put("/cart-to-order/:id", auth, userUpdateADCart);
+router.put("/cart-to-order/:id", auth, uploadwindow,userUpdateADCart);
 router.put("/order/payment/:id",auth,uploadslip,updateSlip)
 router.delete("/order/payment-d/:id",auth,uploadslip,deleteSlip)
 

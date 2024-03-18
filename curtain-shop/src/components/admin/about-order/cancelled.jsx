@@ -7,7 +7,7 @@ import axios from "axios";
 import orderAPI from "../../../services/orderAPI";
 import customerAPI from "../../../services/customerAPI";
 
-const PrepareOrder = ({ idUser }) => {
+const CancelOrder = ({ idUser }) => {
   const navigate = useNavigate();
 
   const [userOrder, setUserOrder] = useState([]);
@@ -19,9 +19,12 @@ const PrepareOrder = ({ idUser }) => {
   useEffect(() => {
     const fetchData = () => {
       orderAPI
-        .getOrderPrepare()
+        .getOrderAll()
         .then((orderData) => {
-          setUserOrder(orderData);
+          const completeTrueOrder = orderData.filter(
+            (order) => order.enable === false
+          );
+          setUserOrder(completeTrueOrder);
         })
         .catch((err) => {
           console.error("error", err);
@@ -50,23 +53,38 @@ const PrepareOrder = ({ idUser }) => {
 
     // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
-      navigate(`/order-cancel/${idOrder}`, {});
+      try {
+        const response = await customerAPI.updateOrderEnable(idOrder, false);
+        console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
+        await Swal.fire({
+          title: "ยกเลิกสำเร็จ",
+          text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
+          icon: "success",
+        });
+        window.location.reload();
+      } catch (error) {
+        console.error("Error cancelling order:", error);
+        // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
+      }
     }
   };
 
   const handleSearch = async () => {
     try {
-      const searchData = await orderAPI.searchOrderPrepare(searchTerm);
+      const searchData = await orderAPI.searchOrderApprove(searchTerm);
       console.log("search", searchTerm);
-      setSearchResults(searchData);
+      setSearchResults(searchData); // เซตค่า searchResults ที่ได้จากการค้นหาเข้า state
     } catch (error) {
       console.error("Error fetching search results:", error);
+      // แสดงข้อความผิดพลาดหรือจัดการข้อผิดพลาดตามที่ต้องการ
     }
   };
 
-  const handlePanddingOrder = async (idOrder) => {
+  const handleApproveOrder = async (idOrder) => {
+    // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
     const confirmation = await Swal.fire({
-      text: "จัดเตรียมสินค้าเสร็จแล้วใช่หรือไม่?",
+      title: "ยืนยันคำสั่งซื้อ",
+      text: "คุณต้องการอนุมัติคำสั่งซื้อใช่หรือไม่?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -78,10 +96,10 @@ const PrepareOrder = ({ idUser }) => {
     // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
       try {
-        const response = await orderAPI.updateOrderPandding(idOrder, true);
-        console.log(response);
+        const response = await orderAPI.updateOrderApprove(idOrder, true);
+        console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
         await Swal.fire({
-          title: "เตรียมสินค้าพร้อมแล้ว",
+          title: "ยืนยันคำสั่งซื้อ",
           text: "คำสั่งซื้อได้รับการยืนยันแล้ว",
           icon: "success",
         });
@@ -234,14 +252,18 @@ const PrepareOrder = ({ idUser }) => {
                       ราคารวม : {numberWithCommas(order.totalPrice)} บาท
                     </p>
 
-                    {order.approve ? (
+                    {/* {order.approve ? (
                       <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-1">
                         สถานะการชำระเงิน :{" "}
                         {order.payment ? "ชำระเงินเรียบร้อย" : "รอการชำระเงิน"}
                       </p>
                     ) : (
                       ""
-                    )}
+                    )} */}
+
+                    <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-1">
+                      {!order.enable ? "ยกเลิกสินค้าแล้ว" : null}
+                    </p>
 
                     <div className="flex justify-between">
                       <div className="flex justify-start ">
@@ -255,7 +277,7 @@ const PrepareOrder = ({ idUser }) => {
                         </button>
                       </div>
                       <div className="flex justify-end ">
-                        <button
+                        {/* <button
                           className="bg-green-400 mt-3 mx-2 py-2 px-auto w-[150px] rounded-full shadow-xl hover:bg-green-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
                           onClick={() => handlePanddingOrder(order._id)}
                         >
@@ -267,7 +289,7 @@ const PrepareOrder = ({ idUser }) => {
                           onClick={() => handleCancelOrder(order._id)}
                         >
                           ยกเลิกคำสั่งซื้อ
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                   </div>
@@ -282,7 +304,6 @@ const PrepareOrder = ({ idUser }) => {
               <hr className="w-full mt-4 mb-2 border-gray-300" />
             </>
           )}
-
       {userOrder.map((order) => (
         <div key={order._id} className="flex justify-center">
           <div className="flex justify-between w-[97%] sm:w-[97%] md:w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
@@ -368,14 +389,17 @@ const PrepareOrder = ({ idUser }) => {
                 ราคารวม : {numberWithCommas(order.totalPrice)} บาท
               </p>
 
-              {order.approve ? (
+              {/* {order.approve ? (
                 <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-1">
                   สถานะการชำระเงิน :{" "}
                   {order.payment ? "ชำระเงินเรียบร้อย" : "รอการชำระเงิน"}
                 </p>
               ) : (
                 ""
-              )}
+              )} */}
+              <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-1">
+                สถานะ : {!order.enable ? "ยกเลิกสินค้าแล้ว" : null}
+              </p>
 
               <div className="flex justify-between">
                 <div className="flex justify-start ">
@@ -389,7 +413,7 @@ const PrepareOrder = ({ idUser }) => {
                   </button>
                 </div>
                 <div className="flex justify-end ">
-                  <button
+                  {/* <button
                     className="bg-green-400 mt-3 mx-2 py-2 px-auto w-[150px] rounded-full shadow-xl hover:bg-green-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
                     onClick={() => handlePanddingOrder(order._id)}
                   >
@@ -401,7 +425,7 @@ const PrepareOrder = ({ idUser }) => {
                     onClick={() => handleCancelOrder(order._id)}
                   >
                     ยกเลิกคำสั่งซื้อ
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>
@@ -411,4 +435,4 @@ const PrepareOrder = ({ idUser }) => {
     </>
   );
 };
-export default PrepareOrder;
+export default CancelOrder;

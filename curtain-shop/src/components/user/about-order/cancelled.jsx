@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import customerAPI from "../../../services/customerAPI";
 
-const WaitForPayment = ({ idUser }) => {
+const CancelOrder = ({ idUser }) => {
   const navigate = useNavigate();
 
   const [userOrder, setUserOrder] = useState([]);
@@ -17,22 +17,28 @@ const WaitForPayment = ({ idUser }) => {
   useEffect(() => {
     const fetchData = () => {
       customerAPI
-        .getOrderByIdWaitPayment(idUser)
+        .getOrderById(idUser)
         .then((orderData) => {
-          setUserOrder(orderData);
+
+          const cancelOrders = orderData.filter(
+            (order) => order.enable === false
+          );
+          setUserOrder(cancelOrders);
         })
         .catch((err) => {
           console.error("error", err);
         });
     };
     fetchData();
+
   }, [idUser]);
 
-  console.log("order :", userOrder);
+  console.log(userOrder);
 
   const handleCancelOrder = async (idOrder) => {
     // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
     const confirmation = await Swal.fire({
+      title: "ยืนยันการยกเลิกคำสั่งซื้อ",
       text: "คุณแน่ใจหรือไม่ที่ต้องการยกเลิกคำสั่งซื้อนี้?",
       icon: "warning",
       showCancelButton: true,
@@ -42,10 +48,11 @@ const WaitForPayment = ({ idUser }) => {
       cancelButtonText: "ยกเลิก",
     });
 
+    // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
       try {
         const response = await customerAPI.updateOrderEnable(idOrder, false);
-        console.log(response); 
+        console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
         await Swal.fire({
           title: "ยกเลิกสำเร็จ",
           text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
@@ -54,30 +61,33 @@ const WaitForPayment = ({ idUser }) => {
         window.location.reload();
       } catch (error) {
         console.error("Error cancelling order:", error);
+        // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
       }
     }
   };
 
-  const handlePaymentOrder = async (idOrder) => {
-    navigate(`/payment/${idOrder}`, {});
-  };
-
   const handdleOrderdetail = async (idOrder) => {
+    // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
     const confirmation = await Swal.fire({
-      text: "ดูรายละเอียดคำสั่งซื้อ",
+      title: "ดูรายละเอียดคำสั่งซื้อ",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
       confirmButtonText: "ยืนยัน",
       cancelButtonText: "ยกเลิก",
     });
 
+    // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
-      navigate(`/order-detail/${idOrder}`, {});
+      
+        navigate(`/order-detail/${idOrder}`, {});
     }
   };
 
+  const handlePaymentOrder = async (idOrder) => {
+    navigate(`/payment/${idOrder}`);
+  };
   const numberWithCommas = (x) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
@@ -170,21 +180,12 @@ const WaitForPayment = ({ idUser }) => {
               </p>
               <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
                 สถานะ:{" "}
-                {order.approve
-                  ? "ได้รับการอนุมัติแล้ว"
-                  : "รอการอนุมัติจากร้านค้า"}
+                { !order.enable
+                  ? `ยกเลิกสินค้าแล้วเนื้องจาก ${order.cancelReason}`
+                  : null }
               </p>
 
-              {order.approve ? (
-                <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-1">
-                  สถานะการชำระเงิน :{" "}
-                  {order.payment
-                    ? order.verifypayment
-                      ? "ยืนยันการชำระเงินแล้ว"
-                      : "กำลังตรวจสอบ"
-                    : "กรุณาชำระเงิน"}
-                </p>
-              ) : null}
+           
               <div className="flex justify-between">
                 <div className="flex justify-start ">
                   {" "}
@@ -197,29 +198,15 @@ const WaitForPayment = ({ idUser }) => {
                   </button>
                 </div>
                 <div className="flex justify-end ">
-                  {!order.payment ? (
+             
+{/*                  
                     <button
-                      className="bg-blue-400 mt-3 mx-2 py-2 px-auto w-[100px] rounded-full shadow-xl hover:bg-blue-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
-                      disabled={!order.approve}
-                      onClick={() => handlePaymentOrder(order._id)}
+                      className="bg-blue-400 mt-3 mx-2 py-2 px-auto w-[150px] rounded-full shadow-xl hover:bg-blue-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
+                      onClick={() => handleCompleteOrder(order._id)}
                     >
-                      ชำระเงิน
-                    </button>
-                  ) : (
-                    <p className="text-sm  text-brown-400 mt-6 mr-2">
-                      ชำระเงินเรียบร้อยแล้ว
-                    </p>
-                  )}
-                  {!order.payment ? (
-                    <button
-                      className="bg-red-300 mt-3  mx-2 py-2 px-auto w-[120px] rounded-full shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
-                      onClick={() => handleCancelOrder(order._id)}
-                    >
-                      ยกเลิกคำสั่งซื้อ
-                    </button>
-                  ) : (
-                    ""
-                  )}
+                     ได้รับสินค้าแล้ว
+                    </button> */}
+                 
                 </div>
               </div>
             </div>
@@ -229,4 +216,4 @@ const WaitForPayment = ({ idUser }) => {
     </>
   );
 };
-export default WaitForPayment;
+export default CancelOrder;

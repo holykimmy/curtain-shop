@@ -40,9 +40,6 @@ function CheckOrdeerPage() {
         });
     };
     fetchData();
-
-    // Return a cleanup function to clear the interval
-    return () => clearInterval();
   }, [idOrder]);
 
   console.log(currentOrder);
@@ -176,6 +173,76 @@ function CheckOrdeerPage() {
 
   console.log("select", selectedDelivery);
 
+  // const submitForm = async (e) => {
+  //   e.preventDefault();
+  //   const deliveryIs = selectedDelivery;
+  //   console.table("deliveryis", deliveryIs);
+  //   if (!deliveryIs) {
+  //     Swal.fire({
+  //       icon: "warning",
+  //       title: "กรุณาเลือกการจัดส่ง",
+  //       showConfirmButton: false,
+  //       timer: 1500,
+  //     });
+  //     return; // หยุดการทำงานของฟังก์ชันหลังจากแสดงแจ้งเตือน
+  //   }
+  //   console.table(deliveryIs);
+
+  //   if (!sendAddress) {
+  //     Swal.fire({
+  //       icon: "warning",
+  //       title: "กรุณาเลือกที่อยู่ที่ต้องการจัดส่ง",
+  //       showConfirmButton: false,
+  //       timer: 1500,
+  //     });
+  //     return; // หยุดการทำงานของฟังก์ชันหลังจากแสดงแจ้งเตือน
+  //   }
+  //   console.table("tetst", sendAddress);
+
+  //   const confirmed = true;
+
+  //   try {
+  //     const fileInput = document.getElementById("fileInput");
+  //     const formData = new FormData();
+  //     if (!fileInput.files[0]) {
+  //       Swal.fire({
+  //         icon: "error",
+  //         text: "กรุณาเลือกแนบรูปหน้าต่างของคุณ",
+  //       });
+  //       return; // ออกจากฟังก์ชันไปทันที
+  //     }
+
+  //     formData.append("windowimg", fileInput.files[0]);
+
+  //     const response = await axios.put(
+  //       `${process.env.REACT_APP_API}/customer/cart-to-order/${idOrder}`,
+  //       {
+  //         sendAddress,
+  //         deliveryIs,
+  //         confirmed,
+  //         formData,
+  //       }
+  //     );
+  //     console.log(response.data); // แสดงข้อมูลที่ API ตอบกลับ
+
+  //     Swal.fire({
+  //       icon: "success",
+  //       title: "บันทึกข้อมูลเรียบร้อย",
+  //       showConfirmButton: false,
+  //       timer: 1500,
+  //     });
+  //     navigate(`/payment/${idOrder}`, idOrder);
+  //   } catch (err) {
+  //     console.error(err);
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "เกิดข้อผิดพลาดในการบันทึกข้อมูล",
+  //       showConfirmButton: false,
+  //       timer: 1500,
+  //     });
+  //   }
+  // };
+
   const submitForm = async (e) => {
     e.preventDefault();
     const deliveryIs = selectedDelivery;
@@ -204,26 +271,42 @@ function CheckOrdeerPage() {
 
     const confirmed = true;
 
-    
     try {
+      const fileInput = document.getElementById("fileInput");
+      const formData = new FormData();
+      if (!fileInput.files[0]) {
+        Swal.fire({
+          icon: "error",
+          text: "กรุณาเลือกแนบรูปหน้าต่างของคุณ",
+        });
+        return; // ออกจากฟังก์ชันไปทันที
+      }
+
+      formData.append("windowimg", fileInput.files[0]);
+
       const response = await axios.put(
         `${process.env.REACT_APP_API}/customer/cart-to-order/${idOrder}`,
+        formData, 
         {
-          sendAddress,
-          deliveryIs,
-          confirmed,
+          params: {
+            sendAddress,
+            deliveryIs,
+            confirmed,
+          },
+          headers: {
+            "Content-Type": "multipart/form-data", 
+          },
         }
       );
-      console.log(response.data); // แสดงข้อมูลที่ API ตอบกลับ
+      console.log(response.data); 
 
       Swal.fire({
         icon: "success",
         title: "บันทึกข้อมูลเรียบร้อย",
         showConfirmButton: false,
         timer: 1500,
-      });     
-       navigate(`/payment/${idOrder}`,idOrder);
-
+      });
+      navigate(`/payment/${idOrder}`, idOrder);
     } catch (err) {
       console.error(err);
       Swal.fire({
@@ -233,10 +316,48 @@ function CheckOrdeerPage() {
         timer: 1500,
       });
     }
-
   };
 
 
+  function handleFileSelect(event) {
+    const file = event.target.files[0];
+
+    const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+    if (!allowedTypes.includes(file.type)) {
+      Swal.fire({
+        icon: "error",
+        title: "ไฟล์ไม่ถูกต้อง",
+        text: "กรุณาเลือกไฟล์ที่เป็น .png, .jpeg หรือ .jpg เท่านั้น",
+      });
+      return;
+    }
+    const formData = new FormData();
+    formData.append("windownimg", file);
+
+    // ส่งข้อมูลไปยังเซิร์ฟเวอร์ โดยใช้ Fetch API
+    fetch("/upload", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("อัปโหลดสำเร็จ", data);
+        // ดำเนินการต่อไปตามที่คุณต้องการ
+      })
+      .catch((error) => {
+        console.error("เกิดข้อผิดพลาดขณะอัปโหลด", error);
+        // จัดการข้อผิดพลาดตามที่คุณต้องการ
+      });
+  }
+
+  const numberWithCommas = (x) => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
 
   return (
     <>
@@ -251,21 +372,28 @@ function CheckOrdeerPage() {
 
         <div class="titlea bg-brown-bg py-1 shadow-md">
           <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-9 xl:h-9 text-b-font"></BsPinFill>
-          <h5 className=" inline-block text-lg md:text-xl xl:text-3xl text-b-font  pl-4 p-2 my-1">
+          <h5 className=" inline-block text-base md:text-lg xl:text-lg text-b-font  pl-4 p-2 my-1">
             ยืนยันคำสั่งซื้อ
           </h5>
         </div>
 
-        <form onSubmit={submitForm}>
+        <form encType="multipart/form-data" onSubmit={submitForm}>
           <div class="grid sm:px-10 lg:grid-cols-2 lg:px-20 xl:px-32">
             <div class="px-4 pt-8">
-              <p class="text-2xl text-b-font">ข้อมูลคำสั่งซื้อ</p>
-              <p class="text-gray-400">กรุณาตรวจสอบรายการสินค้าของคุณ</p>
+              <p class="text-sm md:text-lg xl:text-lg text-b-font">
+                ข้อมูลคำสั่งซื้อ
+              </p>
+              <p class="text-sm md:text-base xl:text-base text-gray-600">
+                กรุณาตรวจสอบรายการสินค้าของคุณ
+              </p>
               {currentOrder.map((order) => (
                 <div key={order._id}>
-                  <h2>Order ID: {order._id}</h2>
-                  <h3>Total Price: {order.totalPrice}</h3>
-                  <h3>Confirmed: {order.confirmed ? "Yes" : "No"}</h3>
+                  <h2 class="text-sm md:text-base xl:text-base text-gray-600">
+                    Order ID: {order._id}
+                  </h2>
+                  <h3 class="text-sm md:text-base xl:text-base text-gray-600">
+                    Total Price: {numberWithCommas(order.totalPrice)} บาท{" "}
+                  </h3>
                   {/* Add more details as needed */}
                   <div class="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6">
                     {order.products.map((item) => (
@@ -274,48 +402,53 @@ function CheckOrdeerPage() {
                         class="flex flex-col shadow-xl  rounded-lg bg-white sm:flex-row"
                       >
                         <img
-                          class="m-5 h-50 w-40 rounded-md border object-cover object-center"
+                          class="m-5 h-auto w-[100px] rounded-md border object-cover object-center"
                           src={`${process.env.REACT_APP_API}/images/${item.product.image}`}
                           alt="product"
                         />
                         <div class="flex w-full flex-col px-4 py-4">
-                          <span class="font-semibold">
+                          <span class="text-sm md:text-base xl:text-base text-gray-800">
                             {" "}
                             ชื่อสินค้า : {item.product.name}
                           </span>
-                          <span class="font-semibold">
+                          <span class="text-sm md:text-base xl:text-base text-gray-800">
                             {" "}
                             ยี่ห้อ : {item.product.brand}
                           </span>
 
-                          <span class="float-right text-gray-600">
+                          <span class="text-sm md:text-base xl:text-base text-gray-800">
                             รหัสสี : {item.product.color}
                           </span>
 
-                          <p class="text-md font-bold">
+                          <p class="text-sm md:text-base xl:text-base text-gray-800">
                             {" "}
-                            ความกว้างของหน้าผ้า : {item.product.p_width}
+                            ความกว้างของหน้าผ้า : {item.product.p_width} ซม.
                           </p>
-                          <div class="float-right text-gray-600 whitespace-pre-wrap">
+                          <div class="text-xs md:text-sm xl:text-sm whitespace-pre-wrap">
                             รายละเอียดเพิ่มเติม :{item.product.detail}
                           </div>
-                          <p class="text-md font-bold">
+                          <p class="text-sm md:text-base xl:text-base text-gray-800">
                             {" "}
                             การสั่งตัดผ้าม่าน : {item.type}
                           </p>
-                          <p class="text-md font-bold">
+                          <p class="text-sm md:text-base xl:text-base text-gray-800">
                             {" "}
-                            ราคา/หลา : {item.product.price}{" "}
+                            ราคา/หลา : {numberWithCommas(
+                              item.product.price
+                            )}{" "}
                           </p>
-                          <p class="text-md font-bold">
+                          <p class="text-sm md:text-base xl:text-base text-gray-800">
                             {" "}
-                            ขนาด : {item.width} x {item.height} เซนติเมตร{" "}
+                            ขนาด : {numberWithCommas(item.width)} x{" "}
+                            {numberWithCommas(item.height)} เซนติเมตร{" "}
                           </p>
-                          <p class="text-md font-bold">
-                            จำนวน : {item.count} หลา{" "}
+                          <p class="text-sm md:text-base xl:text-base text-gray-800">
+                            จำนวน : {numberWithCommas(item.count)} หลา{" "}
                           </p>
-                          <p class="text-md font-bold">
-                            รวม : {item.product.price * item.count} บาท{" "}
+                          <p class="text-sm md:text-base xl:text-base text-gray-800">
+                            รวม :{" "}
+                            {numberWithCommas(item.product.price * item.count)}{" "}
+                            บาท{" "}
                           </p>
                         </div>
                       </div>
@@ -324,11 +457,11 @@ function CheckOrdeerPage() {
                 </div>
               ))}
 
-              <p class="mt-8 text-2xl text-b-font">เลือกการขนส่ง</p>
+              <p class="mt-8 text-sm text-b-font">เลือกการขนส่ง</p>
               {deliveryOptions.map((option) => (
-                <div key={option.id} className="relative mt-4">
+                <div key={option.id} className="relative mt-4 text-xs">
                   <input
-                    className="peer hidden"
+                    className="peer hidden text-xs"
                     id={`radio_${option.id}`}
                     type="radio"
                     name="deliveryOption"
@@ -347,13 +480,13 @@ function CheckOrdeerPage() {
                     className="peer-checked:border-2 peer-checked:border-gray-700 peer-checked:bg-gray-50 flex cursor-pointer select-none rounded-lg border border-gray-300 p-4"
                     htmlFor={`radio_${option.id}`}
                   >
-                    <img
+                    {/* <img
                       className="w-14 object-contain"
                       src="/images/naorrAeygcJzX0SyNI4Y0.png"
                       alt=""
-                    />
+                    /> */}
                     <div className="ml-5">
-                      <span className="mt-2 font-semibold">{option.title}</span>
+                      <span className="mt-2 ">{option.title}</span>
                       <p className="text-slate-500 text-sm leading-6">
                         {option.duration}
                       </p>
@@ -365,7 +498,7 @@ function CheckOrdeerPage() {
 
             <div class="bg-brown-blog mt-10  px-4 pt-8 lg:mt-0">
               <select
-                className="mb-2 rounded-lg"
+                className="mb-2 rounded-lg text-sm"
                 onChange={(e) => handleAddressSelect(e.target.value)}
               >
                 <option value="">โปรดเลือกที่อยู่ที่ต้องการจัดส่ง</option>
@@ -379,50 +512,78 @@ function CheckOrdeerPage() {
               <p>
                 <Link
                   to="/address"
-                  className=" mt-2 mb-3 px-4 py-2 rounded-lg text-base  text-gray-900 hover:text-gray-600"
+                  className=" mt-2 mb-3 px-4 py-2 rounded-lg text-sm  hover:text-base text-gray-900 hover:text-gray-600"
                 >
                   เพิ่มที่อยู่ใหม่ ->
                 </Link>
               </p>
 
-              <p class="text-2xl font-medium">ข้อมูลการชำระเงิน</p>
-              <p class=" text-gray-1000">รายละเอียดการชำระเงินของท่าน</p>
+              <p class="text-sm md:text-base xl:text-base font-medium">
+                ข้อมูลการชำระเงิน
+              </p>
+              <p class="text-xs md:text-base xl:text-base  text-gray-1000">
+                รายละเอียดการชำระเงินของท่าน
+              </p>
               {currentOrder.map((order) => (
                 <div key={order._item}>
                   <div class="mt-6 border-t border-b py-2">
                     <div class="flex-col items-center justify-between">
                       {order.products.map((item) => (
                         <div key={item._id}>
-                          <p className="ml-10 font-semibold text-lg text-gray-900 my-2">
+                          <p className="ml-10 text-sm md:text-base xl:text-base  text-gray-900 my-2">
                             {item.product.name} ขนาด {item.width} x{" "}
                             {item.height} เซนติเมตร x {item.count} ={" "}
                             {item.product.price * item.count}
                           </p>
                         </div>
                       ))}
-                      <p class="mt-4 text-lg font-medium text-gray-900">
+                      <p class="mt-4 text-sm md:text-base xl:text-base font-medium text-gray-900">
                         {" "}
-                        ราคารวม : {order.totalPrice} บาท{" "}
+                        ราคารวม : {numberWithCommas(order.totalPrice)} บาท{" "}
                       </p>
                     </div>
 
                     <div class="flex items-center justify-between">
-                      <p class="text-lg font-medium text-gray-900">ค่าจัดส่ง</p>
-                      <p class="font-semibold text-lg text-gray-900">200</p>
+                      <p class="text-sm md:text-base xl:text-base font-medium text-gray-900">
+                        ค่าจัดส่ง
+                      </p>
+                      <p class="font-semibold text-sm md:text-base xl:text-base text-gray-900">
+                        {selectedDelivery} บาท{" "}
+                      </p>
                     </div>
                   </div>
                   <div class="mt-6 flex items-center justify-between">
-                    <p class="text-lg font-medium text-gray-900">
+                    <p class="text-sm md:text-base xl:text-base font-medium text-gray-900">
                       ราคารวมทั้งหมด
                     </p>
-                    <p class="text-lg font-semibold text-gray-900">
-                      {order.totalPrice + 200} บาท
+                    <p class="text-sm md:text-base xl:text-base font-semibold text-gray-900">
+                      {numberWithCommas(order.totalPrice + selectedDelivery)}{" "}
+                      บาท
                     </p>
                   </div>
+
+                  <p className="text-md mt-5 mb-2 leading-6 text-gray-800">
+                    แนปรูปภาพหน้าต่างของคุณ
+                  </p>
+                  <div className="flex items-center shadow-md space-x-6 bg-white p-3 rounded-md">
+                    {/* <form id="uploadForm" encType="multipart/form-data"> */}
+                      <label id="uploadForm" className="block">
+                        <span className="sr-only">เลือกรูป</span>
+                        <input
+                          id="fileInput"
+                          name="windowimg"
+                          type="file"
+                          className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+                          onChange={handleFileSelect}
+                        />
+                      </label>
+                    {/* </form> */}
+                  </div>
+
                   <button
                     value="save"
                     type="submit"
-                    class="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white"
+                    class="mt-4 mb-8 w-full text-xs md:text-sm xl:text-sm  rounded-md bg-gray-900 px-6 py-3 font-medium text-white"
                   >
                     ยืนยันคำสั่งซื้อ
                   </button>

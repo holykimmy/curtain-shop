@@ -52,7 +52,7 @@ function ProfileMenu({ isLoggedIn, handleLogout, userName, idUser }) {
         {
           label: "ดูคำสั่งซื้อ",
           icon: InboxArrowDownIcon,
-          to: "/about-order",
+          to: "/about-order/waitPayment",
         },
         {
           label: "ออกจากระบบ",

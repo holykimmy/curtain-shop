@@ -13,17 +13,17 @@ const CustomerAPI = {
 
   getCustomerAddressById: async (customerId) => {
     return axios
-      .get(`${process.env.REACT_APP_API}/customer/address/${customerId}`) 
+      .get(`${process.env.REACT_APP_API}/customer/address/${customerId}`)
       .then((response) => response.data)
       .catch((error) => {
         console.error(error);
         throw error;
       });
   },
-  
+
   getOrderById: async (customerId) => {
     return axios
-      .get(`${process.env.REACT_APP_API}/customer/order/${customerId}`) 
+      .get(`${process.env.REACT_APP_API}/customer/order/${customerId}`)
       .then((response) => response.data)
       .catch((error) => {
         console.error(error);
@@ -33,7 +33,9 @@ const CustomerAPI = {
 
   getOrderByIdWaitPayment: async (customerId) => {
     return axios
-      .get(`${process.env.REACT_APP_API}/customer/order/waiting-payment/${customerId}`) 
+      .get(
+        `${process.env.REACT_APP_API}/customer/order/waiting-payment/${customerId}`
+      )
       .then((response) => response.data)
       .catch((error) => {
         console.error(error);
@@ -43,7 +45,7 @@ const CustomerAPI = {
 
   getOrderByIdPrepare: async (customerId) => {
     return axios
-      .get(`${process.env.REACT_APP_API}/customer/order/prepare/${customerId}`) 
+      .get(`${process.env.REACT_APP_API}/customer/order/prepare/${customerId}`)
       .then((response) => response.data)
       .catch((error) => {
         console.error(error);
@@ -53,7 +55,7 @@ const CustomerAPI = {
 
   getOrderByIdSend: async (customerId) => {
     return axios
-      .get(`${process.env.REACT_APP_API}/customer/order/send/${customerId}`) 
+      .get(`${process.env.REACT_APP_API}/customer/order/send/${customerId}`)
       .then((response) => response.data)
       .catch((error) => {
         console.error(error);
@@ -63,25 +65,24 @@ const CustomerAPI = {
 
   getOrderByIdComplete: async (customerId) => {
     return axios
-      .get(`${process.env.REACT_APP_API}/customer/order/complete/${customerId}`) 
+      .get(`${process.env.REACT_APP_API}/customer/order/complete/${customerId}`)
       .then((response) => response.data)
       .catch((error) => {
         console.error(error);
         throw error;
       });
   },
-    
+
   getOrderByIdOrder: async (idOrder) => {
     return axios
-      .get(`${process.env.REACT_APP_API}/customer/check-order/order/${idOrder}`) 
+      .get(`${process.env.REACT_APP_API}/customer/check-order/order/${idOrder}`)
       .then((response) => response.data)
       .catch((error) => {
         console.error(error);
         throw error;
       });
   },
-//----ad
-
+  //----ad
 
   getSearch: (search) => {
     return axios
@@ -93,10 +94,11 @@ const CustomerAPI = {
       });
   },
 
-
   deleteAddress: async (addressId) => {
     try {
-      const response = await axios.delete(`${process.env.REACT_APP_API}/customer/address/${addressId}`);
+      const response = await axios.delete(
+        `${process.env.REACT_APP_API}/customer/address/${addressId}`
+      );
       return response.data;
     } catch (error) {
       console.error(error);
@@ -104,32 +106,60 @@ const CustomerAPI = {
     }
   },
 
- 
-  updateOrderEnable: async (idOrder,cancelReasonAd) => {
+  // updateOrderEnable: async (idOrder,cancelReasonAd) => {
+  //   try {
+  //     const response = await axios.put(`${process.env.REACT_APP_API}/customer/order/enable/${idOrder}`, false , { cancelReason: cancelReasonAd });
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error('Error updating order enable:', error);
+  //     throw error;
+  //   }
+  // },
+  //   updateOrderEnable: async (idOrder, cancelReasonAd) => {
+  //     try {
+  //         const response = await axios.put(`${process.env.REACT_APP_API}/customer/order/enable/${idOrder}`, { cancelReason: cancelReasonAd });
+  //         return response.data;
+  //     } catch (error) {
+  //         console.error('Error updating order enable:', error);
+  //         throw error;
+  //     }
+  // },
+
+  updateOrderEnable: async (idOrder, cancelReasonAd) => {
+
+    console.log("id order : ",idOrder);
+    console.log("cancel order : ",cancelReasonAd);
     try {
-      const response = await axios.put(`${process.env.REACT_APP_API}/customer/order/enable/${idOrder}`, false , { cancelReason: cancelReasonAd });
+      const response = await axios.put(
+        `${process.env.REACT_APP_API}/customer/order/enable/${idOrder}`,
+        
+        { cancelReason: cancelReasonAd }
+      );
       return response.data;
     } catch (error) {
-      console.error('Error updating order enable:', error);
-      throw error; 
+      console.error("Error updating order enable:", error);
+      throw error;
     }
   },
 
   updateOrderComplete: async (idOrder, complete) => {
     try {
-      const response = await axios.put(`${process.env.REACT_APP_API}/customer/order/complete/${idOrder}`, { complete });
+      const response = await axios.put(
+        `${process.env.REACT_APP_API}/customer/order/complete/${idOrder}`,
+        { complete }
+      );
       return response.data;
     } catch (error) {
-      console.error('Error updating order enable:', error);
-      throw error; 
+      console.error("Error updating order enable:", error);
+      throw error;
     }
   },
 
-  updateSlip:async (idOrder,formData) => {
-    return axios.post(`${process.env.REACT_APP_API}/customer/order/payment/${idOrder}`,formData);
+  updateSlip: async (idOrder, formData) => {
+    return axios.post(
+      `${process.env.REACT_APP_API}/customer/order/payment/${idOrder}`,
+      formData
+    );
   },
-  
-
-
 };
 export default CustomerAPI;

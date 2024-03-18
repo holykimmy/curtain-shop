@@ -17,7 +17,7 @@ const CompleteOrder = ({ idUser }) => {
   useEffect(() => {
     const fetchData = () => {
       customerAPI
-        .getOrderByIdSend(idUser)
+        .getOrderByIdComplete(idUser)
         .then((orderData) => {
           setUserOrder(orderData);
         })
@@ -27,8 +27,6 @@ const CompleteOrder = ({ idUser }) => {
     };
     fetchData();
 
-    // Return a cleanup function to clear the interval
-    return () => clearInterval();
   }, [idUser]);
 
   console.log(userOrder);
@@ -64,8 +62,30 @@ const CompleteOrder = ({ idUser }) => {
     }
   };
 
+  const handdleOrderdetail = async (idOrder) => {
+    // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
+    const confirmation = await Swal.fire({
+      title: "ดูรายละเอียดคำสั่งซื้อ",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "ยืนยัน",
+      cancelButtonText: "ยกเลิก",
+    });
+
+    // หากผู้ใช้กดปุ่มยืนยัน
+    if (confirmation.isConfirmed) {
+      
+        navigate(`/order-detail/${idOrder}`, {});
+    }
+  };
+
   const handlePaymentOrder = async (idOrder) => {
     navigate(`/payment/${idOrder}`);
+  };
+  const numberWithCommas = (x) => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
   return (
@@ -74,128 +94,119 @@ const CompleteOrder = ({ idUser }) => {
         <div key={order._id} className="flex justify-center">
           <div className="flex justify-between w-[97%] sm:w-[97%] md:w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
             <div className="pl-5 w-full">
-              <p className=" text-center text-md sm:text-md md:text-lg lg:text-xl xl-text-xl text-brown-400">
+              <p className=" text-center text-sm sm:text-xs md:text-xs lg:text-base xl:text-xbasel text-brown-400">
                 Order Number : {order._id}
               </p>
 
-              <p className="text-sm sm:text-md md:text-md md:text-lg lg:text-lg text-brown-400">
+              <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400">
                 สั่งเมื่อ : {order.createdAt}
               </p>
 
-              <p className="text-sm sm:text-md md:text-md md:text-lg lg:text-lg text-brown-400">
+              <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400">
                 ชื่อ : {order.orderBy.f_name} {order.orderBy.l_name}
               </p>
 
-              <div className="flex flex-wrap justify-center">
-                {order.products.map((item) => (
-                  <div
-                    key={item._id}
-                    className="flex justify-between shadow-xl w-full rounded-lg bg-white sm:flex-row mt-4 mx-4 p-5"
-                  >
-                    <div className="flex">
-                      <img
-                        className="m-5 h-40 w-30 rounded-md border object-cover object-center"
-                        src={`${process.env.REACT_APP_API}/images/${item.product.image}`}
-                        alt="product"
-                      />
-                      <div className="flex flex-col px-4 py-4 mt-4">
-                        <span className="font-semibold">
+              {/* <div className="flex flex-wrap justify-center py-4"> */}
+              {order.products.map((item, index) => (
+                <div
+                  key={item._id}
+                  className="flex flex-wrap justify-center pt-4 px-5 "
+                >
+                  <div className="flex justify-between w-full bg-white flex-row sm:flex-col md:flex-row lg:flex-row  mt-1  ">
+                    <div className="flex flex-col mt-4">
+                      <div className="flex flex-col ">
+                        <span className="text-sm text-gray-600">
                           ชื่อสินค้า : {item.product.name}
                         </span>
-                        <span className="font-semibold">
+                        <span className="text-sm text-gray-600">
                           ยี่ห้อ : {item.product.brand}
                         </span>
-                        <span className="float-right text-gray-600">
+                        <span className="text-sm text-gray-600">
                           รหัสสี : {item.product.color}
                         </span>
-                        <p className="text-md font-bold">
-                          ความกว้างของหน้าผ้า : {item.product.p_width}
+                        <p className="text-sm text-gray-600">
+                          ความกว้างของหน้าผ้า : {item.product.p_width} ซม.
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex flex-col mt-4 mr-10">
-                      <p className="text-md font-bold">
+                    <div className="flex flex-col ">
+                      <p className="text-sm text-gray-600">
                         การสั่งตัดผ้าม่าน : {item.type}
                       </p>
-                      <p className="text-md font-bold">
+                      <p className="text-sm text-gray-600">
                         ราคา/หลา : {item.product.price} บาท
                       </p>
-                      <p className="text-md font-bold">
+                      <p className="text-sm text-gray-600">
                         ขนาด : {item.width} x {item.height} เซนติเมตร
                       </p>
-                      <p className="text-md font-bold">
+                      <p className="text-sm text-gray-600">
                         จำนวน : {item.count} หลา
                       </p>
-                      <p className="text-md font-bold">
-                        รวม : {item.product.price * item.count} บาท
+                      <p className="text-sm text-gray-600">
+                        รวม :{" "}
+                        {numberWithCommas(item.product.price * item.count)} บาท
                       </p>
-
-                  
                     </div>
                   </div>
-                ))}
-              </div>
+                  {index !== order.products.length - 1 && (
+                    <hr className="w-full mt-4 mb-2 border-gray-300" />
+                  )}
+                </div>
+              ))}
+              {/* </div> */}
 
               {order.sendAddress && (
-                <p className="text-sm sm:text-sm md:text-md md:text-lg lg:text-lg text-brown-400 mt-[50px]">
+                <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-10">
                   ที่อยู่ที่ต้องจัดส่ง : {order.sendAddress.name}{" "}
                   {order.sendAddress.tell} {order.sendAddress.sub_dristri}{" "}
                   {order.sendAddress.district} {order.sendAddress.province}{" "}
                   {order.sendAddress.postcode}
                 </p>
               )}
-
-              <p className="text-sm sm:text-sm md:text-md md:text-lg lg:text-lg text-brown-400 mt-[10px]">
-                ค่าจัดส่ง : {order.deliveryIs} บาท
+              <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
+                ราคาสินค้า :{" "}
+                {numberWithCommas(order.totalPrice - order.deliveryIs)} บาท
               </p>
-              <p className="text-sm sm:text-sm md:text-md md:text-lg lg:text-lg text-brown-400">
-                ราคารวม : {order.totalPrice} บาท
+              <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
+                ค่าจัดส่ง : {numberWithCommas(order.deliveryIs)} บาท
               </p>
-              <p className="text-sm sm:text-sm md:text-md md:text-lg lg:text-lg text-brown-400 mt-[10px]">
+              <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
+                ราคารวม : {numberWithCommas(order.totalPrice)} บาท
+              </p>
+              <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
                 สถานะ:{" "}
-                {order.approve
-                  ? "ได้รับการอนุมัติแล้ว"
-                  : "รอการอนุมัติจากร้านค้า"}
-              </p>
-              <p className="text-sm sm:text-sm md:text-md md:text-lg lg:text-lg text-brown-400 mt-[10px]">
-                สถานะการชำระเงิน :{" "}
-                {order.verifypayment
-                  ? "ยืนยันการชำระเงินแล้ว"
-                  : "รอการยืนยันจากทางร้านค้า"}
-              </p>
-              <p className="text-sm sm:text-sm md:text-md md:text-lg lg:text-lg text-brown-400 mt-[10px]">
-                สถานะการเตรียมสินค้า :{" "}
-                {order.pandding
-                  ? "ตัดผ้าม่านเสร็จแล้ว"
-                  : "กำลังดำเนินการ"}
-              </p>
-            
-              <p className="text-sm sm:text-sm md:text-md md:text-lg lg:text-lg text-brown-400 mt-[10px]">
-                สถานะการจัดส่ง :{" "}
-                {order.sendproduct
-                  ? "จัดส่งสินค้าแล้ว"
-                  : "กำลังรอการจัดส่ง"}
-              </p>
-              <p className="text-sm sm:text-sm md:text-md md:text-lg lg:text-lg text-brown-400 mt-[10px]">
-                 :{" "}
                 {order.complete
-                  ? "ได้รับสินค้าแล้ว"
-                  : "รอการยืนยันจากลูกค้า"}
+                  ? "เสร็จสิ้นแล้ว"
+                  : "ยังไม่ได้ยืนยันการับสินค้า"}
               </p>
 
-
-              <div className="flex justify-end ">
-              <button
-                  className=" bg-blue-200 py-2 px-auto w-[150px] rounded-full shadow-xl mx-2 hover:bg-blue-400 text-center md:mt-3 md:mb-3 md:inline-block text-base sm:text-base md:text-md lg:text-md xl:text-md  text-white "
-                >
-                  ดูรายละเอียดคำสั่งซื้อ
-                </button>
-
-          
+           
+              <div className="flex justify-between">
+                <div className="flex justify-start ">
+                  {" "}
+                  <button
+                    onClick={() => handdleOrderdetail(order._id)}
+                    className=" hover:text-brown-500 mx-2 py-2 px-auto  hover:text-shadow-xl text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-2 mr-4"
+                  >
+                    {" "}
+                    ดูรายละเอียดคำสั่งซื้อ{" "}
+                  </button>
+                </div>
+                <div className="flex justify-end ">
+             
+{/*                  
+                    <button
+                      className="bg-blue-400 mt-3 mx-2 py-2 px-auto w-[150px] rounded-full shadow-xl hover:bg-blue-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
+                      onClick={() => handleCompleteOrder(order._id)}
+                    >
+                     ได้รับสินค้าแล้ว
+                    </button> */}
+                 
+                </div>
               </div>
             </div>
-          </div>
+          </div>{" "}
         </div>
       ))}
     </>

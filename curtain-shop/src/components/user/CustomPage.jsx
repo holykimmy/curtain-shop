@@ -197,17 +197,14 @@ function CustomPage() {
     height,
     ...data
   }) => {
-    // ดำเนินการเพิ่มสินค้าในตะกร้าสำหรับผู้ใช้ที่ยังไม่ได้เข้าสู่ระบบ
-    // ตัวอย่างเช่นการเพิ่มสินค้าลงใน localStorage หรือในรูปแบบอื่น ๆ
+   
 
     let cart = [];
 
-    // ตรวจสอบค่า localStorage.getItem('cart')
     const cartFromStorage = localStorage.getItem("cart");
     console.log("localStorage.getItem('cart'):", cartFromStorage);
 
     try {
-      // พยายามแปลงข้อมูลใน localStorage เป็น JSON object
       if (cartFromStorage) {
         cart = JSON.parse(cartFromStorage);
       }
@@ -311,14 +308,12 @@ function CustomPage() {
     console.log("localStorage.getItem('cart'):", cartFromStorage);
 
     try {
-      // พยายามแปลงข้อมูลใน localStorage เป็น JSON object
       if (cartFromStorage) {
         cart = JSON.parse(cartFromStorage);
       }
     } catch (error) {
       console.error("Error parsing JSON:", error);
-      // กรณีที่เกิดข้อผิดพลาดในการแปลง JSON
-      // ลบข้อมูลที่ไม่ถูกต้องออกจาก localStorage
+     
       localStorage.removeItem("cart");
     }
 
@@ -340,7 +335,6 @@ function CustomPage() {
     console.table(data.id, selectedType, selectedRail, width, height);
 
     if (!cart[idUser]) {
-      // ถ้าไม่มีข้อมูลตะกร้าสำหรับผู้ใช้นี้ใน localStorage สร้างตะกร้าใหม่
       cart[idUser] = [];
     }
 
@@ -496,13 +490,10 @@ function CustomPage() {
         console.error("เกิดข้อผิดพลาดในการดึงข้อมูล", err);
       }
     };
-    const interval = setInterval(() => {
-      fetchData();
-    }, 5000);
-
+  
     fetchData();
-    return () => clearInterval(interval);
   }, []);
+  
 
   const images = [
     "curtain-1.jpg",

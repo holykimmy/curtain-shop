@@ -92,12 +92,8 @@ function Wave() {
         console.error("เกิดข้อผิดพลาดในการดึงข้อมูล", err);
       }
     };
-    const interval = setInterval(() => {
-      fetchData();
-    }, 5000);
-
+  
     fetchData();
-    return () => clearInterval(interval);
   }, []);
 
   return (

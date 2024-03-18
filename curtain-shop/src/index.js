@@ -90,7 +90,7 @@ const router = createBrowserRouter([
   { path: "/Fabric-Type", element: <FabricType /> },
   { path: "/Achievements", element: <Achievement /> },
   { path: "/checkout", element: <CheckOutPage /> },
-  { path: "/about-order", element: <AboutOrderPage /> },
+  { path: "/about-order/:selectedButton", element: <AboutOrderPage /> },
   { path: "/payment/:idOrder", element: <Payment /> },
   { path: "/order-detail/:idOrder", element: <OrderDetailPage /> },
 
@@ -116,7 +116,7 @@ const router = createBrowserRouter([
   { path: "/add-brand", element: <AddBrandPage /> },
   { path: "/add-category", element: <CategoryProduct /> },
   { path: "/customers", element: <Customers /> },
-  { path: "/orders", element: <Orders /> },
+  { path: "/orders/:selectedButton", element: <Orders /> },
   { path: "/order-detail-ad/:idOrder", element: <OrderDetail /> },
   { path: "/order-cancel/:idOrder", element: <CancelOrder /> },
   { path: "/products-ad", element: <Products /> },

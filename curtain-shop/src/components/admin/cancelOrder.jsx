@@ -142,11 +142,53 @@ function CancelOrder() {
     }
   };
 
+  // const handleCancelOrder = async (idOrder, cancelReasonAd) => {
+  //   if (!cancelReasonAd.trim()) {
+  //       Swal.fire({
+  //           text: "กรุณาระบุเหตุผลที่ต้องการยกเลิก",
+  //           icon: "warning",
+  //       });
+  //       return;
+  //   }
+
+  //   const confirmation = await Swal.fire({
+  //       title: "ยกเลิกคำสั่งซื้อ",
+  //       text: `คุณแน่ใจหรือไม่ที่ต้องการยกเลิกด้วยเหตุผล ${cancelReasonAd}?`,
+  //       icon: "warning",
+  //       showCancelButton: true,
+  //       confirmButtonColor: "#d33",
+  //       cancelButtonColor: "#3085d6",
+  //       confirmButtonText: "ยืนยัน",
+  //       cancelButtonText: "ยกเลิก",
+  //   });
+
+  //   if (confirmation.isConfirmed) {
+  //       try {
+  //           const response = await axios.put(
+  //             `${process.env.REACT_APP_API}/customer/order/complete/${idOrder}`,
+  //             { enable: false, cancelReasonAd }
+  //           );
+
+  //           if(response.data.message === "Order enable updated successfully"){
+  //             Swal.fire({
+  //               title: "ยกเลิกสำเร็จ",
+  //               text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
+  //               icon: "success",
+  //           });
+  //           }
+
+  //           navigate(`/order-detail/${idOrder}`, {});
+  //       } catch (error) {
+  //           console.error("Error cancelling order:", error);
+  //       }
+  //   }
+  // };
+
   const handleCancelOrder = async (idOrder, cancelReasonAd) => {
     if (!cancelReasonAd.trim()) {
       Swal.fire({
         text: "กรุณาระบุเหตุผลที่ต้องการยกเลิก",
-        icon: "success",
+        icon: "warning",
       });
       return;
     }
@@ -162,18 +204,34 @@ function CancelOrder() {
       cancelButtonText: "ยกเลิก",
     });
 
+    console.log("ind inkdj:",cancelReasonAd);
+
     if (confirmation.isConfirmed) {
+
+
       try {
-        const response = await customerAPI.updateOrderEnable(idOrder, {
-          cancelReason: cancelReasonAd,
-        }); // ส่ง cancelReasonAd ในรูปแบบของ request body
-        console.log(response);
-        await Swal.fire({
-          title: "ยกเลิกสำเร็จ",
-          text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
-          icon: "success",
-        });
-        navigate(`/order-detail/${idOrder}`, {});
+        const response = await axios.put(
+          `${process.env.REACT_APP_API}/customer/order/enable/${idOrder}`,
+          { enable: false, cancelReasonAd }
+        );
+
+        if (response.status === 200 ) {
+          Swal.fire({
+            title: "ยกเลิกสำเร็จ",
+            text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
+            icon: "success",
+          });
+          navigate(`/order-detail-ad/${idOrder}`, {});
+        }
+        else{
+          Swal.fire({
+            title: "ยกเลิกไม่สำเร็จ",
+            text: "เกิดข้อผิดพลาดบางประการ",
+            icon: "error",
+          });
+        }
+
+        
       } catch (error) {
         console.error("Error cancelling order:", error);
       }
@@ -397,7 +455,6 @@ function CancelOrder() {
                       <div className="flex w-full justify-center items-center md:justify-start md:items-start">
                         <button
                           className="bg-red-400 mt-3 mx-2 py-2 px-auto w-[200px] rounded-full shadow-xl hover:bg-red-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
-                          disabled={!cancelReasonAd}
                           onClick={() =>
                             handleCancelOrder(order._id, cancelReasonAd)
                           }

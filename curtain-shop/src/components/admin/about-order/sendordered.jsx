@@ -7,7 +7,7 @@ import axios from "axios";
 import orderAPI from "../../../services/orderAPI";
 import customerAPI from "../../../services/customerAPI";
 
-const PrepareOrder = ({ idUser }) => {
+const ReceiveOrder = ({ idUser }) => {
   const navigate = useNavigate();
 
   const [userOrder, setUserOrder] = useState([]);
@@ -19,9 +19,11 @@ const PrepareOrder = ({ idUser }) => {
   useEffect(() => {
     const fetchData = () => {
       orderAPI
-        .getOrderPrepare()
-        .then((orderData) => {
-          setUserOrder(orderData);
+        .getOrderSend()
+        .then((orderData) => {  const sendTrueOrders = orderData.filter(
+          (order) => order.sendproduct === true
+        );
+          setUserOrder(sendTrueOrders);
         })
         .catch((err) => {
           console.error("error", err);
@@ -50,23 +52,38 @@ const PrepareOrder = ({ idUser }) => {
 
     // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
-      navigate(`/order-cancel/${idOrder}`, {});
+      try {
+        const response = await customerAPI.updateOrderEnable(idOrder, false);
+        console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
+        await Swal.fire({
+          title: "ยกเลิกสำเร็จ",
+          text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
+          icon: "success",
+        });
+        window.location.reload();
+      } catch (error) {
+        console.error("Error cancelling order:", error);
+        // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
+      }
     }
   };
 
   const handleSearch = async () => {
     try {
-      const searchData = await orderAPI.searchOrderPrepare(searchTerm);
+      const searchData = await orderAPI.searchOrderSend(searchTerm);
       console.log("search", searchTerm);
-      setSearchResults(searchData);
+      setSearchResults(searchData); // เซตค่า searchResults ที่ได้จากการค้นหาเข้า state
     } catch (error) {
       console.error("Error fetching search results:", error);
+      // แสดงข้อความผิดพลาดหรือจัดการข้อผิดพลาดตามที่ต้องการ
     }
   };
 
-  const handlePanddingOrder = async (idOrder) => {
+  const handleSendOrder = async (idOrder) => {
+    // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
     const confirmation = await Swal.fire({
-      text: "จัดเตรียมสินค้าเสร็จแล้วใช่หรือไม่?",
+      title: "ยืนยันคำสั่งซื้อ",
+      text: "จัดส่งสินค้าแล้วใช่หรือไม่?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -78,11 +95,11 @@ const PrepareOrder = ({ idUser }) => {
     // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
       try {
-        const response = await orderAPI.updateOrderPandding(idOrder, true);
-        console.log(response);
+        const response = await orderAPI.updateOrderSend(idOrder, true);
+        console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
         await Swal.fire({
-          title: "เตรียมสินค้าพร้อมแล้ว",
-          text: "คำสั่งซื้อได้รับการยืนยันแล้ว",
+          title: "ยืนยันคำสั่งซื้อ",
+          text: "จัดส่งสินค้าเรียบร้อยแล้ว",
           icon: "success",
         });
         window.location.reload();
@@ -255,19 +272,14 @@ const PrepareOrder = ({ idUser }) => {
                         </button>
                       </div>
                       <div className="flex justify-end ">
-                        <button
-                          className="bg-green-400 mt-3 mx-2 py-2 px-auto w-[150px] rounded-full shadow-xl hover:bg-green-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
-                          onClick={() => handlePanddingOrder(order._id)}
+                        {/* <button
+                          className="bg-green-400 mt-3 mx-2 py-2 px-auto w-[170px] rounded-full shadow-xl hover:bg-green-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
+                          onClick={() => handleSendOrder(order._id)}
                         >
-                          สินค้าเสร็จแล้ว
-                        </button>
+                          ส่งสินค้าเรียบร้อยแล้ว
+                        </button> */}
 
-                        <button
-                          className="bg-red-300 mt-3  mx-2 py-2 px-auto w-[120px] rounded-full shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
-                          onClick={() => handleCancelOrder(order._id)}
-                        >
-                          ยกเลิกคำสั่งซื้อ
-                        </button>
+                       
                       </div>
                     </div>
                   </div>
@@ -370,8 +382,8 @@ const PrepareOrder = ({ idUser }) => {
 
               {order.approve ? (
                 <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-1">
-                  สถานะการชำระเงิน :{" "}
-                  {order.payment ? "ชำระเงินเรียบร้อย" : "รอการชำระเงิน"}
+                  สถานะ : :{" "}
+                  {order.sendproduct ? "จัดส่งสินค้าเรียบร้อยแล้ว" : "รอการจัดส่ง"}
                 </p>
               ) : (
                 ""
@@ -389,19 +401,14 @@ const PrepareOrder = ({ idUser }) => {
                   </button>
                 </div>
                 <div className="flex justify-end ">
-                  <button
-                    className="bg-green-400 mt-3 mx-2 py-2 px-auto w-[150px] rounded-full shadow-xl hover:bg-green-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
-                    onClick={() => handlePanddingOrder(order._id)}
+                  {/* <button
+                    className="bg-green-400 mt-3 mx-2 py-2 px-auto w-[180px] rounded-full shadow-xl hover:bg-green-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
+                    onClick={() => handleSendOrder(order._id)}
                   >
-                    สินค้าเสร็จแล้ว
-                  </button>
+                    ส่งสินค้าเรียบร้อยแล้ว
+                  </button> */}
 
-                  <button
-                    className="bg-red-300 mt-3  mx-2 py-2 px-auto w-[120px] rounded-full shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
-                    onClick={() => handleCancelOrder(order._id)}
-                  >
-                    ยกเลิกคำสั่งซื้อ
-                  </button>
+                 
                 </div>
               </div>
             </div>
@@ -411,4 +418,4 @@ const PrepareOrder = ({ idUser }) => {
     </>
   );
 };
-export default PrepareOrder;
+export default ReceiveOrder;

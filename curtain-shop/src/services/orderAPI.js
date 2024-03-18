@@ -1,5 +1,15 @@
 import axios from "axios";
 const OrderAPI = {
+  getOrderAll: async () => {
+    return axios
+      .get(`${process.env.REACT_APP_API}/customer/all/order`)
+      .then((response) => response.data)
+      .catch((error) => {
+        console.error(error);
+        throw error;
+      });
+  },
+
   getOrderApprove: async () => {
     return axios
       .get(`${process.env.REACT_APP_API}/customer/all/order/approve`)

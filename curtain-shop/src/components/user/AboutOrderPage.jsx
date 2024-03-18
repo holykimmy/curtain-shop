@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../Navbar";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { BsPinFill } from "react-icons/bs";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
@@ -10,6 +10,7 @@ import WaitForPayment from "./about-order/waitforpayment";
 import PrepareOrder from "./about-order/prepareorder";
 import RecieveOrder from "./about-order/receiveorder";
 import CompleteOrder from "./about-order/completeorder";
+import CancelOrder from "./about-order/cancelled";
 
 import customerAPI from "../../services/customerAPI";
 function AboutOrderPage() {
@@ -30,18 +31,20 @@ function AboutOrderPage() {
     address: "",
   });
 
-  const [selectedButton, setSelectedButton] = useState("waitPayment"); // เริ่มต้นที่รอการชำระ
+  const { selectedButton } = useParams();
 
   const renderContent = () => {
     switch (selectedButton) {
-      case 'waitPayment':
-        return <WaitForPayment idUser={idUser}/>;
-      case 'prepareDelivery':
-        return <PrepareOrder idUser={idUser}/>
-      case 'pendingDelivery':
-        return <RecieveOrder idUser={idUser}/>
-      case 'completed':
-        return <CompleteOrder idUser={idUser}/>
+      case "waitPayment":
+        return <WaitForPayment idUser={idUser} />;
+      case "prepareDelivery":
+        return <PrepareOrder idUser={idUser} />;
+      case "receiveorder":
+        return <RecieveOrder idUser={idUser} />;
+      case "completed":
+        return <CompleteOrder idUser={idUser} />;
+      case "cancelled":
+        return <CancelOrder idUser={idUser} />;
       default:
         return null;
     }
@@ -196,44 +199,52 @@ function AboutOrderPage() {
         userName={userName}
         idUser={idUser}
       ></Navbar>{" "}
-      <div class="titlea bg-brown-bg  w-full  h-full py-1 shadow-md">
+      <div class="titlea bg-brown-bg  h-full py-1 shadow-md">
         <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-9 xl:h-9 text-b-font"></BsPinFill>
         <h5 className=" inline-block text-lg md:text-xl xl:text-2xl text-b-font  pl-4 p-2 my-1">
           การซื้อของฉัน
         </h5>
       </div>
-      <div className="flex justify-center">
+      <div className="flex justify-center flex-nowrap overflow-x-auto">
         <button
-          className={`bg-gray-200 w-[200px] shadow-md hover:bg-gray-400 hover:text-lg hover:shadow-2xl text-center text-base text-brown-600 my-4 p-2 ${
+          className={`bg-gray-200 w-[200px] shadow-md hover:bg-gray-400 hover:text-white  hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 ${
             selectedButton === "waitPayment" ? "bg-gray-400" : ""
           }`}
-          onClick={() => setSelectedButton("waitPayment")}
+          onClick={() => navigate("/about-order/waitPayment")}
         >
-          รอการต้องชำระ
+          รอการชำระ
         </button>
         <button
-          className={`bg-gray-200 w-[200px] shadow-md hover:bg-gray-400 hover:text-lg hover:shadow-2xl text-center text-base text-brown-600 my-4 p-2 ${
+          className={`bg-gray-200 w-[200px] shadow-md hover:bg-gray-400 hover:text-white  hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 ${
             selectedButton === "prepareDelivery" ? "bg-gray-400" : ""
           }`}
-          onClick={() => setSelectedButton("prepareDelivery")}
+          onClick={() => navigate("/about-order/prepareDelivery")}
         >
-          เตรีมการจัดส่ง
+          กำลังดำเนินการ
         </button>
         <button
-          className={`bg-gray-200 w-[200px] shadow-md hover:bg-gray-400 hover:text-lg hover:shadow-2xl text-center text-base text-brown-600 my-4 p-2 ${
-            selectedButton === "pendingDelivery" ? "bg-gray-400" : ""
+          className={`bg-gray-200 w-[200px] shadow-md hover:bg-gray-400 hover:text-white  hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 ${
+            selectedButton === "receiveorder" ? "bg-gray-400" : ""
           }`}
-          onClick={() => setSelectedButton("pendingDelivery")}
+          onClick={() => navigate("/about-order/receiveorder")}
         >
           ที่ต้องได้รับ
         </button>
         <button
-          className={`bg-gray-200 w-[200px] shadow-md hover:bg-gray-400 hover:text-lg hover:shadow-2xl text-center text-base text-brown-600 my-4 p-2 ${
+          className={`bg-gray-200 w-[200px] shadow-md hover:bg-gray-400 hover:text-white  hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 ${
             selectedButton === "completed" ? "bg-gray-400" : ""
           }`}
-          onClick={() => setSelectedButton("completed")}
+          onClick={() => navigate("/about-order/completed")}
         >
           สำเร็จ
+        </button>
+        <button
+          className={`bg-gray-200 w-[200px] shadow-md hover:bg-gray-400 hover:text-white  hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 ${
+            selectedButton === "cancelled" ? "bg-gray-400" : ""
+          }`}
+          onClick={() => navigate("/about-order/cancelled")}
+        >
+          ยกเลิกแล้ว
         </button>
       </div>
       <div className="">{renderContent()}</div>
