@@ -9,9 +9,11 @@ import axios from "axios";
 import Footer from "../Footer";
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import Navbar from "../Navbar";
+import customerAPI from "../../services/customerAPI";
 
 function EditAddressPage() {
-  const { _id } = useParams();
+  const { id } = useParams();
+  console.log("id", id);
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState(null);
@@ -38,6 +40,7 @@ function EditAddressPage() {
     tell: "",
     address: "",
   });
+
   useEffect(() => {
     const authToken = localStorage.getItem("token");
 
@@ -119,22 +122,6 @@ function EditAddressPage() {
   });
 
   useEffect(() => {
-    const fetchAddressData = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API}/customer/get-address/${idUser}/${_id}`
-        );
-        setAddressData(response.data);
-      } catch (error) {
-        console.error(error);
-        // Handle error
-      }
-    };
-
-    fetchAddressData();
-  }, [_id]);
-
-  useEffect(() => {
     if (window.jQuery && window.jQuery.Thailand) {
       window.jQuery.Thailand({
         $district: window.jQuery("#sub_district"),
@@ -173,6 +160,34 @@ function EditAddressPage() {
     }));
   };
 
+  const [mydata, setMydata] = useState({});
+  useEffect(() => {
+    customerAPI
+      .getAddressById(id)
+      .then((data) => {
+        setMydata(data);
+      })
+      .catch((err) => {
+        console.error("error", err);
+      });
+  }, []);
+
+  console.log(mydata);
+
+  useEffect(() => {
+    if (mydata) {
+      setAddress({
+        name: mydata.name,
+        tell: mydata.tell,
+        houseNo: mydata.houseNo,
+        sub_district: mydata.sub_district,
+        district: mydata.district,
+        province: mydata.province,
+        postcode: mydata.postcode,
+      });
+    }
+  }, [mydata]);
+
   const inputValue = (name) => (event) => {
     const value = event.target.value;
     console.log(name, "=", value);
@@ -192,11 +207,8 @@ function EditAddressPage() {
         postcode: address.postcode,
       };
 
-      const response = await axios.put(
-        `${process.env.REACT_APP_API}/customer/update-address/${idUser}/${_id}`,
-        { newAddress: updatedAddress }
-      );
-
+      const response = await customerAPI.updateAddress(id, updatedAddress);
+      console.log(response);
       if (response.status === 200) {
         // แสดงข้อความยืนยันการเปลี่ยนแปลงที่อยู่
         Swal.fire({
@@ -236,66 +248,6 @@ function EditAddressPage() {
     }
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     // Update address based on selected autocomplete values
-  //     const updatedAddress = {
-  //       houseNo: document.getElementById("houseNo").value,
-  //       sub_district: document.getElementById("sub_district").value,
-  //       district: document.getElementById("district").value,
-  //       province: document.getElementById("province").value,
-  //       postcode: document.getElementById("postcode").value,
-  //     };
-
-  //     // Send updated address to the API
-  //     const response = await axios.put(
-  //       `${process.env.REACT_APP_API}/customer/update-address/${idUser}/${_id}`,
-  //       {
-  //         newAddress: updatedAddress, // Send the updated address in the body of the request
-  //       }
-  //     );
-
-  //     // Handle response based on status
-  //     if (response.status === 200) {
-  //       // Show confirmation message
-  //       Swal.fire({
-  //         title: "ยืนยันการเปลี่ยนแปลงที่อยู่",
-  //         text: "คุณต้องการเปลี่ยนแปลงที่อยู่ใช่หรือไม่?",
-  //         icon: "question",
-  //         showCancelButton: true,
-  //         confirmButtonColor: "#3085d6",
-  //         cancelButtonColor: "#d33",
-  //         confirmButtonText: "ใช่",
-  //         cancelButtonText: "ไม่ใช่",
-  //       }).then((result) => {
-  //         if (result.isConfirmed) {
-  //           // Show success message
-  //           Swal.fire({
-  //             icon: "success",
-  //             title: "บันทึกที่อยู่สำเร็จ",
-  //             text: "ข้อมูลที่อยู่ถูกบันทึกเรียบร้อยแล้ว",
-  //           });
-  //         }
-  //       });
-  //     } else {
-  //       // Show error message
-  //       Swal.fire({
-  //         icon: "error",
-  //         title: "บันทึกที่อยู่ไม่สำเร็จ",
-  //         text: "ไม่สามารถบันทึกที่อยู่ได้ในขณะนี้ กรุณาลองใหม่ภายหลัง",
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     // Show error message
-  //     Swal.fire({
-  //       icon: "error",
-  //       text: error.response.data.error,
-  //     });
-  //   }
-  // };
-
   return (
     <>
       <Navbar
@@ -306,17 +258,30 @@ function EditAddressPage() {
       ></Navbar>
 
       <div className=" w-full  flex h-screen items-center justify-center bg-brown-bg ">
-        <div class="container w-11/12 sm:w-96 mx-auto rounded-[18px] shadow px-8 pt-6 pb-8 mb-4 bg-white ">
+        <div class=" mx-4 items-center w-11/12 sm:w-96  rounded-[18px] shadow px-8 pt-6 pb-8 mb-4 bg-white ">
           <p class="text-center text-2xl text-b-font font-bold">เพิ่มที่อยู่</p>
-          {/* {JSON.stringify(address)} */}
-          <p>{addressData.houseNo}</p>
-          <p>{addressData.sub_district}</p>
-          <p>{addressData.district}</p>
-          <p>{addressData.province}</p>
-          <p>{addressData.postcode}</p>
 
           <form onSubmit={handleSubmit} class="bg-white ">
             <p class="text-browntop mt-3 ml-2 ">ที่อยู่</p>
+            <input
+              className="m-auto mt-2 mb-3 items-center shadow appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="houseNo"
+              type="text"
+              value={address.name}
+              required
+              onChange={inputValue("name")}
+              placeholder="ชื่อ - นามสกุล"
+            />
+            <input
+              className="m-auto mt-2 mb-3 items-center shadow appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="houseNo"
+              type="text"
+              value={address.tell}
+              required
+              onChange={inputValue("tell")}
+              placeholder="เพิ่มเบอร์มือถือ"
+            />
+
             <input
               className="m-auto mt-2 mb-3 items-center shadow appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="houseNo"
@@ -335,7 +300,7 @@ function EditAddressPage() {
               type="text"
               value={address.sub_district}
               required
-              onChange={handleChange}
+              onChange={inputValue("sub_district")}
               placeholder="แขวง/ตำบล"
             />
 
@@ -346,7 +311,7 @@ function EditAddressPage() {
               value={address.district}
               type="text"
               required
-              onChange={handleChange}
+              onChange={inputValue("district")}
               placeholder="เขต/อำเภอ"
             />
 
@@ -357,7 +322,7 @@ function EditAddressPage() {
               type="text"
               value={address.province}
               required
-              onChange={handleChange}
+              onChange={inputValue("province")}
               placeholder="จังหวัด"
             />
             <p class="text-browntop mt-3 ml-2 ">รหัสไปรษณีย์</p>
@@ -367,7 +332,7 @@ function EditAddressPage() {
               type="text"
               value={address.postcode}
               required
-              onChange={handleChange}
+              onChange={inputValue("postcode")}
               placeholder="10000"
             />
 

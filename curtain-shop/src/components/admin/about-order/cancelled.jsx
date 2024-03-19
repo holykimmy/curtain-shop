@@ -304,6 +304,7 @@ const CancelOrder = ({ idUser }) => {
               <hr className="w-full mt-4 mb-2 border-gray-300" />
             </>
           )}
+
       {userOrder.map((order) => (
         <div key={order._id} className="flex justify-center">
           <div className="flex justify-between w-[97%] sm:w-[97%] md:w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">

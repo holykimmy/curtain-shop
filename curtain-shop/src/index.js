@@ -46,6 +46,15 @@ import Equipment from "./components/user/product/Equipment";
 import DashboardPage from "./components/admin/DashboardPage";
 import ReceiptPage from "./components/admin/ReceiptPage";
 import QuotationPage from "./components/admin/QuotationPage";
+import HistoryQuotationPage from "./components/admin/historyQuotation";
+import HistoryInvoicePage from "./components/admin/historyInvoice";
+import UpdateQuotationPage from "./components/admin/updateQuotation";
+import UpdateInvoicePage from "./components/admin/updateInvoice";
+import ReceptDetailQuotation from "./components/admin/receptDetailQuotation";
+import ReceptDetailInvoice from "./components/admin/receptDetailInvoice";
+
+
+
 import InvoicePage from "./components/admin/InvoicePage";
 import AddProductPage from "./components/admin/AddProductPage";
 import AddBrandPage from "./components/admin/AddBrandPage";
@@ -78,7 +87,7 @@ const router = createBrowserRouter([
   { path: "/products", element: <ProductsPage /> },
   { path: "/account", element: <AccountPage /> },
   { path: "/address", element: <AddressPage /> },
-  { path: "/edit-address/:_id", element: <EditAddressPage /> },
+  { path: "/edit-address/:id", element: <EditAddressPage /> },
 
   { path: "/product-detail/:productId", element: <ProductDetail /> },
   { path: "/category", element: <CategoryPage /> },
@@ -112,6 +121,15 @@ const router = createBrowserRouter([
   { path: "/receipt", element: <ReceiptPage /> },
   { path: "/quotation", element: <QuotationPage /> },
   { path: "/invoice", element: <InvoicePage /> },
+  { path: "/quotation/all", element: <HistoryQuotationPage /> },
+  { path: "/invoice/all", element: <HistoryInvoicePage /> },
+  { path: "/quotation-detail/:id", element: <ReceptDetailQuotation />},
+  { path: "/invoice-detail/:id", element: <ReceptDetailInvoice />},
+  { path: "/quotation-update/:id", element: <UpdateQuotationPage />},
+  { path: "/invoice-update/:id", element: <UpdateInvoicePage />},
+
+
+
   { path: "/add-product", element: <AddProductPage /> },
   { path: "/add-brand", element: <AddBrandPage /> },
   { path: "/add-category", element: <CategoryProduct /> },

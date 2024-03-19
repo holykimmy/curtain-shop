@@ -31,7 +31,7 @@ exports.create = (req, res) => {
     return res.status(400).json({ error: "กรุณากรอกลายละเอียดของสินค้า" });
   } else if (!data.p_width) {
     return res.status(400).json({ error: "กรุณาระบุความกว้างของหน้าผ้า" });
-  }else if (!data.price) {
+  } else if (!data.price) {
     return res.status(400).json({ error: "กรุณาระบุราคาสินค้า" });
   }
 
@@ -65,7 +65,7 @@ exports.create = (req, res) => {
           color: data.color,
           detail: data.detail,
           price: data.price,
-          p_width :data.p_width,
+          p_width: data.p_width,
           image: req.file.filename,
           slug,
         });
@@ -139,7 +139,12 @@ exports.searchVis = (req, res) => {
   const { name } = req.query;
   // Use a regular expression to perform a case-insensitive partial match on both first and last names
   const regex = new RegExp(name, "i");
-  Products.find({ $and: [{ $or: [{ name: regex }, { brand: regex }, { p_type: regex }] }, { visibility: true }] })
+  Products.find({
+    $and: [
+      { $or: [{ name: regex }, { brand: regex }, { p_type: regex }] },
+      { visibility: true },
+    ],
+  })
     .exec()
     .then((products) => {
       res.json(products);
@@ -149,7 +154,6 @@ exports.searchVis = (req, res) => {
       res.status(500).json({ error: err.message });
     });
 };
-
 
 exports.getFromBrand = (req, res) => {
   const { name } = req.query;
@@ -181,7 +185,6 @@ exports.getFromBrandVis = (req, res) => {
     });
 };
 
-
 exports.updateProduct = (req, res) => {
   const newData = req.body;
   console.log(newData);
@@ -201,9 +204,9 @@ exports.updateProduct = (req, res) => {
       .exec()
       .then((product) => {
         if (product && product.image) {
-          console.log("log /api/images/",product.image);
+          console.log("log /api/images/", product.image);
           console.log("access");
-         
+
           fs.unlink("./images/" + product.image, (err) => {
             if (err) {
               console.error("Error deleting old image:", err);
@@ -259,8 +262,8 @@ exports.updateVisibility = (req, res) => {
   const productId = req.params.productId;
 
   // ตรวจสอบค่าที่ส่งมา
-  if (typeof visibility !== 'boolean') {
-    return res.status(400).json({ error: 'ค่าสถานะไม่ถูกต้อง' });
+  if (typeof visibility !== "boolean") {
+    return res.status(400).json({ error: "ค่าสถานะไม่ถูกต้อง" });
   }
 
   // ค้นหาและอัปเดตข้อมูลสินค้าเฉพาะฟิลด์ visibility
@@ -268,16 +271,15 @@ exports.updateVisibility = (req, res) => {
     .exec()
     .then((updatedProduct) => {
       if (!updatedProduct) {
-        return res.status(404).json({ error: 'ไม่พบสินค้าที่ต้องการอัปเดต' });
+        return res.status(404).json({ error: "ไม่พบสินค้าที่ต้องการอัปเดต" });
       }
       res.json(updatedProduct);
     })
     .catch((err) => {
-      console.error('Error updating visibility:', err);
-      res.status(500).json({ error: 'เกิดข้อผิดพลาดในการอัปเดตสถานะสินค้า' });
+      console.error("Error updating visibility:", err);
+      res.status(500).json({ error: "เกิดข้อผิดพลาดในการอัปเดตสถานะสินค้า" });
     });
 };
-
 
 exports.getProductById = (req, res) => {
   const productId = req.params.productId;

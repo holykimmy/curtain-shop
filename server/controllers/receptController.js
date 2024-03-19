@@ -2,35 +2,211 @@
 const mongoose = require("mongoose");
 const slugify = require("slugify");
 const { v4: uuidv4 } = require("uuid");
-const Quotation = require("../models/quotation");
+const Recept = require("../models/recept");
 const fs = require("fs");
 const path = require("path");
 const slugifyMultilingual = (text) =>
   slugify(text, { lower: true, locale: "th" });
 
+exports.createQuotation = (req, res) => {
+  const data = req.body;
+  console.log(data);
+  Recept.findOne({
+    fullname: data.fullname,
+    subject: data.subject,
+    address: data.address,
+    deliveryDate: data.deliveryDate,
+    quotation: true,
+  })
+    .exec()
+    .then((existingRecept) => {
+      if (existingRecept) {
+        return res
+          .status(400)
+          .json({ error: "ข้อมูลที่ต้องการบันทึกมีอยู่แล้ว" });
+      } else {
+        return Recept.create({
+          fullname: data.fullname,
+          subject: data.subject,
+          address: data.address,
+          rows: data.rows,
+          deliveryDate: data.deliveryDate,
+          totalPrice: data.totalPrice,
 
-  exports.createQuotation = async (req, res) => {
-    try {
-      const data = req.body;
-  
-      // Create a new Quotation document
-      const newQuotation = new Quotation({
-        f_name: data.f_name,
-        l_name: data.l_name,
-        username: data.username,
-        email: data.email,
-        tell: data.tell,
-        address: data.address,
-        product: data.product
-      });
-  
-      // Save the new Quotation document
-      const savedQuotation = await newQuotation.save();
-  
-      res.status(201).json(savedQuotation); // Respond with the saved Quotation document
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Server Error' });
-    }
-  };
-  
+          quotation: true,
+        });
+      }
+    })
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ error: "server error" });
+    });
+};
+
+exports.createInvoice = (req, res) => {
+  const data = req.body;
+  console.log(data);
+
+  Recept.findOne({
+    fullname: data.fullname,
+    subject: data.subject,
+    address: data.address,
+    deliveryDate: data.deliveryDate,
+
+    invoice: true,
+  })
+    .exec()
+    .then((existingRecept) => {
+      if (existingRecept) {
+        return res
+          .status(400)
+          .json({ error: "ข้อมูลที่ต้องการบันทึกมีอยู่แล้ว" });
+      } else {
+        return Recept.create({
+          fullname: data.fullname,
+          subject: data.subject,
+          address: data.address,
+          rows: data.rows,
+          deliveryDate: data.deliveryDate,
+          totalPrice: data.totalPrice,
+
+          invoice: true,
+        });
+      }
+    })
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ error: "server error" });
+    });
+};
+
+exports.updateRecept = (req, res) => {
+  const { id } = req.params;
+  const newData = req.body;
+
+  Recept.findByIdAndUpdate(id, newData, { new: true })
+    .exec()
+    .then((updatedRecept) => {
+      if (!updatedRecept) {
+        return res.status(404).json({ error: "ไม่พบข้อมูล Recept" });
+      }
+      res.json(updatedRecept);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ error: "server error" });
+    });
+};
+
+exports.updateToInvoice = (req, res) => {
+  const { id } = req.params;
+
+  const newData = { quotation: false, invoice: true };
+
+  Recept.findByIdAndUpdate(id, newData, { new: true })
+    .exec()
+    .then((updatedRecept) => {
+      if (!updatedRecept) {
+        return res.status(404).json({ error: "ไม่พบข้อมูล Recept" });
+      }
+      res.json(updatedRecept);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ error: "server error" });
+    });
+};
+
+exports.updateToQuotation = (req, res) => {
+  const { id } = req.params;
+
+  const newData = { quotation: true, invoice: false };
+
+  Recept.findByIdAndUpdate(id, newData, { new: true })
+    .exec()
+    .then((updatedRecept) => {
+      if (!updatedRecept) {
+        return res.status(404).json({ error: "ไม่พบข้อมูล Recept" });
+      }
+      res.json(updatedRecept);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ error: "server error" });
+    });
+};
+
+
+exports.deleteRecept = (req, res) => {
+  const { id } = req.params;
+
+  Recept.findByIdAndDelete(id)
+    .exec()
+    .then((deletedRecept) => {
+      if (!deletedRecept) {
+        return res.status(404).json({ error: "ไม่พบข้อมูล Recept" });
+      }
+      res.json(deletedRecept);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ error: "server error" });
+    });
+};
+
+exports.getAllQuotation = (req, res) => {
+  Recept.find({ quotation: true })
+    .exec()
+    .then((recepts) => {
+      res.json(recepts);
+    })
+    .catch((err) => {
+      res.status(500).jon({ error: err.message });
+    });
+};
+
+exports.getAllInvoice = (req, res) => {
+  Recept.find({ invoice: true })
+    .exec()
+    .then((recepts) => {
+      res.json(recepts);
+    })
+    .catch((err) => {
+      res.status(500).jon({ error: err.message });
+    });
+};
+
+exports.getReceptById = (req, res) => {
+  const id = req.params.id; // รับ ID จาก parameter ของ request
+  Recept.findById(id)
+    .exec()
+    .then((recept) => {
+      if (!recept) {
+        return res.status(404).json({ error: "ไม่พบข้อมูลใบเสนอราคา" });
+      }
+      res.json(recept);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ error: "เกิดข้อผิดพลาดบนเซิร์ฟเวอร์" });
+    });
+};
+
+exports.getReceptByName = (req, res) => {
+  const name = req.query.name;
+  const regex = new RegExp(name, "i");
+  Recept.find({ fullname: regex })
+    .exec()
+    .then((recepts) => {
+      res.json(recepts);
+    })
+    .catch((err) => {
+      res.status(500).jon({ error: err.message });
+    });
+};

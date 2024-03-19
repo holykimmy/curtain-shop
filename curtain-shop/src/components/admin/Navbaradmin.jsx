@@ -143,7 +143,7 @@ function ComplexNavbar() {
           <Typography
             as="a"
             href="/"
-            className="mr-4 ml-2 text-2xl font-Kanit cursor-pointer py-1.5 font-medium"
+            className="mr-4 ml-2 text-sm sm:text-sm md:text-xl font-Kanit cursor-pointer py-1.5 font-medium"
           >
             Curtain Shop
           </Typography>

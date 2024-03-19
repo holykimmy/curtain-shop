@@ -11,6 +11,8 @@ const getProductById = async (productId) => {
   }
 };
 
+
+
 const productAPI = {
   getProductById,
 
@@ -65,6 +67,16 @@ const productAPI = {
     return axios
       .get(`${process.env.REACT_APP_API}/category/?slug=${selectedBrand}`)
       .then((response) => response.data.p_type || [])
+      .catch((error) => {
+        console.error("Error fetching p_type options:", error);
+        throw error;
+      });
+  },
+
+  getAllProducts : () => {
+    return axios
+      .get(`${process.env.REACT_APP_API}/product/all`)
+      .then((response) => response.data)
       .catch((error) => {
         console.error("Error fetching p_type options:", error);
         throw error;

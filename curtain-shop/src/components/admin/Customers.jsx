@@ -11,19 +11,17 @@ function Customers() {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
-  const fetchData = async () => {
-    try {
-      const customers = await CustomerAPI.getAllCustomer();
-      setData(customers);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  console.log(data);
   useEffect(() => {
+    const fetchData = () => {
+      CustomerAPI.getAllCustomer()
+        .then((orderData) => {
+          setData(orderData);
+        })
+        .catch((err) => {
+          console.error("error", err);
+        });
+    };
     fetchData();
-    const interval = setInterval(fetchData, 5000);
-    return () => clearInterval(interval);
   }, []);
 
   const handleSearch = async () => {
@@ -73,7 +71,10 @@ function Customers() {
             <div key={product._id} className="flex justify-center"></div>
           ))
         ) : (
-          <p>ไม่พบข้อมูล</p>
+          searchTerm &&  <>
+        <p className="text-sm text-gray-600">ไม่พบข้อมูล</p>
+        <hr className="w-full mt-4 mb-2 border-gray-300" />
+      </>
         )}
         {data.map((customer) => (
           <div key={customer._id} className="flex justify-center">
@@ -89,26 +90,33 @@ function Customers() {
                 <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
                   เบอร์โทรศัพท์ : {customer.tell}
                 </p>
-                <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                {/* <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
                   ที่อยู่ :{" "}
-                </p>
+                </p> */}
                 {customer.address && customer.address.length > 0 && (
                   <>
-                    <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                      บ้านเลขที่ : {customer.address[0].houseNo},{" "}
-                    </p>
-                    <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                      แขวง/ตำบล : {customer.address[0].sub_district},{" "}
-                    </p>
-                    <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                      เขต/อำเภอ : {customer.address[0].district},{" "}
-                    </p>
-                    <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                      จังหวัด : {customer.address[0].sub_district},{" "}
-                    </p>
-                    <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                      รหัสไปรษณีย์ : {customer.address[0].postcode}
-                    </p>
+                    {customer.address.map((address, index) => (
+                      <div key={index} className="mt-4">
+                        <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                          ที่อยู่ {index + 1} :{" "}
+                        </p>
+                        <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                          บ้านเลขที่ : {address.houseNo}
+                        </p>
+                        <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                          แขวง/ตำบล : {address.sub_district}
+                        </p>
+                        <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                          เขต/อำเภอ : {address.district}
+                        </p>
+                        <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                          จังหวัด : {address.province}
+                        </p>
+                        <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                          รหัสไปรษณีย์ : {address.postcode}
+                        </p>
+                      </div>
+                    ))}
                   </>
                 )}
               </div>

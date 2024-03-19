@@ -1,127 +1,244 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbaradmin from "./Navbaradmin";
 import { LuReceipt } from "react-icons/lu";
 import "../../App.css";
 import CreatableSelect from "react-select/creatable";
 import type { DatePickerProps } from "antd";
 import { DatePicker, Space } from "antd";
+import moment from "moment";
+import productAPI from "../../services/productAPI";
+import receptAPI from "../../services/receptAPI";
+import Swal from "sweetalert2";
 
-const TABLE_HEAD = ["ลำดับ", "รายการ", "จำนวน", "ราคาต่อหน่วย", "จำนวนเงิน"];
+const TABLE_HEAD = [
+  "ลำดับ",
+  "รายการ",
+  "เพิ่มเติม",
+  "ขนาด",
+  "จำนวน",
+  "ราคาต่อหน่วย",
+  "ความกว้างหน้าผ้า",
+  "รวม",
+];
 
 const classes = "p-4 border-b border-blue-gray-50 text-gray-500";
 
-function QuotationPage() {
+function QuatationPage() {
   //append
   const [rows, setRows] = useState([
     {
-      no: "1",
-      list: "Manager",
-      quantity: "5",
-      unitprice: "5",
-      total_m: "50",
+      list: "",
+      detail: "",
+      counts: 0,
+      width: 0,
+      height: 0,
+      unitprice: 0,
+      p_width: 0,
+      railprice: 0,
+      total_m: 0,
     },
   ]);
 
-  const [quantities, setQuantities] = useState([5]); // An array to store each row's quantity
+   // คำนวณ totalPrice
+   const totalPrice = rows.reduce((accumulator, currentRow) => {
+    // แปลงค่า total_m จาก string เป็น number แล้วบวกเพิ่มใน accumulator
+    return accumulator + parseFloat(currentRow.total_m || 0);
+  }, 0); // กำหนดค่าเริ่มต้นให้ accumulator เป็น 0
+
+
+  const [state, setState] = useState({
+    fullname: "",
+    subject: "",
+    address: "",
+    totalPrice: 0 ,
+  });
+
+  const [data, setData] = useState([]);
+  const [allOptions, setAllOptions] = useState([]);
+  const [filteredOptions, setFilteredOptions] = useState([]);
+  const { fullname, subject, address, count, product } = state;
+
+  const inputValue = (name) => (event) => {
+    const value = event.target.value;
+    console.log(name, "=", value);
+    setState((prevState) => ({ ...prevState, [name]: value }));
+  };
+
+  const handleSearch = (query) => {
+    const filtered = data.filter((product) =>
+      product.name.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredOptions(filtered);
+  };
+
   const handleAppendRow = () => {
     const newRow = {
-      no: String(rows.length + 1), // Generate a unique number for the new row
       list: "",
-      quantity: "0", // Initialize to 0 or any default value
-      unitprice: "",
-      total_m: "",
+      detail: "",
+      counts: 0,
+      width: 0,
+      height: 0,
+      unitprice: 0,
+      p_width: 0,
+      railprice: 0,
+      total_m: 0,
     };
-
     setRows([...rows, newRow]);
-    setQuantities([...quantities, 0]); // Initialize quantity for the new row
   };
-  //append
 
-  //quantities
-  const handleInputChange = (index, key, value) => {
+  const handleDeleteRow = (index) => {
     const updatedRows = [...rows];
-    updatedRows[index][key] = value;
+    updatedRows.splice(index, 1);
     setRows(updatedRows);
   };
 
-  const handleQuantityChange = (index, value) => {
-    const updatedQuantities = [...quantities];
-    updatedQuantities[index] = value;
-    setQuantities(updatedQuantities);
+  useEffect(() => {
+    const fetchData = () => {
+      productAPI
+        .getAllProducts()
+        .then((products) => {
+          setData(products);
+        })
+        .catch((err) => {
+          console.error("error", err);
+        });
+    };
+    fetchData();
+  }, []);
+
+  console.log("tesjgfahj");
+
+  //append
+
+  const handleInputChange = (index, key, value) => {
+    if (index < rows.length) {
+      const updatedRows = [...rows];
+      updatedRows[index][key] = value;
+
+      updatedRows[index].unitprice =
+        data.find((product) => product.name === value)?.price || 0;
+
+      updatedRows[index].p_width =
+        data.find((product) => product.name === value)?.p_width || 0;
+
+      updatedRows[index].railprice =
+        data.find((product) => product.name === value)?.railprice || 0;
+      //ตั้งค่า unitprice, p_width, และ railprice ใหม่
+
+      setRows(updatedRows);
+    }
   };
-  //quantities
-
-  //inputsearch name
-  const [options, setOptions] = useState([
-    {
-      fname: "Kimmy",
-      lname: "Test",
-      label: "Kimmy Test",
-      subject: "การติดตั้ง",
-      address: "the regent home 202",
-    },
-    {
-      fname: "Pla",
-      lname: "Test2",
-      label: "Pla Test2",
-      subject: "รายการสั่งซื้อ",
-      address: "the line 506",
-    },
-    // ...other initial options
-  ]);
-
-  const [selectedOptions, setSelectedOptions] = useState([
-    {
-      fname: "",
-      lname: "",
-      label: "",
-      subject: "",
-      address: "",
-    },
-  ]);
-
-  //options selected
-  const handleSelectChange = (index, newValue) => {
-    handleInputChange(index, "list", newValue.label); 
-    // Handle additional fields
-    handleInputChange(index, "subject", newValue.subject);
-    handleInputChange(index, "address", newValue.address);// Assuming 'list' is the key you want to update
-
-    const updatedSelectedOptions = [...selectedOptions];
-    updatedSelectedOptions[index].fname = newValue.fname;
-    updatedSelectedOptions[index].lname = newValue.lname;
-    updatedSelectedOptions[index].label = newValue.label;
-    updatedSelectedOptions[index].subject = newValue.subject;
-    updatedSelectedOptions[index].address = newValue.address;
-    setSelectedOptions(updatedSelectedOptions);
+  const handleDetailChange = (index, value) => {
+    const updatedRows = [...rows]; // สร้างคัดลอกของ rows
+    updatedRows[index].detail = value; // อัปเดตค่า width ใน index ที่กำหนด
+    setRows(updatedRows); // อัปเดต state ของ rows
   };
 
-  const handleCreateOption = (inputValue, index) => {
-    const names = inputValue.split(" ");
-    const fname = names[0];
-    const lname = names.slice(1).join(" ");
-    const newOption = { fname, lname, label: inputValue };
-    setOptions([...options, newOption]);
-
-    // handleInputChange(selectedOptions.length - 1, "label", inputValue);
-    handleInputChange(index, "list", inputValue);
-    handleInputChange(index, "subject", "");
-    handleInputChange(index, "address", "");
-
-    // setSelectedOptions([
-    //   ...selectedOptions.slice(0, selectedOptions.length - 1),
-    //   { fname, lname, label: inputValue , subject: "", address: ""  },
-    // ]);
-    const updatedSelectedOptions = [...selectedOptions];
-    updatedSelectedOptions[index] = newOption;
-    setSelectedOptions(updatedSelectedOptions);
+  const handleWidthChange = (index, value) => {
+    const updatedRows = [...rows]; // สร้างคัดลอกของ rows
+    updatedRows[index].width = value; // อัปเดตค่า width ใน index ที่กำหนด
+    setRows(updatedRows); // อัปเดต state ของ rows
   };
-  //options selected
-  //inputsearch name
+
+  const handleHeightChange = (index, value) => {
+    const updatedRows = [...rows]; // สร้างคัดลอกของ rows
+    updatedRows[index].height = value; // อัปเดตค่า height ใน index ที่กำหนด
+    setRows(updatedRows); // อัปเดต state ของ rows
+  };
+
+  const handleCountChange = (index, value) => {
+    const updatedRows = [...rows]; // สร้างคัดลอกของ rows
+    updatedRows[index].counts = value; // อัปเดตค่า counts ใน index ที่กำหนด
+    setRows(updatedRows); // อัปเดต state ของ rows
+
+    // เรียกใช้ฟังก์ชันที่คำนวณราคารวม
+    calculateTotalPrice(
+      index,
+      updatedRows[index].width,
+      updatedRows[index].height,
+      value
+    );
+  };
+
+  const calculateTotalPrice = (index, width, height, counts) => {
+    const selectedProduct = data.find(
+      (product) => product.name === rows[index].list
+    ); // หาสินค้าที่เลือก
+    if (selectedProduct) {
+      const priceValue = parseFloat(selectedProduct.price) || 0; // ค่าราคาต่อหน่วย
+      const totalPrice = parseFloat(counts) * priceValue; // คำนวณราคารวม
+      const updatedRows = [...rows]; // สร้างคัดลอกของ rows
+      updatedRows[index].total_m = totalPrice.toFixed(2); // กำหนดค่าราคารวมให้กับ index ที่กำหนด
+      setRows(updatedRows); // อัปเดต state ของ rows
+    }
+  };
 
   //date
-  const onChange: DatePickerProps["onChange"] = (date, dateString) => {
+  const [deliveryDate, setDeliveryDate] = useState(null); 
+
+  const onChangeDeliveryDate = (date, dateString) => {
     console.log(date, dateString);
+    setDeliveryDate(date); 
+  };
+
+  function disabledDate(current) {
+    return current && current < moment().endOf("day");
+  }
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!fullname) {
+      Swal.fire({
+        icon: "error",
+        text: "กรุณากรอก ชื่อ-นามสกุล",
+      });
+      return;
+    } else if (!subject) {
+      Swal.fire({
+        icon: "error",
+        text: "กรุณาระบุเรื่องที่จะเสนอ",
+      });
+    } else if (!address) {
+      Swal.fire({
+        icon: "error",
+        text: "กรุณาระบุที่อยู่",
+      });
+      return;
+    } else if (!deliveryDate) {
+      Swal.fire({ icon: "error", text: "กรุณาเลือกวันที่" });
+      return;
+    } else if (!rows) {
+      Swal.fire({ icon: "error", text: "กรุณากรอกข้อมูลที่ต้องการบันทึก" });
+      return;
+    }
+
+    const formData = {
+      fullname,
+      subject,
+      address,
+      rows,
+      deliveryDate: deliveryDate ? deliveryDate.format("YYYY-MM-DD") : null,
+      totalPrice: totalPrice.toFixed(2),
+    };
+    console.log(formData);
+    receptAPI
+      .createQuotation(formData)
+      .then((response) => {
+        Swal.fire({
+          text: "save",
+          icon: "success",
+        });
+      })
+      .catch((err) => {
+        Swal.fire({
+          icon: "error",
+          text: err.response.data.error,
+        });
+      });
+  };
+
+  const numberWithCommas = (x) => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
   return (
@@ -135,65 +252,47 @@ function QuotationPage() {
           </h5>
         </div>
 
-        <form class="mt-8">
+        <form onSubmit={handleSubmit} class="mt-8">
           <label className="ml-7 text-xl text-b-font">เรียนคุณ...</label>
-          {selectedOptions.map((row, index) => (
-            <div key={index} className="w-64 ml-5">
-              <CreatableSelect
-                options={options}
-                onChange={(newValue) => handleSelectChange(index, newValue)}
-                onCreateOption={(inputValue) =>
-                  handleCreateOption(inputValue, index)
-                }
-                value={options.find((option) => option.label === row.label)}
-                isSearchable={true}
-                placeholder=""
-              />
-              {/* {row.value && (
-                <div className="mt-2 text-gray-500"> {row.value}</div>
-              )} */}
-            </div>
-          ))}
+          <div>
+            {" "}
+            <input
+              class="appearance-none ml-5 w-64 border-gray-300 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="fullname"
+              type="text"
+              value={fullname}
+              onChange={inputValue("fullname")}
+              placeholder="ชื่อ-นามสกุล"
+            />
+          </div>
 
           <div class="h-5"></div>
           <label className="ml-7 text-xl text-b-font">เรื่อง...</label>
-          {selectedOptions.map((row, index) => (
-            <div key={index} className="w-64 ml-5">
-              <CreatableSelect
-                options={options}
-                onChange={(newValue) => handleSelectChange(index, newValue)}
-                onCreateOption={(inputValue) =>
-                  handleCreateOption(inputValue, index)
-                }
-                value={options.find((option) => option.subject === row.subject)}
-                isSearchable={true}
-                placeholder=""
-              />
-              {/* {row.value && (
-                <div className="mt-2 text-gray-500"> {row.value}</div>
-              )} */}
-            </div>
-          ))}
+          <div>
+            {" "}
+            <input
+              class="appearance-none ml-5 w-64 border-gray-300 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="subject"
+              type="text"
+              value={subject}
+              onChange={inputValue("subject")}
+              placeholder="ex. การสั่งตัดผ้าม่าน"
+            />
+          </div>
           <div className="w-64 ml-5"></div>
           <div class="h-5"></div>
           <label className="ml-7 text-xl text-b-font">ที่อยู่...</label>
-          {selectedOptions.map((row, index) => (
-            <div key={index} className="w-64 ml-5">
-              <CreatableSelect
-                options={options}
-                onChange={(newValue) => handleSelectChange(index, newValue)}
-                onCreateOption={(inputValue) =>
-                  handleCreateOption(inputValue, index)
-                }
-                value={options.find((option) => option.address === row.address)}
-                isSearchable={true}
-                placeholder=""
-              />
-              {/* {row.value && (
-                <div className="mt-2 text-gray-500"> {row.value}</div>
-              )} */}
-            </div>
-          ))}
+          <div>
+            {" "}
+            <input
+              class="appearance-none ml-5 w-64 border-gray-300 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="subject"
+              type="text"
+              value={address}
+              onChange={inputValue("address")}
+              placeholder="ที่อยู่..."
+            />
+          </div>
           <div className="w-64 ml-5"></div>
 
           <div class="h-5"></div>
@@ -202,9 +301,14 @@ function QuotationPage() {
           </label>
 
           <Space direction="vertical">
-            <DatePicker onChange={onChange} />
+            <DatePicker
+              onChange={onChangeDeliveryDate}
+              disabledDate={disabledDate}
+            />
           </Space>
+
           <div className="w-64 ml-5"></div>
+
           {/* table */}
           <div class="flex flex-col overflow-x-auto">
             <div class="sm:-mx-6 lg:-mx-8">
@@ -216,7 +320,6 @@ function QuotationPage() {
                         {TABLE_HEAD.map((head) => (
                           <th
                             key={head}
-                            // className="border-b border-blue-gray-100 bg-blue-gray-50 p-4 text-center"
                             scope="col"
                             class="px-6 py-4 border-b border-blue-gray-100 bg-blue-gray-50 p-4 text-base text-center text-gray-700"
                           >
@@ -228,8 +331,6 @@ function QuotationPage() {
 
                     <tbody>
                       {rows.map((row, index) => (
-                        // const isLast = index === TABLE_ROWS.length - 1;
-
                         <tr
                           class="border-b dark:border-neutral-500"
                           key={index}
@@ -239,7 +340,7 @@ function QuotationPage() {
                           </td>
                           <td class={classes}>
                             <select
-                              class=" border-gray-300 rounded w-[200px] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                              class="border-gray-300 rounded w-[200px] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                               type="text"
                               name="list"
                               value={row.list}
@@ -247,95 +348,116 @@ function QuotationPage() {
                                 handleInputChange(index, "list", e.target.value)
                               }
                             >
-                              <option>{row.list}</option>
-                              <option>Yes</option>
-                              <option>No</option>
-                              <option>Maybe</option>
+                              {data.map((item) => (
+                                <option key={item._id} value={item.name}>
+                                  {item.name}
+                                </option>
+                              ))}
                             </select>
                           </td>
                           <td class={classes}>
-                            <div className="flex">
-                              <button
-                                type="button"
-                                className="px-3 py-2 bg-gray-300 rounded-l text-gray-700 focus:outline-none focus:shadow-outline"
-                                onClick={() =>
-                                  handleQuantityChange(
-                                    index,
-                                    Math.max(0, quantities[index] - 1)
-                                  )
-                                }
-                              >
-                                -
-                              </button>
-                              <input
-                                className="border border-gray-300 w-[50px] md:w-full text-center py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                type="number"
-                                id={`quantity-${index}`}
-                                name={`quantity-${index}`}
-                                value={quantities[index]}
-                                onChange={(e) =>
-                                  handleQuantityChange(
-                                    index,
-                                    parseInt(e.target.value)
-                                  )
+                            <div className="flex w-[250px]">
+                              <textarea
+                                className="border mx-1 rounded border-gray-300 w-[50px] md:w-full text-left py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                type="text"
+                                id={`detail-${index}`}
+                                name={`detail-${index}`}
+                                value={row.detail}
+                                 onChange={(e) =>
+                                  handleDetailChange(index, e.target.value)
                                 }
                               />
-                              <button
-                                type="button"
-                                className="px-3 py-2 bg-gray-300 rounded-r text-gray-700 focus:outline-none focus:shadow-outline"
-                                onClick={() =>
-                                  handleQuantityChange(
-                                    index,
-                                    quantities[index] + 1
-                                  )
+                            </div>
+                          </td>
+
+                          <td class={classes}>
+                            <div className="flex w-[250px]">
+                              <input
+                                className="border mx-1 rounded border-gray-300 w-[50px] md:w-full text-center py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                type="number"
+                                id={`width-${index}`}
+                                name={`width-${index}`}
+                                value={row.width}
+                                onChange={(e) =>
+                                  handleWidthChange(index, e.target.value)
                                 }
-                              >
-                                +
-                              </button>
+                              />
+                              <input
+                                className="border mx-1 rounded border-gray-300 w-[50px] md:w-full text-center py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                type="number"
+                                id={`height-${index}`}
+                                name={`height-${index}`}
+                                value={row.height}
+                                onChange={(e) =>
+                                  handleHeightChange(index, e.target.value)
+                                }
+                              />{" "}
+                              <span className="mt-2 ml-1">ซม.</span>
+                            </div>
+                          </td>
+
+                          <td class={classes}>
+                            <div className="flex  w-[100px] ">
+                              <input
+                                className="border  rounded border-gray-300 w-[100px] md:w-full text-center py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                type="number"
+                                id={`counts-${index}`}
+                                name={`counts-${index}`}
+                                value={row.counts}
+                                onChange={(e) =>
+                                  handleCountChange(index, e.target.value)
+                                }
+                              />
+                            </div>
+                          </td>
+
+                          <td class={classes}>
+                            <div className="flex flex-row w-[150px] border-gray-300 p-auto m-auto justify-between">
+                              <p className="basis-1/2 rounded w-[75px] py-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                {
+                                  data.find(
+                                    (product) => product.name === row.list
+                                  )?.price
+                                }
+                              </p>
+                              <span className="basis-1/2 text-gray-500 items-center m-auto">
+                                บาท
+                              </span>
                             </div>
                           </td>
                           <td class={classes}>
                             <div class="flex flex-row w-[150px] border-gray-300 p-auto m-auto justify-between">
-                              <input
-                                class="basis-1/2  border-gray-300 rounded w-[75px]  py-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="unitprice"
-                                type="float"
-                                value={row.unitprice}
-                                onChange={(e) =>
-                                  handleInputChange(
-                                    index,
-                                    "unitprice",
-                                    e.target.value
-                                  )
+                              <p class="basis-1/2 rounded w-[75px] py-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                {
+                                  data.find(
+                                    (product) => product.name === row.list
+                                  )?.p_width
                                 }
-                                placeholder="0.00"
-                              ></input>
+                              </p>
                               <span class="basis-1/2 text-gray-500 items-center m-auto">
-                                หน่วย/บาท
+                                ซม.
                               </span>
                             </div>
                           </td>
+
                           <td class={classes}>
-                            <div class="flex flex-row w-[100px] border-gray-300 p-auto m-auto justify-between">
-                              <input
-                                class="basis-1/2  border-gray-300 rounded w-[75px] py-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="total_m"
-                                type="float"
-                                name="total_m"
-                                value={row.total_m}
-                                onChange={(e) =>
-                                  handleInputChange(
-                                    index,
-                                    "total_m",
-                                    e.target.value
-                                  )
-                                }
-                                placeholder="0.00"
-                              ></input>
+                            <div class="flex flex-row w-[150px] border-gray-300 p-auto m-auto justify-between">
+                              <p class="basis-1/2 rounded w-[75px] py-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                {numberWithCommas(row.total_m)}
+                              </p>
                               <span class="basis-1/2 text-gray-500 items-center m-auto">
                                 บาท
                               </span>
                             </div>
+                          </td>
+
+                          <td class={classes}>
+                            <button
+                              onClick={() => handleDeleteRow(index)}
+                              className="bg-red-400 hover:bg-red-300 p-2 rounded text-white "
+                            >
+                              ลบ
+                            </button>
                           </td>
                         </tr>
                       ))}
@@ -346,6 +468,8 @@ function QuotationPage() {
             </div>
           </div>
           {/* table */}
+
+          <p className="text-gray-700 m-6"> ราคารวม : {numberWithCommas(totalPrice)} บาท </p>
 
           <div class="flex items-center justify-center">
             <button
@@ -371,4 +495,4 @@ function QuotationPage() {
     </>
   );
 }
-export default QuotationPage;
+export default QuatationPage;

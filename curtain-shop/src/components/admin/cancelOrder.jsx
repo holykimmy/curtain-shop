@@ -204,34 +204,29 @@ function CancelOrder() {
       cancelButtonText: "ยกเลิก",
     });
 
-    console.log("ind inkdj:",cancelReasonAd);
+    console.log("ind inkdj:", cancelReasonAd);
 
     if (confirmation.isConfirmed) {
-
-
       try {
         const response = await axios.put(
           `${process.env.REACT_APP_API}/customer/order/enable/${idOrder}`,
           { enable: false, cancelReasonAd }
         );
 
-        if (response.status === 200 ) {
+        if (response.status === 200) {
           Swal.fire({
             title: "ยกเลิกสำเร็จ",
             text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
             icon: "success",
           });
           navigate(`/order-detail-ad/${idOrder}`, {});
-        }
-        else{
+        } else {
           Swal.fire({
             title: "ยกเลิกไม่สำเร็จ",
             text: "เกิดข้อผิดพลาดบางประการ",
             icon: "error",
           });
         }
-
-        
       } catch (error) {
         console.error("Error cancelling order:", error);
       }
@@ -443,13 +438,16 @@ function CancelOrder() {
                             ที่อยู่ที่ต้องการจัดส่ง
                           </p>
 
-                          <p className="w-48 lg:w-full xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">
-                            {order.sendAddress.name} {order.sendAddress.houseNo}{" "}
-                            {order.sendAddress.sub_district}{" "}
-                            {order.sendAddress.district}{" "}
-                            {order.sendAddress.province}{" "}
-                            {order.sendAddress.postcode}
-                          </p>
+                          {order.sendAddress && (
+                            <p className="w-48 lg:w-full xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">
+                              {order.sendAddress.name}{" "}
+                              {order.sendAddress.houseNo}{" "}
+                              {order.sendAddress.sub_district}{" "}
+                              {order.sendAddress.district}{" "}
+                              {order.sendAddress.province}{" "}
+                              {order.sendAddress.postcode}
+                            </p>
+                          )}
                         </div>
                       </div>
                       <div className="flex w-full justify-center items-center md:justify-start md:items-start">

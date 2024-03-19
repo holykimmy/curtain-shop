@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { MdDeleteForever } from "react-icons/md";
 import Swal from "sweetalert2";
-import axios from "axios";
 import orderAPI from "../../../services/orderAPI";
 import customerAPI from "../../../services/customerAPI";
 

@@ -17,7 +17,7 @@ const {
   userCart,
   userUpdateADCart,
   getOrderAll,
-  getAddressByUserId,
+  getAddressByUserId,getAddressById,
   getOrderByIdOrder,
   getOrderByIdWaitPayment,
   getOrderByIdPrepare,
@@ -62,8 +62,9 @@ router.get("/search", search);
 // router.get("/address/:id", auth ,getCustomerAddressById);
 // router.get("/get-address/:id/:addressId",auth , getAddress);
 router.get("/address/:id", auth, getAddressByUserId);
-router.put("/update-address/:id/:addressId", auth, updateAddress);
-router.delete("/delete-address/:id/:addressId", auth, deleteAddress);
+router.get("/address-byid/:id", auth, getAddressById);
+router.put("/update-address/:id", auth, updateAddress);
+router.delete("/delete-address/:id", auth, deleteAddress);
 router.post("/add-order/", auth, createOrder);
 // router.get("/all/order",auth,getOrder);
 router.get("/order/:id", auth, getOrderById);

@@ -17,13 +17,14 @@ function ContactPage() {
   const [idUser, setIdUser] = React.useState("");
 
   const [user, setUser] = React.useState({
-    username:"",
+    username: "",
     f_name: "",
     l_name: "",
     email: "",
     tell: "",
     address: "",
   });
+
   useEffect(() => {
     const authToken = localStorage.getItem("token");
 
@@ -33,7 +34,6 @@ function ContactPage() {
 
       const decodedToken = jwtDecode(authToken); // Decode the token
       console.log(decodedToken);
-
 
       if (decodedToken && decodedToken.user) {
         const { f_name, l_name } = decodedToken.user;
@@ -109,21 +109,18 @@ function ContactPage() {
         console.error("erro", err);
       }
     };
-    const interval = setInterval(() => {
-      fetchData();
-    }, 5000);
-
     fetchData();
-    return ()=> clearInterval(interval);
   }, [idUser]);
+  console.log(address);
 
   const handleEditAddress = (addressData) => {
     const { id } = addressData;
     navigate(`/edit-address/${id}`);
   };
 
-  const handleDeleteAddress = async (id) => {
+  const handleDeleteAddress = async (addressData) => {
     // แสดง Confirm Dialog เพื่อยืนยันการลบที่อยู่
+    const { id } = addressData;
     const confirmation = await Swal.fire({
       title: "คุณแน่ใจหรือไม่?",
       text: "ท่านต้องการที่จะลบที่อยู่นี้ใช่หรือไม่?",
@@ -137,14 +134,10 @@ function ContactPage() {
     if (confirmation.isConfirmed) {
       try {
         // ทำการลบที่อยู่โดยส่งคำขอไปยังเซิร์ฟเวอร์
-        const response = await axios.delete(
-          `${process.env.REACT_APP_API}/customer/delete-address/${idUser}/${id}`
-        );
-
+        const response = await customerAPI.deleteAddress(id);
+        console.log(response);
         // ถ้าการลบสำเร็จ
-        if (response.status === 200) {
-          // อัปเดต UI และแสดงข้อความแจ้งเตือน
-          setAddress(address.filter((addr) => addr.id !== id));
+        if (response.message === "Address deleted successfully") {
           Swal.fire({
             icon: "success",
             title: "ลบที่อยู่สำเร็จ",
@@ -191,13 +184,7 @@ function ContactPage() {
             ชื่อ - นามสกุล : {userName}
           </h5>
         </div>
-        {/* <input
-            class="appearance-none border-none shadow border rounded w-[40%] mt-5 ml-5 pl-4 p-2 my-1 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="p_name"
-            type="text"
-            placeholder={user.f_name}
-          />
-    */}
+
         <div className="flex">
           <h5 className=" inline-block text-lg md:text-xl xl:text-2xl text-b-font  mt-2 ml-3 pl-4 ">
             อีเมลล์ : {user.email}
@@ -251,7 +238,7 @@ function ContactPage() {
                 <div className="flex">
                   <button
                     className="mx-4 mt-4 mb-2 px-4 py-2 rounded-lg inline-block text-base bg-red-400 hover:bg-browntop hover:shadow-xl text-white focus:outline-none focus:shadow-outline"
-                    onClick={() => handleDeleteAddress(addressData.id)}
+                    onClick={() => handleDeleteAddress(addressData)}
                   >
                     ลบที่อยู่
                   </button>

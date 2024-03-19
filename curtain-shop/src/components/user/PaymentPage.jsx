@@ -355,10 +355,7 @@ function PaymentPage() {
                             รายการสั่งซื้อ
                           </p>
                           <p className="text-base leading-4 text-gray-600">
-                            {numberWithCommas(
-                              order.totalPrice 
-                            )}{" "}
-                            บาท
+                            {numberWithCommas(order.totalPrice)} บาท
                           </p>
                         </div>
 
@@ -376,7 +373,10 @@ function PaymentPage() {
                           ราคารวม
                         </p>
                         <p className="text-base font-semibold leading-4 text-gray-600">
-                          {numberWithCommas(order.totalPrice + order.deliveryIs)} บาท
+                          {numberWithCommas(
+                            order.totalPrice + order.deliveryIs
+                          )}{" "}
+                          บาท
                         </p>
                       </div>
                     </div>
@@ -497,13 +497,24 @@ function PaymentPage() {
                             ที่อยู่ที่ต้องการจัดส่ง
                           </p>
 
-                          <p className="w-48 lg:w-full xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">
+                          {/* <p className="w-48 lg:w-full xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">
                             {order.sendAddress.name} {order.sendAddress.houseNo}{" "}
                             {order.sendAddress.sub_district}{" "}
                             {order.sendAddress.district}{" "}
                             {order.sendAddress.province}{" "}
                             {order.sendAddress.postcode}
-                          </p>
+                          </p> */}
+
+                          {order.sendAddress && (
+                            <p className="w-48 lg:w-full xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">
+                              {order.sendAddress.name}{" "}
+                              {order.sendAddress.houseNo}{" "}
+                              {order.sendAddress.sub_district}{" "}
+                              {order.sendAddress.district}{" "}
+                              {order.sendAddress.province}{" "}
+                              {order.sendAddress.postcode}
+                            </p>
+                          )}
                         </div>
                       </div>
                       {/* <p className="flex w-full justify-center items-center md:justify-start md:items-start">
@@ -533,9 +544,7 @@ function PaymentPage() {
           </div>
         ))}
 
-        <div className="py-14 px-4 md:px-100 2xl:px-100 2xl:container 2xl:mx-auto h-10">
-
-        </div>
+        <div className="py-14 px-4 md:px-100 2xl:px-100 2xl:container 2xl:mx-auto h-10"></div>
 
         <Footer></Footer>
       </div>

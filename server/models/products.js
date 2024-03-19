@@ -47,7 +47,7 @@ const ProdusctSchema = mongoose.Schema(
     },
     visibility: {
       type: Boolean,
-      default: true // เริ่มต้นให้สินค้าเป็น visible สำหรับลูกค้าทุกคน
+      default: true 
     }
   },
   { timestamps: true }

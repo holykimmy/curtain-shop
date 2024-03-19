@@ -1,8 +1,26 @@
 const express = require("express");
 const router = express.Router();
-const { createQuotation } = require("../controllers/receptController");
+const {
+  createQuotation,
+  createInvoice,
+  getAllQuotation,
+  getAllInvoice,
+  getReceptById,
+  updateRecept,
+  updateToInvoice,
+  updateToQuotation,
+  deleteRecept,
+} = require("../controllers/receptController");
 const { auth } = require("../middleware/auth");
 
-router.post("/create", createQuotation);
+router.post("/create/quotation", auth, createQuotation);
+router.post("/create/invoice", auth, createInvoice);
+router.get("/all/quotation", auth, getAllQuotation);
+router.get("/all/invoice", getAllInvoice);
+router.get("/:id", getReceptById);
+router.put("/update/:id", updateRecept);
+router.put("/update-to-invoice/:id", updateToInvoice);
+router.put("/update-to-quotation/:id", updateToQuotation);
+router.delete("/delete/:id", deleteRecept);
 
 module.exports = router;

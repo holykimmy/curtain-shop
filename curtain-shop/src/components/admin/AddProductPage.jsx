@@ -24,20 +24,22 @@ function AddProductPage() {
   const [p_width,setP_width]=useState("");
   const { brand, p_type, name, color, detail } = state;
 
-  const fetchBrands = async () => {
-    try {
-      const brandOptions = await categoryAPI.getAllBrands();
-      console.log("brandoption", brandOptions);
-      setBrandOptions(brandOptions);
-    } catch (error) {
-      console.error("Error fetching all brands:", error);
-    }
-  };
+
 
   useEffect(() => {
+
+    const fetchBrands = async () => {
+      try {
+        const brandOptions = await categoryAPI.getAllBrands();
+        console.log("brandoption", brandOptions);
+        setBrandOptions(brandOptions);
+      } catch (error) {
+        console.error("Error fetching all brands:", error);
+      }
+    };
+    
     fetchBrands();
-    const intervalId = setInterval(fetchBrands, 500000); //refresh
-    return () => clearInterval(intervalId);
+    
   }, []);
 
   const fetchPTypeOptions = (selectedBrandSlug) => {

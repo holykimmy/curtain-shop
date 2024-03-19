@@ -30,7 +30,7 @@ const CartSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Address",
     },
-    detail : { type: String },
+    detail: { type: String },
     enable: { type: Boolean, default: true },
     deliveryIs: { type: Number },
     totalPrice: { type: Number },
@@ -42,20 +42,23 @@ const CartSchema = mongoose.Schema(
     verifypayment: { type: Boolean, default: false },
     cancelled: { type: Boolean, default: false },
     verifycancelled: { type: Boolean, default: false },
-    cancelReasonAd : { type: String },
-    cancelReason : { type: String },
-    postcodeOrder : { type: String },
+    cancelReasonAd: { type: String },
+    cancelReason: { type: String },
+    postcodeOrder: { type: String },
     pandding: { type: Boolean, default: false },
     sendproduct: { type: Boolean, default: false },
-    
+
     complete: { type: Boolean, default: false },
-    createdAt: { type: String, default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss") }
+    createdAt: {
+      type: String,
+      default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss"),
+    },
   },
   { timestamps: true }
 );
-CartSchema.pre('save', function(next) {
+CartSchema.pre("save", function (next) {
   if (!this.createdAt) {
-    this.createdAt = moment().locale('th').format('YYYY-MM-DD HH:mm:ss');
+    this.createdAt = moment().locale("th").format("YYYY-MM-DD HH:mm:ss");
   }
   next();
 });

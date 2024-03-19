@@ -39,7 +39,7 @@ function UpdateProductPage() {
           `${process.env.REACT_APP_API}/product/${productId}`
         );
         const productData = res.data;
-        console.log("Product Data:", productData); // ให้ดูค่า productData ที่ได้รับมา
+        console.log("Product Data:", productData); 
         if (productData) {
           // เรียกใช้ฟังก์ชันเพื่อดึงประเภทสินค้า
           // fetchBrands(productData.brand);
@@ -66,20 +66,20 @@ function UpdateProductPage() {
     fetchData();
   }, [productId]);
 
-  const fetchBrands = async () => {
-    try {
-      const brandOptions = await categoryAPI.getAllBrands();
-      console.log("brandoption", brandOptions);
-      setBrandOptions(brandOptions);
-    } catch (error) {
-      console.error("Error fetching all brands:", error);
-    }
-  };
+  
 
   useEffect(() => {
+    const fetchBrands = async () => {
+      try {
+        const brandOptions = await categoryAPI.getAllBrands();
+        console.log("brandoption", brandOptions);
+        setBrandOptions(brandOptions);
+      } catch (error) {
+        console.error("Error fetching all brands:", error);
+      }
+    };
+
     fetchBrands();
-    const intervalId = setInterval(fetchBrands, 500000); //refresh
-    return () => clearInterval(intervalId);
   }, []);
 
   const fetchPTypeOptions = (selectedBrandSlug) => {

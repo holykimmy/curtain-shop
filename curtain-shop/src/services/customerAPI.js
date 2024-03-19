@@ -11,6 +11,17 @@ const CustomerAPI = {
       });
   },
 
+  getAddressById: async (id) => {
+    return axios
+      .get(`${process.env.REACT_APP_API}/customer/address-byid/${id}`)
+      .then((response) => response.data)
+      .catch((error) => {
+        console.error(error);
+        throw error;
+      });
+  },
+
+
   getCustomerAddressById: async (customerId) => {
     return axios
       .get(`${process.env.REACT_APP_API}/customer/address/${customerId}`)
@@ -20,6 +31,7 @@ const CustomerAPI = {
         throw error;
       });
   },
+
 
   getOrderById: async (customerId) => {
     return axios
@@ -94,12 +106,24 @@ const CustomerAPI = {
       });
   },
 
-  deleteAddress: async (addressId) => {
+  deleteAddress: async (id) => {
     try {
       const response = await axios.delete(
-        `${process.env.REACT_APP_API}/customer/address/${addressId}`
+        `${process.env.REACT_APP_API}/customer/delete-address/${id}`
       );
       return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+
+  updateAddress: async (id,updateAddress) => {
+    try {
+      const response = await axios.put(
+        `${process.env.REACT_APP_API}/customer/update-address/${id}`,updateAddress
+      );
+      return response;
     } catch (error) {
       console.error(error);
       throw error;

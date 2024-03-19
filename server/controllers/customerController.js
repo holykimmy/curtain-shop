@@ -234,7 +234,6 @@ exports.getAddressByUserId = (req, res) => {
       if (addresses.length === 0) {
         return res.status(404).json({ error: "Addresses not found" });
       }
-
       const formattedAddresses = addresses.map((address) => ({
         id: address._id,
         name: address.name,
@@ -253,6 +252,34 @@ exports.getAddressByUserId = (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
     });
 };
+
+exports.getAddressById = (req, res, next) => {
+  const id = req.params.id; // รับค่า ID ที่ส่งมาจาก request
+  Address.findById(id) // ค้นหาที่อยู่โดยใช้ ID
+    .exec()
+    .then(address => {
+      if (!address) { // ถ้าไม่พบที่อยู่
+        return res.status(404).json({ error: "Address not found" });
+      }
+      // ถ้าพบที่อยู่ ส่งข้อมูลที่อยู่กลับไปในรูปแบบ JSON
+      res.json({
+        id: address._id,
+        name: address.name,
+        tell: address.tell,
+        houseNo: address.houseNo,
+        sub_district: address.sub_district,
+        district: address.district,
+        province: address.province,
+        postcode: address.postcode
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      // ถ้าเกิดข้อผิดพลาดในการค้นหา ส่งคำตอบกลับว่า Internal Server Error
+      res.status(500).json({ error: "Internal Server Error" });
+    });
+};
+
 
 exports.createAddress = async (req, res) => {
   try {
@@ -322,84 +349,56 @@ exports.createAddress = async (req, res) => {
   }
 };
 
-exports.deleteAddress = async (req, res) => {
-  try {
-    const id = req.params.id; // รับ ID ของผู้ใช้จาก req.body
-    const addressId = req.params.addressId; // รับ ID ของที่อยู่จาก req.params
+exports.updateAddress = (req, res, next) => {
+  const id = req.params.id; // รับค่า ID ที่ส่งมาจาก request
+  const updatedAddressData = req.body; // รับข้อมูลที่อยู่ใหม่จาก req.body
 
-    // ตรวจสอบว่ามีข้อมูล address และ id ที่ส่งมาหรือไม่
-    if (!addressId || !id) {
-      return res
-        .status(400)
-        .send({ error: "กรุณาส่ง ID ของที่อยู่และ ID ของผู้ใช้" });
-    }
-
-    // ตรวจสอบว่าที่อยู่ที่ต้องการลบมีอยู่หรือไม่
-    const address = await Address.findOneAndDelete({
-      _id: addressId,
-      idUser: id,
+  // ค้นหาและอัปเดตที่อยู่โดยใช้ ID ที่ระบุ
+  Address.findByIdAndUpdate(id, updatedAddressData, { new: true })
+    .exec()
+    .then(updatedAddress => {
+      if (!updatedAddress) { // ถ้าไม่พบที่อยู่ที่ต้องการอัปเดต
+        return res.status(404).json({ error: "Address not found" });
+      }
+      // ส่งข้อมูลที่อยู่ที่อัปเดตแล้วกลับไปในรูปแบบ JSON
+      res.json({
+        id: updatedAddress._id,
+        name: updatedAddress.name,
+        tell: updatedAddress.tell,
+        houseNo: updatedAddress.houseNo,
+        sub_district: updatedAddress.sub_district,
+        district: updatedAddress.district,
+        province: updatedAddress.province,
+        postcode: updatedAddress.postcode
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      // ถ้าเกิดข้อผิดพลาดในการอัปเดต ส่งคำตอบกลับว่า Internal Server Error
+      res.status(500).json({ error: "Internal Server Error" });
     });
-
-    if (!address) {
-      return res.status(404).send({ error: "ไม่พบที่อยู่ที่ต้องการลบ" });
-    }
-
-    res.json({ message: "ที่อยู่ถูกลบเรียบร้อยแล้ว" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send({ error: "เกิดข้อผิดพลาดในการลบที่อยู่" });
-  }
 };
 
-exports.updateAddress = async (req, res) => {
-  const { id, addressId } = req.params; // รับ ID ของผู้ใช้และ ID ของที่อยู่ที่ต้องการอัปเดตจาก params
-  const { newAddress } = req.body; // รับที่อยู่ใหม่จาก req.body
+exports.deleteAddress = (req, res, next) => {
+  const id = req.params.id; // รับค่า ID ที่ส่งมาจาก request
 
-  try {
-    // ค้นหาผู้ใช้โดยใช้ ID
-    const user = await User.findById(id);
-
-    // ตรวจสอบว่าพบผู้ใช้หรือไม่
-    if (!user) {
-      return res.status(404).json({ error: "ไม่พบผู้ใช้" });
-    }
-
-    // ค้นหาที่อยู่ที่ต้องการอัปเดต
-    const addressToUpdate = user.address.find(
-      (addr) => addr._id.toString() === addressId
-    );
-
-    // ตรวจสอบว่าพบที่อยู่ที่ต้องการอัปเดตหรือไม่
-    if (!addressToUpdate) {
-      return res.status(404).json({ error: "ไม่พบที่อยู่ที่ต้องการอัปเดต" });
-    }
-
-    // อัปเดตที่อยู่เฉพาะถ้ามีการระบุข้อมูลใหม่
-    if (newAddress) {
-      addressToUpdate.name = newAddress.name || addressToUpdate.name;
-      addressToUpdate.tell = newAddress.tell || addressToUpdate.tell;
-      addressToUpdate.houseNo = newAddress.houseNo || addressToUpdate.houseNo;
-      addressToUpdate.sub_district =
-        newAddress.sub_district || addressToUpdate.sub_district;
-      addressToUpdate.district =
-        newAddress.district || addressToUpdate.district;
-      addressToUpdate.province =
-        newAddress.province || addressToUpdate.province;
-      addressToUpdate.postcode =
-        newAddress.postcode || addressToUpdate.postcode;
-    }
-
-    // บันทึกการเปลี่ยนแปลง
-    await user.save();
-
-    // ส่งคำตอบสำเร็จ
-    res.status(200).json(user);
-  } catch (error) {
-    // จัดการข้อผิดพลาด
-    console.error(error);
-    res.status(500).json({ error: "server error" });
-  }
+  // ลบที่อยู่โดยใช้ ID ที่ระบุ
+  Address.findByIdAndDelete(id)
+    .exec()
+    .then(deletedAddress => {
+      if (!deletedAddress) { // ถ้าไม่พบที่อยู่ที่ต้องการลบ
+        return res.status(404).json({ error: "Address not found" });
+      }
+      // ส่งข้อความยืนยันการลบที่อยู่กลับไป
+      res.json({ message: "Address deleted successfully" });
+    })
+    .catch(err => {
+      console.error(err);
+      // ถ้าเกิดข้อผิดพลาดในการลบ ส่งคำตอบกลับว่า Internal Server Error
+      res.status(500).json({ error: "Internal Server Error" });
+    });
 };
+
 
 exports.createOrder = async (req, res) => {
   try {
@@ -561,7 +560,10 @@ exports.userUpdateADCart = async (req, res) => {
       existingCart.totalPrice =  existingCart.totalPrice ;
 
       // บันทึกการเปลี่ยนแปลง
-      await existingCart.save();
+//       existingCart.deletedProducts.push(existingCart.products); // เก็บข้อมูลที่จะลบไว้ในที่นี้
+// existingCart.products = []; // ลบข้อมูล
+await existingCart.save();
+      // await existingCart.save();
 
       res.json(existingCart); // ส่งค่าตะกร้าสินค้าที่อัปเดตกลับไป
     } else {
@@ -697,13 +699,71 @@ exports.getOrderByIdWaitPayment = async (req, res) => {
   }
 };
 
+// exports.getOrderByIdPrepare = async (req, res) => {
+//   try {
+//     const idUser = req.params.id;
+//     console.log("get by id");
+//     console.log(idUser);
+//     // const user = await User.findOne({ idUser }).exec();
+//     let cart = await Cart.find({
+//       orderBy: idUser,
+//       enable: true,
+//       confirmed: true,
+//       approve: true,
+//       payment: true,
+//       verifypayment: true,
+//       sendproduct: false,
+//       complete: false,
+//     })
+//       .populate([
+//         {
+//           path: "products.product",
+//           select:
+//             "productId brand p_type name p_width price color image detail",
+//         },
+//         {
+//           path: "orderBy",
+//           select: "_id f_name l_name username email tell createdAt updatedAt",
+//         },
+//         {
+//           path: "sendAddress",
+//           select:
+//             "id name tell houseNo sub_district district province postcode idUser",
+//         },
+//       ])
+//       .exec();
+
+//     const {
+//       products,
+//       orderBy,
+//       totalPrice,
+//       sendAddress,
+//       deliveryIs,
+//       endble,
+//       confirmed,
+//       payment,
+//       verifypayment,
+//       pandding,
+//       approve,
+//       sendproduct,
+//       createdAt,
+//     } = cart;
+
+//     res.json(cart);
+//     // res.json({ products, orderBy,totalPrice, sendAddress, deliveryIs,endble, confirmed ,payment,approve,sendproduct,createdAt});
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// };
+
 exports.getOrderByIdPrepare = async (req, res) => {
   try {
     const idUser = req.params.id;
     console.log("get by id");
     console.log(idUser);
     // const user = await User.findOne({ idUser }).exec();
-    let cart = await Cart.find({
+    const cart = await Cart.find({
       orderBy: idUser,
       enable: true,
       confirmed: true,
@@ -731,24 +791,13 @@ exports.getOrderByIdPrepare = async (req, res) => {
       ])
       .exec();
 
-    const {
-      products,
-      orderBy,
-      totalPrice,
-      sendAddress,
-      deliveryIs,
-      endble,
-      confirmed,
-      payment,
-      verifypayment,
-      pandding,
-      approve,
-      sendproduct,
-      createdAt,
-    } = cart;
+    // ตรวจสอบว่ามีข้อมูลใน cart หรือไม่
+    if (!cart || cart.length === 0) {
+      return res.status(404).json({ error: "Order not found" });
+    }
 
+    // ส่งข้อมูล cart กลับไปในรูปแบบ JSON
     res.json(cart);
-    // res.json({ products, orderBy,totalPrice, sendAddress, deliveryIs,endble, confirmed ,payment,approve,sendproduct,createdAt});
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });

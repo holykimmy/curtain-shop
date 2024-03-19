@@ -44,7 +44,7 @@ function ReceiptPage() {
           ประวัติการสร้างใบเสร็จ
         </h5>
       </div>
-      <Link to="/quotation">
+      <Link to="/quotation/all">
         <button class="flex bg-green-400 my-5 mx-auto p-1 pl-2 items-center shadow-md hover:shadow-xl h-[85px] md:h-[100px] w-[90%] md:w-[65%] rounded-[72px] justify-center">
           <div className="flex-[15%] rounded-[72px] border-4 border-green-400 border-r-white">
             <FaHistory className=" inline-block shadow-lg p-2 w-auto h-[70px] bg-white/70 rounded-full  text-gray-500 "></FaHistory>
@@ -54,7 +54,7 @@ function ReceiptPage() {
           </h5>
         </button>
       </Link>
-      <Link to="/menu">
+      <Link to="/invoice/all">
         <button class="flex bg-red-400 my-5 mx-auto p-1 pl-2 items-center shadow-md hover:shadow-xl h-[85px] md:h-[100px] w-[90%] md:w-[65%] rounded-[72px] justify-center">
           <div className="flex-[15%] rounded-[72px] border-4 border-red-400 border-r-white">
             <LuFileClock className=" inline-block shadow-lg p-2 w-auto h-[70px] bg-white/70 rounded-full  text-gray-500 "></LuFileClock>

@@ -209,7 +209,7 @@ function AddressPage() {
         idUser={idUser}
       ></Navbar>
       <div className=" w-full  flex h-screen items-center justify-center bg-brown-bg ">
-        <div class="container w-11/12 sm:w-96 mx-auto rounded-[18px] shadow px-8 pt-6 pb-8 mb-4 bg-white ">
+        <div class=" mx-4 items-center w-11/12 sm:w-96 rounded-[18px] shadow px-8 pt-6 pb-8 mb-4 bg-white ">
           <p class="text-center text-2xl text-b-font font-bold">เพิ่มที่อยู่</p>
           {/* {JSON.stringify(address)} */}
 

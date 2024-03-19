@@ -379,7 +379,7 @@ function ComplexNavbar({ isLoggedIn, idUser, userName, handleLogout }) {
           <Typography
             as="a"
             href="/"
-            className="mr-4 ml-2  text-xl font-Kanit cursor-pointer py-1.5 font-medium"
+            className="mr-4 ml-2  text-xs sm:text-sm md:text-base xl:text-md font-Kanit cursor-pointer py-1.5 font-medium"
           >
             Curtain Shop
           </Typography>
