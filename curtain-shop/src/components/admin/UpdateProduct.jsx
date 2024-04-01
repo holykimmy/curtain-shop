@@ -19,6 +19,7 @@ function UpdateProductPage() {
     detail: "",
     price: "",
     image: "",
+    imageKey: "",
     p_width:"",
   });
 
@@ -84,13 +85,13 @@ function UpdateProductPage() {
 
   const fetchPTypeOptions = (selectedBrandSlug) => {
     categoryAPI
-      .getTypeOf(selectedBrandSlug) // ปรับให้ใช้ API getTypeOfPs และส่ง selectedBrandSlug เข้าไป
+      .getTypeOf(selectedBrandSlug) 
       .then((result) => {
-        setPTypeOptions(result.p_type); // กำหนดค่า pTypeOptions จากข้อมูลที่ได้จาก API
+        setPTypeOptions(result.p_type); 
         setData((prevState) => ({
           ...prevState,
           brand: result.brand,
-          p_type: "", // รีเซ็ต p_type เมื่อเลือก brand ใหม่
+          p_type: "", 
         }));
       })
       .catch((error) => {
@@ -143,6 +144,7 @@ function UpdateProductPage() {
 
   const handleFileSelection = (e) => {
     const image = e.target.files[0];
+    console.log("image",image);
     setImage(image); // อัปเดตค่าไฟล์ใหม่
 
     // แสดงตัวอย่างรูปภาพ
@@ -165,7 +167,6 @@ function UpdateProductPage() {
     formData.append("color", data.color);
     formData.append("detail", data.detail);
     formData.append("p_width", data.p_width);
-
     formData.append("price", data.price);
     if (image) {
       formData.append("image", image);
@@ -178,7 +179,7 @@ function UpdateProductPage() {
     console.log(formData.get("detail"));
     console.log(formData.get("p_width"));
     console.log(formData.get("price"));
-    console.log(formData.get("image"));
+    console.log("image",formData.get("image"));
     console.log("endl");
 
     // Call the update function with formData
@@ -297,7 +298,7 @@ function UpdateProductPage() {
             )}
             <img
               className="appearance-none border-none  mt-4 w-auto h-[350px] rounded justify-center py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              src={`${process.env.REACT_APP_API}/images/${data.image}`}
+              src={data.image}
               alt="Preview"
             />
 

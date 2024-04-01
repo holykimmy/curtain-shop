@@ -132,7 +132,7 @@ function AddProductPage() {
     formData.append("name", state.name);
     formData.append("color", state.color);
     formData.append("detail", state.detail);
-    formData.append("p_width", state.p_width);
+    formData.append("p_width", p_width);
     formData.append("price", price); // ใช้ state หรือตัวแปร price ตรงนี้ตามที่คุณต้องการ
     formData.append("image", image);
 
@@ -296,7 +296,7 @@ function AddProductPage() {
               value={p_width}
               onChange={handlePwidtchChange}
               type="number"
-              step="0.01"
+              step="0.00"
               placeholder="ความกว้างของหน้าผ้า"
             />
             <span className=" w-[10%] text-center text-gray-500 ml-2 m-auto p-auto ">
@@ -311,7 +311,7 @@ function AddProductPage() {
               value={price}
               onChange={handlePriceChange}
               type="number"
-              step="0.01"
+              step="0.00"
               placeholder="ราคาสินค้า"
             />
             <span className=" w-[10%] text-center text-gray-500 ml-2 m-auto p-auto ">
