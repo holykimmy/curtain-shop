@@ -4,6 +4,8 @@ const slugify = require("slugify");
 const { v4: uuidv4 } = require("uuid");
 const Products = require("../models/products");
 const fs = require("fs");
+const AWS = require("aws-sdk");
+const { S3 } = require("@aws-sdk/client-s3");
 const path = require("path");
 const slugifyMultilingual = (text) =>
   slugify(text, { lower: true, locale: "th" });
@@ -11,11 +13,15 @@ const slugifyMultilingual = (text) =>
 exports.create = (req, res) => {
   const data = req.body;
   console.log("data add ", data);
+
   if (!req.file) {
     return res.status(400).json({ error: "กรุณาเลือกรูปสินค้า" });
   }
-  data.file = req.file.filename;
-  console.log("data", data);
+  data.file = req.file.location;
+  console.log("location :", data.file);
+  console.log("key : ", req.file.key);
+  // console.log(data.);
+
   // Check if empty
   if (!data.brand) {
     return res.status(400).json({ error: "กรุณาเลือกแบรนด์สินค้า" });
@@ -66,7 +72,8 @@ exports.create = (req, res) => {
           detail: data.detail,
           price: data.price,
           p_width: data.p_width,
-          image: req.file.filename,
+          image: data.file,
+          imageKey: req.file.key,
           slug,
         });
       }
@@ -185,6 +192,14 @@ exports.getFromBrandVis = (req, res) => {
     });
 };
 
+const s3 = new S3({
+  region: "ap-southeast-1",
+  credentials: {
+    accessKeyId: "AKIAQ3EGS6PRLXNBIQQV",
+    secretAccessKey: "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",
+  },
+});
+
 exports.updateProduct = (req, res) => {
   const newData = req.body;
   console.log(newData);
@@ -198,16 +213,22 @@ exports.updateProduct = (req, res) => {
   // ตรวจสอบว่ามีการอัปโหลดรูปหรือไม่
   if (req.file) {
     // เก็บชื่อไฟล์รูปภาพใหม่
-    newData.image = req.file.filename;
+    newData.image = req.file.location;
+    newData.imageKey = req.file.key;
+    console.log(req.file.key);
     // หากมีรูปภาพใหม่ เรียกใช้งาน fs.unlink เพื่อลบรูปเก่า
     Products.findById(productId)
       .exec()
       .then((product) => {
-        if (product && product.image) {
-          console.log("log /api/images/", product.image);
-          console.log("access");
+        if (product && product.imageKey) {
+          s3: s3;
+          const params = {
+            Bucket: "image-products-charoenkit",
+            Key: product.imageKey,
+          };
 
-          fs.unlink("./images/" + product.image, (err) => {
+          // Delete the old image file from AWS S3
+          s3.deleteObject(params, function (err, data) {
             if (err) {
               console.error("Error deleting old image:", err);
             } else {
@@ -242,6 +263,7 @@ exports.updateProduct = (req, res) => {
         product.p_width = newData.p_width || product.p_width;
         product.price = newData.price || product.price;
         product.image = newData.image || product.image;
+        product.imageKey = newData.imageKey || product.imageKey;
         product.visibility = newData.visibility || product.visibility;
         product.slug = slug;
         // บันทึกการเปลี่ยนแปลง
@@ -307,11 +329,18 @@ exports.deleteProduct = async (req, res) => {
     }
     console.log("product.file", product.file);
     console.log("product.image", product.image);
-    fs.unlink("./images/" + product.image, (err) => {
+
+    const params = {
+      Bucket: "image-products-charoenkit",
+      Key: product.imageKey,
+    };
+
+    // Delete the old image file from AWS S3
+    s3.deleteObject(params, function (err, data) {
       if (err) {
-        console.log(err);
+        console.error("Error deleting old image:", err);
       } else {
-        console.log("ลบรูปภาพสินค้าเรียบร้อยแล้ว");
+        console.log("Old image deleted successfully");
       }
     });
 

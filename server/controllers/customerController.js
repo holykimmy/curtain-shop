@@ -534,7 +534,7 @@ exports.userUpdateADCart = async (req, res) => {
     console.log("idcart", idCart);
     const { sendAddress, deliveryIs, confirmed } = req.query;
 
-    console.log("data add ", req.file.filename);
+    console.log("data add ", req.file.key);
 
     console.log("Recieved data:", sendAddress, deliveryIs, confirmed);
 

@@ -41,6 +41,9 @@ const ProdusctSchema = mongoose.Schema(
       type: String, 
       default: 'noimage.jpg'
     },
+    imageKey: {
+      type : String
+    },
     author: { 
       type:String, 
       default: "admin" 
