@@ -202,7 +202,7 @@ function OrderDetailPage() {
                         <div className="pb-4 md:pb-8 w-full md:w-60">
                           <img
                             className="w-[200px] h-[270px]"
-                            src={`${process.env.REACT_APP_API}/images/${item.product.image}`}
+                            src={item.product.image}
                             alt="product"
                           />
                         </div>
@@ -298,7 +298,7 @@ function OrderDetailPage() {
                         <div className="pb-4 md:pb-8 w-full md:w-60">
                           <img
                             className="w-[350px] h-[350px]"
-                            src={`${process.env.REACT_APP_API}/images/slip/${order.slipmoney}`}
+                            src={order.slipmoney}
                             alt="product"
                           />
                         </div>

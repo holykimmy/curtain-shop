@@ -162,7 +162,7 @@ function Mixed() {
               <div class="relative ">
                 <img
                   className=" w-full rounded-t-lg bg-contain bg-center"
-                  src={`${process.env.REACT_APP_API}/images/${product.image}`}
+                  src={product.image}        
                   alt="product"
                 />
                 <div class="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25  rounded-t-lg "></div>

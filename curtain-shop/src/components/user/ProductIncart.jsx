@@ -344,7 +344,7 @@ const ProductInCart = ({ item, idUser }) => {
           {" "}
           <img
             className="w-[300px] rounded"
-            src={`${process.env.REACT_APP_API}/images/${item.image}`}
+            src={item.image}
             alt="product"
           />
         </td>

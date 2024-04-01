@@ -209,7 +209,7 @@ function Products() {
             <div className="flex justify-between w-[97%] sm:w-[97%] md:w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
               <img
                 className=" w-[100px] h-[200px]  sm:w-[100px] sm:h-[200px] md:w-[100px] md:h-[200px] lg:w-[300px] lg:h-[400px] rounded bg-contain bg-center"
-                src={`${process.env.REACT_APP_API}/images/${product.image}`}
+                src={product.image}
                 alt="product"
               />
 

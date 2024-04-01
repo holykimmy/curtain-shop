@@ -285,7 +285,7 @@ function PaymentPage() {
                         <div className="pb-4 md:pb-8 w-full md:w-60">
                           <img
                             className="w-full hidden md:block"
-                            src={`${process.env.REACT_APP_API}/images/${item.product.image}`}
+                            src={item.product.image}
                             alt="product"
                           />
                         </div>

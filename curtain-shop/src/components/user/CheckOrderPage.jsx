@@ -403,7 +403,7 @@ function CheckOrdeerPage() {
                       >
                         <img
                           class="m-5 h-auto w-[100px] rounded-md border object-cover object-center"
-                          src={`${process.env.REACT_APP_API}/images/${item.product.image}`}
+                          src={item.product.image}
                           alt="product"
                         />
                         <div class="flex w-full flex-col px-4 py-4">

@@ -277,7 +277,7 @@ function ContactPage() {
                 <div className="flex justify-between w-[90%] h-auto shadow-md border rounded mt-2 mb-4 p-3">
                   <img
                     className="w-[40%] rounded"
-                    src={`${process.env.REACT_APP_API}/images/${data.image}`}
+                    src={data.image}
                     alt="product"
                   />
 
@@ -341,7 +341,7 @@ function ContactPage() {
                     <div className="relative ">
                       <img
                         className="w-full rounded-t-lg bg-contain bg-center"
-                        src={`${process.env.REACT_APP_API}/images/${product.image}`}
+                        src={product.image}
                         alt="product"
                       />
                       <div className="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25  rounded-t-lg "></div>

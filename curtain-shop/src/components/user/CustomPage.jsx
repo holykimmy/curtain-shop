@@ -539,7 +539,7 @@ function CustomPage() {
               <div className="relative ">
                 <img
                   className="w-full rounded-t-lg bg-contain bg-center"
-                  src={`${process.env.REACT_APP_API}/images/${product.image}`}
+                  src={product.image}
                   alt="product"
                 />
                 <div className="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25  rounded-t-lg "></div>
@@ -562,7 +562,7 @@ function CustomPage() {
         <div className="flex p-11 justify-center ">
           <img
             className="w-[200px] h-[280px] mt-[25px] rounded shadow-xl "
-            src={`${process.env.REACT_APP_API}/images/${data.image}`}
+            src={data.image}
             alt="product"
           />
           <CloudinaryContext
