@@ -61,24 +61,26 @@ function AddProductPage() {
         setIsLoading(false);
       });
   };
-  
+
   useEffect(() => {
     if (isLoading) {
       Swal.fire({
-        html: "<span class='text-gray-600'>Loading...</span>",
-        backdrop: "#ffff",
         customClass: {
-          popup: "shadow-2xl border border-gray-300",
+          popup: "bg-transparent",
         },
+        backdrop: "rgba(255, 255, 255, 0.7)",
         showConfirmButton: false,
         didOpen: () => {
           Swal.showLoading();
         },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false, // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
       });
     } else {
       Swal.close();
     }
   }, [isLoading]);
+  
 
   const handleBrandChange = (event) => {
     const selectedBrandSlug = event.target.value;
@@ -312,7 +314,7 @@ function AddProductPage() {
           <div class="input-groupfle shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2">
             <input
               class="appearance-none border-none rounded w-[90%] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="p_price"
+              id="p_width"
               value={p_width}
               onChange={handlePwidtchChange}
               type="number"

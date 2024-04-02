@@ -29,7 +29,30 @@ function UpdateProductPage() {
   const [brandOptions, setBrandOptions] = useState([]);
   const [pTypeOptions, setPTypeOptions] = useState([]);
   const [price, setPrice] = useState("");
+  
   const [selectedBrandSlug, setSelectedBrandSlug] = useState("");
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent",
+        },
+        backdrop: "rgba(255, 255, 255, 0.7)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false, // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
+  
 
   const { brand, p_type, name, color, detail ,p_width } = data;
 
@@ -58,6 +81,7 @@ function UpdateProductPage() {
             price: productData.price,
             image: productData.image,
           });
+          setIsLoading(false);
         }
         console.log("Product Data:", data);
       } catch (error) {
@@ -72,9 +96,11 @@ function UpdateProductPage() {
   useEffect(() => {
     const fetchBrands = async () => {
       try {
+        setIsLoading(true)
         const brandOptions = await categoryAPI.getAllBrands();
         console.log("brandoption", brandOptions);
         setBrandOptions(brandOptions);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching all brands:", error);
       }
@@ -84,6 +110,7 @@ function UpdateProductPage() {
   }, []);
 
   const fetchPTypeOptions = (selectedBrandSlug) => {
+    setIsLoading(true)
     categoryAPI
       .getTypeOf(selectedBrandSlug) 
       .then((result) => {
@@ -93,6 +120,7 @@ function UpdateProductPage() {
           brand: result.brand,
           p_type: "", 
         }));
+        setIsLoading(false)
       })
       .catch((error) => {
         console.error("Error fetching p_type options:", error);
@@ -131,16 +159,50 @@ function UpdateProductPage() {
     }));
   };
 
-  const handlePriceChange = (event) => {
-    let inputValue = event.target.value;
-    inputValue = inputValue.replace(/^0+/, "");
-    const numericValue = Math.abs(Number(inputValue));
-
+  // const handlePwidtchChange = (e) => {
+  //   const inputNumber = e.target.value;
+  //   // ตรวจสอบว่า inputNumber เป็นตัวเลขและมีค่ามากกว่าหรือเท่ากับ 0 หรือไม่
+  //   if (!isNaN(inputNumber) && Number(inputNumber) >= 0) {
+  //     setData((prevState) => ({
+  //       ...prevState,
+  //       price: inputNumber,
+  //     }));
+  //   }
+  // };
+  const handlePriceChange = (e) => {
+    const inputNumber = e.target.value;
+    // ตรวจสอบว่า inputNumber เป็นตัวเลขและมีค่ามากกว่าหรือเท่ากับ 0 หรือไม่
+    if (!isNaN(inputNumber) && Number(inputNumber) >= 0) {
+      
     setData((prevState) => ({
       ...prevState,
-      price: numericValue,
+      price: inputNumber,
     }));
+    }
   };
+
+  const handlePwidtchChange = (e) => {
+    const inputNumber = e.target.value;
+    // ตรวจสอบว่า inputNumber เป็นตัวเลขและมีค่ามากกว่าหรือเท่ากับ 0 หรือไม่
+    if (!isNaN(inputNumber) && Number(inputNumber) >= 0) {
+      
+    setData((prevState) => ({
+      ...prevState,
+      p_width: inputNumber,
+    }));
+    }
+  };
+
+  // const handlePriceChange = (event) => {
+  //   let inputValue = event.target.value;
+  //   inputValue = inputValue.replace(/^0+/, "");
+  //   const numericValue = Math.abs(Number(inputValue));
+
+  //   setData((prevState) => ({
+  //     ...prevState,
+  //     price: numericValue,
+  //   }));
+  // };
 
   const handleFileSelection = (e) => {
     const image = e.target.files[0];
@@ -195,6 +257,7 @@ function UpdateProductPage() {
         title: "Saved",
         icon: "success",
       });
+      window.location.reload();
     } catch (err) {
       Swal.fire({
         icon: "error",
@@ -337,16 +400,22 @@ function UpdateProductPage() {
             />
           </div>
 
-          <div class="input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline my-6">
+          <div class="input-groupfle shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2">
             <input
-              class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="p_name"
+              class="appearance-none border-none rounded w-[90%] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="p_width"
+              value={p_width}
+              onChange={handlePwidtchChange}
               type="number"
-              value={data.p_width}
-              onChange={inputValue("p_width")}
-              placeholder="ชื่อสินค้า"
+              step="0.00"
+              placeholder="ความกว้างของหน้าผ้า"
             />
+            <span className=" w-[10%] text-center text-gray-500 ml-2 m-auto p-auto ">
+              เซนติเมตร
+            </span>
           </div>
+
+      
 
           <div class="input-groupfle shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2">
             <input
@@ -355,7 +424,7 @@ function UpdateProductPage() {
               value={data.price}
               onChange={handlePriceChange}
               type="number"
-              step="0.01"
+              step="0.00"
               placeholder="ราคาสินค้า"
             />
             <span className=" w-[10%] text-center text-gray-500 ml-2 m-auto p-auto ">

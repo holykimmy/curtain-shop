@@ -26,26 +26,54 @@ function Products() {
   const [userName, setUserName] = React.useState("");
   const [userData, setUserData] = useState(null);
 
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent",
+        },
+        backdrop: "rgba(255, 255, 255, 0.7)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false, // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
+  
+
   const handleSearch = async () => {
     try {
+      setIsLoading(true)
       const searchData = await productAPI.getSearch(searchTerm);
-      setSearchResults(searchData); // เซตค่า searchResults ที่ได้จากการค้นหาเข้า state
+      setSearchResults(searchData); 
+      setIsLoading(false)
     } catch (error) {
       console.error("Error fetching search results:", error);
       // แสดงข้อความผิดพลาดหรือจัดการข้อผิดพลาดตามที่ต้องการ
     }
   };
 
-  const fetchData = async () => {
-    try {
-      const velvetData = await productAPI.getProductTypeVelvet();
-      setVelvetProducts(velvetData);
+  // const fetchData = async () => {
+  //   try {
+  //     setIsLoading(true)
+  //     const velvetData = await productAPI.getProductTypeVelvet();
 
-      // เรียกฟังก์ชันอื่นๆ ในนี้เช่นเดียวกัน
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
+  //     setVelvetProducts(velvetData);
+
+
+  //   } catch (error) {
+  //     console.error("Error fetching products:", error);
+  //   }
+  // };
+
+
   useEffect(() => {
     const authToken = localStorage.getItem("token");
     console.log("authToken", authToken);
@@ -89,6 +117,8 @@ function Products() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+
+        setIsLoading(true);
         const velvetData = await productAPI.getProductTypeVelvet();
         setVelvetProducts(velvetData);
 
@@ -112,17 +142,13 @@ function Products() {
 
         const waveData = await productAPI.getProductTypeWave();
         setWaveProducts(waveData);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
     };
-
-    const intervalId = setInterval(() => {
-      fetchData();
-    }, 5000); // 5 วินาที
-
     fetchData();
-    return () => clearInterval(intervalId);
+
   }, []);
 
   // const history = useHistory();
@@ -163,7 +189,7 @@ function Products() {
             console.log("Product deleted successfully");
             // อัพเดท state หรือทำอื่น ๆ ตามต้องการหลังจากลบสินค้าเสร็จสิ้น
             // เรียก fetchData เพื่ออัพเดทข้อมูลใหม่หลังจากลบสินค้า
-            fetchData();
+            window.location.reload();
           })
           .catch((error) => {
             console.error("Error deleting product:", error);
