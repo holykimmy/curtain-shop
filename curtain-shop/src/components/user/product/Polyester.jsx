@@ -46,6 +46,8 @@ function Polyester() {
       },
     });
   }
+
+
   useEffect(() => {
     const authToken = localStorage.getItem("token");
 
@@ -140,7 +142,7 @@ function Polyester() {
       try {
         const productData = await productAPI.getProductTypePolyester();
         setProduct(productData);
-        setIsLoading(false); // when download finish
+        setIsLoading(false); 
         Swal.close();
       } catch (err) {
         setIsLoading(false);

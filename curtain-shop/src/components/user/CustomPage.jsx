@@ -41,6 +41,32 @@ function CustomPage() {
     address: "",
   });
 
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  if (isLoading) {
+    Swal.fire({
+      html: "<span class='text-gray-600'>Loading...</span>",
+      backdrop: `
+    #ffff
+  
+  `,
+      customClass: {
+        popup: "shadow-2xl border border-gray-300", // เพิ่มเส้นขอบและกำหนดสีเทา
+      },
+      showConfirmButton: false, // ไม่แสดงปุ่มยืนยัน
+      didOpen: () => {
+        Swal.showLoading();
+      },
+      willClose: () => {
+        if (!isLoading) {
+          Swal.close();
+        }
+      },
+    });
+  }
+
+
   useEffect(() => {
     const authToken = localStorage.getItem("token");
 
@@ -158,8 +184,12 @@ function CustomPage() {
 
           const rgbColor = hexToRgb(productData.color);
           setBackground(rgbColor);
-        }
+          setIsLoading(false); 
+          Swal.close();       
+         }
       } catch (error) {
+        setIsLoading(false); 
+        Swal.close();
         console.error(error);
       }
     };

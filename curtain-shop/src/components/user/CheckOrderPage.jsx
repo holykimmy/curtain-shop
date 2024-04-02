@@ -29,11 +29,14 @@ function CheckOrdeerPage() {
   });
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchData = () => {
       customerAPI
         .getOrderByIdOrder(idOrder)
         .then((orderData) => {
           setCurrentOrder(orderData);
+          setIsLoading(false);
+          Swal.close();
         })
         .catch((err) => {
           console.error("error", err);
@@ -45,6 +48,26 @@ function CheckOrdeerPage() {
   console.log(currentOrder);
 
   console.log("check order");
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  if (isLoading) {
+    Swal.fire({
+      html: "<span class='text-gray-600'>Loading...</span>",
+      backdrop: `
+    #ffff
+  
+  `,
+      customClass: {
+        popup: "shadow-2xl border border-gray-300",
+      },
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+  }
+  console.log(isLoading);
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");
@@ -127,11 +150,14 @@ function CheckOrdeerPage() {
   console.log(idUser);
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchData = () => {
       customerAPI
         .getCustomerAddressById(idUser)
         .then((addressData) => {
           setAddress(addressData);
+          setIsLoading(false);
+          Swal.close();
         })
         .catch((err) => {
           console.error("error", err);
@@ -172,76 +198,6 @@ function CheckOrdeerPage() {
   };
 
   console.log("select", selectedDelivery);
-
-  // const submitForm = async (e) => {
-  //   e.preventDefault();
-  //   const deliveryIs = selectedDelivery;
-  //   console.table("deliveryis", deliveryIs);
-  //   if (!deliveryIs) {
-  //     Swal.fire({
-  //       icon: "warning",
-  //       title: "กรุณาเลือกการจัดส่ง",
-  //       showConfirmButton: false,
-  //       timer: 1500,
-  //     });
-  //     return; // หยุดการทำงานของฟังก์ชันหลังจากแสดงแจ้งเตือน
-  //   }
-  //   console.table(deliveryIs);
-
-  //   if (!sendAddress) {
-  //     Swal.fire({
-  //       icon: "warning",
-  //       title: "กรุณาเลือกที่อยู่ที่ต้องการจัดส่ง",
-  //       showConfirmButton: false,
-  //       timer: 1500,
-  //     });
-  //     return; // หยุดการทำงานของฟังก์ชันหลังจากแสดงแจ้งเตือน
-  //   }
-  //   console.table("tetst", sendAddress);
-
-  //   const confirmed = true;
-
-  //   try {
-  //     const fileInput = document.getElementById("fileInput");
-  //     const formData = new FormData();
-  //     if (!fileInput.files[0]) {
-  //       Swal.fire({
-  //         icon: "error",
-  //         text: "กรุณาเลือกแนบรูปหน้าต่างของคุณ",
-  //       });
-  //       return; // ออกจากฟังก์ชันไปทันที
-  //     }
-
-  //     formData.append("windowimg", fileInput.files[0]);
-
-  //     const response = await axios.put(
-  //       `${process.env.REACT_APP_API}/customer/cart-to-order/${idOrder}`,
-  //       {
-  //         sendAddress,
-  //         deliveryIs,
-  //         confirmed,
-  //         formData,
-  //       }
-  //     );
-  //     console.log(response.data); // แสดงข้อมูลที่ API ตอบกลับ
-
-  //     Swal.fire({
-  //       icon: "success",
-  //       title: "บันทึกข้อมูลเรียบร้อย",
-  //       showConfirmButton: false,
-  //       timer: 1500,
-  //     });
-  //     navigate(`/payment/${idOrder}`, idOrder);
-  //   } catch (err) {
-  //     console.error(err);
-  //     Swal.fire({
-  //       icon: "error",
-  //       title: "เกิดข้อผิดพลาดในการบันทึกข้อมูล",
-  //       showConfirmButton: false,
-  //       timer: 1500,
-  //     });
-  //   }
-  // };
 
   const submitForm = async (e) => {
     e.preventDefault();
@@ -286,7 +242,7 @@ function CheckOrdeerPage() {
 
       const response = await axios.put(
         `${process.env.REACT_APP_API}/customer/cart-to-order/${idOrder}`,
-        formData, 
+        formData,
         {
           params: {
             sendAddress,
@@ -294,11 +250,11 @@ function CheckOrdeerPage() {
             confirmed,
           },
           headers: {
-            "Content-Type": "multipart/form-data", 
+            "Content-Type": "multipart/form-data",
           },
         }
       );
-      console.log(response.data); 
+      console.log(response.data);
 
       Swal.fire({
         icon: "success",
@@ -317,7 +273,6 @@ function CheckOrdeerPage() {
       });
     }
   };
-
 
   function handleFileSelect(event) {
     const file = event.target.files[0];
@@ -567,16 +522,16 @@ function CheckOrdeerPage() {
                   </p>
                   <div className="flex items-center shadow-md space-x-6 bg-white p-3 rounded-md">
                     {/* <form id="uploadForm" encType="multipart/form-data"> */}
-                      <label id="uploadForm" className="block">
-                        <span className="sr-only">เลือกรูป</span>
-                        <input
-                          id="fileInput"
-                          name="windowimg"
-                          type="file"
-                          className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
-                          onChange={handleFileSelect}
-                        />
-                      </label>
+                    <label id="uploadForm" className="block">
+                      <span className="sr-only">เลือกรูป</span>
+                      <input
+                        id="fileInput"
+                        name="windowimg"
+                        type="file"
+                        className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+                        onChange={handleFileSelect}
+                      />
+                    </label>
                     {/* </form> */}
                   </div>
 

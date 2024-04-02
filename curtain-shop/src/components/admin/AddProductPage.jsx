@@ -12,7 +12,7 @@ function AddProductPage() {
     name: "",
     color: "",
     detail: "",
-    p_width:"",
+    p_width: "",
     price: "",
   });
 
@@ -21,44 +21,65 @@ function AddProductPage() {
   const [brandOptions, setBrandOptions] = useState([]);
   const [pTypeOptions, setPTypeOptions] = useState([]);
   const [price, setPrice] = useState("");
-  const [p_width,setP_width]=useState("");
+  const [p_width, setP_width] = useState("");
   const { brand, p_type, name, color, detail } = state;
-
-
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-
     const fetchBrands = async () => {
       try {
+        setIsLoading(true);
         const brandOptions = await categoryAPI.getAllBrands();
         console.log("brandoption", brandOptions);
         setBrandOptions(brandOptions);
+        setIsLoading(false);
+        Swal.close();
       } catch (error) {
         console.error("Error fetching all brands:", error);
       }
     };
-    
+
     fetchBrands();
-    
   }, []);
 
   const fetchPTypeOptions = (selectedBrandSlug) => {
+    setIsLoading(true);
     categoryAPI
-      .getTypeOf(selectedBrandSlug) // ปรับให้ใช้ API getTypeOfPs และส่ง selectedBrandSlug เข้าไป
+      .getTypeOf(selectedBrandSlug)
       .then((result) => {
-        setPTypeOptions(result.p_type); // กำหนดค่า pTypeOptions จากข้อมูลที่ได้จาก API
+        setPTypeOptions(result.p_type);
         setState((prevState) => ({
           ...prevState,
           brand: result.brand,
-          p_type: "", // รีเซ็ต p_type เมื่อเลือก brand ใหม่
+          p_type: "",
         }));
       })
       .catch((error) => {
         console.error("Error fetching p_type options:", error);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
-
   
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        html: "<span class='text-gray-600'>Loading...</span>",
+        backdrop: "#ffff",
+        customClass: {
+          popup: "shadow-2xl border border-gray-300",
+        },
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
+
   const handleBrandChange = (event) => {
     const selectedBrandSlug = event.target.value;
     const selectedBrand = brandOptions.find(
@@ -74,7 +95,7 @@ function AddProductPage() {
         // brand: selectedBrand ? selectedBrand.brand : "", // Use selected brand's name if available, otherwise set to empty string
         p_type: "", // Reset p_type when brand changes
       }));
-      console.log("selectslug",selectedBrand.slug);
+      console.log("selectslug", selectedBrand.slug);
       fetchPTypeOptions(selectedBrandSlug);
     }
   };
@@ -92,21 +113,20 @@ function AddProductPage() {
     }));
   };
 
-
-    const handlePriceChange = (e) => {
-      const inputNumber = e.target.value;
-      // ตรวจสอบว่า inputNumber เป็นตัวเลขและมีค่ามากกว่าหรือเท่ากับ 0 หรือไม่
-      if (!isNaN(inputNumber) && Number(inputNumber) >= 0) {
-        setPrice(inputNumber);
-      }
-    };
-    const handlePwidtchChange = (e) => {
-      const inputNumber = e.target.value;
-      // ตรวจสอบว่า inputNumber เป็นตัวเลขและมีค่ามากกว่าหรือเท่ากับ 0 หรือไม่
-      if (!isNaN(inputNumber) && Number(inputNumber) >= 0) {
-        setP_width(inputNumber);
-      }
-    };
+  const handlePriceChange = (e) => {
+    const inputNumber = e.target.value;
+    // ตรวจสอบว่า inputNumber เป็นตัวเลขและมีค่ามากกว่าหรือเท่ากับ 0 หรือไม่
+    if (!isNaN(inputNumber) && Number(inputNumber) >= 0) {
+      setPrice(inputNumber);
+    }
+  };
+  const handlePwidtchChange = (e) => {
+    const inputNumber = e.target.value;
+    // ตรวจสอบว่า inputNumber เป็นตัวเลขและมีค่ามากกว่าหรือเท่ากับ 0 หรือไม่
+    if (!isNaN(inputNumber) && Number(inputNumber) >= 0) {
+      setP_width(inputNumber);
+    }
+  };
 
   // Function to handle file selection and preview
   const handleFileSelection = (e) => {
@@ -190,8 +210,8 @@ function AddProductPage() {
           {/* {JSON.stringify(state)} */}
           <p class="text-center text-2xl text-b-font font-bold">เพิ่มสินค้า</p>
           <p className="text-gray-700 md:text-base mt-4 pl-5">แบรนด์สินค้า</p>
-      
-            <select
+
+          <select
             class="input-group w-full data-te-select-init shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-5"
             id="brand"
             type="text"
@@ -303,7 +323,7 @@ function AddProductPage() {
               เซนติเมตร
             </span>
           </div>
-        
+
           <div class="input-groupfle shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2">
             <input
               class="appearance-none border-none rounded w-[90%] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"

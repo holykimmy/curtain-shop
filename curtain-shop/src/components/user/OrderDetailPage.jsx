@@ -29,15 +29,46 @@ function OrderDetailPage() {
     address: "",
   });
 
+  const [isLoading, setIsLoading] = useState(true);
+
+  if (isLoading) {
+    Swal.fire({
+      html: "<span class='text-gray-600'>Loading...</span>",
+      backdrop: `
+    #ffff
+  
+  `,
+      customClass: {
+        popup: "shadow-2xl border border-gray-300", 
+      },
+      showConfirmButton: false, 
+      didOpen: () => {
+        Swal.showLoading();
+      },
+      willClose: () => {
+        if (!isLoading) {
+          Swal.close();
+        }
+      },
+    });
+  }
+  console.log(isLoading);
+
   useEffect(() => {
     const fetchData = () => {
       customerAPI
         .getOrderByIdOrder(idOrder)
         .then((orderData) => {
           setCurrentOrder(orderData);
+          setIsLoading(false);
+          Swal.close();
+
         })
         .catch((err) => {
           console.error("error", err);
+          setIsLoading(false);
+          Swal.close();
+
         });
     };
     fetchData();

@@ -212,10 +212,10 @@ function ContactPage() {
           });
         }
 
-        setIsLoading(false); // when download finish
+        setIsLoading(false);
         Swal.close();
       } catch (error) {
-        setIsLoading(false); // when download finish
+        setIsLoading(false); 
         Swal.close();
         console.error(error);
       }
