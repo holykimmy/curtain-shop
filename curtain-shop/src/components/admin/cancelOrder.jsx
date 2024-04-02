@@ -121,7 +121,7 @@ function CancelOrder() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "ใช่",
-      cancelButtonText: "ยกเลิก",
+      cancelButtonText: "ยกเลิก"
     });
 
     // หากผู้ใช้กดปุ่มยืนยัน
@@ -132,7 +132,7 @@ function CancelOrder() {
         await Swal.fire({
           title: "ยืนยันการชำระเงิน",
           text: "คำสั่งซื้อได้รับการยืนยันแล้ว",
-          icon: "success",
+          icon: "success"
         });
         // window.location.reload();
       } catch (error) {
@@ -188,7 +188,7 @@ function CancelOrder() {
     if (!cancelReasonAd.trim()) {
       Swal.fire({
         text: "กรุณาระบุเหตุผลที่ต้องการยกเลิก",
-        icon: "warning",
+        icon: "warning"
       });
       return;
     }
@@ -201,7 +201,7 @@ function CancelOrder() {
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "ยืนยัน",
-      cancelButtonText: "ยกเลิก",
+      cancelButtonText: "ยกเลิก"
     });
 
     console.log("ind inkdj:", cancelReasonAd);
@@ -217,14 +217,14 @@ function CancelOrder() {
           Swal.fire({
             title: "ยกเลิกสำเร็จ",
             text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
-            icon: "success",
+            icon: "success"
           });
           navigate(`/order-detail-ad/${idOrder}`, {});
         } else {
           Swal.fire({
             title: "ยกเลิกไม่สำเร็จ",
             text: "เกิดข้อผิดพลาดบางประการ",
-            icon: "error",
+            icon: "error"
           });
         }
       } catch (error) {
@@ -232,6 +232,11 @@ function CancelOrder() {
       }
     }
   };
+
+  const numberWithCommas = (x) => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
 
   return (
     <>
@@ -271,7 +276,7 @@ function CancelOrder() {
                         <div className="pb-4 md:pb-8 w-full md:w-60">
                           <img
                             className="w-[150px] h-[200px]"
-                            src={`${process.env.REACT_APP_API}/images/${item.product.image}`}
+                            src={item.product.image}
                             alt="product"
                           />
                         </div>
@@ -321,12 +326,32 @@ function CancelOrder() {
                             </div>
 
                             <p className="text-xs sm:text-xs md:text-sm xl:text-sm font-semibold leading-6 text-gray-800">
-                              ราคา {item.product.price * item.count} บาท
+                              ราคา {numberWithCommas(item.product.price * item.count)} บาท
                             </p>
                           </div>
                         </div>
                       </div>
                     ))}
+                  </div>
+
+                  <div className="justify-start w-full bg-gray-50 items-start space-y-4 md:space-y-6 xl:space-y-8">
+                    <p className="text-base pl-8 pt-4 sm:text-base md:text-md lg:text-lg xl:text-lg  leading-6 xl:leading-5 text-gray-800">
+                      รูปหน้าหน้าต่าง
+                    </p>
+                    <div className="flex flex-wrap justify-center md:justify-center bg-gray-50 pb-4 items-start w-full space-y-4 md:space-y-6 xl:space-y-8">
+                      {order.windowimg.length > 0 ? (
+                        order.windowimg.map((url, index) => (
+                          <img
+                            key={index}
+                            className="w-[150px] md:w-[200px] m-4 filter drop-shadow-xl"
+                            src={`${process.env.REACT_APP_AWS}${url}`}
+                            alt="product"
+                          />
+                        ))
+                      ) : (
+                        <p className="text-red-500 text-base">ไม่ได้แนบรูปภาพ</p>
+                      )}
+                    </div>
                   </div>
 
                   <div className="flex justify-center md:flex-row flex-col items-stretch w-full space-y-4 md:space-y-0 md:space-x-6 xl:space-x-8">
@@ -355,7 +380,7 @@ function CancelOrder() {
                           ราคารวม
                         </p>
                         <p className="text-base font-semibold leading-4 text-gray-600">
-                          {order.totalPrice} บาท
+                          {numberWithCommas(order.totalPrice)} บาท
                         </p>
                       </div>
                     </div>

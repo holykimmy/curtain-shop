@@ -26,7 +26,7 @@ function PaymentPage() {
     l_name: "",
     email: "",
     tell: "",
-    address: "",
+    address: ""
   });
 
   useEffect(() => {
@@ -46,7 +46,7 @@ function PaymentPage() {
     return () => clearInterval();
   }, [idOrder]);
 
-  console.log(currentOrder);
+  console.log("order : ", currentOrder);
 
   console.log("check order");
 
@@ -70,7 +70,7 @@ function PaymentPage() {
           l_name: l_name,
           email: decodedToken.user.email,
           tell: decodedToken.user.tell,
-          address: decodedToken.user.address,
+          address: decodedToken.user.address
         });
 
         setIsLoggedIn(true);
@@ -113,7 +113,7 @@ function PaymentPage() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "ใช่",
-      cancelButtonText: "ไม่ใช่",
+      cancelButtonText: "ไม่ใช่"
     }).then((result) => {
       if (result.isConfirmed) {
         // ยืนยันออกจากระบบ
@@ -146,7 +146,6 @@ function PaymentPage() {
     // Return a cleanup function to clear the interval
     return () => clearInterval();
   }, [idUser]);
-  console.log("dkjhafkdsj");
   console.log(address);
 
   const [sendAddress, setSendAddress] = useState("");
@@ -159,7 +158,7 @@ function PaymentPage() {
         Swal.fire({
           icon: "error",
           title: "กรุณาแนบสลิป",
-          text: "กรุณาเลือกไฟล์สลิปเงินโอน",
+          text: "กรุณาเลือกไฟล์สลิปเงินโอน"
         });
         return; // ออกจากฟังก์ชันไปทันที
       }
@@ -171,8 +170,8 @@ function PaymentPage() {
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
-          },
+            "Content-Type": "multipart/form-data"
+          }
         }
       );
       if (response.status === 200) {
@@ -180,7 +179,7 @@ function PaymentPage() {
         Swal.fire({
           icon: "success",
           title: "การชำระเงินเรียบร้อย",
-          text: "ขอบคุณสำหรับการชำระเงิน",
+          text: "ขอบคุณสำหรับการชำระเงิน"
         });
         navigate(`/order-detail/${idOrder}`, {});
       } else {
@@ -188,7 +187,7 @@ function PaymentPage() {
         Swal.fire({
           icon: "error",
           title: "เกิดข้อผิดพลาด",
-          text: "มีข้อผิดพลาดในการชำระเงิน",
+          text: "มีข้อผิดพลาดในการชำระเงิน"
         });
       }
       console.log(response.data);
@@ -197,7 +196,7 @@ function PaymentPage() {
       Swal.fire({
         icon: "error",
         title: "เกิดข้อผิดพลาด",
-        text: "มีข้อผิดพลาดในการชำระเงิน",
+        text: "มีข้อผิดพลาดในการชำระเงิน"
       });
     }
   };
@@ -210,7 +209,7 @@ function PaymentPage() {
       Swal.fire({
         icon: "error",
         title: "ไฟล์ไม่ถูกต้อง",
-        text: "กรุณาเลือกไฟล์ที่เป็น .png, .jpeg หรือ .jpg เท่านั้น",
+        text: "กรุณาเลือกไฟล์ที่เป็น .png, .jpeg หรือ .jpg เท่านั้น"
       });
       return;
     }
@@ -220,7 +219,7 @@ function PaymentPage() {
     // ส่งข้อมูลไปยังเซิร์ฟเวอร์ โดยใช้ Fetch API
     fetch("/upload", {
       method: "POST",
-      body: formData,
+      body: formData
     })
       .then((response) => {
         if (!response.ok) {
@@ -346,6 +345,20 @@ function PaymentPage() {
                       </div>
                     ))}
                   </div>
+                  <p className="text-base leading-4 text-gray-800  px-4 py-6 space-y-4 md:space-y-6 xl:space-y-8">
+                      รูปหน้าหน้าต่าง
+                    </p>
+                  <div className="flex flex-row  justify-between items-start w-full space-y-4 md:space-y-6 xl:space-y-8">
+                 
+                    {order.windowimg.map((url, index) => (
+                      <img
+                        key={index}
+                        className="w-[150px] md:block m-4 "
+                        src={`${process.env.REACT_APP_AWS}${url}`}
+                        alt="product"
+                      />
+                    ))}
+                  </div>
 
                   <div className="flex justify-center md:flex-row flex-col items-stretch w-full space-y-4 md:space-y-0 md:space-x-6 xl:space-x-8">
                     <div className="flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 space-y-6   ">
@@ -433,6 +446,7 @@ function PaymentPage() {
                     </div>
                   </div>
                 </div>
+
                 <div className="bg-gray-50 w-full xl:w-96 flex justify-between items-center md:items-start px-4 py-6 md:p-6 xl:p-8 flex-col ">
                   <h3 className="text-base sm:text-base md:text-md font-semibold leading-5 text-gray-800">
                     ข้อมูลลูกค้า

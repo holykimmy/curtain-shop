@@ -63,6 +63,8 @@ import Customers from "./components/admin/Customers";
 import Orders from "./components/admin/Orders";
 import OrderDetail from "./components/admin/OrderDetail";
 import CancelOrder from "./components/admin/cancelOrder";
+import PostOrder from "./components/admin/postcodeOrder";
+
 
 
 import Products from "./components/admin/Products";
@@ -137,6 +139,8 @@ const router = createBrowserRouter([
   { path: "/orders/:selectedButton", element: <Orders /> },
   { path: "/order-detail-ad/:idOrder", element: <OrderDetail /> },
   { path: "/order-cancel/:idOrder", element: <CancelOrder /> },
+  { path: "/order-post/:idOrder", element: <PostOrder /> },
+
   { path: "/products-ad", element: <Products /> },
   { path: "/update-product/:productId", element: <UpdateProduct /> },
 ]);

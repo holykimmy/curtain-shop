@@ -40,7 +40,7 @@ function UpdateProductPage() {
         customClass: {
           popup: "bg-transparent",
         },
-        backdrop: "rgba(255, 255, 255, 0.7)",
+        backdrop: "rgba(255, 255, 255, 0.5)",
         showConfirmButton: false,
         didOpen: () => {
           Swal.showLoading();
@@ -359,7 +359,7 @@ function UpdateProductPage() {
             onChange={handleFileSelection}
           />
 
-          <div className="flex justify-center">
+          <div className="flex sm:flex-col md:flex-row lg:flex-row xl:flex-row justify-center md:justify-around items-center">
             {/* Image preview */}
             {imagePreview && (
               <img
@@ -375,19 +375,21 @@ function UpdateProductPage() {
             />
 
             <SketchPicker
-              class="appearance-none border-none  m-5 rounded justify-center w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="flex appearance-none border-none  m-5 rounded justify-center w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="p_color"
               color={data.color}
               onChange={handleColorChange} // Call the handler when a color is selected
             ></SketchPicker>
             <div className="h-10"></div>
             <SwatchesPicker
-              class="appearance-none border-none m-5 rounded justify-center w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="flex appearance-none border-none m-5 rounded justify-center w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="p_color"
               color={data.color}
               onChange={handleColorChange} // Call the handler when a color is selected
             ></SwatchesPicker>
           </div>
+
+
           <div className="my-5 flex justify-center">
             <div
               style={buttonStyle}
@@ -411,7 +413,7 @@ function UpdateProductPage() {
 
           <div class="input-groupfle shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2">
             <input
-              class="appearance-none border-none rounded w-[90%] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="appearance-none border-none rounded sm:w-[70%] md:w-[90%]  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="p_width"
               value={data.p_width}
               onChange={handlePwidtchChange}
@@ -426,7 +428,7 @@ function UpdateProductPage() {
 
           <div class="input-groupfle shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2">
             <input
-              class="appearance-none border-none rounded w-[90%] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="appearance-none border-none rounded sm:w-[70%] md:w-[90%] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="p_price"
               value={data.price}
               onChange={handlePriceChange}
@@ -450,7 +452,7 @@ function UpdateProductPage() {
         </form>
       </div>
       <Link
-        to="/menu"
+        to="/dashboard"
         type="button"
         class="fixed bottom-0 flex justify-center ml-2 mb-2 w-1/2 px-5 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white border rounded-lg gap-x-2 sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700"
       >

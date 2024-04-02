@@ -78,7 +78,7 @@ const ReceiveOrder = ({ idUser }) => {
   const handleSendOrder = async (idOrder) => {
     // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
     const confirmation = await Swal.fire({
-      title: "ยืนยันคำสั่งซื้อ",
+     
       text: "จัดส่งสินค้าแล้วใช่หรือไม่?",
       icon: "warning",
       showCancelButton: true,
@@ -90,20 +90,22 @@ const ReceiveOrder = ({ idUser }) => {
 
     // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
-      try {
-        const response = await orderAPI.updateOrderSend(idOrder, true);
-        console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
-        await Swal.fire({
-          title: "ยืนยันคำสั่งซื้อ",
-          text: "จัดส่งสินค้าเรียบร้อยแล้ว",
-          icon: "success",
-        });
-        window.location.reload();
-      } catch (error) {
-        console.error("Error cancelling order:", error);
-        // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
-      }
+      navigate(`/order-post/${idOrder}`, {});
     }
+    // if (confirmation.isConfirmed) {
+    //   try {
+    //     const response = await orderAPI.updateOrderSend(idOrder, true);
+    //     console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
+    //     await Swal.fire({
+    //       text: "จัดส่งสินค้าเรียบร้อยแล้ว",
+    //       icon: "success",
+    //     });
+    //     window.location.reload();
+    //   } catch (error) {
+    //     console.error("Error cancelling order:", error);
+    //     // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
+    //   }
+    // }
   };
 
   const handdleOrderdetail = async (idOrder) => {

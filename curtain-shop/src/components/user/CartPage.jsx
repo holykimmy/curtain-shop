@@ -11,6 +11,7 @@ import ProductInCart from "./ProductIncart";
 function CartPage() {
   const dispatch = useDispatch();
 
+  const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
@@ -23,6 +24,26 @@ function CartPage() {
     tell: "",
     address: "",
   });
+
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.7)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
+
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");
@@ -64,12 +85,36 @@ function CartPage() {
       setIsLoggedIn(false);
     }
   }, [idUser]);
-  console.log("testtt");
+
 
   console.log(idUser);
   const cartObject = useSelector((state) => state.cart);
   console.log(cartObject);
   const cart = Object.values(cartObject[idUser] || {});
+
+  useEffect(() => {
+    if (cart.length > 0) {
+      setIsLoading(false);
+    } else {
+      if (isLoading) {
+        Swal.fire({
+          customClass: {
+            popup: "bg-transparent"
+          },
+          backdrop: "rgba(255, 255, 255, 0.7)",
+          showConfirmButton: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+          allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+          allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+        });
+      } else {
+        Swal.close();
+      }
+    }
+  }, [isLoading, cart]);
+
   console.table(cart);
   // const userCartArray = useSelector((state) => state.cart);
   // const cart = Object.values(userCartArray[idUser] || {});
@@ -195,6 +240,12 @@ function CartPage() {
     );
   };
 
+
+  const numberWithCommas = (x) => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+
   return (
     <>
       <Navbar
@@ -228,13 +279,13 @@ function CartPage() {
             {cart.map((item, index) => (
               <p key={index} className="ml-10  text-brown-400 my-2">
                 {item.name} ขนาด {item.width} x {item.height} เซนติเมตร  จำนวน {" "}
-                {item.count} ชุด  ราคา {item.price * item.count} บาท
+                {item.count} ชุด  ราคา {numberWithCommas(item.price * item.count)} บาท
               </p>
             ))}
             <hr />
             <hr />
             <h4 className=" ml-10 text-brown-400 my-2 ">
-              ราคารวม : {getTotal()} บาท{" "}
+              ราคารวม : {numberWithCommas(getTotal())} บาท{" "}
             </h4>
             <hr />
             <div className="flex items-center justify-center">

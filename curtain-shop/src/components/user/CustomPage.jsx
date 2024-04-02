@@ -19,6 +19,7 @@ function CustomPage() {
   const [userData, setUserData] = useState(null);
   const [userName, setUserName] = React.useState("");
   const [idUser, setIdUser] = React.useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const { productId } = useParams();
 
@@ -41,30 +42,24 @@ function CustomPage() {
     address: "",
   });
 
-
-  const [isLoading, setIsLoading] = useState(true);
-
-  if (isLoading) {
-    Swal.fire({
-      html: "<span class='text-gray-600'>Loading...</span>",
-      backdrop: `
-    #ffff
-  
-  `,
-      customClass: {
-        popup: "shadow-2xl border border-gray-300", // เพิ่มเส้นขอบและกำหนดสีเทา
-      },
-      showConfirmButton: false, // ไม่แสดงปุ่มยืนยัน
-      didOpen: () => {
-        Swal.showLoading();
-      },
-      willClose: () => {
-        if (!isLoading) {
-          Swal.close();
-        }
-      },
-    });
-  }
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent",
+        },
+        backdrop: "rgba(255, 255, 255, 0.5)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false, // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
 
 
   useEffect(() => {
@@ -160,6 +155,7 @@ function CustomPage() {
 
   //product
   useEffect(() => {
+    setIsLoading(true)
     const fetchData = async () => {
       try {
         const res = await axios.get(
@@ -185,11 +181,9 @@ function CustomPage() {
           const rgbColor = hexToRgb(productData.color);
           setBackground(rgbColor);
           setIsLoading(false); 
-          Swal.close();       
          }
       } catch (error) {
         setIsLoading(false); 
-        Swal.close();
         console.error(error);
       }
     };
@@ -420,7 +414,6 @@ function CustomPage() {
       type: "ADD_TO_CART",
       payload: unique,
     });
-
     Swal.fire({
       icon: "success",
       title: "เพิ่มสินค้าในตระกร้าเรียบร้อยแล้ว",
@@ -437,6 +430,7 @@ function CustomPage() {
     ...data
   }) => {
     // console.table(selectedRail, selectedType, width, height, data);
+    
 
     if (!selectedType) {
       Swal.fire({
@@ -467,6 +461,7 @@ function CustomPage() {
       });
       return;
     }
+ 
 
     console.log("idUSer=====", idUser);
     // ตรวจสอบว่าผู้ใช้เข้าสู่ระบบหรือไม่

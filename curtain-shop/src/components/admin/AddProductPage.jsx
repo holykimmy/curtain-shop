@@ -13,7 +13,7 @@ function AddProductPage() {
     color: "",
     detail: "",
     p_width: "",
-    price: "",
+    price: ""
   });
 
   const [image, setImage] = useState(null);
@@ -51,7 +51,7 @@ function AddProductPage() {
         setState((prevState) => ({
           ...prevState,
           brand: result.brand,
-          p_type: "",
+          p_type: ""
         }));
       })
       .catch((error) => {
@@ -66,7 +66,7 @@ function AddProductPage() {
     if (isLoading) {
       Swal.fire({
         customClass: {
-          popup: "bg-transparent",
+          popup: "bg-transparent"
         },
         backdrop: "rgba(255, 255, 255, 0.7)",
         showConfirmButton: false,
@@ -74,13 +74,12 @@ function AddProductPage() {
           Swal.showLoading();
         },
         allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
-        allowEscapeKey: false, // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
       });
     } else {
       Swal.close();
     }
   }, [isLoading]);
-  
 
   const handleBrandChange = (event) => {
     const selectedBrandSlug = event.target.value;
@@ -95,7 +94,7 @@ function AddProductPage() {
         brand: selectedBrand.brand,
         // slug: selectedBrand.slug,
         // brand: selectedBrand ? selectedBrand.brand : "", // Use selected brand's name if available, otherwise set to empty string
-        p_type: "", // Reset p_type when brand changes
+        p_type: "" // Reset p_type when brand changes
       }));
       console.log("selectslug", selectedBrand.slug);
       fetchPTypeOptions(selectedBrandSlug);
@@ -111,7 +110,7 @@ function AddProductPage() {
   const handleColorChange = (selectedColor) => {
     setState((prevState) => ({
       ...prevState,
-      color: selectedColor.hex,
+      color: selectedColor.hex
     }));
   };
 
@@ -141,15 +140,15 @@ function AddProductPage() {
   };
 
   const buttonStyle = {
-    backgroundColor: color || "transparent",
+    backgroundColor: color || "transparent"
   };
 
   const submitForm = (e) => {
     e.preventDefault();
-    
+
     Swal.fire({
       customClass: {
-        popup: "bg-transparent",
+        popup: "bg-transparent"
       },
       backdrop: "rgba(255, 255, 255, 0.7)",
       showConfirmButton: false,
@@ -157,9 +156,9 @@ function AddProductPage() {
         Swal.showLoading();
       },
       allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
-      allowEscapeKey: false, // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
     });
-  
+
     // Create FormData object
     const formData = new FormData();
     formData.append("brand", state.brand);
@@ -188,14 +187,14 @@ function AddProductPage() {
         Swal.close();
         Swal.fire({
           text: "เพิ่มข้อมูลเรียบร้อย",
-          icon: "success",
+          icon: "success"
         });
       })
       .catch((err) => {
         Swal.close();
         Swal.fire({
           icon: "error",
-          text: err.response.data.error,
+          text: err.response.data.error
         });
       });
   };
@@ -281,25 +280,25 @@ function AddProductPage() {
             onChange={handleFileSelection}
           />
 
-          <div className="flex justify-center">
+          <div className="flex sm:flex-col md:flex-row lg:flex-row xl:flex-row justify-center md:justify-around items-center">
             {/* Image preview */}
             {imagePreview && (
               <img
-                className="appearance-none border-none  mt-4 w-auto h-[350px] rounded justify-center py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="flex appearance-none border-none  mt-4 w-auto h-[350px] rounded justify-center py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 src={imagePreview}
                 alt="Preview"
               />
             )}
 
             <SketchPicker
-              class="appearance-none border-none  m-5 rounded justify-center w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="flex appearance-none border-none  m-5 rounded justify-center w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="p_color"
               color={color}
               onChange={handleColorChange} // Call the handler when a color is selected
             ></SketchPicker>
             <div className="h-10"></div>
             <SwatchesPicker
-              class="appearance-none border-none m-5 rounded justify-center w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="flex appearance-none border-none m-5 rounded justify-center w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="p_color"
               color={state.color}
               onChange={handleColorChange} // Call the handler when a color is selected
@@ -328,7 +327,7 @@ function AddProductPage() {
 
           <div class="input-groupfle shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2">
             <input
-              class="appearance-none border-none rounded w-[90%] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="appearance-none border-none rounded sm:w-[70%] md:w-[90%] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="p_width"
               value={p_width}
               onChange={handlePwidtchChange}
@@ -343,7 +342,7 @@ function AddProductPage() {
 
           <div class="input-groupfle shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2">
             <input
-              class="appearance-none border-none rounded w-[90%] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="appearance-none border-none rounded sm:w-[70%] md:w-[90%] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="p_price"
               value={price}
               onChange={handlePriceChange}

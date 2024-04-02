@@ -5,36 +5,13 @@ import { MdDeleteForever } from "react-icons/md";
 import Swal from "sweetalert2";
 
 const ProductInCart = ({ item, idUser }) => {
+
   const dispatch = useDispatch();
   const [updatedItem, setUpdatedItem] = useState(item);
   const [cart, setCart] = useState([]);
   const [] = useState([]);
 
-  // const updateReduxAndLocalStorage = (updatedCart) => {
-  //   localStorage.setItem("cart", JSON.stringify(updatedCart));
 
-  //   dispatch({
-  //     type: "ADD_TO_CART",
-  //     payload: updatedCart,
-  //   });
-  // };
-
-  // const updateReduxAndLocalStorage = (updatedCart) => {
-  //   const mergedCart = handleMergeProducts(updatedCart);
-
-  //   localStorage.setItem("cart", JSON.stringify(mergedCart));
-
-  //   dispatch({
-  //     type: "ADD_TO_CART",
-  //     payload: mergedCart,
-  //   });
-  // };
-
-  // console.log(idUser);
-  // const cartObject = useSelector((state) => state.cart);
-  // console.log(cartObject);
-  // const cart = Object.values(cartObject[idUser] || {});
-  // console.log(cart);
 
   const handleMergeProductsOld = (updatedCart) => {
     let mergedCart = [];
@@ -169,7 +146,6 @@ const ProductInCart = ({ item, idUser }) => {
     const mergedCart = handleMergeProducts(updatedCart);
     //save to localStorage
     localStorage.setItem("cart", JSON.stringify(mergedCart));
-
     dispatch({
       type: "ADD_TO_CART",
       payload: mergedCart,

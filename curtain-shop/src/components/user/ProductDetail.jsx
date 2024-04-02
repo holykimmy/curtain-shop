@@ -25,31 +25,13 @@ function ContactPage() {
   const [product, setProduct] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  if (isLoading) {
-    Swal.fire({
-      html: "<span class='text-gray-600'>Loading...</span>",
-      backdrop: `
-    #ffff
-  
-  `,
-      customClass: {
-        popup: "shadow-2xl border border-gray-300", // เพิ่มเส้นขอบและกำหนดสีเทา
-      },
-      showConfirmButton: false, // ไม่แสดงปุ่มยืนยัน
-      didOpen: () => {
-        Swal.showLoading();
-      },
-      willClose: () => {
-        if (!isLoading) {
-          Swal.close();
-        }
-      },
-    });
-  }
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchData = async () => {
       try {
+      
+
         let productData;
 
         // ตรวจสอบค่า data.p_type และกำหนดให้เรียกใช้ productAPI ตามที่ต้องการ
@@ -72,6 +54,7 @@ function ContactPage() {
         }
 
         setProduct(productData);
+        setIsLoading(false)
       } catch (err) {
         console.error("เกิดข้อผิดพลาดในการดึงข้อมูล", err);
       }
@@ -94,30 +77,25 @@ function ContactPage() {
     address: "",
   });
 
-  // if (isLoading) {
-  //   let timerInterval;
-  //   Swal.fire({
-  //     title: "loading...",
-  //     showConfirmButton: false,
-  //     backdrop: `
-  //     #ffff
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.7)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
 
-  //   `,
-  //   didOpen: () => {
-  //     Swal.showLoading();
-  //   },
-  //     willClose: () => {
-  //       clearInterval(timerInterval);
-  //     },
-  //     customClass: {
-  //       popup: "shadow-2xl border ",
-  //     },
-  //   }).then((result) => {
-  //     if (result.dismiss === Swal.DismissReason.timer) {
-  //       console.log("finished");
-  //     }
-  //   });
-  // }
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");
@@ -191,6 +169,7 @@ function ContactPage() {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchData = async () => {
       try {
         const res = await axios.get(
@@ -211,18 +190,15 @@ function ContactPage() {
             image: productData.image,
           });
         }
-
         setIsLoading(false);
-        Swal.close();
       } catch (error) {
         setIsLoading(false); 
-        Swal.close();
         console.error(error);
       }
     };
 
     fetchData();
-  }, []);
+  }, [productId]);
 
   const handleDetailProduct = (productId, productName) => {
     Swal.fire({

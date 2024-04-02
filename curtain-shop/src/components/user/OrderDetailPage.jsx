@@ -26,7 +26,7 @@ function OrderDetailPage() {
     l_name: "",
     email: "",
     tell: "",
-    address: "",
+    address: ""
   });
 
   const [isLoading, setIsLoading] = useState(true);
@@ -39,9 +39,9 @@ function OrderDetailPage() {
   
   `,
       customClass: {
-        popup: "shadow-2xl border border-gray-300", 
+        popup: "shadow-2xl border border-gray-300"
       },
-      showConfirmButton: false, 
+      showConfirmButton: false,
       didOpen: () => {
         Swal.showLoading();
       },
@@ -49,7 +49,7 @@ function OrderDetailPage() {
         if (!isLoading) {
           Swal.close();
         }
-      },
+      }
     });
   }
   console.log(isLoading);
@@ -62,13 +62,11 @@ function OrderDetailPage() {
           setCurrentOrder(orderData);
           setIsLoading(false);
           Swal.close();
-
         })
         .catch((err) => {
           console.error("error", err);
           setIsLoading(false);
           Swal.close();
-
         });
     };
     fetchData();
@@ -101,7 +99,7 @@ function OrderDetailPage() {
           l_name: l_name,
           email: decodedToken.user.email,
           tell: decodedToken.user.tell,
-          address: decodedToken.user.address,
+          address: decodedToken.user.address
         });
 
         setIsLoggedIn(true);
@@ -144,7 +142,7 @@ function OrderDetailPage() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "ใช่",
-      cancelButtonText: "ไม่ใช่",
+      cancelButtonText: "ไม่ใช่"
     }).then((result) => {
       if (result.isConfirmed) {
         // ยืนยันออกจากระบบ
@@ -283,12 +281,31 @@ function OrderDetailPage() {
                             </div>
 
                             <p className="text-xs sm:text-xs md:text-sm xl:text-sm font-semibold leading-6 text-gray-800">
-                              ราคา {numberWithCommas(item.product.price * item.count)} บาท
+                              ราคา{" "}
+                              {numberWithCommas(
+                                item.product.price * item.count
+                              )}{" "}
+                              บาท
                             </p>
                           </div>
                         </div>
                       </div>
                     ))}
+                  </div>
+                  <div className="justify-start w-full bg-gray-50 items-start space-y-4 md:space-y-6 xl:space-y-8">
+                    <p className="text-base pl-8 pt-4 sm:text-base md:text-md lg:text-lg xl:text-lg  leading-6 xl:leading-5 text-gray-800">
+                      รูปหน้าหน้าต่าง
+                    </p>
+                    <div className="flex flex-wrap justify-center md:justify-center bg-gray-50 pb-4 items-start w-full space-y-4 md:space-y-6 xl:space-y-8">
+                      {order.windowimg.map((url, index) => (
+                        <img
+                          key={index}
+                          className="w-[150px] md:w-[200px] m-4 filter drop-shadow-xl"
+                          src={`${process.env.REACT_APP_AWS}${url}`}
+                          alt="product"
+                        />
+                      ))}
+                    </div>
                   </div>
 
                   <div className="flex justify-center md:flex-row flex-col items-stretch w-full space-y-4 md:space-y-0 md:space-x-6 xl:space-x-8">
@@ -299,7 +316,10 @@ function OrderDetailPage() {
                             รายการสั่งซื้อ
                           </p>
                           <p className="text-base leading-4 text-gray-600">
-                            {numberWithCommas(order.totalPrice - order.deliveryIs)} บาท
+                            {numberWithCommas(
+                              order.totalPrice - order.deliveryIs
+                            )}{" "}
+                            บาท
                           </p>
                         </div>
 
@@ -328,8 +348,8 @@ function OrderDetailPage() {
                       {order.payment ? (
                         <div className="pb-4 md:pb-8 w-full md:w-60">
                           <img
-                            className="w-[350px] h-[350px]"
-                            src={order.slipmoney}
+                            className="w-[350px] "
+                            src={`${process.env.REACT_APP_AWS}${order.slipmoney}`}
                             alt="product"
                           />
                         </div>
@@ -415,10 +435,8 @@ function OrderDetailPage() {
                       <div className="flex w-full justify-center items-center md:justify-start md:items-start">
                         {!order.payment ? (
                           <button
-
                             onClick={() => handlePayment(order._id)}
                             disabled={!order.approve}
-
                             className="mt-6 md:mt-0 py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base leading-4 text-gray-800"
                           >
                             ไปที่หน้าชำระเงิน

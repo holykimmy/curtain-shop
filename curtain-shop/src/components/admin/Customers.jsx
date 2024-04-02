@@ -5,17 +5,40 @@ import { Link } from "react-router-dom";
 import productAPI from "../../services/productAPI";
 import SwitchButton from "./switchbutton";
 import CustomerAPI from "../../services/customerAPI";
+import Swal from "sweetalert2";
 
 function Customers() {
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent",
+        },
+        backdrop: "rgba(255, 255, 255, 0.5)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false, // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
+
+  useEffect(() => {
+    isLoading(true)
     const fetchData = () => {
       CustomerAPI.getAllCustomer()
         .then((orderData) => {
           setData(orderData);
+          setIsLoading(false)
         })
         .catch((err) => {
           console.error("error", err);
@@ -25,9 +48,11 @@ function Customers() {
   }, []);
 
   const handleSearch = async () => {
+    setIsLoading(true);
     try {
       const searchData = await productAPI.getSearch(searchTerm);
       setSearchResults(searchData); // เซตค่า searchResults ที่ได้จากการค้นหาเข้า state
+      setIsLoading(false)
     } catch (error) {
       console.error("Error fetching search results:", error);
       // แสดงข้อความผิดพลาดหรือจัดการข้อผิดพลาดตามที่ต้องการ

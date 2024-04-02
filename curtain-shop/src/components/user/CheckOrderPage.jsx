@@ -25,7 +25,7 @@ function CheckOrdeerPage() {
     l_name: "",
     email: "",
     tell: "",
-    address: "",
+    address: ""
   });
 
   useEffect(() => {
@@ -59,12 +59,12 @@ function CheckOrdeerPage() {
   
   `,
       customClass: {
-        popup: "shadow-2xl border border-gray-300",
+        popup: "shadow-2xl border border-gray-300"
       },
       showConfirmButton: false,
       didOpen: () => {
         Swal.showLoading();
-      },
+      }
     });
   }
   console.log(isLoading);
@@ -89,7 +89,7 @@ function CheckOrdeerPage() {
           l_name: l_name,
           email: decodedToken.user.email,
           tell: decodedToken.user.tell,
-          address: decodedToken.user.address,
+          address: decodedToken.user.address
         });
 
         setIsLoggedIn(true);
@@ -132,7 +132,7 @@ function CheckOrdeerPage() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "ใช่",
-      cancelButtonText: "ไม่ใช่",
+      cancelButtonText: "ไม่ใช่"
     }).then((result) => {
       if (result.isConfirmed) {
         // ยืนยันออกจากระบบ
@@ -182,13 +182,13 @@ function CheckOrdeerPage() {
     {
       id: 500,
       title: "ทางร้านขนส่งพร้อมติดตั้ง",
-      duration: "ระยะเวลา: 7-14 วัน",
+      duration: "ระยะเวลา: 7-14 วัน"
     },
     {
       id: 200,
       title: "จัดส่งสินค้าทางขนส่ง",
-      duration: "ระยะเวลา: 7-14 วัน",
-    },
+      duration: "ระยะเวลา: 7-14 วัน"
+    }
   ];
 
   const [selectedDelivery, setSelecteDelivery] = useState("");
@@ -196,6 +196,88 @@ function CheckOrdeerPage() {
   const handleDeliveryChange = (optionId) => {
     setSelecteDelivery(optionId);
   };
+
+  // function handleFileSelect(event) {
+  //   const file = event.target.files[0];
+
+  //   const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+  //   if (!allowedTypes.includes(file.type)) {
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "ไฟล์ไม่ถูกต้อง",
+  //       text: "กรุณาเลือกไฟล์ที่เป็น .png, .jpeg หรือ .jpg เท่านั้น",
+  //     });
+  //     return;
+  //   }
+  //   const formData = new FormData();
+  //   formData.append("windownimg", file);
+
+  //   // ส่งข้อมูลไปยังเซิร์ฟเวอร์ โดยใช้ Fetch API
+  //   fetch("/upload", {
+  //     method: "POST",
+  //     body: formData,
+  //   })
+  //     .then((response) => {
+  //       if (!response.ok) {
+  //         throw new Error("Network response was not ok");
+  //       }
+  //       return response.json();
+  //     })
+  //     .then((data) => {
+  //       console.log("อัปโหลดสำเร็จ", data);
+  //       // ดำเนินการต่อไปตามที่คุณต้องการ
+  //     })
+  //     .catch((error) => {
+  //       console.error("เกิดข้อผิดพลาดขณะอัปโหลด", error);
+  //       // จัดการข้อผิดพลาดตามที่คุณต้องการ
+  //     });
+  // }
+
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [hoveredIndex, setHoveredIndex] = useState(-1);
+
+  function handleFileSelect(event) {
+    const files = event.target.files;
+    const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+    const newSelectedFiles = [...selectedFiles]; // คัดลอกรูปภาพที่เลือกไว้ก่อนหน้านี้
+
+    // ตรวจสอบจำนวนรูปภาพที่เลือก
+    if (newSelectedFiles.length + files.length > 5) {
+      // แสดงข้อความแจ้งเตือนถ้าเกิน 5 รูป
+      Swal.fire({
+        icon: "warning",
+        title: "เกินจำนวนรูปภาพที่กำหนด",
+        text: "คุณสามารถอัปโหลดรูปภาพได้ไม่เกิน 5 รูป"
+      });
+      return;
+    }
+
+    // เพิ่มรูปภาพใหม่เข้าไปในอาร์เรย์
+    for (let i = 0; i < Math.min(files.length, 4); i++) {
+      const file = files[i];
+      if (allowedTypes.includes(file.type)) {
+        if (!allowedTypes.includes(file.type)) {
+          // แสดงข้อความแจ้งเตือนถ้าไฟล์ไม่ใช่ png, jpeg หรือ jpg
+          Swal.fire({
+            icon: "error",
+            title: "ไฟล์ไม่ถูกต้อง",
+            text: "กรุณาเลือกไฟล์ที่เป็น .png, .jpeg หรือ .jpg เท่านั้น"
+          });
+          return;
+        }
+        newSelectedFiles.push(file);
+      }
+    }
+
+    // อัปเดตรูปภาพที่เลือก
+    setSelectedFiles(newSelectedFiles);
+  }
+
+  function handleRemoveFile(index) {
+    const updatedFiles = [...selectedFiles];
+    updatedFiles.splice(index, 1);
+    setSelectedFiles(updatedFiles);
+  }
 
   console.log("select", selectedDelivery);
 
@@ -208,7 +290,7 @@ function CheckOrdeerPage() {
         icon: "warning",
         title: "กรุณาเลือกการจัดส่ง",
         showConfirmButton: false,
-        timer: 1500,
+        timer: 1500
       });
       return; // หยุดการทำงานของฟังก์ชันหลังจากแสดงแจ้งเตือน
     }
@@ -219,7 +301,7 @@ function CheckOrdeerPage() {
         icon: "warning",
         title: "กรุณาเลือกที่อยู่ที่ต้องการจัดส่ง",
         showConfirmButton: false,
-        timer: 1500,
+        timer: 1500
       });
       return; // หยุดการทำงานของฟังก์ชันหลังจากแสดงแจ้งเตือน
     }
@@ -227,18 +309,24 @@ function CheckOrdeerPage() {
 
     const confirmed = true;
 
+    const files = selectedFiles;
+    console.table(files);
     try {
-      const fileInput = document.getElementById("fileInput");
       const formData = new FormData();
-      if (!fileInput.files[0]) {
+      if (!files || files.length === 0) {
         Swal.fire({
           icon: "error",
-          text: "กรุณาเลือกแนบรูปหน้าต่างของคุณ",
+          text: "กรุณาเลือกแนบรูปหน้าต่างของคุณ"
         });
-        return; // ออกจากฟังก์ชันไปทันที
+        return;
       }
 
-      formData.append("windowimg", fileInput.files[0]);
+      // เพิ่มทุกไฟล์ลงใน FormData
+      files.forEach((file) => {
+        formData.append("windowimg", file);
+      });
+
+      // formData.append("windowimg", files);
 
       const response = await axios.put(
         `${process.env.REACT_APP_API}/customer/cart-to-order/${idOrder}`,
@@ -247,11 +335,11 @@ function CheckOrdeerPage() {
           params: {
             sendAddress,
             deliveryIs,
-            confirmed,
+            confirmed
           },
           headers: {
-            "Content-Type": "multipart/form-data",
-          },
+            "Content-Type": "multipart/form-data"
+          }
         }
       );
       console.log(response.data);
@@ -260,7 +348,7 @@ function CheckOrdeerPage() {
         icon: "success",
         title: "บันทึกข้อมูลเรียบร้อย",
         showConfirmButton: false,
-        timer: 1500,
+        timer: 1500
       });
       navigate(`/payment/${idOrder}`, idOrder);
     } catch (err) {
@@ -269,51 +357,14 @@ function CheckOrdeerPage() {
         icon: "error",
         title: "เกิดข้อผิดพลาดในการบันทึกข้อมูล",
         showConfirmButton: false,
-        timer: 1500,
+        timer: 1500
       });
     }
   };
-
-  function handleFileSelect(event) {
-    const file = event.target.files[0];
-
-    const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
-    if (!allowedTypes.includes(file.type)) {
-      Swal.fire({
-        icon: "error",
-        title: "ไฟล์ไม่ถูกต้อง",
-        text: "กรุณาเลือกไฟล์ที่เป็น .png, .jpeg หรือ .jpg เท่านั้น",
-      });
-      return;
-    }
-    const formData = new FormData();
-    formData.append("windownimg", file);
-
-    // ส่งข้อมูลไปยังเซิร์ฟเวอร์ โดยใช้ Fetch API
-    fetch("/upload", {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("อัปโหลดสำเร็จ", data);
-        // ดำเนินการต่อไปตามที่คุณต้องการ
-      })
-      .catch((error) => {
-        console.error("เกิดข้อผิดพลาดขณะอัปโหลด", error);
-        // จัดการข้อผิดพลาดตามที่คุณต้องการ
-      });
-  }
-
   const numberWithCommas = (x) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
-
+  // console.table(selectedFiles);
   return (
     <>
       {" "}
@@ -528,12 +579,41 @@ function CheckOrdeerPage() {
                         id="fileInput"
                         name="windowimg"
                         type="file"
+                        multiple
                         className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
                         onChange={handleFileSelect}
                       />
                     </label>
                     {/* </form> */}
                   </div>
+
+                  <div>
+                    <div className="flex flex-wrap">
+                      {selectedFiles.map((file, index) => (
+                        <div
+                          key={index}
+                          onMouseEnter={() => setHoveredIndex(index)}
+                          onMouseLeave={() => setHoveredIndex(-1)}
+                        >
+                          <img
+                            className="flex h-[200px] filter drop-shadow-xl"
+                            src={URL.createObjectURL(file)}
+                            alt={`รูปที่ ${index + 1}`}
+                          />
+                          {hoveredIndex === index && (
+                            <button
+                              className="bg-red-300 mt-3  mx-2 py-2 px-auto w-[120px] rounded-full shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
+                              onClick={() => handleRemoveFile(index)}
+                            >
+                              ลบรูปภาพ
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <p>จำนวนรูปที่เลือก: {selectedFiles.length}</p>
 
                   <button
                     value="save"
