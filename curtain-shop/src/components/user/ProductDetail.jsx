@@ -72,7 +72,7 @@ function ContactPage() {
     address: "",
   });
 
-  if(isLoading){
+  if (isLoading) {
     let timerInterval;
     Swal.fire({
       title: "loading...",
@@ -80,7 +80,7 @@ function ContactPage() {
       timer: 20000,
       timerProgressBar: true,
       backdrop: `
-      rgba(0,0,123,0.4)
+      #ffff
     
     `,
       didOpen: () => {
@@ -92,14 +92,16 @@ function ContactPage() {
       },
       willClose: () => {
         clearInterval(timerInterval);
-      }
+      },
+      customClass: {
+        popup: "shadow-2xl border "
+      },
     }).then((result) => {
       if (result.dismiss === Swal.DismissReason.timer) {
         console.log("finished");
       }
     });
   }
-
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");

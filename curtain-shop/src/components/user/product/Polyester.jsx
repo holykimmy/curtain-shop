@@ -30,7 +30,10 @@ function Polyester() {
       title: "loading...",
       html: "I will close in <b></b> milliseconds.",
       timer: 20000,
-      timerProgressBar: true,
+      timerProgressBar: true,backdrop: `
+      #ffff
+    
+    `,
       didOpen: () => {
         Swal.showLoading();
         const timer = Swal.getPopup().querySelector("b");
@@ -40,7 +43,10 @@ function Polyester() {
       },
       willClose: () => {
         clearInterval(timerInterval);
-      }
+      },
+      customClass: {
+        popup: "shadow-2xl border "
+      },
     }).then((result) => {
       if (result.dismiss === Swal.DismissReason.timer) {
         console.log("finished");
