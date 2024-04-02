@@ -221,6 +221,19 @@ function UpdateProductPage() {
   const submitForm = (e, productId, data, image) => {
     e.preventDefault();
 
+    Swal.fire({
+      customClass: {
+        popup: "bg-transparent",
+      },
+      backdrop: "rgba(255, 255, 255, 0.7)",
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+      allowOutsideClick: false, 
+      allowEscapeKey: false,
+    });
+
     // Collect form data
     const formData = new FormData();
     formData.append("brand", data.brand);
@@ -253,10 +266,11 @@ function UpdateProductPage() {
     e.preventDefault();
     try {
       const response = await productAPI.updateProduct(productId, formData);
-      Swal.fire({
-        title: "Saved",
-        icon: "success",
-      });
+      Swal.close();
+        Swal.fire({
+          text: "เพิ่มข้อมูลเรียบร้อย",
+          icon: "success",
+        });
       window.location.reload();
     } catch (err) {
       Swal.fire({
@@ -404,7 +418,7 @@ function UpdateProductPage() {
             <input
               class="appearance-none border-none rounded w-[90%] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="p_width"
-              value={p_width}
+              value={data.p_width}
               onChange={handlePwidtchChange}
               type="number"
               step="0.00"

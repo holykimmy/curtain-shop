@@ -146,7 +146,20 @@ function AddProductPage() {
 
   const submitForm = (e) => {
     e.preventDefault();
-
+    
+    Swal.fire({
+      customClass: {
+        popup: "bg-transparent",
+      },
+      backdrop: "rgba(255, 255, 255, 0.7)",
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+      allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+      allowEscapeKey: false, // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+    });
+  
     // Create FormData object
     const formData = new FormData();
     formData.append("brand", state.brand);
@@ -172,12 +185,14 @@ function AddProductPage() {
     productAPI
       .createProduct(formData)
       .then((response) => {
+        Swal.close();
         Swal.fire({
-          title: "Saved",
+          text: "เพิ่มข้อมูลเรียบร้อย",
           icon: "success",
         });
       })
       .catch((err) => {
+        Swal.close();
         Swal.fire({
           icon: "error",
           text: err.response.data.error,
