@@ -46,7 +46,7 @@ function Products() {
       Swal.close();
     }
   }, [isLoading]);
-  
+
 
   const handleSearch = async () => {
     try {
@@ -156,7 +156,7 @@ function Products() {
 
   const handleEditProduct = (productId, productName) => {
     Swal.fire({
-      title: `คุณต้องการแก้ไขข้อมูลสินค้า ${productName} ใช่หรือไม่?`,
+      text: `คุณต้องการแก้ไขข้อมูลสินค้า ${productName} ใช่หรือไม่?`,
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -173,7 +173,7 @@ function Products() {
   const handleDeleteProduct = (productId, productName) => {
     console.log(productId);
     Swal.fire({
-      title: `คุณต้องการลบข้อมูลสินค้า ${productName} ใช่หรือไม่?`,
+      text: `คุณต้องการลบข้อมูลสินค้า ${productName} ใช่หรือไม่?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",

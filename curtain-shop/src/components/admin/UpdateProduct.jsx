@@ -20,7 +20,7 @@ function UpdateProductPage() {
     price: "",
     image: "",
     imageKey: "",
-    p_width:"",
+    p_width: "",
   });
 
   const [form, setForm] = useState([]);
@@ -29,7 +29,7 @@ function UpdateProductPage() {
   const [brandOptions, setBrandOptions] = useState([]);
   const [pTypeOptions, setPTypeOptions] = useState([]);
   const [price, setPrice] = useState("");
-  
+
   const [selectedBrandSlug, setSelectedBrandSlug] = useState("");
 
   const [isLoading, setIsLoading] = useState(true);
@@ -52,9 +52,8 @@ function UpdateProductPage() {
       Swal.close();
     }
   }, [isLoading]);
-  
 
-  const { brand, p_type, name, color, detail ,p_width } = data;
+  const { brand, p_type, name, color, detail, p_width } = data;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,7 +62,7 @@ function UpdateProductPage() {
           `${process.env.REACT_APP_API}/product/${productId}`
         );
         const productData = res.data;
-        console.log("Product Data:", productData); 
+        console.log("Product Data:", productData);
         if (productData) {
           // เรียกใช้ฟังก์ชันเพื่อดึงประเภทสินค้า
           // fetchBrands(productData.brand);
@@ -91,12 +90,10 @@ function UpdateProductPage() {
     fetchData();
   }, [productId]);
 
-  
-
   useEffect(() => {
     const fetchBrands = async () => {
       try {
-        setIsLoading(true)
+        setIsLoading(true);
         const brandOptions = await categoryAPI.getAllBrands();
         console.log("brandoption", brandOptions);
         setBrandOptions(brandOptions);
@@ -110,17 +107,17 @@ function UpdateProductPage() {
   }, []);
 
   const fetchPTypeOptions = (selectedBrandSlug) => {
-    setIsLoading(true)
+    setIsLoading(true);
     categoryAPI
-      .getTypeOf(selectedBrandSlug) 
+      .getTypeOf(selectedBrandSlug)
       .then((result) => {
-        setPTypeOptions(result.p_type); 
+        setPTypeOptions(result.p_type);
         setData((prevState) => ({
           ...prevState,
           brand: result.brand,
-          p_type: "", 
+          p_type: "",
         }));
-        setIsLoading(false)
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching p_type options:", error);
@@ -173,11 +170,10 @@ function UpdateProductPage() {
     const inputNumber = e.target.value;
     // ตรวจสอบว่า inputNumber เป็นตัวเลขและมีค่ามากกว่าหรือเท่ากับ 0 หรือไม่
     if (!isNaN(inputNumber) && Number(inputNumber) >= 0) {
-      
-    setData((prevState) => ({
-      ...prevState,
-      price: inputNumber,
-    }));
+      setData((prevState) => ({
+        ...prevState,
+        price: inputNumber,
+      }));
     }
   };
 
@@ -185,11 +181,10 @@ function UpdateProductPage() {
     const inputNumber = e.target.value;
     // ตรวจสอบว่า inputNumber เป็นตัวเลขและมีค่ามากกว่าหรือเท่ากับ 0 หรือไม่
     if (!isNaN(inputNumber) && Number(inputNumber) >= 0) {
-      
-    setData((prevState) => ({
-      ...prevState,
-      p_width: inputNumber,
-    }));
+      setData((prevState) => ({
+        ...prevState,
+        p_width: inputNumber,
+      }));
     }
   };
 
@@ -206,7 +201,7 @@ function UpdateProductPage() {
 
   const handleFileSelection = (e) => {
     const image = e.target.files[0];
-    console.log("image",image);
+    console.log("image", image);
     setImage(image); // อัปเดตค่าไฟล์ใหม่
 
     // แสดงตัวอย่างรูปภาพ
@@ -230,7 +225,7 @@ function UpdateProductPage() {
       didOpen: () => {
         Swal.showLoading();
       },
-      allowOutsideClick: false, 
+      allowOutsideClick: false,
       allowEscapeKey: false,
     });
 
@@ -254,7 +249,7 @@ function UpdateProductPage() {
     console.log(formData.get("detail"));
     console.log(formData.get("p_width"));
     console.log(formData.get("price"));
-    console.log("image",formData.get("image"));
+    console.log("image", formData.get("image"));
     console.log("endl");
 
     // Call the update function with formData
@@ -267,10 +262,10 @@ function UpdateProductPage() {
     try {
       const response = await productAPI.updateProduct(productId, formData);
       Swal.close();
-        Swal.fire({
-          text: "เพิ่มข้อมูลเรียบร้อย",
-          icon: "success",
-        });
+      Swal.fire({
+        text: "เพิ่มข้อมูลเรียบร้อย",
+        icon: "success",
+      });
       window.location.reload();
     } catch (err) {
       Swal.fire({
@@ -428,8 +423,6 @@ function UpdateProductPage() {
               เซนติเมตร
             </span>
           </div>
-
-      
 
           <div class="input-groupfle shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2">
             <input
