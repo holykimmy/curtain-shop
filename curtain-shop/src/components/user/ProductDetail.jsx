@@ -21,9 +21,31 @@ function ContactPage() {
     price: "",
     image: "",
   });
-  const [isLoading, setIsLoading] = useState(true);
 
   const [product, setProduct] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  if (isLoading) {
+    Swal.fire({
+      html: "<span class='text-gray-600'>Loading...</span>",
+      backdrop: `
+    #ffff
+  
+  `,
+      customClass: {
+        popup: "shadow-2xl border border-gray-300", // เพิ่มเส้นขอบและกำหนดสีเทา
+      },
+      showConfirmButton: false, // ไม่แสดงปุ่มยืนยัน
+      didOpen: () => {
+        Swal.showLoading();
+      },
+      willClose: () => {
+        if (!isLoading) {
+          Swal.close();
+        }
+      },
+    });
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -72,36 +94,30 @@ function ContactPage() {
     address: "",
   });
 
-  if (isLoading) {
-    let timerInterval;
-    Swal.fire({
-      title: "loading...",
-      html: "I will close in <b></b> milliseconds.",
-      timer: 20000,
-      timerProgressBar: true,
-      backdrop: `
-      #ffff
-    
-    `,
-      didOpen: () => {
-        Swal.showLoading();
-        const timer = Swal.getPopup().querySelector("b");
-        timerInterval = setInterval(() => {
-          timer.textContent = `${Swal.getTimerLeft()}`;
-        }, 100);
-      },
-      willClose: () => {
-        clearInterval(timerInterval);
-      },
-      customClass: {
-        popup: "shadow-2xl border "
-      },
-    }).then((result) => {
-      if (result.dismiss === Swal.DismissReason.timer) {
-        console.log("finished");
-      }
-    });
-  }
+  // if (isLoading) {
+  //   let timerInterval;
+  //   Swal.fire({
+  //     title: "loading...",
+  //     showConfirmButton: false,
+  //     backdrop: `
+  //     #ffff
+
+  //   `,
+  //   didOpen: () => {
+  //     Swal.showLoading();
+  //   },
+  //     willClose: () => {
+  //       clearInterval(timerInterval);
+  //     },
+  //     customClass: {
+  //       popup: "shadow-2xl border ",
+  //     },
+  //   }).then((result) => {
+  //     if (result.dismiss === Swal.DismissReason.timer) {
+  //       console.log("finished");
+  //     }
+  //   });
+  // }
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");
