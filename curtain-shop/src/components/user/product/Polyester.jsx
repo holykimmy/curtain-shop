@@ -10,7 +10,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 function Polyester() {
   //token login
-
+  const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
@@ -23,6 +23,31 @@ function Polyester() {
     tell: "",
     address: "",
   });
+
+  if(isLoading){
+    let timerInterval;
+    Swal.fire({
+      title: "loading...",
+      html: "I will close in <b></b> milliseconds.",
+      timer: 20000,
+      timerProgressBar: true,
+      didOpen: () => {
+        Swal.showLoading();
+        const timer = Swal.getPopup().querySelector("b");
+        timerInterval = setInterval(() => {
+          timer.textContent = `${Swal.getTimerLeft()}`;
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      }
+    }).then((result) => {
+      if (result.dismiss === Swal.DismissReason.timer) {
+        console.log("finished");
+      }
+    });
+  }
+
   useEffect(() => {
     const authToken = localStorage.getItem("token");
 
@@ -60,9 +85,6 @@ function Polyester() {
         // Token expired, logout user
         handleLogoutAuto();
       }
-
-
-
     } else {
       setIsLoggedIn(false);
     }
@@ -98,11 +120,7 @@ function Polyester() {
     });
   };
 
-  const handleDetailProduct = (
-    productId,
-    productName,
-    
-  ) => {
+  const handleDetailProduct = (productId, productName) => {
     Swal.fire({
       title: `คุณต้องการดูข้อมูลสินค้า ${productName} ใช่หรือไม่?`,
       icon: "question",
@@ -118,21 +136,25 @@ function Polyester() {
     });
   };
 
-
   const [product, setProduct] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
         const productData = await productAPI.getProductTypePolyester();
         setProduct(productData);
+        setIsLoading(false); // when download finish
+        Swal.close();
       } catch (err) {
+        setIsLoading(false);
+        Swal.close();
         console.error("เกิดข้อผิดพลาดในการดึงข้อมูล", err);
       }
     };
-   
 
     fetchData();
   }, []);
+
+ 
 
   return (
     <>
