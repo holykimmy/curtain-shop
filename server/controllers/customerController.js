@@ -9,6 +9,7 @@ const Products = require("../models/products");
 const Cart = require("../models/carts");
 const Address = require("../models/address");
 const { v4: uuidv4 } = require("uuid");
+const { S3 } = require("@aws-sdk/client-s3");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { body, validationResult } = require("express-validator");
@@ -60,7 +61,7 @@ exports.register = async (req, res) => {
 const validatelogin = (data) => {
   const schema = Joi.object({
     user: Joi.string().required().label("Email or Tell"), // ใช้ "user" แทน "email"
-    password: Joi.string().min(7).required().label("Password"),
+    password: Joi.string().min(7).required().label("Password")
   });
   return schema.validate(data);
 };
@@ -76,7 +77,7 @@ exports.loginUser = async (req, res) => {
     }
     //หา user
     const userFound = await User.findOne({
-      $or: [{ email: user }, { tell: user }],
+      $or: [{ email: user }, { tell: user }]
     });
 
     //ไม่เจอ
@@ -99,9 +100,9 @@ exports.loginUser = async (req, res) => {
         username: userFound.username,
         email: userFound.email,
         tell: userFound.tell,
-        role: userFound.role,
+        role: userFound.role
       },
-      address: userFound.address,
+      address: userFound.address
     };
 
     jwt.sign(payload, "jwtsecret", { expiresIn: "1d" }, (err, token) => {
@@ -212,7 +213,7 @@ exports.getAddress = (req, res) => {
         sub_district: address.sub_district,
         district: address.district,
         province: address.province,
-        postcode: address.postcode,
+        postcode: address.postcode
       });
     })
 
@@ -242,7 +243,7 @@ exports.getAddressByUserId = (req, res) => {
         sub_district: address.sub_district,
         district: address.district,
         province: address.province,
-        postcode: address.postcode,
+        postcode: address.postcode
       }));
 
       res.json(formattedAddresses);
@@ -257,8 +258,9 @@ exports.getAddressById = (req, res, next) => {
   const id = req.params.id; // รับค่า ID ที่ส่งมาจาก request
   Address.findById(id) // ค้นหาที่อยู่โดยใช้ ID
     .exec()
-    .then(address => {
-      if (!address) { // ถ้าไม่พบที่อยู่
+    .then((address) => {
+      if (!address) {
+        // ถ้าไม่พบที่อยู่
         return res.status(404).json({ error: "Address not found" });
       }
       // ถ้าพบที่อยู่ ส่งข้อมูลที่อยู่กลับไปในรูปแบบ JSON
@@ -273,13 +275,12 @@ exports.getAddressById = (req, res, next) => {
         postcode: address.postcode
       });
     })
-    .catch(err => {
+    .catch((err) => {
       console.error(err);
       // ถ้าเกิดข้อผิดพลาดในการค้นหา ส่งคำตอบกลับว่า Internal Server Error
       res.status(500).json({ error: "Internal Server Error" });
     });
 };
-
 
 exports.createAddress = async (req, res) => {
   try {
@@ -297,7 +298,7 @@ exports.createAddress = async (req, res) => {
 
     // ตรวจสอบจำนวนที่อยู่ที่มีอยู่แล้ว
     const existingAddressesCount = await Address.countDocuments({
-      addressBy: id,
+      addressBy: id
     });
 
     // ถ้ามีที่อยู่มากกว่าหรือเท่ากับ 5 ที่อยู่แล้ว ให้ส่งข้อความแจ้งเตือน
@@ -312,9 +313,9 @@ exports.createAddress = async (req, res) => {
       $or: addressData.map((address) => ({
         name: address.name,
         tell: address.tell,
-        houseNo: address.houseNo,
+        houseNo: address.houseNo
       })),
-      idUser: id,
+      idUser: id
     });
 
     // ถ้ามีที่อยู่ที่ซ้ำกันในระบบ ให้ส่งข้อความแจ้งเตือน
@@ -334,7 +335,7 @@ exports.createAddress = async (req, res) => {
           district: address.district,
           province: address.province,
           postcode: address.postcode,
-          idUser: id,
+          idUser: id
         });
         createdAddresses.push(newAddress);
       });
@@ -356,8 +357,9 @@ exports.updateAddress = (req, res, next) => {
   // ค้นหาและอัปเดตที่อยู่โดยใช้ ID ที่ระบุ
   Address.findByIdAndUpdate(id, updatedAddressData, { new: true })
     .exec()
-    .then(updatedAddress => {
-      if (!updatedAddress) { // ถ้าไม่พบที่อยู่ที่ต้องการอัปเดต
+    .then((updatedAddress) => {
+      if (!updatedAddress) {
+        // ถ้าไม่พบที่อยู่ที่ต้องการอัปเดต
         return res.status(404).json({ error: "Address not found" });
       }
       // ส่งข้อมูลที่อยู่ที่อัปเดตแล้วกลับไปในรูปแบบ JSON
@@ -372,7 +374,7 @@ exports.updateAddress = (req, res, next) => {
         postcode: updatedAddress.postcode
       });
     })
-    .catch(err => {
+    .catch((err) => {
       console.error(err);
       // ถ้าเกิดข้อผิดพลาดในการอัปเดต ส่งคำตอบกลับว่า Internal Server Error
       res.status(500).json({ error: "Internal Server Error" });
@@ -385,20 +387,20 @@ exports.deleteAddress = (req, res, next) => {
   // ลบที่อยู่โดยใช้ ID ที่ระบุ
   Address.findByIdAndDelete(id)
     .exec()
-    .then(deletedAddress => {
-      if (!deletedAddress) { // ถ้าไม่พบที่อยู่ที่ต้องการลบ
+    .then((deletedAddress) => {
+      if (!deletedAddress) {
+        // ถ้าไม่พบที่อยู่ที่ต้องการลบ
         return res.status(404).json({ error: "Address not found" });
       }
       // ส่งข้อความยืนยันการลบที่อยู่กลับไป
       res.json({ message: "Address deleted successfully" });
     })
-    .catch(err => {
+    .catch((err) => {
       console.error(err);
       // ถ้าเกิดข้อผิดพลาดในการลบ ส่งคำตอบกลับว่า Internal Server Error
       res.status(500).json({ error: "Internal Server Error" });
     });
 };
-
 
 exports.createOrder = async (req, res) => {
   try {
@@ -413,7 +415,7 @@ exports.createOrder = async (req, res) => {
       confirmed,
       payment,
       approve,
-      sendproduct,
+      sendproduct
     } = req.body; // Extract necessary fields from request body
     console.log("test create order");
 
@@ -426,7 +428,7 @@ exports.createOrder = async (req, res) => {
       confirmed,
       payment,
       approve,
-      sendproduct,
+      sendproduct
     };
     console.log(newOrder);
 
@@ -468,7 +470,7 @@ exports.getOrder = async (req, res) => {
           l_name: user.l_name,
           email: user.email,
           tell: user.tell,
-          order: order,
+          order: order
         });
       });
     });
@@ -511,14 +513,14 @@ exports.userCart = async (req, res) => {
         rail: item.rail,
         count: item.count,
         width: item.width,
-        height: item.height,
+        height: item.height
       })),
 
       orderBy: idUser,
       totalPrice: cart.reduce(
         (total, item) => total + item.price * item.count,
         0
-      ),
+      )
     }).save();
 
     res.json(newCart);
@@ -533,17 +535,23 @@ exports.userUpdateADCart = async (req, res) => {
     const idCart = req.params.id;
     console.log("idcart", idCart);
     const { sendAddress, deliveryIs, confirmed } = req.query;
+    const files = req.files;
+    console.log(files);
+    for (const file of files) {
+      // กำหนดค่า key ของไฟล์ให้กับ existingCart.windowimg
+     console.log(file.key);
+    }
 
-    console.log("data add ", req.file.key);
-
+    const fileKeys = files.map(file => file.key);
+    console.log("File keys:", fileKeys);
     console.log("Recieved data:", sendAddress, deliveryIs, confirmed);
 
-    if (!req.file) {
+    if (!req.files) {
       return res.status(400).send("No files were uploaded.");
     }
     if (!sendAddress || !deliveryIs || !confirmed) {
       return res.status(400).send({
-        error: "กรุณาส่งค่า sendAddress, deliveryIs, และ confirmed ให้ถูกต้อง",
+        error: "กรุณาส่งค่า sendAddress, deliveryIs, และ confirmed ให้ถูกต้อง"
       });
     }
 
@@ -554,18 +562,15 @@ exports.userUpdateADCart = async (req, res) => {
       existingCart.sendAddress = sendAddress;
       existingCart.deliveryIs = deliveryIs;
       existingCart.confirmed = confirmed;
-      existingCart.windowimg =  req.file.filename ;
+      
+        existingCart.windowimg = fileKeys;
+      
 
+      existingCart.totalPrice = existingCart.totalPrice;
 
-      existingCart.totalPrice =  existingCart.totalPrice ;
+      await existingCart.save();
 
-      // บันทึกการเปลี่ยนแปลง
-//       existingCart.deletedProducts.push(existingCart.products); // เก็บข้อมูลที่จะลบไว้ในที่นี้
-// existingCart.products = []; // ลบข้อมูล
-await existingCart.save();
-      // await existingCart.save();
-
-      res.json(existingCart); // ส่งค่าตะกร้าสินค้าที่อัปเดตกลับไป
+      res.json(existingCart); 
     } else {
       return res.status(404).send({ error: "ไม่พบตะกร้าสินค้าของผู้ใช้" });
     }
@@ -582,22 +587,21 @@ exports.getOrderById = async (req, res) => {
     console.log("get by id all");
     console.log(idUser);
     // const user = await User.findOne({ idUser }).exec();
-    let cart = await Cart.find({ orderBy: idUser})
+    let cart = await Cart.find({ orderBy: idUser })
       .populate([
         {
           path: "products.product",
-          select:
-            "productId brand p_type name p_width price color image detail",
+          select: "productId brand p_type name p_width price color image detail"
         },
         {
           path: "orderBy",
-          select: "_id f_name l_name username email tell createdAt updatedAt",
+          select: "_id f_name l_name username email tell createdAt updatedAt"
         },
         {
           path: "sendAddress",
           select:
-            "id name tell houseNo sub_district district province postcode idUser",
-        },
+            "id name tell houseNo sub_district district province postcode idUser"
+        }
       ])
       .exec();
 
@@ -614,7 +618,7 @@ exports.getOrderById = async (req, res) => {
       pandding,
       approve,
       sendproduct,
-      createdAt,
+      createdAt
     } = cart;
 
     res.json(cart);
@@ -639,23 +643,22 @@ exports.getOrderByIdWaitPayment = async (req, res) => {
       pandding: false,
       verifypayment: false,
       sendproduct: false,
-      complete: false,
+      complete: false
     })
       .populate([
         {
           path: "products.product",
-          select:
-            "productId brand p_type name p_width price color image detail",
+          select: "productId brand p_type name p_width price color image detail"
         },
         {
           path: "orderBy",
-          select: "_id f_name l_name username email tell createdAt updatedAt",
+          select: "_id f_name l_name username email tell createdAt updatedAt"
         },
         {
           path: "sendAddress",
           select:
-            "id name tell houseNo sub_district district province postcode idUser",
-        },
+            "id name tell houseNo sub_district district province postcode idUser"
+        }
       ])
       .exec();
 
@@ -675,7 +678,7 @@ exports.getOrderByIdWaitPayment = async (req, res) => {
             hour12: false,
             hour: "2-digit",
             minute: "2-digit",
-            second: "2-digit",
+            second: "2-digit"
           }
         )} ${createdAt.toLocaleDateString()}`; // เพิ่มข้อความแสดงถึงวันที่และเวลาที่ออเดอร์นี้จะถูกยกเลิก
       }
@@ -690,7 +693,7 @@ exports.getOrderByIdWaitPayment = async (req, res) => {
     res.json(
       carts.map((cart) => ({
         ...cart._doc,
-        paymentDeadline: cart.paymentDeadline, // เพิ่ม property paymentDeadline
+        paymentDeadline: cart.paymentDeadline // เพิ่ม property paymentDeadline
       }))
     );
   } catch (error) {
@@ -698,64 +701,6 @@ exports.getOrderByIdWaitPayment = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
-// exports.getOrderByIdPrepare = async (req, res) => {
-//   try {
-//     const idUser = req.params.id;
-//     console.log("get by id");
-//     console.log(idUser);
-//     // const user = await User.findOne({ idUser }).exec();
-//     let cart = await Cart.find({
-//       orderBy: idUser,
-//       enable: true,
-//       confirmed: true,
-//       approve: true,
-//       payment: true,
-//       verifypayment: true,
-//       sendproduct: false,
-//       complete: false,
-//     })
-//       .populate([
-//         {
-//           path: "products.product",
-//           select:
-//             "productId brand p_type name p_width price color image detail",
-//         },
-//         {
-//           path: "orderBy",
-//           select: "_id f_name l_name username email tell createdAt updatedAt",
-//         },
-//         {
-//           path: "sendAddress",
-//           select:
-//             "id name tell houseNo sub_district district province postcode idUser",
-//         },
-//       ])
-//       .exec();
-
-//     const {
-//       products,
-//       orderBy,
-//       totalPrice,
-//       sendAddress,
-//       deliveryIs,
-//       endble,
-//       confirmed,
-//       payment,
-//       verifypayment,
-//       pandding,
-//       approve,
-//       sendproduct,
-//       createdAt,
-//     } = cart;
-
-//     res.json(cart);
-//     // res.json({ products, orderBy,totalPrice, sendAddress, deliveryIs,endble, confirmed ,payment,approve,sendproduct,createdAt});
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// };
 
 exports.getOrderByIdPrepare = async (req, res) => {
   try {
@@ -771,23 +716,22 @@ exports.getOrderByIdPrepare = async (req, res) => {
       payment: true,
       verifypayment: true,
       sendproduct: false,
-      complete: false,
+      complete: false
     })
       .populate([
         {
           path: "products.product",
-          select:
-            "productId brand p_type name p_width price color image detail",
+          select: "productId brand p_type name p_width price color image detail"
         },
         {
           path: "orderBy",
-          select: "_id f_name l_name username email tell createdAt updatedAt",
+          select: "_id f_name l_name username email tell createdAt updatedAt"
         },
         {
           path: "sendAddress",
           select:
-            "id name tell houseNo sub_district district province postcode idUser",
-        },
+            "id name tell houseNo sub_district district province postcode idUser"
+        }
       ])
       .exec();
 
@@ -818,23 +762,23 @@ exports.getOrderByIdSend = async (req, res) => {
       payment: true,
       verifypayment: true,
       sendproduct: true,
-      complete: false,
+      complete: false
     })
       .populate([
         {
           path: "products.product",
           select:
-            "productId brand  p_type name p_width price color image detail",
+            "productId brand  p_type name p_width price color image detail"
         },
         {
           path: "orderBy",
-          select: "_id f_name l_name username email tell createdAt updatedAt",
+          select: "_id f_name l_name username email tell createdAt updatedAt"
         },
         {
           path: "sendAddress",
           select:
-            "id name tell houseNo sub_district district province postcode idUser",
-        },
+            "id name tell houseNo sub_district district province postcode idUser"
+        }
       ])
       .exec();
 
@@ -851,7 +795,7 @@ exports.getOrderByIdSend = async (req, res) => {
       payment,
       approve,
       sendproduct,
-      createdAt,
+      createdAt
     } = cart;
 
     res.json(cart);
@@ -877,24 +821,23 @@ exports.getOrderByIdComplete = async (req, res) => {
       pandding: true,
       approve: true,
       sendproduct: true,
-      complete: true,
-
+      complete: true
     })
       .populate([
         {
           path: "products.product",
           select:
-            "productId brand  p_type name p_width price color image detail",
+            "productId brand  p_type name p_width price color image detail"
         },
         {
           path: "orderBy",
-          select: "_id f_name l_name username email tell createdAt updatedAt",
+          select: "_id f_name l_name username email tell createdAt updatedAt"
         },
         {
           path: "sendAddress",
           select:
-            "id name tell houseNo sub_district district province postcode idUser",
-        },
+            "id name tell houseNo sub_district district province postcode idUser"
+        }
       ])
       .exec();
 
@@ -911,7 +854,7 @@ exports.getOrderByIdComplete = async (req, res) => {
       payment,
       approve,
       sendproduct,
-      createdAt,
+      createdAt
     } = cart;
 
     res.json(cart);
@@ -932,36 +875,21 @@ exports.getOrderByIdOrder = async (req, res) => {
       .populate([
         {
           path: "products.product",
-          select:
-            "productId brand p_type name p_width price color image detail",
+          select: "productId brand p_type name p_width price color image detail"
         },
         {
           path: "orderBy",
-          select: "_id f_name l_name username email tell createdAt updatedAt",
+          select: "_id f_name l_name username email tell createdAt updatedAt"
         },
         {
           path: "sendAddress",
           select:
-            "id name tell houseNo sub_district district province postcode idUser",
-        },
+            "id name tell houseNo sub_district district province postcode idUser"
+        }
       ])
       .exec();
 
-    const {
-      products,
-      orderBy,
-      totalPrice,
-      sendAddress,
-      deliveryIs,
-      endble,
-      confirmed,
-      payment,
-      approve,
-      sendproduct,
-      slipmoney,
-      createdAt,
-    } = cart;
-
+  
     res.json(cart);
     // res.json({ products, orderBy,totalPrice, sendAddress, deliveryIs,endble, confirmed ,payment,approve,sendproduct,createdAt});
   } catch (error) {
@@ -973,7 +901,7 @@ exports.getOrderByIdOrder = async (req, res) => {
 // exports.updateOrderEnable = async (req, res) => {
 //   try {
 //       const idOrder = req.params.id;
-//       const { cancelReasonAd } = req.body; 
+//       const { cancelReasonAd } = req.body;
 //       console.log("cancel text",cancelReasonAd);
 
 //       console.log("Update order enable for order:", idOrder);
@@ -993,26 +921,29 @@ exports.getOrderByIdOrder = async (req, res) => {
 
 exports.updateOrderEnable = async (req, res) => {
   try {
-      const idOrder = req.params.id;
-      const { enable,cancelReasonAd } = req.body;
-      console.log("cancel text", enable,cancelReasonAd);
+    const idOrder = req.params.id;
+    const { enable, cancelReasonAd } = req.body;
+    console.log("cancel text", enable, cancelReasonAd);
 
-      console.log("Update order enable for order:", idOrder);
-      if (!cancelReasonAd) {
-          return res.status(500).json({ error: "กรุณาใส่รายละเอียดการยกเลิก" });
-      }
+    console.log("Update order enable for order:", idOrder);
+    if (!cancelReasonAd) {
+      return res.status(500).json({ error: "กรุณาใส่รายละเอียดการยกเลิก" });
+    }
 
-      await Cart.updateOne({ _id: idOrder }, { enable: false, cancelReason: cancelReasonAd });
-      await Cart.updateOne({ _id: idOrder }, { verifycancelled: true });
+    await Cart.updateOne(
+      { _id: idOrder },
+      { enable: false, cancelReason: cancelReasonAd }
+    );
+    await Cart.updateOne({ _id: idOrder }, { verifycancelled: true });
 
-      return res.status(200).json({ message: "Order enable updated successfully." });
+    return res
+      .status(200)
+      .json({ message: "Order enable updated successfully." });
   } catch (error) {
-      console.log(error);
-      return res.status(500).json({ error: "Internal Server Error" });
+    console.log(error);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
-
 
 exports.updateOrderComplete = async (req, res) => {
   try {
@@ -1041,18 +972,17 @@ exports.getOrderAll = async (req, res) => {
       .populate([
         {
           path: "products.product",
-          select:
-            "productId brand p_type name p_width price color image detail",
+          select: "productId brand p_type name p_width price color image detail"
         },
         {
           path: "orderBy",
-          select: "_id f_name l_name username email tell createdAt updatedAt",
+          select: "_id f_name l_name username email tell createdAt updatedAt"
         },
         {
           path: "sendAddress",
           select:
-            "id name tell houseNo sub_district district province postcode idUser",
-        },
+            "id name tell houseNo sub_district district province postcode idUser"
+        }
       ])
       .exec();
 
@@ -1067,7 +997,7 @@ exports.getOrderAll = async (req, res) => {
       payment,
       approve,
       sendproduct,
-      createdAt,
+      createdAt
     } = cart;
 
     res.json(cart);
@@ -1091,23 +1021,23 @@ exports.getOrderApprove = async (req, res) => {
       verifypayment: false,
       pandding: false,
       sendproduct: false,
-      complete: false,
+      complete: false
     })
       .populate([
         {
           path: "products.product",
           select:
-            "productId brand  p_type name p_width price color image detail",
+            "productId brand  p_type name p_width price color image detail"
         },
         {
           path: "orderBy",
-          select: "_id f_name l_name username email tell createdAt updatedAt",
+          select: "_id f_name l_name username email tell createdAt updatedAt"
         },
         {
           path: "sendAddress",
           select:
-            "id name tell houseNo sub_district district province postcode idUser",
-        },
+            "id name tell houseNo sub_district district province postcode idUser"
+        }
       ])
       .exec();
 
@@ -1124,7 +1054,7 @@ exports.getOrderApprove = async (req, res) => {
       pandding,
       approve,
       sendproduct,
-      createdAt,
+      createdAt
     } = cart;
 
     res.json(cart);
@@ -1144,27 +1074,26 @@ exports.getOrderPayment = async (req, res) => {
       enable: true,
       confirmed: true,
       approve: true,
-     
+
       verifypayment: false,
       pandding: false,
       sendproduct: false,
-      complete: false,
+      complete: false
     })
       .populate([
         {
           path: "products.product",
-          select:
-            "productId brand p_type name p_width price color image detail",
+          select: "productId brand p_type name p_width price color image detail"
         },
         {
           path: "orderBy",
-          select: "_id f_name l_name username email tell createdAt updatedAt",
+          select: "_id f_name l_name username email tell createdAt updatedAt"
         },
         {
           path: "sendAddress",
           select:
-            "id name tell houseNo sub_district district province postcode idUser",
-        },
+            "id name tell houseNo sub_district district province postcode idUser"
+        }
       ])
       .exec();
 
@@ -1181,7 +1110,7 @@ exports.getOrderPayment = async (req, res) => {
       payment,
       approve,
       sendproduct,
-      createdAt,
+      createdAt
     } = cart;
 
     res.json(cart);
@@ -1205,23 +1134,22 @@ exports.getOrdertoVeriflyPayment = async (req, res) => {
       verifypayment: false,
       pandding: false,
       sendproduct: false,
-      complete: false,
+      complete: false
     })
       .populate([
         {
           path: "products.product",
-          select:
-            "productId brand p_type name p_width price color image detail",
+          select: "productId brand p_type name p_width price color image detail"
         },
         {
           path: "orderBy",
-          select: "_id f_name l_name username email tell createdAt updatedAt",
+          select: "_id f_name l_name username email tell createdAt updatedAt"
         },
         {
           path: "sendAddress",
           select:
-            "id name tell houseNo sub_district district province postcode idUser",
-        },
+            "id name tell houseNo sub_district district province postcode idUser"
+        }
       ])
       .exec();
 
@@ -1238,7 +1166,7 @@ exports.getOrdertoVeriflyPayment = async (req, res) => {
       payment,
       approve,
       sendproduct,
-      createdAt,
+      createdAt
     } = cart;
 
     res.json(cart);
@@ -1262,23 +1190,22 @@ exports.getOrderPrepare = async (req, res) => {
       verifypayment: true,
       pandding: false,
       sendproduct: false,
-      complete: false,
+      complete: false
     })
       .populate([
         {
           path: "products.product",
-          select:
-            "productId brand p_type name p_width price color image detail",
+          select: "productId brand p_type name p_width price color image detail"
         },
         {
           path: "orderBy",
-          select: "_id f_name l_name username email tell createdAt updatedAt",
+          select: "_id f_name l_name username email tell createdAt updatedAt"
         },
         {
           path: "sendAddress",
           select:
-            "id name tell houseNo sub_district district province postcode idUser",
-        },
+            "id name tell houseNo sub_district district province postcode idUser"
+        }
       ])
       .exec();
 
@@ -1295,7 +1222,7 @@ exports.getOrderPrepare = async (req, res) => {
       payment,
       approve,
       sendproduct,
-      createdAt,
+      createdAt
     } = cart;
 
     res.json(cart);
@@ -1318,23 +1245,22 @@ exports.getOrderSend = async (req, res) => {
       payment: true,
       verifypayment: true,
       pandding: true,
-      complete: false,
+      complete: false
     })
       .populate([
         {
           path: "products.product",
-          select:
-            "productId brand p_type name p_width price color image detail",
+          select: "productId brand p_type name p_width price color image detail"
         },
         {
           path: "orderBy",
-          select: "_id f_name l_name username email tell createdAt updatedAt",
+          select: "_id f_name l_name username email tell createdAt updatedAt"
         },
         {
           path: "sendAddress",
           select:
-            "id name tell houseNo sub_district district province postcode idUser",
-        },
+            "id name tell houseNo sub_district district province postcode idUser"
+        }
       ])
       .exec();
 
@@ -1351,7 +1277,7 @@ exports.getOrderSend = async (req, res) => {
       payment,
       approve,
       sendproduct,
-      createdAt,
+      createdAt
     } = cart;
 
     res.json(cart);
@@ -1374,23 +1300,22 @@ exports.getOrderComplete = async (req, res) => {
       payment: true,
       verifypayment: true,
       pandding: true,
-      sendproduct: true,
+      sendproduct: true
     })
       .populate([
         {
           path: "products.product",
-          select:
-            "productId brand p_type name p_width price color image detail",
+          select: "productId brand p_type name p_width price color image detail"
         },
         {
           path: "orderBy",
-          select: "_id f_name l_name username email tell createdAt updatedAt",
+          select: "_id f_name l_name username email tell createdAt updatedAt"
         },
         {
           path: "sendAddress",
           select:
-            "id name tell houseNo sub_district district province postcode idUser",
-        },
+            "id name tell houseNo sub_district district province postcode idUser"
+        }
       ])
       .exec();
 
@@ -1408,7 +1333,7 @@ exports.getOrderComplete = async (req, res) => {
       pandding,
       approve,
       sendproduct,
-      createdAt,
+      createdAt
     } = cart;
 
     res.json(cart);
@@ -1433,23 +1358,22 @@ exports.searchOrderApprove = async (req, res) => {
       verifypayment: false,
       pandding: false,
       sendproduct: false,
-      complete: false,
+      complete: false
     })
       .populate([
         {
           path: "products.product",
-          select:
-            "productId brand p_type name p_width price color image detail",
+          select: "productId brand p_type name p_width price color image detail"
         },
         {
           path: "orderBy",
-          select: "_id f_name l_name username email tell createdAt updatedAt",
+          select: "_id f_name l_name username email tell createdAt updatedAt"
         },
         {
           path: "sendAddress",
           select:
-            "id name tell houseNo sub_district district province postcode idUser",
-        },
+            "id name tell houseNo sub_district district province postcode idUser"
+        }
       ])
       .exec();
 
@@ -1484,23 +1408,22 @@ exports.searchOrderPayment = async (req, res) => {
       verifypayment: false,
       pandding: false,
       sendproduct: false,
-      complete: false,
+      complete: false
     })
       .populate([
         {
           path: "products.product",
-          select:
-            "productId brand p_type name p_width price color image detail",
+          select: "productId brand p_type name p_width price color image detail"
         },
         {
           path: "orderBy",
-          select: "_id f_name l_name username email tell createdAt updatedAt",
+          select: "_id f_name l_name username email tell createdAt updatedAt"
         },
         {
           path: "sendAddress",
           select:
-            "id name tell houseNo sub_district district province postcode idUser",
-        },
+            "id name tell houseNo sub_district district province postcode idUser"
+        }
       ])
       .exec();
 
@@ -1536,23 +1459,22 @@ exports.searchOrderPrepare = async (req, res) => {
       verifypayment: true,
       pandding: false,
       sendproduct: false,
-      complete: false,
+      complete: false
     })
       .populate([
         {
           path: "products.product",
-          select:
-            "productId brand p_type name p_width price color image detail",
+          select: "productId brand p_type name p_width price color image detail"
         },
         {
           path: "orderBy",
-          select: "_id f_name l_name username email tell createdAt updatedAt",
+          select: "_id f_name l_name username email tell createdAt updatedAt"
         },
         {
           path: "sendAddress",
           select:
-            "id name tell houseNo sub_district district province postcode idUser",
-        },
+            "id name tell houseNo sub_district district province postcode idUser"
+        }
       ])
       .exec();
 
@@ -1588,23 +1510,22 @@ exports.searchOrderSend = async (req, res) => {
       verifypayment: true,
       pandding: true,
       sendproduct: false,
-      complete: false,
+      complete: false
     })
       .populate([
         {
           path: "products.product",
-          select:
-            "productId brand p_type name p_width price color image detail",
+          select: "productId brand p_type name p_width price color image detail"
         },
         {
           path: "orderBy",
-          select: "_id f_name l_name username email tell createdAt updatedAt",
+          select: "_id f_name l_name username email tell createdAt updatedAt"
         },
         {
           path: "sendAddress",
           select:
-            "id name tell houseNo sub_district district province postcode idUser",
-        },
+            "id name tell houseNo sub_district district province postcode idUser"
+        }
       ])
       .exec();
 
@@ -1639,23 +1560,22 @@ exports.searchOrderComplete = async (req, res) => {
       payment: true,
       verifypayment: true,
       pandding: true,
-      sendproduct: true,
+      sendproduct: true
     })
       .populate([
         {
           path: "products.product",
-          select:
-            "productId brand p_type name p_width price color image detail",
+          select: "productId brand p_type name p_width price color image detail"
         },
         {
           path: "orderBy",
-          select: "_id f_name l_name username email tell createdAt updatedAt",
+          select: "_id f_name l_name username email tell createdAt updatedAt"
         },
         {
           path: "sendAddress",
           select:
-            "id name tell houseNo sub_district district province postcode idUser",
-        },
+            "id name tell houseNo sub_district district province postcode idUser"
+        }
       ])
       .exec();
 
@@ -1733,7 +1653,6 @@ exports.updateOrderSend = async (req, res) => {
     const { sendproduct } = req.body;
     console.log("Update order enable for order:", idOrder);
 
-    
     await Cart.updateOne({ _id: idOrder }, { sendproduct: sendproduct });
     console.log(sendproduct);
     res.status(200).json({ message: "Order enable updated successfully." });
@@ -1755,7 +1674,10 @@ exports.updateOrderCancelled = async (req, res) => {
 
     console.log("Update order enable for order:", idOrder);
 
-    await Cart.updateOne({ _id: idOrder }, { cancelled: cancelled, cause: cause });
+    await Cart.updateOne(
+      { _id: idOrder },
+      { cancelled: cancelled, cause: cause }
+    );
     console.log(cancelled, cause);
 
     res.status(200).json({ message: "Order cancel updated successfully." });
@@ -1764,7 +1686,6 @@ exports.updateOrderCancelled = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
 
 exports.updateOrderVerifyCancelled = async (req, res) => {
   try {
@@ -1782,7 +1703,11 @@ exports.updateOrderVerifyCancelled = async (req, res) => {
     // อัปเดตฐานข้อมูล
     await Cart.updateOne(
       { _id: idOrder },
-      { verifycancelled: verifycancelled, cancelled: cancelledValue, cantcause: cantcause }
+      {
+        verifycancelled: verifycancelled,
+        cancelled: cancelledValue,
+        cantcause: cantcause
+      }
     );
     console.log(verifycancelled);
     res.status(200).json({ message: "Order cancel updated successfully." });
@@ -1792,9 +1717,16 @@ exports.updateOrderVerifyCancelled = async (req, res) => {
   }
 };
 
+const s3 = new S3({
+  region: "ap-southeast-1",
+  credentials: {
+    accessKeyId: "AKIAQ3EGS6PRLXNBIQQV",
+    secretAccessKey: "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"
+  }
+});
 
 exports.updateSlip = async (req, res) => {
-  console.log("data add ", req.file.filename);
+  console.log("data add ", req.file.key);
   const idOrder = req.params.id;
   console.log(idOrder);
 
@@ -1814,7 +1746,7 @@ exports.updateSlip = async (req, res) => {
     }
 
     // อัปเดต slipmoney และ payment ใน cart
-    cart.slipmoney = req.file.filename;
+    cart.slipmoney = req.file.key;
     cart.payment = true;
 
     // บันทึกการเปลี่ยนแปลง
@@ -1836,7 +1768,7 @@ exports.deleteSlip = async (req, res) => {
       return res.status(404).json({ error: "ไม่พบสินค้าที่ต้องการลบ slip" });
     }
 
-    // ตรวจสอบว่ามี slip ในออเดอร์หรือไม่
+    // ตรวจสอบว่ามี slip ในออเดอร์หรือไม่F
     if (!cart.slipmoney) {
       return res.status(400).send("No slip uploaded for this order.");
     }
@@ -1849,8 +1781,21 @@ exports.deleteSlip = async (req, res) => {
     await cart.save();
 
     // ลบไฟล์ slip ออกจากไดเร็กทอรี
-    const slipPath = path.join(__dirname, "images", "slip", cart.slipmoney);
-    fs.unlinkSync(slipPath);
+    // const slipPath = path.join(__dirname, "images", "slip", cart.slipmoney);
+    // fs.unlinkSync(slipPath);
+
+    const params = {
+      Bucket: "image-products-charoenkit",
+      Key: product.imageKey
+    };
+    // Delete the old image file from AWS S3
+    s3.deleteObject(params, function (err, data) {
+      if (err) {
+        console.error("Error deleting old slip:", err);
+      } else {
+        console.log(" deleted successfully");
+      }
+    });
 
     res.send("Slip deleted successfully.");
   } catch (error) {

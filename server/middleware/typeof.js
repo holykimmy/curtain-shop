@@ -19,7 +19,7 @@ const s3 = new S3 ({
 
 
 // Middleware for uploading slip images
-const uploadSlip = multer({ storage: multerS3 ({
+const uploadType = multer({ storage: multerS3 ({
   s3 : s3,
   bucket: 'image-products-charoenkit',
   acl: "public-read",
@@ -32,10 +32,10 @@ const uploadSlip = multer({ storage: multerS3 ({
     const originalFileName = path.parse(file.originalname).name; // ดึงชื่อไฟล์เดิม (ไม่รวมนามสกุล)
     const extension = path.extname(file.originalname); // ดึงนามสกุลของไฟล์
 
-    const newFilename = `slip/${originalFileName}-${currentDate}${extension}`;
+    const newFilename = `typeof/${originalFileName}-${currentDate}${extension}`;
     cb(null, newFilename);
   }
 })
-}).single("slipmoney");
+}).single("typeof");
 
-module.exports = uploadSlip;
+module.exports = uploadType;

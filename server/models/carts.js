@@ -13,22 +13,22 @@ const CartSchema = mongoose.Schema(
         product: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Products",
-          required: true,
+          required: true
         },
         type: { type: String },
         rail: { type: String },
         count: { type: Number, default: 1 },
         width: { type: Number },
-        height: { type: Number },
-      },
+        height: { type: Number }
+      }
     ],
     orderBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Customers",
+      ref: "Customers"
     },
     sendAddress: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Address",
+      ref: "Address"
     },
     detail: { type: String },
     enable: { type: Boolean, default: true },
@@ -38,7 +38,7 @@ const CartSchema = mongoose.Schema(
     payment: { type: Boolean, default: false },
     approve: { type: Boolean, default: false },
     slipmoney: { type: String },
-    windowimg: { type: String },
+    windowimg: [{ type: String }],
     verifypayment: { type: Boolean, default: false },
     cancelled: { type: Boolean, default: false },
     verifycancelled: { type: Boolean, default: false },
@@ -47,12 +47,11 @@ const CartSchema = mongoose.Schema(
     postcodeOrder: { type: String },
     pandding: { type: Boolean, default: false },
     sendproduct: { type: Boolean, default: false },
-
     complete: { type: Boolean, default: false },
     createdAt: {
       type: String,
-      default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss"),
-    },
+      default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss")
+    }
   },
   { timestamps: true }
 );
