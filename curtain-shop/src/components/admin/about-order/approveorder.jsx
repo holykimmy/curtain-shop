@@ -110,7 +110,7 @@ const ApproveOrder = ({ idUser }) => {
 
     // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
-      navigate(`/order-detail/${idOrder}`, {});
+      navigate(`/order-detail-ad/${idOrder}`, {});
     }
   };
   const numberWithCommas = (x) => {

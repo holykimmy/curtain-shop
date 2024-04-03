@@ -88,24 +88,10 @@ const ReceiveOrder = ({ idUser }) => {
       cancelButtonText: "ยกเลิก",
     });
 
-    // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
       navigate(`/order-post/${idOrder}`, {});
     }
-    // if (confirmation.isConfirmed) {
-    //   try {
-    //     const response = await orderAPI.updateOrderSend(idOrder, true);
-    //     console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
-    //     await Swal.fire({
-    //       text: "จัดส่งสินค้าเรียบร้อยแล้ว",
-    //       icon: "success",
-    //     });
-    //     window.location.reload();
-    //   } catch (error) {
-    //     console.error("Error cancelling order:", error);
-    //     // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
-    //   }
-    // }
+  
   };
 
   const handdleOrderdetail = async (idOrder) => {

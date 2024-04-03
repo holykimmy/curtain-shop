@@ -66,11 +66,10 @@ function PostOrder() {
       if (decodedToken && decodedToken.user) {
         // Check if user is admin
         if (decodedToken.user.role !== "admin") {
-          // If user is not admin, redirect to login page or show unauthorized message
-          // Redirecting to login page:
+          
+          Swal.fire("Unauthorized", "You are not authorized to access this page", "error");
           window.location.href = "/login"; // Change '/login' to your actual login page route
           // Showing unauthorized message:
-          // Swal.fire("Unauthorized", "You are not authorized to access this page", "error");
         } else {
           setUserData(decodedToken.user);
         }
