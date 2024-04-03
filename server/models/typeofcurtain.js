@@ -1,12 +1,8 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { body, validationResult } = require("express-validator");
-const Joi = require("joi");
-const passwordComplexity = require("joi-password-complexity");
+
 const TypeofCurtain = mongoose.Schema(
   {
-    type_of: {
+    name: {
       type: String
     },
     price_rail: {
@@ -14,11 +10,20 @@ const TypeofCurtain = mongoose.Schema(
     },
     image: {
       type: String
+    },
+    slug: {
+      type: String,
+      lowercase: true,
+      unique: true
+    },
+    twolayer: {
+        type: Boolean
     }
   },
   { timestamps: true }
 );
-ProdusctSchema.pre("save", function (next) {
+
+TypeofCurtain.pre("save", function (next) {
   if (!this.createdAt) {
     this.createdAt = moment().locale("th").format("YYYY-MM-DD HH:mm:ss");
   }

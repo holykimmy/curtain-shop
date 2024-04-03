@@ -128,61 +128,49 @@ exports.getAllCustomers = (req, res) => {
       res.json(customer);
     })
     .catch((err) => {
-      // Handle the error, for example, send an error response
       console.log(error);
       res.status(500).json({ error: err.message });
     });
 };
 
 exports.getCustomerById = (req, res) => {
-  const customerId = req.params.id; // Extract the customer ID from request parameters
+  const customerId = req.params.id;
 
-  // Use Mongoose findById() to find the customer by ID
   User.findById(customerId)
     .exec() // Execute the query
     .then((customer) => {
       if (!customer) {
-        // If customer is not found, return an error response
         return res.status(404).json({ error: "Customer not found" });
       }
 
-      // If customer is found, return the customer data
       res.json(customer);
     })
     .catch((err) => {
-      // Handle any errors that occur during the query
       console.error(err);
       res.status(500).json({ error: "Internal Server Error" });
     });
 };
 
 exports.getCustomerAddressById = (req, res) => {
-  const customerId = req.params.id; // ดึง ID ของลูกค้าจากพารามิเตอร์ request
+  const customerId = req.params.id;
 
-  // ใช้ Mongoose findById() เพื่อหาลูกค้าโดยใช้ ID
   User.findById(customerId)
-    .select("address") // เลือกฟิลด์ address เท่านั้น
-    .exec() // ประมวลผลคิวรี
+    .select("address")
+    .exec()
     .then((customer) => {
       if (!customer) {
-        // ถ้าไม่พบลูกค้า ส่งคำตอบข้อผิดพลาดกลับ
         return res.status(404).json({ error: "Customer not found" });
       }
-
-      // ถ้าพบลูกค้า ส่งข้อมูล address กลับไป
       res.json(customer.address);
     })
     .catch((err) => {
-      // จัดการข้อผิดพลาดที่เกิดขึ้นในระหว่างคิวรี
-      console.error(err);
+      // console.error(err);
       res.status(500).json({ error: "Internal Server Error" });
     });
 };
 
 exports.search = (req, res) => {
   const { name } = req.query;
-
-  // Use a regular expression to perform a case-insensitive partial match on both first and last names
   const regex = new RegExp(name, "i");
   User.find({ $or: [{ f_name: regex }, { l_name: regex }] })
     .exec()
@@ -190,15 +178,14 @@ exports.search = (req, res) => {
       res.json(customers);
     })
     .catch((err) => {
-      console.log(error);
-      // จัดการข้อผิดพลาด, ตัวอย่างเช่น ส่งการตอบกลับด้วยข้อความผิดพลาด
+      // console.error(err);
       res.status(500).json({ error: err.message });
     });
 };
 
 exports.getAddress = (req, res) => {
   console.log("-------getAddress-------");
-  const idUser = req.params.id; // Get the user ID from request params
+  const idUser = req.params.id;
   console.log(idUser);
   // Find the address using idUser (user's ID)
   Address.find({ idUser: idUser })
@@ -502,9 +489,6 @@ exports.userCart = async (req, res) => {
       return res.status(404).send({ error: "ไม่พบผู้ใช้" });
     }
 
-    //delete if hava old
-    // await Cart.findOneAndDelete({ orderBy: idUser }).exec();
-
     const newCart = await Cart({
       //loop procut
       products: cart.map((item) => ({
@@ -539,10 +523,10 @@ exports.userUpdateADCart = async (req, res) => {
     console.log(files);
     for (const file of files) {
       // กำหนดค่า key ของไฟล์ให้กับ existingCart.windowimg
-     console.log(file.key);
+      console.log(file.key);
     }
 
-    const fileKeys = files.map(file => file.key);
+    const fileKeys = files.map((file) => file.key);
     console.log("File keys:", fileKeys);
     console.log("Recieved data:", sendAddress, deliveryIs, confirmed);
 
@@ -562,15 +546,14 @@ exports.userUpdateADCart = async (req, res) => {
       existingCart.sendAddress = sendAddress;
       existingCart.deliveryIs = deliveryIs;
       existingCart.confirmed = confirmed;
-      
-        existingCart.windowimg = fileKeys;
-      
+
+      existingCart.windowimg = fileKeys;
 
       existingCart.totalPrice = existingCart.totalPrice;
 
       await existingCart.save();
 
-      res.json(existingCart); 
+      res.json(existingCart);
     } else {
       return res.status(404).send({ error: "ไม่พบตะกร้าสินค้าของผู้ใช้" });
     }
@@ -605,24 +588,7 @@ exports.getOrderById = async (req, res) => {
       ])
       .exec();
 
-    const {
-      products,
-      orderBy,
-      totalPrice,
-      sendAddress,
-      deliveryIs,
-      enable,
-      confirmed,
-      payment,
-      verifypayment,
-      pandding,
-      approve,
-      sendproduct,
-      createdAt
-    } = cart;
-
     res.json(cart);
-    // res.json({ products, orderBy,totalPrice, sendAddress, deliveryIs,endble, confirmed ,payment,approve,sendproduct,createdAt});
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -782,24 +748,7 @@ exports.getOrderByIdSend = async (req, res) => {
       ])
       .exec();
 
-    const {
-      products,
-      orderBy,
-      totalPrice,
-      sendAddress,
-      deliveryIs,
-      endble,
-      confirmed,
-      verifypayment,
-      pandding,
-      payment,
-      approve,
-      sendproduct,
-      createdAt
-    } = cart;
-
     res.json(cart);
-    // res.json({ products, orderBy,totalPrice, sendAddress, deliveryIs,endble, confirmed ,payment,approve,sendproduct,createdAt});
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -841,24 +790,7 @@ exports.getOrderByIdComplete = async (req, res) => {
       ])
       .exec();
 
-    const {
-      products,
-      orderBy,
-      totalPrice,
-      sendAddress,
-      deliveryIs,
-      endble,
-      confirmed,
-      verifypayment,
-      pandding,
-      payment,
-      approve,
-      sendproduct,
-      createdAt
-    } = cart;
-
     res.json(cart);
-    // res.json({ products, orderBy,totalPrice, sendAddress, deliveryIs,endble, confirmed ,payment,approve,sendproduct,createdAt});
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -889,59 +821,10 @@ exports.getOrderByIdOrder = async (req, res) => {
       ])
       .exec();
 
-  
     res.json(cart);
-    // res.json({ products, orderBy,totalPrice, sendAddress, deliveryIs,endble, confirmed ,payment,approve,sendproduct,createdAt});
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-// exports.updateOrderEnable = async (req, res) => {
-//   try {
-//       const idOrder = req.params.id;
-//       const { cancelReasonAd } = req.body;
-//       console.log("cancel text",cancelReasonAd);
-
-//       console.log("Update order enable for order:", idOrder);
-//       if (!cancelReasonAd) {
-//           res.status(500).json({ error: "กรุณาใส่รายละเอียดการยกเลิก" });
-//           return; // คืนค่าเพื่อให้ไม่ทำงานต่อ
-//       }
-
-//       await Cart.updateOne({ _id: idOrder }, { enable: false, cancelReason: cancelReasonAd });
-
-//       res.status(200).json({ message: "Order enable updated successfully." });
-//   } catch (error) {
-//       console.log(error);
-//       res.status(500).json({ error: "Internal Server Error" });
-//   }
-// };
-
-exports.updateOrderEnable = async (req, res) => {
-  try {
-    const idOrder = req.params.id;
-    const { enable, cancelReasonAd } = req.body;
-    console.log("cancel text", enable, cancelReasonAd);
-
-    console.log("Update order enable for order:", idOrder);
-    if (!cancelReasonAd) {
-      return res.status(500).json({ error: "กรุณาใส่รายละเอียดการยกเลิก" });
-    }
-
-    await Cart.updateOne(
-      { _id: idOrder },
-      { enable: false, cancelReason: cancelReasonAd }
-    );
-    await Cart.updateOne({ _id: idOrder }, { verifycancelled: true });
-
-    return res
-      .status(200)
-      .json({ message: "Order enable updated successfully." });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -986,22 +869,7 @@ exports.getOrderAll = async (req, res) => {
       ])
       .exec();
 
-    const {
-      products,
-      orderBy,
-      totalPrice,
-      sendAddress,
-      deliveryIs,
-      endble,
-      confirmed,
-      payment,
-      approve,
-      sendproduct,
-      createdAt
-    } = cart;
-
     res.json(cart);
-    // res.json({ products, orderBy,totalPrice, sendAddress, deliveryIs,endble, confirmed ,payment,approve,sendproduct,createdAt});
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -1041,24 +909,7 @@ exports.getOrderApprove = async (req, res) => {
       ])
       .exec();
 
-    const {
-      products,
-      orderBy,
-      totalPrice,
-      sendAddress,
-      deliveryIs,
-      endble,
-      confirmed,
-      payment,
-      verifypayment,
-      pandding,
-      approve,
-      sendproduct,
-      createdAt
-    } = cart;
-
     res.json(cart);
-    // res.json({ products, orderBy,totalPrice, sendAddress, deliveryIs,endble, confirmed ,payment,approve,sendproduct,createdAt});
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -1074,7 +925,6 @@ exports.getOrderPayment = async (req, res) => {
       enable: true,
       confirmed: true,
       approve: true,
-
       verifypayment: false,
       pandding: false,
       sendproduct: false,
@@ -1097,24 +947,7 @@ exports.getOrderPayment = async (req, res) => {
       ])
       .exec();
 
-    const {
-      products,
-      orderBy,
-      totalPrice,
-      sendAddress,
-      deliveryIs,
-      endble,
-      confirmed,
-      verifypayment,
-      pandding,
-      payment,
-      approve,
-      sendproduct,
-      createdAt
-    } = cart;
-
     res.json(cart);
-    // res.json({ products, orderBy,totalPrice, sendAddress, deliveryIs,endble, confirmed ,payment,approve,sendproduct,createdAt});
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -1153,24 +986,7 @@ exports.getOrdertoVeriflyPayment = async (req, res) => {
       ])
       .exec();
 
-    const {
-      products,
-      orderBy,
-      totalPrice,
-      sendAddress,
-      deliveryIs,
-      endble,
-      confirmed,
-      verifypayment,
-      pandding,
-      payment,
-      approve,
-      sendproduct,
-      createdAt
-    } = cart;
-
     res.json(cart);
-    // res.json({ products, orderBy,totalPrice, sendAddress, deliveryIs,endble, confirmed ,payment,approve,sendproduct,createdAt});
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -1209,24 +1025,7 @@ exports.getOrderPrepare = async (req, res) => {
       ])
       .exec();
 
-    const {
-      products,
-      orderBy,
-      totalPrice,
-      sendAddress,
-      deliveryIs,
-      endble,
-      confirmed,
-      verifypayment,
-      pandding,
-      payment,
-      approve,
-      sendproduct,
-      createdAt
-    } = cart;
-
     res.json(cart);
-    // res.json({ products, orderBy,totalPrice, sendAddress, deliveryIs,endble, confirmed ,payment,approve,sendproduct,createdAt});
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -1237,7 +1036,6 @@ exports.getOrderSend = async (req, res) => {
   console.log("get ---------------- all");
   try {
     console.log("get al  git ffl");
-    // const user = await User.findOne({ idUser }).exec();
     let cart = await Cart.find({
       enable: true,
       confirmed: true,
@@ -1264,24 +1062,7 @@ exports.getOrderSend = async (req, res) => {
       ])
       .exec();
 
-    const {
-      products,
-      orderBy,
-      totalPrice,
-      sendAddress,
-      deliveryIs,
-      endble,
-      confirmed,
-      verifypayment,
-      pandding,
-      payment,
-      approve,
-      sendproduct,
-      createdAt
-    } = cart;
-
     res.json(cart);
-    // res.json({ products, orderBy,totalPrice, sendAddress, deliveryIs,endble, confirmed ,payment,approve,sendproduct,createdAt});
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -1292,7 +1073,6 @@ exports.getOrderComplete = async (req, res) => {
   console.log("get ---------------- all");
   try {
     console.log("get al  git ffl");
-    // const user = await User.findOne({ idUser }).exec();
     let cart = await Cart.find({
       enable: true,
       confirmed: true,
@@ -1319,25 +1099,7 @@ exports.getOrderComplete = async (req, res) => {
       ])
       .exec();
 
-    const {
-      products,
-      orderBy,
-      totalPrice,
-      sendAddress,
-      deliveryIs,
-      endble,
-      confirmed,
-
-      payment,
-      verifypayment,
-      pandding,
-      approve,
-      sendproduct,
-      createdAt
-    } = cart;
-
     res.json(cart);
-    // res.json({ products, orderBy,totalPrice, sendAddress, deliveryIs,endble, confirmed ,payment,approve,sendproduct,createdAt});
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -1647,15 +1409,51 @@ exports.updateOrderPandding = async (req, res) => {
   }
 };
 
+exports.updateOrderEnable = async (req, res) => {
+  try {
+    const idOrder = req.params.id;
+    const { enable, cancelReasonAd } = req.body;
+    console.log("cancel text", enable, cancelReasonAd);
+
+    console.log("Update order enable for order:", idOrder);
+    if (!cancelReasonAd) {
+      return res.status(500).json({ error: "กรุณาใส่รายละเอียดการยกเลิก" });
+    }
+
+    await Cart.updateOne(
+      { _id: idOrder },
+      { enable: false, cancelReasonAd: cancelReasonAd }
+    );
+    await Cart.updateOne({ _id: idOrder }, { verifycancelled: true });
+
+    return res
+      .status(200)
+      .json({ message: "Order enable updated successfully." });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 exports.updateOrderSend = async (req, res) => {
   try {
     const idOrder = req.params.id;
-    const { sendproduct } = req.body;
-    console.log("Update order enable for order:", idOrder);
+    const { sendproduct, postcodeOrder } = req.body;
+    console.log(idOrder);
+    console.log("postcode text", sendproduct, postcodeOrder);
 
-    await Cart.updateOne({ _id: idOrder }, { sendproduct: sendproduct });
-    console.log(sendproduct);
-    res.status(200).json({ message: "Order enable updated successfully." });
+    // ตรวจสอบว่ามีค่า cause หรือไม่
+    if (!postcodeOrder) {
+      return res.status(400).json({ error: "Cause is required." });
+    }
+
+    await Cart.updateOne(
+      { _id: idOrder },
+      { sendproduct: true, postcodeOrder: postcodeOrder }
+    );
+    console.log(sendproduct, postcodeOrder);
+
+    res.status(200).json({ message: "Order send updated successfully." });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -1671,8 +1469,6 @@ exports.updateOrderCancelled = async (req, res) => {
     if (!cause) {
       return res.status(400).json({ error: "Cause is required." });
     }
-
-    console.log("Update order enable for order:", idOrder);
 
     await Cart.updateOne(
       { _id: idOrder },

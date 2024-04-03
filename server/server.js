@@ -13,6 +13,7 @@ const CategoryRoute = require("./routes/category");
 const AdminRoute = require("./routes/admin");
 const AuthRoute = require("./routes/auth");
 const ReceptRoute = require("./routes/recept");
+const TypeRoute = require("./routes/typeofcurtain");
 
 
 const bcrypt = require("bcrypt");
@@ -35,8 +36,6 @@ mongoose
 app.use(express.json());
 app.use(
   cors({
-
-    // https://cms-curtain-shop.vercel.app/
     origin: ["http://localhost:3000", "https://cms-curtain-shop.vercel.app", "https://curtain-shop.vercel.app"], // กำหนดโดเมนที่อนุญาตให้เข้าถึง
     methods: ["GET", "POST", "PUT", "DELETE"], // กำหนดเมทอดที่อนุญาต
     allowedHeaders: ["Content-Type", "Authorization", "authtoken"],
@@ -45,11 +44,6 @@ app.use(
 );
 
 
-// app.use((req, res, next) => {
-//   // res.setHeader('Access-Control-Allow-Origin', origin);
-//   res.setHeader('Access-Control-Allow-Origin', 'https://cms-curtain-shop.vercel.app',);
-//   next();
-// });
 
 
 app.use((req, res, next) => {
@@ -65,10 +59,6 @@ app.use((req, res, next) => {
 app.use(cookieParser());
 app.use(morgan("dev"));
 
-// Serve images statically
-app.use("/api/images", express.static(path.join(__dirname, "images")));
-app.use("/api/images/slip", express.static(path.join(__dirname, "slip")));
-
 
 // Routes
 app.use("/api/customer", CustomerRoute);
@@ -76,6 +66,8 @@ app.use("/api/product", ProductRoute);
 app.use("/api/category", CategoryRoute);
 app.use("/api/dashboard", AdminRoute);
 app.use("/api/recept", ReceptRoute);
+app.use("/api/type-cut", TypeRoute);
+
 app.use("/api", AuthRoute);
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -76,7 +76,7 @@ router.get("/order/complete/:id", auth, getOrderByIdComplete);
 
 
 //get for admin
-router.get("/all/order", auth, getOrderAll);
+router.get("/all/order", getOrderAll);
 router.get("/all/order/approve",auth,getOrderApprove)
 router.get("/all/order/payment",auth,getOrderPayment)
 router.get("/all/order/prepare",auth,getOrderPrepare)

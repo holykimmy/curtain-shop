@@ -49,7 +49,6 @@ exports.create = (req, res) => {
     });
 };
 
-
 exports.createBrand = (req, res) => {
   const { brand } = req.body;
   let slug = slugifyMultilingual(brand);

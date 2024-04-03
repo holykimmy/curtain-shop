@@ -36,6 +36,6 @@ const uploadType = multer({ storage: multerS3 ({
     cb(null, newFilename);
   }
 })
-}).single("typeof");
+}).single("image");
 
 module.exports = uploadType;
