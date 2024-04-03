@@ -58,6 +58,10 @@ import ReceptDetailInvoice from "./components/admin/receptDetailInvoice";
 import InvoicePage from "./components/admin/InvoicePage";
 import AddProductPage from "./components/admin/AddProductPage";
 import AddBrandPage from "./components/admin/AddBrandPage";
+import AddTypePage from "./components/admin/AddTypePage";
+import UpdateTypePage from "./components/admin/updateTypePage";
+
+
 import CategoryProduct from "./components/admin/AddCategoryAndType";
 import Customers from "./components/admin/Customers";
 import Orders from "./components/admin/Orders";
@@ -129,11 +133,14 @@ const router = createBrowserRouter([
   { path: "/invoice-detail/:id", element: <ReceptDetailInvoice />},
   { path: "/quotation-update/:id", element: <UpdateQuotationPage />},
   { path: "/invoice-update/:id", element: <UpdateInvoicePage />},
+  { path: "/update-type/id", element: <UpdateTypePage /> },
 
 
 
   { path: "/add-product", element: <AddProductPage /> },
   { path: "/add-brand", element: <AddBrandPage /> },
+  { path: "/add-type", element: <AddTypePage /> },
+
   { path: "/add-category", element: <CategoryProduct /> },
   { path: "/customers", element: <Customers /> },
   { path: "/orders/:selectedButton", element: <Orders /> },

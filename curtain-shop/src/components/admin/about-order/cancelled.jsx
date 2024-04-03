@@ -48,7 +48,7 @@ const CancelOrder = ({ idUser }) => {
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "ยืนยัน",
-      cancelButtonText: "ยกเลิก",
+      cancelButtonText: "ยกเลิก"
     });
 
     // หากผู้ใช้กดปุ่มยืนยัน
@@ -59,7 +59,7 @@ const CancelOrder = ({ idUser }) => {
         await Swal.fire({
           title: "ยกเลิกสำเร็จ",
           text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
-          icon: "success",
+          icon: "success"
         });
         window.location.reload();
       } catch (error) {
@@ -90,7 +90,7 @@ const CancelOrder = ({ idUser }) => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "ใช่",
-      cancelButtonText: "ยกเลิก",
+      cancelButtonText: "ยกเลิก"
     });
 
     // หากผู้ใช้กดปุ่มยืนยัน
@@ -101,7 +101,7 @@ const CancelOrder = ({ idUser }) => {
         await Swal.fire({
           title: "ยืนยันคำสั่งซื้อ",
           text: "คำสั่งซื้อได้รับการยืนยันแล้ว",
-          icon: "success",
+          icon: "success"
         });
         window.location.reload();
       } catch (error) {
@@ -120,7 +120,7 @@ const CancelOrder = ({ idUser }) => {
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "ยืนยัน",
-      cancelButtonText: "ยกเลิก",
+      cancelButtonText: "ยกเลิก"
     });
 
     // หากผู้ใช้กดปุ่มยืนยัน
@@ -401,6 +401,13 @@ const CancelOrder = ({ idUser }) => {
               <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-1">
                 สถานะ : {!order.enable ? "ยกเลิกสินค้าแล้ว" : null}
               </p>
+              {order.verifycancelled ? (
+              <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-1">
+              ยกเลิกสินค้าโดยแอดมินเนื้องจาก {order.cancelReasonAd}
+                </p>
+              ) : (
+                " "
+              )}
 
               <div className="flex justify-between">
                 <div className="flex justify-start ">

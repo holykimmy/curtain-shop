@@ -33,7 +33,7 @@ function Customers() {
   }, [isLoading]);
 
   useEffect(() => {
-    isLoading(true)
+    setIsLoading(true)
     const fetchData = () => {
       CustomerAPI.getAllCustomer()
         .then((orderData) => {

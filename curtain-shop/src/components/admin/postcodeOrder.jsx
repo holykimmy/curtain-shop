@@ -30,7 +30,7 @@ function PostOrder() {
 
   const navigate = useNavigate();
   const [currentOrder, setCurrentOrder] = useState([]);
-  const [cancelReasonAd, setCancelReasonAd] = useState("");
+  const [postcodeOrder, setPostcodeOrder] = useState("");
   useEffect(() => {
     const fetchData = () => {
       customerAPI
@@ -66,7 +66,7 @@ function PostOrder() {
       if (decodedToken && decodedToken.user) {
         // Check if user is admin
         if (decodedToken.user.role !== "admin") {
-          
+
           Swal.fire("Unauthorized", "You are not authorized to access this page", "error");
           window.location.href = "/login"; // Change '/login' to your actual login page route
           // Showing unauthorized message:
@@ -107,52 +107,20 @@ function PostOrder() {
     // Return a cleanup function to clear the interval
     return () => clearInterval();
   }, [idUser]);
-  console.log("dkjhafkdsj");
-  console.log(address);
 
-  const handleVerifyOrder = async (idOrder) => {
-    // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
-    const confirmation = await Swal.fire({
-      title: "ยืนยันการชำระเงิน",
-      text: "ลูกค้าชำระเงินสำเร็จแล้วใช่หรือไม่?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "ใช่",
-      cancelButtonText: "ยกเลิก"
-    });
 
-    // หากผู้ใช้กดปุ่มยืนยัน
-    if (confirmation.isConfirmed) {
-      try {
-        const response = await orderAPI.updateOrderVerifyPayment(idOrder, true);
-        console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
-        await Swal.fire({
-          title: "ยืนยันการชำระเงิน",
-          text: "คำสั่งซื้อได้รับการยืนยันแล้ว",
-          icon: "success"
-        });
-        // window.location.reload();
-      } catch (error) {
-        console.error("Error cancelling order:", error);
-        // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
-      }
-    }
-  };
 
-  const handleSendOrder = async (idOrder, cancelReasonAd) => {
-    if (!cancelReasonAd.trim()) {
+  const handleSendOrder = async (idOrder, postcodeOrder) => {
+    if (!postcodeOrder.trim()) {
       Swal.fire({
-        text: "กรุณาระบุเหตุผลที่ต้องการยกเลิก",
+        text: "กรุณาระบุเลขพัสดุ หรือ แจ้งการตัดตั้งสำเร็จ",
         icon: "warning"
       });
       return;
     }
 
     const confirmation = await Swal.fire({
-      title: "ยกเลิกคำสั่งซื้อ",
-      text: `คุณแน่ใจหรือไม่ที่ต้องการยกเลิกด้วยเหตุผล ${cancelReasonAd}?`,
+      text: `แจ้งเลขพัสดุ ${postcodeOrder} ?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
@@ -160,31 +128,33 @@ function PostOrder() {
       confirmButtonText: "ยืนยัน",
       cancelButtonText: "ยกเลิก"
     });
+    console.log("ind inkdj:", postcodeOrder);
 
 
     if (confirmation.isConfirmed) {
       try {
+        console.log("testttt");
         const response = await axios.put(
-          `${process.env.REACT_APP_API}/customer/order/enable/${idOrder}`,
-          { enable: false, cancelReasonAd }
+          `${process.env.REACT_APP_API}/customer/order/send/${idOrder}`,
+          { sendproduct : true , postcodeOrder }
         );
+        
 
         if (response.status === 200) {
           Swal.fire({
-            title: "ยกเลิกสำเร็จ",
-            text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
+            text: "ยืนยันการจัดส่งสินค้าสำเร็จ",
             icon: "success"
           });
           navigate(`/order-detail-ad/${idOrder}`, {});
         } else {
           Swal.fire({
-            title: "ยกเลิกไม่สำเร็จ",
+            title: "จัดส่งไม่สำเร็จ",
             text: "เกิดข้อผิดพลาดบางประการ",
             icon: "error"
           });
         }
       } catch (error) {
-        console.error("Error cancelling order:", error);
+        console.error("Error sendproduct order:", error);
       }
     }
   };
@@ -348,9 +318,9 @@ function PostOrder() {
                         class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         id="p_name"
                         type="text"
-                        value={cancelReasonAd}
-                        onChange={(e) => setCancelReasonAd(e.target.value)}
-                        placeholder="ex. สินค้าหมด "
+                        value={postcodeOrder}
+                        onChange={(e) => setPostcodeOrder(e.target.value)}
+                        placeholder="ex.TH0000000000 "
                       />
                     </div>
                   </div>
@@ -435,7 +405,7 @@ function PostOrder() {
                         <button
                           className="bg-green-400 mt-3 mx-2 py-2 px-auto w-[200px] rounded-full shadow-xl hover:bg-green-600 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
                           onClick={() =>
-                            handleSendOrder(order._id, cancelReasonAd)
+                            handleSendOrder(order._id, postcodeOrder)
                           }
                         >
                           จัดส่งสินค้าแล้ว

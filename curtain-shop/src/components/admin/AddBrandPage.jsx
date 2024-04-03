@@ -10,22 +10,18 @@ function AddBrandPage() {
   const [data, setData] = useState([]);
   const [brand, setBrand] = useState("");
 
-  const fetchData = async () => {
-    try {
-      const brands = await categoryAPI.getAllBrands();
-      setData(brands);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+
 
   useEffect(() => {
- 
+    const fetchData = async () => {
+      try {
+        const brands = await categoryAPI.getAllBrands();
+        setData(brands);
+      } catch (error) {
+        console.error(error);
+      }
+    };
     fetchData(); // fetchData 
-  
-    const intervalId = setInterval(fetchData, 5000); //refresh 5 วินาที
-  
-    return () => clearInterval(intervalId ); // ลบ interval เมื่อคอมโพเนนต์ถูกถอดออก
   }, []);
   
 
@@ -38,7 +34,7 @@ function AddBrandPage() {
           title: "Saved",
           icon: "success",
         });
-        fetchData();
+        window.location.reload();
       })
       .catch((err) => {
         Swal.fire({

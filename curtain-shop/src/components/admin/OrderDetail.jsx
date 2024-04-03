@@ -217,7 +217,15 @@ function OrderDetail() {
                 </p>
                 {order.verifycancelled ? (
                   <p className="text-xs sm:text-xs md:text-base lg:text-md xl:text-md font-medium leading-6 text-red-600">
-                    ยกเลิกสินค้าโดยแอดมินเนื้องจาก {order.cancelReason}
+                    ยกเลิกสินค้าโดยแอดมินเนื้องจาก {order.cancelReasonAd}
+                  </p>
+                ) : (
+                  " "
+                )}
+
+                {order.sendproduct ? (
+                  <p className="text-xs sm:text-xs md:text-base lg:text-md xl:text-md font-medium leading-6 text-gray-600">
+                    จัดส่งสินค้าเรียบร้อยแล้ว {order.postcodeOrder}
                   </p>
                 ) : (
                   " "
@@ -313,7 +321,9 @@ function OrderDetail() {
                           />
                         ))
                       ) : (
-                        <p className="text-red-500 text-base">ไม่ได้แนบรูปภาพ</p>
+                        <p className="text-red-500 text-base">
+                          ไม่ได้แนบรูปภาพ
+                        </p>
                       )}
                     </div>
                   </div>

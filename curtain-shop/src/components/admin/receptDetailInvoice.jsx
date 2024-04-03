@@ -156,7 +156,7 @@ function ReceptInvoiceDetail() {
                       <th
                         key={head}
                         scope="col"
-                        class="px-6 py-4 border-b border-blue-gray-100 bg-blue-gray-50 p-4 text-base text-center text-gray-700"
+                        className="px-6 py-4 border-b border-blue-gray-100 bg-blue-gray-50 p-4 text-base text-center text-gray-700"
                       >
                         {head}
                       </th>
@@ -167,7 +167,7 @@ function ReceptInvoiceDetail() {
                 <tbody>
                   {data.rows &&
                     data.rows.map((row, index) => (
-                      <tr key={index} class="border-b dark:border-neutral-500">
+                      <tr key={index} className="border-b dark:border-neutral-500">
                         <td className="p-2 border text-center border-blue-gray-50 text-gray-700">
                           <p class="text-gray-700 text-center">{index + 1}</p>
                         </td>

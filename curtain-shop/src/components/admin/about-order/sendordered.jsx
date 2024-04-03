@@ -20,9 +20,10 @@ const ReceiveOrder = ({ idUser }) => {
     const fetchData = () => {
       orderAPI
         .getOrderSend()
-        .then((orderData) => {  const sendTrueOrders = orderData.filter(
-          (order) => order.sendproduct === true
-        );
+        .then((orderData) => {
+          const sendTrueOrders = orderData.filter(
+            (order) => order.sendproduct === true
+          );
           setUserOrder(sendTrueOrders);
         })
         .catch((err) => {
@@ -47,7 +48,7 @@ const ReceiveOrder = ({ idUser }) => {
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "ยืนยัน",
-      cancelButtonText: "ยกเลิก",
+      cancelButtonText: "ยกเลิก"
     });
 
     // หากผู้ใช้กดปุ่มยืนยัน
@@ -58,7 +59,7 @@ const ReceiveOrder = ({ idUser }) => {
         await Swal.fire({
           title: "ยกเลิกสำเร็จ",
           text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
-          icon: "success",
+          icon: "success"
         });
         window.location.reload();
       } catch (error) {
@@ -89,7 +90,7 @@ const ReceiveOrder = ({ idUser }) => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "ใช่",
-      cancelButtonText: "ยกเลิก",
+      cancelButtonText: "ยกเลิก"
     });
 
     // หากผู้ใช้กดปุ่มยืนยัน
@@ -100,7 +101,7 @@ const ReceiveOrder = ({ idUser }) => {
         await Swal.fire({
           title: "ยืนยันคำสั่งซื้อ",
           text: "จัดส่งสินค้าเรียบร้อยแล้ว",
-          icon: "success",
+          icon: "success"
         });
         window.location.reload();
       } catch (error) {
@@ -119,7 +120,7 @@ const ReceiveOrder = ({ idUser }) => {
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "ยืนยัน",
-      cancelButtonText: "ยกเลิก",
+      cancelButtonText: "ยกเลิก"
     });
 
     // หากผู้ใช้กดปุ่มยืนยัน
@@ -278,8 +279,6 @@ const ReceiveOrder = ({ idUser }) => {
                         >
                           ส่งสินค้าเรียบร้อยแล้ว
                         </button> */}
-
-                       
                       </div>
                     </div>
                   </div>
@@ -382,11 +381,21 @@ const ReceiveOrder = ({ idUser }) => {
 
               {order.approve ? (
                 <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-1">
-                  สถานะ : :{" "}
-                  {order.sendproduct ? "จัดส่งสินค้าเรียบร้อยแล้ว" : "รอการจัดส่ง"}
+                  สถานะ :{" "}
+                  {order.sendproduct
+                    ? "จัดส่งสินค้าเรียบร้อยแล้ว"
+                    : "รอการจัดส่ง"}
                 </p>
               ) : (
                 ""
+              )}
+
+              {order.sendproduct ? (
+                <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-1">
+                  เลขพัสดุ :  {order.postcodeOrder}
+                </p>
+              ) : (
+                " "
               )}
 
               <div className="flex justify-between">
@@ -407,8 +416,6 @@ const ReceiveOrder = ({ idUser }) => {
                   >
                     ส่งสินค้าเรียบร้อยแล้ว
                   </button> */}
-
-                 
                 </div>
               </div>
             </div>
