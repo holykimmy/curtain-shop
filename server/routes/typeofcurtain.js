@@ -13,10 +13,10 @@ const uploadType = require("../middleware/typeof");
 const { auth } = require("../middleware/auth");
 
 router.post("/create", auth,uploadType, create);
-router.get("/all/type", auth, getAllTypes);
+router.get("/all/type", getAllTypes);
 router.get("/type/:id",auth,getTypeById);
-router.put("/update/:id",auth,updateTypeById);
-router.delete("/delete/:id",auth,deleteTypeById);
+router.put("/update/:id",auth,uploadType,updateTypeById);
+router.delete("/delete/:id",auth,uploadType,deleteTypeById);
 
 
 module.exports = router;

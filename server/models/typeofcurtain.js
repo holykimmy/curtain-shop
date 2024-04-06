@@ -17,7 +17,7 @@ const TypeofCurtain = mongoose.Schema(
       unique: true
     },
     twolayer: {
-        type: Boolean
+        type: String
     }
   },
   { timestamps: true }

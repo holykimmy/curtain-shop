@@ -13,6 +13,14 @@ const path = require("path");
 const slugifyMultilingual = (text) =>
   slugify(text, { lower: true, locale: "th" });
 
+const s3 = new S3({
+  region: "ap-southeast-1",
+  credentials: {
+    accessKeyId: "AKIAQ3EGS6PRLXNBIQQV",
+    secretAccessKey: "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"
+  }
+});
+
 exports.create = (req, res) => {
   const data = req.body;
   console.log(data);
@@ -83,17 +91,153 @@ exports.updateTypeById = (req, res) => {
   const typeId = req.params.id;
   const newData = req.body;
 
-  TypeofCurtain.findByIdAndUpdate(typeId, newData, { new: true })
+  console.log(
+    newData.name,
+    newData.price_rail,
+    newData.image,
+    newData.twolayer
+  );
+  console.log(typeId, newData);
+  console.log(req.file);
+  //   newData.image = req.file.key;
+  // Check if a new image is uploaded
+  if (req.file) {
+    console.log("have image : ");
+    newData.image = req.file.key; // Update image field with S3 key
+    // Find and update the type of curtain
+    TypeofCurtain.findById(typeId)
+      .exec()
+      .then((type) => {
+        console.log(type.image);
+        if (type && type.image) {
+          const params = {
+            Bucket: "image-products-charoenkit",
+            Key: type.image
+          };
+          s3.deleteObject(params, function (err, data) {
+            if (err) {
+              console.error("Error deleting old image:", err);
+            } else {
+              console.log("Delete successful");
+            }
+          });
+        }
+      })
+      .catch((err) => {
+        res.status(500).json({ error: "Failed to update data" });
+      });
+  }
+
+  let slug = slugifyMultilingual(
+    `${slugify(newData.name)}-${slugify(newData.price_rail)}-${Date.now()}`
+  );
+  console.log("no image", typeId);
+  console.log(newData.image);
+  TypeofCurtain.findById(typeId)
+    .exec()
     .then((type) => {
       if (!type) {
-        return res.status(404).json({ error: "ไม่พบประเภทแบบม่านที่ระบุ" });
+        return res.status(404).json({ error: "ไม่พบประภทนี้" });
+      } else {
+        console.log("testtff");
+        console.log(type.image, newData.twolayer);
+        console.log(type.twolayer, newData.twolayer);
+        type.name = newData.name || type.name;
+        type.price_rail = newData.price_rail || type.price_rail;
+        type.image = newData.image || type.image;
+        type.twolayer = newData.twolayer || type.twolayer;
+        slud = slug;
+
+        return type.save();
       }
-      res.json(type);
+    })
+    .then((updateTypes) => {
+      res.json(updateTypes);
     })
     .catch((err) => {
-      res.status(500).json({ error: "เกิดข้อผิดพลาดในการอัปเดตข้อมูล" });
+      console.log(err);
+      res.status(500).json({ error: "Failed to update data" });
     });
 };
+
+// exports.updateTypeById = (req, res) => {
+//     const typeId = req.params.id;
+//     const newData = req.body;
+
+//     console.log(
+//       newData.name,
+//       newData.price_rail,
+//       newData.image,
+//       newData.twolayer
+//     );
+//     console.log(typeId, newData);
+//     console.log(req.file);
+
+//     // Check if a new image is uploaded
+//     if (req.file) {
+//       console.log("have image : ");
+//       newData.image = req.file.key; // Update image field with S3 key
+//       // Find and update the type of curtain
+//       TypeofCurtain.findById(typeId)
+//         .exec()
+//         .then((type) => {
+//           console.log(type.image);
+//           if (type && type.image) {
+//             const params = {
+//               Bucket: "image-products-charoenkit",
+//               Key: type.image
+//             };
+//             s3.deleteObject(params, function (err, data) {
+//               if (err) {
+//                 console.error("Error deleting old image:", err);
+//               } else {
+//                 console.log("Delete successful");
+//               }
+//             });
+//           }
+//           // Update the type of curtain after deleting the old image
+//           updateType(typeId, newData, res);
+//         })
+//         .catch((err) => {
+//           res.status(500).json({ error: "Failed to update data" });
+//         });
+//     } else {
+//       // If no new image is uploaded, update the type of curtain directly
+//       updateType(typeId, newData, res);
+//     }
+//   };
+
+//   function updateType(typeId, newData, res) {
+//     let slug = slugifyMultilingual(
+//       `${slugify(newData.name)}-${slugify(newData.price_rail)}-${Date.now()}`
+//     );
+//     console.log("no image", typeId);
+//     console.log(newData.image);
+//     TypeofCurtain.findById(typeId)
+//       .exec()
+//       .then((type) => {
+//         if (!type) {
+//           return res.status(404).json({ error: "ไม่พบประภทนี้" });
+//         } else {
+//           console.log("testtff");
+//           console.log(type.image);
+//           type.name = newData.name || type.name;
+//           type.price_rail = newData.price_rail || type.price_rail;
+//           type.image = newData.image || type.image;
+//           type.twolayer = newData.twolayer || type.twolayer;
+//           slud = slug;
+
+//           return type.save();
+//         }
+//       })
+//       .then((updateTypes) => {
+//         res.json(updateTypes);
+//       })
+//       .catch((err) => {
+//         console.log(err);
+//         res.status(500).json({ error: "Failed to update data" });
+//       });
+//   }
 
 exports.deleteTypeById = (req, res) => {
   const typeId = req.params.id;
@@ -102,6 +246,20 @@ exports.deleteTypeById = (req, res) => {
       if (!type) {
         return res.status(404).json({ error: "ไม่พบประเภทแบบม่านที่ระบุ" });
       }
+
+      const params = {
+        Bucket: "image-products-charoenkit",
+        Key: type.image
+      };
+      // Delete the old image file from AWS S3
+      s3.deleteObject(params, function (err, data) {
+        if (err) {
+          console.error("Error deleting old image:", err);
+        } else {
+          console.log("Old image deleted successfully");
+        }
+      });
+      
       res.json({ message: "ลบประเภทแบบม่านเรียบร้อยแล้ว" });
     })
     .catch((err) => {

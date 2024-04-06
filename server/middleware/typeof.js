@@ -28,7 +28,7 @@ const uploadType = multer({ storage: multerS3 ({
     cb(null,{fieldName: file.fieldName});
   },
   key : function(req,file,cb){
-    const currentDate = moment().format("YYYY-MM-DD"); // วันที่ปัจจุบัน
+    const currentDate = moment().format("YYYY-MM-DD-HH-mm-ss"); // วันที่ปัจจุบัน
     const originalFileName = path.parse(file.originalname).name; // ดึงชื่อไฟล์เดิม (ไม่รวมนามสกุล)
     const extension = path.extname(file.originalname); // ดึงนามสกุลของไฟล์
 

@@ -204,6 +204,8 @@ exports.updateProduct = (req, res) => {
   const newData = req.body;
   console.log(newData);
 
+  console.log(newData.brand);
+
   const productId = req.params.productId;
   if (!newData.brand) {
     return res.status(400).json({ error: "กรุณาเลือกแบรนด์สินค้า" });
@@ -241,6 +243,7 @@ exports.updateProduct = (req, res) => {
         console.error("Error finding product:", err);
       });
   }
+  
   let slug = slugifyMultilingual(
     `${slugify(newData.brand)}-${slugify(newData.name)}-${slugify(
       newData.p_type

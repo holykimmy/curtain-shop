@@ -29,7 +29,7 @@ const upload = multer({
     },
     key: function (req, file, cb) {
       const { brand, p_type, name } = req.body;
-      const currentDate = moment().format("YYYY-MM-DD");
+      const currentDate = moment().format("YYYY-MM-DD-HH-mm-ss");
       const slugBrand = slugify(brand, { lower: true });
       const slugPType = slugify(p_type, { lower: true });
       const slugName = slugify(name, { lower: true });
