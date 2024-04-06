@@ -3,41 +3,107 @@ import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { MdDeleteForever } from "react-icons/md";
 import Swal from "sweetalert2";
+import typeAPI from "../../services/typeAPI";
 
 const ProductInCart = ({ item, idUser }) => {
-
   const dispatch = useDispatch();
   const [updatedItem, setUpdatedItem] = useState(item);
   const [cart, setCart] = useState([]);
   const [] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedType, setSelectedType] = useState("");
+  const [selectedTypeId, setSelectedTypeId] = useState("");
+  const [typeById, setTypeById] = useState("");
+  // console.log(item);
+  // useEffect(() => {
+  //   if (isLoading) {
+  //     Swal.fire({
+  //       customClass: {
+  //         popup: "bg-transparent"
+  //       },
+  //       backdrop: "rgba(255, 255, 255, 0.5)",
+  //       showConfirmButton: false,
+  //       didOpen: () => {
+  //         Swal.showLoading();
+  //       },
+  //       allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+  //       allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+  //     });
+  //   } else {
+  //     Swal.close();
+  //   }
+  // }, [isLoading]);
 
+  // const [types, setTypes] = useState([]);
+  // useEffect(() => {
+  //   const fetch = async () => {
+  //     try {
+  //       setIsLoading(true);
+  //       const type = await typeAPI.getAllTypes();
+  //       setTypes(type);
+  //       setIsLoading(false);
+  //     } catch (error) {
+  //       setIsLoading(false);
+  //       console.error("Error fetching all brands:", error);
+  //     }
+  //   };
 
+  //   fetch();
+  // }, []);
 
-  const handleMergeProductsOld = (updatedCart) => {
-    let mergedCart = [];
+  console.log("-----------------------------");
+  const getTotalPiece = (item) => {
+    const numberOfPieces = Math.ceil(item.width / item.p_width);
+    console.log(
+      "numberOfPieces",
+      item.width,
+      "/",
+      item.p_width,
+      " = ",
+      numberOfPieces
+    );
 
-    updatedCart.forEach((product) => {
-      console.log("test", product.productId);
-      const existingProductIndex = mergedCart.findIndex(
-        (item) =>
-          item.productId === product.productId &&
-          item.type === product.type &&
-          item.width === product.width &&
-          item.height === product.height &&
-          item.rail === product.rail
+    // คำนวณผ้า1ฝั่ง
+    // const fabricOneSide = item.p_width * numberOfPieces;
+    // console.log("fabricOneSide" ,item.p_width ,"*" ,numberOfPieces ,"=",fabricOneSide );
+
+    // คำนวณผ้าทั้งหมด
+    const totalFabric = numberOfPieces * 2;
+    console.log("totalFabric", numberOfPieces, "* 2 = ", totalFabric);
+
+    // คำนวณค่าผ้าต่อชิ้น
+    const fabricCostPerPiece = (item.height * totalFabric * item.price) / 100;
+    console.log(
+      "fabricCostPerPiece",
+      "[",
+      item.height,
+      "*",
+      totalFabric,
+      "*",
+      item.price,
+      "]/100",
+      " = ",
+      fabricCostPerPiece
+    );
+
+    let pricerail = 0;
+    if (item.rail === "รับราง") {
+      pricerail = (item.price_rail * item.width) / 100;
+      console.log(
+        "price rail [",
+        item.price_rail,
+        "*",
+        item.width,
+        " ]/100 = ",
+        pricerail
       );
-
-      if (existingProductIndex !== -1) {
-        // หากพบสินค้าที่มีข้อมูลเหมือนกันใน mergedCart
-        mergedCart[existingProductIndex].count += product.count; // เพิ่มจำนวนสินค้า
-      } else {
-        // หากไม่พบสินค้าที่มีข้อมูลเหมือนกันใน mergedCart
-        mergedCart.push(product);
-      }
-    });
-
-    return mergedCart;
+    }
+    console.log("price rail", pricerail);
+    const TotalPiece = fabricCostPerPiece * item.count + pricerail;
+    return TotalPiece;
   };
+
+  console.log("-----------------------------");
 
   const handleMergeProducts = (updatedCart) => {
     let mergedCart = {};
@@ -53,6 +119,7 @@ const ProductInCart = ({ item, idUser }) => {
           item.type === product.type &&
           item.width === product.width &&
           item.height === product.height &&
+          item.twolayer === product.twolayer &&
           item.rail === product.rail
       );
 
@@ -68,154 +135,127 @@ const ProductInCart = ({ item, idUser }) => {
     return mergedCart;
   };
 
-  // useEffect(() => {
-  //   // ดึงข้อมูลจาก localStorage
-  //   const cartFromLocalStorage = JSON.parse(localStorage.getItem("cart")) || [];
-  //   setCart(cartFromLocalStorage);
-  //   // อัปเดตข้อมูลใน Redux
+  // console.log("after ", cart);
+
+  // const handleChangeCount = (e) => {
+  //   const count = e.target.value < 1 ? 1 : e.target.value;
+
+  //   //เผื่อจะใส่ quitity
+  //   if (count > item.quatity) {
+  //     toast.error("max avialable Quantity");
+  //     return;
+  //   }
+
+  //   let cart = {};
+
+  //   if (localStorage.getItem("cart")) {
+  //     cart = JSON.parse(localStorage.getItem("cart"));
+  //   }
+
+  //   //update count
+  //   const updatedCart = cart[idUser].map((product) => {
+  //     if (product.cartId === item.cartId) {
+  //       return {
+  //         ...product,
+  //         count: count,
+  //         totalPiece: getTotalPiece(product)
+  //       };
+  //     }
+  //     return product;
+  //   });
+
+  //   cart[idUser] = updatedCart;
+
+  //   //maege
+  //   const mergedCart = handleMergeProducts(updatedCart);
+  //   //save to localStorage
+  //   localStorage.setItem("cart", JSON.stringify(mergedCart));
   //   dispatch({
   //     type: "ADD_TO_CART",
-  //     payload: cartFromLocalStorage,
+  //     payload: mergedCart
   //   });
-  // }, [cart]);
 
-  //   useEffect(() => {
-  //     // ดึงข้อมูลจาก localStorage
-  //     const cartFromLocalStorage = JSON.parse(localStorage.getItem("cart")) || {};
-
-  //     // ดึงเฉพาะ array ใน cart object ที่มีชื่อเป็น idUser
-  //     const cartArray = Object.values(cartFromLocalStorage);
-
-  //     setCart(cartArray);
-
-  //     // อัปเดตข้อมูลใน Redux
-  //     dispatch({
-  //         type: "ADD_TO_CART",
-  //         payload: cartArray,
-  //     });
-  // }, [cart]);
-
-  // useEffect(() => {
-  //   // ดึงข้อมูลจาก localStorage
-  //   const cartFromLocalStorage = JSON.parse(localStorage.getItem("cart")) || {};
-
-  //   // ดึงเฉพาะ array ใน cart object ที่มีชื่อเป็น idUser
-  //   // const idUser = "65e5aacf6f455e922446b734"; // หรือให้เป็นค่าที่ต้องการ
-  //   const cartArray = cartFromLocalStorage[idUser] || [];
-
-  //   setCart(cartArray);
-
-  //   // อัปเดตข้อมูลใน Redux
-  //   dispatch({
-  //     type: "ADD_TO_CART",
-  //     payload: cartArray,
-  //   });
-  // }, [cart]);
-
-  console.log("after ", cart);
-
+  // };
   const handleChangeCount = (e) => {
     const count = e.target.value < 1 ? 1 : e.target.value;
 
-    //เผื่อจะใส่ quitity
+    // เช็คว่าจำนวนที่ใส่มามากกว่าจำนวนสินค้าที่มีอยู่หรือไม่
     if (count > item.quatity) {
-      toast.error("max avialable Quantity");
+      toast.error("จำนวนสินค้าที่มีจำกัดสูงสุดแล้ว");
       return;
     }
 
+    // คำนวณค่า totalPiece ใหม่
+    const updatedItem = {
+      ...item,
+      count: count,
+      totalPiece: getTotalPiece({ ...item, count: count })
+    };
+
+    // อัพเดทสถานะใน local state ทันที
+    setUpdatedItem(updatedItem);
+
+    // อัพเดทตะกร้าสินค้าใน local storage และ Redux store
+    updateCart(updatedItem);
+  };
+
+  const updateCart = (updatedItem) => {
     let cart = {};
 
     if (localStorage.getItem("cart")) {
       cart = JSON.parse(localStorage.getItem("cart"));
     }
 
-    //update count
+    // อัพเดทจำนวนสินค้าและค่า totalPiece สำหรับสินค้าที่กำหนดในตะกร้า
     const updatedCart = cart[idUser].map((product) => {
-      if (product.cartId === item.cartId) {
-        return {
-          ...product,
-          count: count,
-        };
+      if (product.cartId === updatedItem.cartId) {
+        return updatedItem;
       }
       return product;
     });
 
+    // อัพเดทตะกร้าใน local storage
     cart[idUser] = updatedCart;
+    localStorage.setItem("cart", JSON.stringify(cart));
 
-    //maege
-    const mergedCart = handleMergeProducts(updatedCart);
-    //save to localStorage
-    localStorage.setItem("cart", JSON.stringify(mergedCart));
+    // ส่งค่าตะกร้าที่อัพเดทไปยัง Redux store
     dispatch({
       type: "ADD_TO_CART",
-      payload: mergedCart,
+      payload: handleMergeProducts(updatedCart)
     });
   };
 
   const handleChangeWidth = (e) => {
     const width = e.target.value < 1 ? 1 : e.target.value;
 
-    let cart = [];
-    if (localStorage.getItem("cart")) {
-      cart = JSON.parse(localStorage.getItem("cart"));
-    }
+    // คำนวณค่า totalPiece ใหม่
+    const updatedItem = {
+      ...item,
+      width: width,
+      totalPiece: getTotalPiece({ ...item, width: width })
+    };
 
-    //update count
-    const updatedCart = cart[idUser].map((product) => {
-      if (product.cartId === item.cartId) {
-        return {
-          ...product,
-          width: width,
-        };
-      }
-      return product;
-    });
+    // อัพเดทสถานะใน local state ทันที
+    setUpdatedItem(updatedItem);
 
-    cart[idUser] = updatedCart;
-
-    //maege
-    const mergedCart = handleMergeProducts(updatedCart);
-    //save to localStorage
-    localStorage.setItem("cart", JSON.stringify(mergedCart));
-
-    dispatch({
-      type: "ADD_TO_CART",
-      payload: mergedCart,
-    });
+    // อัพเดทตะกร้าสินค้าใน local storage และ Redux store
+    updateCart(updatedItem);
   };
 
   const handleChangeHeight = (e) => {
     const height = e.target.value < 1 ? 1 : e.target.value;
+    // คำนวณค่า totalPiece ใหม่
+    const updatedItem = {
+      ...item,
+      height: height,
+      totalPiece: getTotalPiece({ ...item, height: height })
+    };
 
-    let cart = [];
-    if (localStorage.getItem("cart")) {
-      cart = JSON.parse(localStorage.getItem("cart"));
-    }
+    // อัพเดทสถานะใน local state ทันที
+    setUpdatedItem(updatedItem);
 
-    //update count
-
-    const updatedCart = cart[idUser].map((product) => {
-      if (product.cartId === item.cartId) {
-        return {
-          ...product,
-          height: height,
-        };
-      }
-      return product;
-    });
-
-    cart[idUser] = updatedCart;
-
-    //maege
-    const mergedCart = handleMergeProducts(updatedCart);
-
-    //save to localStorage
-    localStorage.setItem("cart", JSON.stringify(mergedCart));
-
-    dispatch({
-      type: "ADD_TO_CART",
-      payload: mergedCart,
-    });
+    // อัพเดทตะกร้าสินค้าใน local storage และ Redux store
+    updateCart(updatedItem);
   };
 
   const handleRailChange = (e) => {
@@ -234,7 +274,7 @@ const ProductInCart = ({ item, idUser }) => {
       if (product.cartId === item.cartId) {
         return {
           ...product,
-          rail: value,
+          rail: value
         };
       }
       return product;
@@ -248,42 +288,7 @@ const ProductInCart = ({ item, idUser }) => {
 
     dispatch({
       type: "ADD_TO_CART",
-      payload: mergedCart,
-    });
-  };
-
-  const handleTypeChange = (e) => {
-    const { value } = e.target;
-
-    // ทำการอัปเดตค่าใน item โดยตรง
-    item.type = value;
-
-    //save to localStorage
-    let cart = [];
-    if (localStorage.getItem("cart")) {
-      cart = JSON.parse(localStorage.getItem("cart"));
-    }
-
-
-    const updatedCart = cart[idUser].map((product) => {
-      if (product.cartId === item.cartId) {
-        return {
-          ...product,
-          type: value,
-        };
-      }
-      return product;
-    });
-
-    cart[idUser] = updatedCart;
-
-    const mergedCart = handleMergeProducts(updatedCart);
-
-    localStorage.setItem("cart", JSON.stringify(mergedCart));
-
-    dispatch({
-      type: "ADD_TO_CART",
-      payload: mergedCart,
+      payload: mergedCart
     });
   };
 
@@ -307,22 +312,26 @@ const ProductInCart = ({ item, idUser }) => {
       // Update Redux store
       dispatch({
         type: "ADD_TO_CART",
-        payload: cart,
+        payload: cart
       });
     }
   };
+ 
+  const numberWithCommas = (x) => {
+    if (x == null) { // เพิ่มการตรวจสอบค่า null หรือ undefined
+      return ""; // หรือค่าที่คุณต้องการให้ส่งออก
+    }
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+  
 
   return (
     <tbody>
-      
       <tr className="text-center ">
         <td className="text-browntop px-2 py-1 border  border-gray-300 ...">
           {" "}
-          <img
-            className="w-[300px] rounded"
-            src={item.image}
-            alt="product"
-          />
+          <img className="w-[300px] rounded" src={item.image} alt="product" />
         </td>
         <td className="w-[100px] text-sm text-browntop px-2 py-1 border border-gray-300 ...">
           {item.name}
@@ -334,12 +343,10 @@ const ProductInCart = ({ item, idUser }) => {
           {item.detail}
         </td>
         <td className="w-[100px] text-browntop  text-sm px-2 py-1 border border-gray-300 ...">
-          <select value={item.type} onChange={handleTypeChange}>
-            <option value="ม่านจีบ">ม่านจีบ</option>
-            <option value="ม่านพับ">ม่านพับ</option>
-            <option value="ม่านตาไก่">ม่านตาไก่</option>
-            <option value="ม่านลอน">ม่านลอน</option>
-          </select>
+          {item.type}
+        </td>
+        <td className=" w-[100px] text-browntop text-sm px-2 py-1 border border-gray-300 ...">
+          {item.twolayer}
         </td>
         <td className="w-[100px] text-browntop text-sm px-2 py-1 border border-gray-300 ...">
           <select value={item.rail} onChange={handleRailChange}>
@@ -360,18 +367,20 @@ const ProductInCart = ({ item, idUser }) => {
             type="number"
             value={item.height}
           />
-          / cm
+          / ซม.
         </td>
-        <td className=" w-[100px] text-browntop text-sm px-2 py-1 border border-gray-300 ...">
-          {item.price} บาท
-        </td>
-        <td className="text-browntop  text-sm px-2 py-1 border border-gray-300 ...">
+
+        <td className="w-[150px] text-browntop  text-sm px-2 py-1 border border-gray-300 ...">
           <input
             onChange={handleChangeCount}
             className="form-control w-[75px]"
             type="number"
             value={item.count}
-          />
+          />{" "}
+          ชุด
+        </td>
+        <td className="text-browntop text-sm px-2 py-1 border border-gray-300 ...">
+          {numberWithCommas(getTotalPiece(item))} บาท
         </td>
 
         <td className="px-2 py-1 border border-gray-300 ...">
@@ -380,6 +389,7 @@ const ProductInCart = ({ item, idUser }) => {
             className="text-red-300  rounded-l-full h-10 w-10 hover:shadow-xl "
           />
         </td>
+  
       </tr>
     </tbody>
   );

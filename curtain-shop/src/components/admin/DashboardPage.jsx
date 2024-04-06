@@ -84,7 +84,7 @@ function MenuPage() {
             </button>
           </Link>
 
-          <Link to="/add-type">
+          <Link to="/type">
             <button class="flex bg-emerald-400 my-5 mx-auto p-1 pl-2 items-center shadow-md hover:shadow-xl h-[85px] md:h-[100px] w-[90%] md:w-[65%] rounded-[72px] justify-center">
               <div className="flex-[15%] rounded-[72px] border-4 border-emerald-400 border-r-white">
                 <RiScissorsCutFill className=" inline-block shadow-lg p-2 w-auto h-[70px] bg-emerald-200 rounded-full  text-white "></RiScissorsCutFill>

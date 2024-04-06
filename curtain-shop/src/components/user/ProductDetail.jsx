@@ -12,14 +12,7 @@ import axios from "axios";
 function ContactPage() {
   const { productId } = useParams();
   const [data, setData] = useState({
-    productId: productId,
-    brand: "",
-    p_type: "",
-    name: "",
-    color: "",
-    detail: "",
-    price: "",
-    image: "",
+   
   });
 
   const [product, setProduct] = useState([]);
@@ -61,7 +54,7 @@ function ContactPage() {
     };
 
     fetchData();
-  }, [data.p_type]);
+  }, [data.p_type,productId]);
 
   //login
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -178,18 +171,8 @@ function ContactPage() {
         const productData = res.data;
         // console.log("Product Data:", productData); // ให้ดูค่า productData ที่ได้รับมา
         //ถ้าเจอ
-        if (productData) {
-          setData({
-            ...data,
-            brand: productData.brand,
-            p_type: productData.p_type,
-            name: productData.name,
-            color: productData.color,
-            detail: productData.detail,
-            price: productData.price,
-            image: productData.image,
-          });
-        }
+        setData(productData)
+       
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false); 
@@ -264,9 +247,12 @@ function ContactPage() {
                   </div>
                   <div className="text-base mt-4 text-brown-400 whitespace-pre-wrap">
                     {data.detail}
-                  </div>
+                  </div> 
                   <p className="mt-4 text-base text-brown-400">
-                    ราคาสินค้า : 350 {data.price} บาท/หลา
+                    ความกว้างของหน้าผ้า : {data.p_width} ซม.
+                  </p>
+                  <p className="mt-4 text-base text-brown-400">
+                    ราคาสินค้า : {data.price} บาท/หลา
                   </p>
 
                   <Link
@@ -279,7 +265,7 @@ function ContactPage() {
                   </Link>
                   <div>
                     <button
-                      onClick={() => handleCustom(data.productId, data.name)}
+                      onClick={() => handleCustom(productId, data.name)}
                       className=" mt-10  mb-3 px-4 py-2 rounded-lg inline-block text-base bg-brown-200 hover:bg-browntop hover:shadow-xl text-white focus:outline-none focus:shadow-outline"
                       // onClick={() => handleEditProduct(product._id, product.name)}
                     >

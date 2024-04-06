@@ -59,6 +59,7 @@ import InvoicePage from "./components/admin/InvoicePage";
 import AddProductPage from "./components/admin/AddProductPage";
 import AddBrandPage from "./components/admin/AddBrandPage";
 import AddTypePage from "./components/admin/AddTypePage";
+import TypePage from "./components/admin/TypePage";
 import UpdateTypePage from "./components/admin/updateTypePage";
 
 
@@ -133,13 +134,15 @@ const router = createBrowserRouter([
   { path: "/invoice-detail/:id", element: <ReceptDetailInvoice />},
   { path: "/quotation-update/:id", element: <UpdateQuotationPage />},
   { path: "/invoice-update/:id", element: <UpdateInvoicePage />},
-  { path: "/update-type/id", element: <UpdateTypePage /> },
+  { path: "/update-type/:id", element: <UpdateTypePage /> },
 
 
 
   { path: "/add-product", element: <AddProductPage /> },
   { path: "/add-brand", element: <AddBrandPage /> },
   { path: "/add-type", element: <AddTypePage /> },
+  { path: "/type", element: <TypePage /> },
+
 
   { path: "/add-category", element: <CategoryProduct /> },
   { path: "/customers", element: <Customers /> },

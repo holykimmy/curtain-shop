@@ -77,11 +77,11 @@ router.get("/order/complete/:id", auth, getOrderByIdComplete);
 
 //get for admin
 router.get("/all/order", getOrderAll);
-router.get("/all/order/approve",auth,getOrderApprove)
-router.get("/all/order/payment",auth,getOrderPayment)
-router.get("/all/order/prepare",auth,getOrderPrepare)
-router.get("/all/order/send",auth,getOrderSend)
-router.get("/all/order/complete",auth,getOrderComplete)
+router.get("/all/order/approve",getOrderApprove)
+router.get("/all/order/payment",getOrderPayment)
+router.get("/all/order/prepare",getOrderPrepare)
+router.get("/all/order/send",getOrderSend)
+router.get("/all/order/complete",getOrderComplete)
 
 //----search 
 router.get("/all/order/approve-s",auth,searchOrderApprove)

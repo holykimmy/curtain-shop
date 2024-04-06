@@ -60,18 +60,6 @@ function Products() {
     }
   };
 
-  // const fetchData = async () => {
-  //   try {
-  //     setIsLoading(true)
-  //     const velvetData = await productAPI.getProductTypeVelvet();
-
-  //     setVelvetProducts(velvetData);
-
-
-  //   } catch (error) {
-  //     console.error("Error fetching products:", error);
-  //   }
-  // };
 
 
   useEffect(() => {

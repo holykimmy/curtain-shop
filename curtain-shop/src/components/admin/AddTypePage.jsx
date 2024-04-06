@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Navbaradmin from "./Navbaradmin";
 import Swal from "sweetalert2";
-import { Link } from "react-router-dom";
+import { Link , useNavigate } from "react-router-dom";
 import typeAPI from "../../services/typeAPI";
 function AddTypePage() {
+  const  navigate = useNavigate();
   const [data, setData] = useState([]);
   const [name, setName] = useState("");
   const [price_rail, setPrice_rail] = useState("");
@@ -70,22 +71,29 @@ function AddTypePage() {
     setSelectedTwolayer(event.target.value);
   };
 
-  const handleEdit = (event) => {
-    setSelectedTwolayer(event.target.value);
+
+
+  const handdleDetail = async (id,name) => {
+    // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
+    const confirmation = await Swal.fire({
+      title: `ท่านต้องการแก้ไข ${name} ใช่หรือไม่`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "ใช่",
+      cancelButtonText: "ยกเลิก",
+    });
+
+    // หากผู้ใช้กดปุ่มยืนยัน
+    if (confirmation.isConfirmed) {
+      navigate(`/update-type/${id}`, {});
+    }
   };
 
-  const [twoLayerStr, setTwoLayer] = useState(""); 
-
-useEffect(() => {
-  if (selectedTwolayer === "ได้") {
-    setTwoLayer(true); 
-  } else if (selectedTwolayer === "ไม่ได้") {
-    setTwoLayer(false); 
-  }
-}, [selectedTwolayer]); 
-
-
-  console.log("two : ", twoLayerStr);
+  const numberWithCommas = (x) => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
 
   const submitForm = (e) => {
     e.preventDefault();
@@ -107,17 +115,18 @@ useEffect(() => {
     formData.append("name", name);
     formData.append("price_rail", price_rail);
     formData.append("image", image);
-    formData.append("twolayer", twoLayerStr);
+    formData.append("twolayer", selectedTwolayer);
 
     typeAPI
-      .createProduct(formData)
+      .createType(formData)
       .then((response) => {
         Swal.close();
         Swal.fire({
           text: "เพิ่มข้อมูลเรียบร้อย",
           icon: "success"
+        }).then(() => {
+          navigate("/type"); 
         });
-        window.location.reload();
       })
       .catch((err) => {
         Swal.close();
@@ -133,75 +142,24 @@ useEffect(() => {
       <Navbaradmin></Navbaradmin>
       <div className=" items-center justify-center mt-5 pb-5 p-10 bg-white w-full m-auto">
         <p class="text-center text-xl text-b-font font-bold">
-          ประเภทการสั่งตัดที่มี
+         ประเภทการสั่งตัดที่ต้องการเพิ่ม
         </p>
 
-        <div className="overflow-x-auto mt-5">
-          <table class="min-w-full text-left text-sm font-light">
-            <thead class="border-b font-medium dark:border-neutral-500">
-              <tr className="bg-gray-200">
-                <th className="px-6 py-4 border-b border-blue-gray-100 bg-blue-gray-50 p-4 text-base text-center text-gray-700">
-                  ชื่อ 
-                </th>
-                <th className="px-6 py-4 border-b border-blue-gray-100 bg-blue-gray-50 p-4 text-base text-center text-gray-700">
-                  ราคาราง/100 ซม.
-                </th>
-                <th className="px-6 py-4 border-b border-blue-gray-100 bg-blue-gray-50 p-4 text-base text-center text-gray-700">
-                  รูปภาพ
-                </th>
-                <th className="px-6 py-4 border-b border-blue-gray-100 bg-blue-gray-50 p-4 text-base text-center text-gray-700">
-                 
-                </th> 
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((item, index) => (
-                <tr key={index} className="border-b dark:border-neutral-500">
-                  <td className="p-2 border text-center border-blue-gray-50 text-gray-700">
-                    {item.name} {item.twolayer ? "ทำม่าน2ชั้นได้" : null}
-
-                  </td>
-                  <td className="p-2 pr-5 border text-right border-blue-gray-50 text-gray-700">
-                    {item.price_rail} บาท{" "}
-                  </td>
-                  <td className="p-2 border text-center flex justify-center items-center border-blue-gray-50 text-gray-700">
-                    <img
-                      src={`${process.env.REACT_APP_AWS}${item.image}`}
-                      alt="types"
-                      className="h-[150px] max-w-full"
-                    />
-                  </td>
-                  <td className="p-2 pr-5 border text-right border-blue-gray-50 text-gray-700">
-                  <button
-                              onClick={() => handleEdit(index)}
-                              className="bg-red-400 hover:bg-red-300 p-2 rounded text-white "
-                            >
-                              ลบ
-                            </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
 
         <form
           onSubmit={submitForm}
           enctype="multipart/form-data"
           class="bg-white "
         >
-          <p className="text-gray-700 items-center md:text-base mt-4 pl-5">
-            เพิ่มประเภทการสั่งตัด
-          </p>
+         
 
           <div class="input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline my-6">
             <input
               class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="p_name"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="ชื่อประเภทที่ต้องการเพิ่ม"
+              placeholder="ชื่อประเภทการสั่งตัด ex. ม่านจีบ"
             />
           </div>
 
@@ -227,7 +185,6 @@ useEffect(() => {
           <div class="input-groupfle shadow appearance-none border mt-5 rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2">
             <input
               class="appearance-none border-none rounded sm:w-[70%] md:w-[90%] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="p_price"
               value={price_rail}
               onChange={handlePriceChange}
               type="number"
@@ -246,7 +203,7 @@ useEffect(() => {
           {["ได้", "ไม่ได้"].map((twolayer) => (
             <div
               key={twolayer}
-              className="flex-row text-center text-browntop text-lg mt-2 mb-2"
+              className="flex-row text-left text-browntop text-lg ml-7 mt-2 mb-2"
             >
               <input
                 className="ml-2"

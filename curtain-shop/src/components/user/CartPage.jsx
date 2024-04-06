@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../Navbar";
 import { BsPinFill } from "react-icons/bs";
 import Footer from "../Footer";
-import { Link, useNavigate ,useHistory } from "react-router-dom";
+import { Link, useNavigate, useHistory } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import axios from "axios";
@@ -22,7 +22,7 @@ function CartPage() {
     l_name: "",
     email: "",
     tell: "",
-    address: "",
+    address: ""
   });
 
   useEffect(() => {
@@ -44,7 +44,6 @@ function CartPage() {
     }
   }, [isLoading]);
 
-
   useEffect(() => {
     const authToken = localStorage.getItem("token");
 
@@ -65,7 +64,7 @@ function CartPage() {
           l_name: l_name,
           email: decodedToken.user.email,
           tell: decodedToken.user.tell,
-          address: decodedToken.user.address,
+          address: decodedToken.user.address
         });
 
         setIsLoggedIn(true);
@@ -85,7 +84,6 @@ function CartPage() {
       setIsLoggedIn(false);
     }
   }, [idUser]);
-
 
   console.log(idUser);
   const cartObject = useSelector((state) => state.cart);
@@ -116,17 +114,29 @@ function CartPage() {
   }, [isLoading, cart]);
 
   console.table(cart);
-  // const userCartArray = useSelector((state) => state.cart);
-  // const cart = Object.values(userCartArray[idUser] || {});
-  // console.log(userCartArray);
-  // console.table(cart);
-  // console.log("table");
+
+//   const getTotalPiece = (item) => {
+//     // คำนวณจำนวนชิ้นของผ้าที่ต้องใช้
+//     const numberOfPieces = Math.ceil(parseInt(item.width) / parseInt(item.p_width));
+
+//     // คำนวณผ้า1ฝั่ง
+//     const fabricOneSide = parseInt(item.p_width) * numberOfPieces;
+
+//     // คำนวณผ้าทั้งหมด
+//     const totalFabric = fabricOneSide * 2;
+
+//     // คำนวณค่าผ้าต่อชิ้น
+//     const fabricCostPerPiece = (parseInt(item.height) * totalFabric * item.price) / 100;
+
+//     return fabricCostPerPiece;
+// };
 
   const getTotal = () => {
     return cart.reduce((currenValue, nextValue) => {
-      return currenValue + nextValue.count * nextValue.price;
-    }, 0); // const start
+      return currenValue + nextValue.count * nextValue.totalPiece;
+    }, 0);
   };
+
 
   const handleLogoutAuto = () => {
     // Logout user
@@ -145,7 +155,7 @@ function CartPage() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "ใช่",
-      cancelButtonText: "ไม่ใช่",
+      cancelButtonText: "ไม่ใช่"
     }).then((result) => {
       if (result.isConfirmed) {
         // ยืนยันออกจากระบบ
@@ -178,12 +188,12 @@ function CartPage() {
         Swal.fire({
           icon: "success",
           title: "บันทึกสำเร็จ!",
-          text: "ข้อมูลของคุณได้รับการบันทึกเรียบร้อยแล้ว",
+          text: "ข้อมูลของคุณได้รับการบันทึกเรียบร้อยแล้ว"
         }).then(() => {
           localStorage.removeItem("cart");
-          const idOrder = response.data._id ;
-          navigate(`/check-order/${idOrder}`);      
-              // navigate("/check-order");
+          const idOrder = response.data._id;
+          navigate(`/check-order/${idOrder}`);
+          // navigate("/check-order");
           // ทำอื่นๆ ตามที่ต้องการหลังจากบันทึกสำเร็จ
         });
       } else {
@@ -216,18 +226,22 @@ function CartPage() {
               </th>
               <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
                 ประเภท
-              </th>{" "}
+              </th>
+              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
+                ม่าน2ชั้น
+              </th>
               <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
                 ราง
               </th>
               <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
                 ขนาด
               </th>
-              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
-                ราคา/หลา
-              </th>
+
               <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
                 จำนวนสินค้า
+              </th>
+              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
+                ราคา
               </th>
               <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ..."></th>
             </tr>
@@ -240,11 +254,12 @@ function CartPage() {
     );
   };
 
-
-  const numberWithCommas = (x) => {
+   const numberWithCommas = (x) => {
+    if (x == null) { // เพิ่มการตรวจสอบค่า null หรือ undefined
+      return ""; // หรือค่าที่คุณต้องการให้ส่งออก
+    }
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
-
 
   return (
     <>
@@ -277,10 +292,15 @@ function CartPage() {
             <hr />
             <hr />
             {cart.map((item, index) => (
-              <p key={index} className="ml-10  text-brown-400 my-2">
-                {item.name} ขนาด {item.width} x {item.height} เซนติเมตร  จำนวน {" "}
-                {item.count} ชุด  ราคา {numberWithCommas(item.price * item.count)} บาท
-              </p>
+              <>
+                <p key={index} className="ml-10  text-brown-400 my-2">
+                  {item.name} ขนาด {item.width} x {item.height} เซนติเมตร จำนวน{" "}
+                  {item.count} ชุด {item.rail}
+                </p>
+                <p className="ml-[60px]  text-brown-400 my-2">
+                   ราคา {numberWithCommas(item.totalPiece)} บาท 
+                </p>
+              </>
             ))}
             <hr />
             <hr />

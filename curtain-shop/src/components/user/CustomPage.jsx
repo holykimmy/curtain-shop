@@ -3,6 +3,8 @@ import { CloudinaryContext } from "cloudinary-react";
 import Navbar from "../Navbar";
 import { BsPinFill } from "react-icons/bs";
 import productAPI from "../../services/productAPI";
+import typeAPI from "../../services/typeAPI";
+
 import Footer from "../Footer";
 import TransformedImage from "./Tranformedimage";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -31,22 +33,25 @@ function CustomPage() {
     color: "",
     detail: "",
     price: "",
-    image: "",
+    image: ""
   });
+
+  // const [data, setData] = useState({});
 
   const [user, setUser] = React.useState({
     f_name: "",
     l_name: "",
     email: "",
     tell: "",
-    address: "",
+    address: ""
   });
+  // const [user, setUser] = React.useState({})
 
   useEffect(() => {
     if (isLoading) {
       Swal.fire({
         customClass: {
-          popup: "bg-transparent",
+          popup: "bg-transparent"
         },
         backdrop: "rgba(255, 255, 255, 0.5)",
         showConfirmButton: false,
@@ -54,13 +59,12 @@ function CustomPage() {
           Swal.showLoading();
         },
         allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
-        allowEscapeKey: false, // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
       });
     } else {
       Swal.close();
     }
   }, [isLoading]);
-
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");
@@ -83,7 +87,7 @@ function CustomPage() {
           l_name: l_name,
           email: decodedToken.user.email,
           tell: decodedToken.user.tell,
-          address: decodedToken.user.address,
+          address: decodedToken.user.address
         });
 
         setIsLoggedIn(true);
@@ -122,7 +126,7 @@ function CustomPage() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "ใช่",
-      cancelButtonText: "ไม่ใช่",
+      cancelButtonText: "ไม่ใช่"
     }).then((result) => {
       if (result.isConfirmed) {
         // ยืนยันออกจากระบบ
@@ -148,14 +152,32 @@ function CustomPage() {
       ? {
           r: parseInt(result[1], 16),
           g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16),
+          b: parseInt(result[3], 16)
         }
       : null;
   };
 
+  const [types, setTypes] = useState([]);
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        setIsLoading(true);
+        const type = await typeAPI.getAllTypes();
+        setTypes(type);
+        setIsLoading(false);
+      } catch (error) {
+        setIsLoading(false);
+        console.error("Error fetching all brands:", error);
+      }
+    };
+
+    fetch();
+  }, []);
+  console.table(types);
+
   //product
   useEffect(() => {
-    setIsLoading(true)
+    setIsLoading(true);
     const fetchData = async () => {
       try {
         const res = await axios.get(
@@ -175,15 +197,15 @@ function CustomPage() {
             detail: productData.detail,
             p_width: productData.p_width,
             price: productData.price,
-            image: productData.image,
+            image: productData.image
           });
 
           const rgbColor = hexToRgb(productData.color);
           setBackground(rgbColor);
-          setIsLoading(false); 
-         }
+          setIsLoading(false);
+        }
       } catch (error) {
-        setIsLoading(false); 
+        setIsLoading(false);
         console.error(error);
       }
     };
@@ -192,25 +214,43 @@ function CustomPage() {
 
   //login
   const [selectedType, setSelectedType] = useState("");
+  const [selectedTypeId, setSelectedTypeId] = useState("");
+  const [pricerail, setPricerail] = useState("");
   const [selectedRail, setSelectedRail] = useState("");
+  const [typeById, setTypeById] = useState("");
+  const [selectedTwolayer, setSelectedTwolayer] = useState("");
+
+  console.log("typedi", typeById, pricerail);
 
   const handleCustom = (productId, productName) => {
     navigate(`/custom-product/${productId}`);
+  };
+
+  const handleRadioChangeTwolayer = (event) => {
+    setSelectedTwolayer(event.target.value);
   };
 
   const handleRadioChangeRail = (event) => {
     setSelectedRail(event.target.value);
   };
 
-  const handleRadioChange = (event) => {
-    setSelectedType(event.target.value);
-  };
+  // const handleRadioChange = (event) => {
+  //   setSelectedType(event.target.value);
+  //   setSelectedTypeId(id)
+  // };
 
+  const handleRadioChange = (twolayer, name, price_rail) => {
+    console.log("rin", price_rail, twolayer);
+
+    setSelectedType(name); // Set the selected type name
+    setTypeById(twolayer); // Set the selected type id
+    setPricerail(price_rail);
+  };
+  console.log("handch", pricerail);
   //add to cart
 
   // const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
-
   const [width, setWidth] = useState("");
   const [height, setHeight] = useState("");
 
@@ -221,8 +261,6 @@ function CustomPage() {
     height,
     ...data
   }) => {
-   
-
     let cart = [];
 
     const cartFromStorage = localStorage.getItem("cart");
@@ -286,7 +324,7 @@ function CustomPage() {
         image: data.image,
         type: selectedType,
         rail: selectedRail,
-        cartId: generateCartId(),
+        cartId: generateCartId()
       };
 
       if (localStorage.getItem("cart")) {
@@ -295,7 +333,7 @@ function CustomPage() {
 
       cart.push({
         ...productData,
-        count: 1,
+        count: 1
       });
     }
     let unique = _.uniqWith(cart, _.isEqual);
@@ -304,14 +342,14 @@ function CustomPage() {
 
     dispatch({
       type: "ADD_TO_CART",
-      payload: unique,
+      payload: unique
     });
 
     Swal.fire({
       icon: "success",
       title: "เพิ่มสินค้าในตระกร้าเรียบร้อยแล้ว",
       showConfirmButton: false,
-      timer: 1500, // 1.5 วินาที
+      timer: 1500 // 1.5 วินาที
     });
   };
 
@@ -321,6 +359,8 @@ function CustomPage() {
     idUser,
     selectedRail,
     selectedType,
+    selectedTwolayer,
+    pricerail,
     width,
     height,
     ...data
@@ -337,7 +377,7 @@ function CustomPage() {
       }
     } catch (error) {
       console.error("Error parsing JSON:", error);
-     
+
       localStorage.removeItem("cart");
     }
 
@@ -350,13 +390,21 @@ function CustomPage() {
           item.productId,
           item.type,
           item.rail,
+          item.twolayer,
           item.width,
           item.height
         );
       });
     }
     console.log("------------end--------");
-    console.table(data.id, selectedType, selectedRail, width, height);
+    console.table(
+      data.id,
+      selectedType,
+      selectedRail,
+      selectedTwolayer,
+      width,
+      height
+    );
 
     if (!cart[idUser]) {
       cart[idUser] = [];
@@ -368,7 +416,8 @@ function CustomPage() {
         item.type === selectedType &&
         item.width === width &&
         item.height === height &&
-        item.rail === selectedRail
+        item.rail === selectedRail &&
+        item.twolayer === selectedTwolayer
     );
 
     console.log("existingProductIndex:", existingProductIndex);
@@ -380,7 +429,62 @@ function CustomPage() {
     if (existingProductIndex !== -1) {
       // เพิ่มค่า count ของสินค้านี้
       cart[idUser][existingProductIndex].count++;
+      const totalFabric = Math.ceil(width / data.p_width) * 2;
+      const fabricCostPerPiece = (height * totalFabric * data.price) / 100;
+      let pricerail = 0;
+      if (data.rail === "รับราง") {
+        pricerail = (data.price_rail * width) / 100;
+      }
+      const TotalPiece =
+        fabricCostPerPiece * cart[idUser][existingProductIndex].count +
+        pricerail;
+      cart[idUser][existingProductIndex].totalPiece = TotalPiece;
+      
     } else {
+      const numberOfPieces = Math.ceil(width / data.p_width);
+      console.log(
+        "numberOfPieces",
+        width,
+        "/",
+        data.p_width,
+        " = ",
+        numberOfPieces
+      );
+
+      // คำนวณผ้าทั้งหมด
+      const totalFabric = numberOfPieces * 2;
+      console.log("totalFabric", numberOfPieces, "* 2 = ", totalFabric);
+
+      // คำนวณค่าผ้าต่อชิ้น
+      const fabricCostPerPiece = (height * totalFabric * data.price) / 100;
+      console.log(
+        "fabricCostPerPiece",
+        "[",
+        height,
+        "*",
+        totalFabric,
+        "*",
+        data.price,
+        "]/100",
+        " = ",
+        fabricCostPerPiece
+      );
+
+      let pricerail = 0;
+      if (data.rail === "รับราง") {
+        pricerail = (pricerail * width) / 100;
+        console.log(
+          "price rail [",
+          pricerail,
+          "*",
+          width,
+          " ]/100 = ",
+          pricerail
+        );
+      }
+      console.log("price rail", pricerail);
+      const TotalPiece = fabricCostPerPiece + pricerail;
+
       const productData = {
         productId: data.id,
         brand: data.brand,
@@ -389,13 +493,17 @@ function CustomPage() {
         color: data.color,
         detail: data.detail,
         width: width,
+        p_width: data.p_width,
         height: height,
         price: data.price,
         image: data.image,
         type: selectedType,
+        price_rail: pricerail,
         rail: selectedRail,
+        twolayer: selectedTwolayer,
         cartId: generateCartId(),
-        count: 1,
+        totalPiece: TotalPiece,
+        count: 1
       };
 
       cart[idUser].push(productData);
@@ -412,32 +520,54 @@ function CustomPage() {
 
     dispatch({
       type: "ADD_TO_CART",
-      payload: unique,
+      payload: unique
     });
     Swal.fire({
       icon: "success",
       title: "เพิ่มสินค้าในตระกร้าเรียบร้อยแล้ว",
       showConfirmButton: false,
-      timer: 1500, // 1.5 วินาที
+      timer: 1500 // 1.5 วินาที
     });
   };
 
   const handleAddToCart = ({
     selectedRail,
     selectedType,
+    selectedTwolayer,
+    pricerail,
     width,
     height,
     ...data
   }) => {
-    // console.table(selectedRail, selectedType, width, height, data);
-    
+    console.table(
+      "pr",
+      pricerail,
+      "sr",
+      selectedRail,
+      "st",
+      selectedType,
+      width,
+      height,
+      data
+    );
 
+    if (selectedType) {
+      if (!selectedTwolayer) {
+        Swal.fire({
+          icon: "warning",
+          title: "กรุณาเลือกว่าจะทำม่าน2ชั้นหรือไม่",
+          showConfirmButton: false,
+          timer: 1500 // 1.5 วินาที
+        });
+        return;
+      }
+    }
     if (!selectedType) {
       Swal.fire({
         icon: "warning",
         title: "กรุณาเลือกประเภทของสินค้าที่ต้องการสั่งตัด",
         showConfirmButton: false,
-        timer: 1500, // 1.5 วินาที
+        timer: 1500 // 1.5 วินาที
       });
       return;
     }
@@ -447,7 +577,7 @@ function CustomPage() {
         icon: "warning",
         title: "กรุณาระบุขนาดของสินค้า",
         showConfirmButton: false,
-        timer: 1500, // 1.5 วินาที
+        timer: 1500 // 1.5 วินาที
       });
       return;
     }
@@ -457,11 +587,10 @@ function CustomPage() {
         icon: "warning",
         title: "กรุณาเลือกว่าจะรับรางหรือไม่",
         showConfirmButton: false,
-        timer: 1500, // 1.5 วินาที
+        timer: 1500 // 1.5 วินาที
       });
       return;
     }
- 
 
     console.log("idUSer=====", idUser);
     // ตรวจสอบว่าผู้ใช้เข้าสู่ระบบหรือไม่
@@ -471,9 +600,10 @@ function CustomPage() {
         idUser,
         selectedRail,
         selectedType,
+        selectedTwolayer,
         width,
         height,
-        ...data,
+        ...data
       });
     } else {
       // กรณีที่ผู้ใช้เข้าสู่ระบบแล้ว
@@ -481,23 +611,26 @@ function CustomPage() {
         idUser,
         selectedRail,
         selectedType,
+        selectedTwolayer,
+        typeById,
+        pricerail,
         width,
         height,
-        ...data,
+        ...data
       });
     }
   };
 
   const default_product = {
     id: 1,
-    main: "test2_ocvii1",
+    main: "test2_ocvii1"
   };
 
   const index = "curtain-";
   const [curtain, setCurtain] = useState([
     default_product,
     { id: 2, main: "test1_gvyquf" },
-    { id: 3, main: "curtain_fev3fs" },
+    { id: 3, main: "curtain_fev3fs" }
   ]);
 
   const [selectedCurtain, setSelectedCurtain] = useState(default_product);
@@ -515,32 +648,9 @@ function CustomPage() {
         console.error("เกิดข้อผิดพลาดในการดึงข้อมูล", err);
       }
     };
-  
+
     fetchData();
   }, []);
-  
-
-  const images = [
-    "curtain-1.jpg",
-    "curtain-2.jpg",
-    "curtain-3.jpg",
-    "curtain-4.jpg",
-    "curtain-5.jpg",
-    "curtain-6.jpg",
-    "curtain-7.jpg",
-    "curtain-8.jpg",
-  ];
-  const curtainNames = [
-    "ม่านจีบ",
-    "ม่านพับ",
-    "ม่านตาไก่",
-    "ม่านลอน",
-    "ม่านลอน",
-    "ม่านหลุยส์",
-    "ม่านหลุยส์",
-    "ม่านหลุยส์",
-    "ม่านหลุยส์",
-  ];
 
   return (
     <>
@@ -556,7 +666,6 @@ function CustomPage() {
           ออกแบบผ้าม่านของคุณ
         </h5>
       </div>
-
       <div className="flex flex-nowrap overflow-x-auto max-w-screen">
         {product.map((product) => (
           <div key={product._id} className="p-2">
@@ -582,7 +691,6 @@ function CustomPage() {
           </div>
         ))}
       </div>
-
       <div className="flex flex-wrap justify-center">
         <div className="flex p-11 justify-center ">
           <img
@@ -590,10 +698,7 @@ function CustomPage() {
             src={data.image}
             alt="product"
           />
-          <CloudinaryContext
-            cloudName="dwmpdaqqh"
-            className="w-[400px] hover:w-[450px]"
-          >
+          <CloudinaryContext cloudName="dwmpdaqqh" className="w-[400px]">
             <div className="image__container">
               <div className="image">
                 <TransformedImage
@@ -632,29 +737,30 @@ function CustomPage() {
           </div>
         </div>
       </div>
-
       <div className="flex flex-row mb-10">
         <div className=" basis-1/3 items-center">
           <p className="text-gray-700 md:text-base mt-4 pl-5 text-center ">
             ต้องการสั่งตัดผ้าม่านแบบใด
           </p>
 
-          {["ม่านจีบ", "ม่านพับ", "ม่านตาไก่", "ม่านลอน"].map((type) => (
+          {types.map((item, index) => (
             <div
-              key={type}
+              key={index}
               className=" basis-1/3 text-center  text-browntop text-lg mt-2  mb-2"
             >
               <input
                 className="ml-2"
                 type="radio"
-                id={type}
+                id={item.id}
                 name="selectedType"
-                value={type}
-                checked={selectedType === type}
-                onChange={handleRadioChange}
+                value={item.name}
+                checked={selectedType === item.name}
+                onChange={() =>
+                  handleRadioChange(item.twolayer, item.name, item.price_rail)
+                }
               />
-              <label className="ml-2" htmlFor={type}>
-                {type}
+              <label className="ml-2" htmlFor={item.name}>
+                {item.name}
               </label>
             </div>
           ))}
@@ -663,19 +769,20 @@ function CustomPage() {
             ** ทางร้านมีบริการรับตัดม่านหลุดย์
           </p>
         </div>
+
         <div className="w-3/5 flex flex-nowrap overflow-x-auto">
-          {images.map((image, index) => (
+          {types.map((item, index) => (
             <div key={index} className="p-2">
               <div className="rounded-lg shadow-3xl hover:shadow-2xl md:h-full flex-col md:pb-2 bg-white">
                 <div className="relative h-[200px] w-[300px]">
                   <img
                     className="w-auto h-full object-cover rounded-t-lg bg-contain bg-center"
-                    src={require(`../img/type-cut/${image}`)}
+                    src={`${process.env.REACT_APP_AWS}${item.image}`}
                     alt="type"
                   />
                   <div className="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25 rounded-t-lg "></div>
                   <div className="absolute shadow-md rounded-r-lg bottom-0 left-0 bg-white/30 px-4 py-2 text-white text-sm hover:bg-white hover:text-browntop transition duration-500 ease-in-out">
-                    {curtainNames[index]}
+                    {item.name}
                   </div>
                 </div>
               </div>
@@ -689,7 +796,6 @@ function CustomPage() {
           ราคาสินค้าต่อหลา : {data.price} บาท
         </p>
       </div>
-
       <p className="mt-4 text-center text-base text-brown-400">
         ขนาดของหน้าต่างที่ต้องการสั่งตัดผ้าม่าน{" "}
         <span>
@@ -703,7 +809,6 @@ function CustomPage() {
           </Link>
         </span>
       </p>
-
       <div className="flex justify-center w-full">
         <div>
           <p className="mt-4 ml-5 text-sm text-brown-400">กว้าง</p>
@@ -728,11 +833,44 @@ function CustomPage() {
         </div>
         <p className="  mt-14 text-sm ml-5 text-brown-400"> เซนติเมตร</p>
       </div>
-
+      {typeById === "ได้" ? (
+        <>
+          <p className="text-base mx-4 my-4 text-brown-400">
+            ต้องการทำเป็นม่าน2ชั้นหรือไม่
+          </p>{" "}
+          {["ทำ", "ไม่ทำ"].map((twolayer) => (
+            <div
+              key={twolayer}
+              className=" flex-row text-left  text-browntop text-lg mt-2  mb-2"
+            >
+              <input
+                className="ml-2"
+                type="radio"
+                id={twolayer}
+                name="selectedTwolayer"
+                value={twolayer}
+                checked={selectedTwolayer === twolayer}
+                onChange={handleRadioChangeTwolayer}
+              />
+              <label className="ml-2" htmlFor={twolayer}>
+                {twolayer}
+              </label>
+            </div>
+          ))}
+        </>
+      ) : (
+        <>
+          {" "}
+          <p className="text-base mx-4 my-4 text-brown-400">
+            ไม่สามารถทำม่าน2ชั้นได้
+          </p>
+        </>
+      )}
+      <p className="text-base mx-4 my-4 text-brown-400">ต้องการรับรางหรือไม่</p>{" "}
       {["รับราง", "ไม่รับราง"].map((rail) => (
         <div
           key={rail}
-          className=" flex-row text-center  text-browntop text-lg mt-2  mb-2"
+          className=" flex-row text-left  text-browntop text-lg mt-2  mb-2"
         >
           <input
             className="ml-2"
@@ -748,7 +886,6 @@ function CustomPage() {
           </label>
         </div>
       ))}
-
       <div className="flex justify-center">
         <button
           onClick={() =>
@@ -757,7 +894,9 @@ function CustomPage() {
               width,
               height,
               selectedType,
-              selectedRail,
+              selectedTwolayer,
+              pricerail,
+              selectedRail
             })
           }
           className=" mt-10  mb-3 px-4 py-2 rounded-lg inline-block text-base bg-brown-200 hover:bg-browntop hover:shadow-xl text-white focus:outline-none focus:shadow-outline"

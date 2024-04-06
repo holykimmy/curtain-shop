@@ -21,8 +21,6 @@ function CancelOrder() {
   console.log("idOrder", idOrder);
   const [velvetProducts, setVelvetProducts] = useState([]);
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
   const [userName, setUserName] = React.useState("");
   const [userData, setUserData] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -111,78 +109,6 @@ function CancelOrder() {
   console.log("dkjhafkdsj");
   console.log(address);
 
-  const handleVerifyOrder = async (idOrder) => {
-    // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
-    const confirmation = await Swal.fire({
-      title: "ยืนยันการชำระเงิน",
-      text: "ลูกค้าชำระเงินสำเร็จแล้วใช่หรือไม่?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "ใช่",
-      cancelButtonText: "ยกเลิก"
-    });
-
-    // หากผู้ใช้กดปุ่มยืนยัน
-    if (confirmation.isConfirmed) {
-      try {
-        const response = await orderAPI.updateOrderVerifyPayment(idOrder, true);
-        console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
-        await Swal.fire({
-          title: "ยืนยันการชำระเงิน",
-          text: "คำสั่งซื้อได้รับการยืนยันแล้ว",
-          icon: "success"
-        });
-        // window.location.reload();
-      } catch (error) {
-        console.error("Error cancelling order:", error);
-        // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
-      }
-    }
-  };
-
-  // const handleCancelOrder = async (idOrder, cancelReasonAd) => {
-  //   if (!cancelReasonAd.trim()) {
-  //       Swal.fire({
-  //           text: "กรุณาระบุเหตุผลที่ต้องการยกเลิก",
-  //           icon: "warning",
-  //       });
-  //       return;
-  //   }
-
-  //   const confirmation = await Swal.fire({
-  //       title: "ยกเลิกคำสั่งซื้อ",
-  //       text: `คุณแน่ใจหรือไม่ที่ต้องการยกเลิกด้วยเหตุผล ${cancelReasonAd}?`,
-  //       icon: "warning",
-  //       showCancelButton: true,
-  //       confirmButtonColor: "#d33",
-  //       cancelButtonColor: "#3085d6",
-  //       confirmButtonText: "ยืนยัน",
-  //       cancelButtonText: "ยกเลิก",
-  //   });
-
-  //   if (confirmation.isConfirmed) {
-  //       try {
-  //           const response = await axios.put(
-  //             `${process.env.REACT_APP_API}/customer/order/complete/${idOrder}`,
-  //             { enable: false, cancelReasonAd }
-  //           );
-
-  //           if(response.data.message === "Order enable updated successfully"){
-  //             Swal.fire({
-  //               title: "ยกเลิกสำเร็จ",
-  //               text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
-  //               icon: "success",
-  //           });
-  //           }
-
-  //           navigate(`/order-detail/${idOrder}`, {});
-  //       } catch (error) {
-  //           console.error("Error cancelling order:", error);
-  //       }
-  //   }
-  // };
 
   const handleCancelOrder = async (idOrder, cancelReasonAd) => {
     if (!cancelReasonAd.trim()) {

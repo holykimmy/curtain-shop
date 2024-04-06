@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from "react";
 import Navbaradmin from "./Navbaradmin";
 import Swal from "sweetalert2";
-import { Link } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import typeAPI from "../../services/typeAPI";
 function UpdateTypePage() {
+  const { id } = useParams();
   const [data, setData] = useState([]);
   const [name, setName] = useState("");
   const [price_rail, setPrice_rail] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [selectedTwolayer, setSelectedTwolayer] = useState("");
+  const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(true);
-
+  console.log("test");
   useEffect(() => {
     if (isLoading) {
       Swal.fire({
@@ -24,8 +26,8 @@ function UpdateTypePage() {
         didOpen: () => {
           Swal.showLoading();
         },
-        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
-        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+        allowOutsideClick: false,
+        allowEscapeKey: false
       });
     } else {
       Swal.close();
@@ -33,11 +35,31 @@ function UpdateTypePage() {
   }, [isLoading]);
 
   useEffect(() => {
-    const fetchBrands = async () => {
+    const fetch = async () => {
       try {
         setIsLoading(true);
-        const types = await typeAPI.getAllTypes();
+        const types = await typeAPI.getTypeById(id);
         setData(types);
+        setIsLoading(false);
+        Swal.close();
+      } catch (error) {
+        setIsLoading(false);
+        console.error("Error fetching all brands:", error);
+      }
+    };
+
+    fetch();
+  }, []);
+
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        setIsLoading(true);
+        const types = await typeAPI.getTypeById(id);
+        setData(types);
+        setName(types.name);
+        setPrice_rail(types.price_rail);
+        setSelectedTwolayer(types.twolayer);
         setIsLoading(false);
         Swal.close();
       } catch (error) {
@@ -45,12 +67,14 @@ function UpdateTypePage() {
       }
     };
 
-    fetchBrands();
+    fetch();
   }, []);
 
   console.log(data);
   const handleFileSelection = (e) => {
     const image = e.target.files[0];
+    console.log("image", image);
+
     setImage(image); // อัปเดตค่าไฟล์ใหม่
 
     // แสดงตัวอย่างรูปภาพ
@@ -70,18 +94,38 @@ function UpdateTypePage() {
     setSelectedTwolayer(event.target.value);
   };
 
-  const [twoLayerStr, setTwoLayer] = useState(""); 
+  console.log(data.name);
+ const handleDelete = () => {
+  Swal.fire({
+    text: `คุณต้องการลบ ${data.name} ใช่หรือไม่?`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "ใช่",
+    cancelButtonText: "ไม่ใช่"
+  }).then((result) => {
+    if (result.isConfirmed) {
+      typeAPI
+        .deleteTypeById(id)
+        .then((response) => {
+          Swal.fire({
+            text: "ลบข้อมูลสำเร็จ",
+            icon: "success"
+          }).then(() => {
+            navigate("/type"); 
+          });
+        })
+        .catch((error) => {
+          console.error("Error deleting product:", error);
+        });
+    } else {
+      console.log("Cancelled delete operation");
+    }
+  });
+};
 
-useEffect(() => {
-  if (selectedTwolayer === "ได้") {
-    setTwoLayer(true); 
-  } else if (selectedTwolayer === "ไม่ได้") {
-    setTwoLayer(false); 
-  }
-}, [selectedTwolayer]); 
-
-
-  console.log("two : ", twoLayerStr);
+  console.log(name, price_rail, image, selectedTwolayer);
 
   const submitForm = (e) => {
     e.preventDefault();
@@ -102,26 +146,42 @@ useEffect(() => {
     const formData = new FormData();
     formData.append("name", name);
     formData.append("price_rail", price_rail);
-    formData.append("image", image);
-    formData.append("twolayer", twoLayerStr);
+    if (image) {
+      formData.append("image", image);
+    }
+    formData.append("twolayer", selectedTwolayer);
 
-    typeAPI
-      .createProduct(formData)
-      .then((response) => {
-        Swal.close();
-        Swal.fire({
-          text: "เพิ่มข้อมูลเรียบร้อย",
-          icon: "success"
-        });
-        window.location.reload();
-      })
-      .catch((err) => {
-        Swal.close();
-        Swal.fire({
-          icon: "error",
-          text: err.response.data.error
-        });
+    console.log(id, formData);
+    console.log("formDataAPI:");
+    console.log(formData.get("name"));
+    console.log(formData.get("price_rail"));
+
+    console.log("image", formData.get("image"));
+
+    console.log(formData.get("twolayer"));
+
+    console.log("endlAPI");
+
+    update(e, id, formData);
+  };
+
+  const update = async (e, productId, formData) => {
+    // Pass formData as an argument
+    e.preventDefault();
+    try {
+      const response = await typeAPI.updateTypeById(id, formData);
+      Swal.close();
+      Swal.fire({
+        text: "เพิ่มข้อมูลเรียบร้อย",
+        icon: "success"
       });
+      window.location.reload();
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        text: err.response.data.error
+      });
+    }
   };
 
   return (
@@ -132,53 +192,11 @@ useEffect(() => {
           ประเภทการสั่งตัดที่ต้องการแก้ไข
         </p>
 
-        <div className="overflow-x-auto mt-5">
-          <table class="min-w-full text-left text-sm font-light">
-            <thead class="border-b font-medium dark:border-neutral-500">
-              <tr className="bg-gray-200">
-                <th className="px-6 py-4 border-b border-blue-gray-100 bg-blue-gray-50 p-4 text-base text-center text-gray-700">
-                  ชื่อ 
-                </th>
-                <th className="px-6 py-4 border-b border-blue-gray-100 bg-blue-gray-50 p-4 text-base text-center text-gray-700">
-                  ราคาราง/100 ซม.
-                </th>
-                <th className="px-6 py-4 border-b border-blue-gray-100 bg-blue-gray-50 p-4 text-base text-center text-gray-700">
-                  รูปภาพ
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((item, index) => (
-                <tr key={index} className="border-b dark:border-neutral-500">
-                  <td className="p-2 border text-center border-blue-gray-50 text-gray-700">
-                    {item.name} {item.twolayer ? "ทำม่าน2ชั้นได้" : null}
-
-                  </td>
-                  <td className="p-2 pr-5 border text-right border-blue-gray-50 text-gray-700">
-                    {item.price_rail} บาท{" "}
-                  </td>
-                  <td className="p-2 border text-center flex justify-center items-center border-blue-gray-50 text-gray-700">
-                    <img
-                      src={`${process.env.REACT_APP_AWS}${item.image}`}
-                      alt="types"
-                      className="h-[150px] max-w-full"
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
         <form
           onSubmit={submitForm}
           enctype="multipart/form-data"
           class="bg-white "
         >
-          <p className="text-gray-700 items-center md:text-base mt-4 pl-5">
-            เพิ่มประเภทการสั่งตัด
-          </p>
-
           <div class="input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline my-6">
             <input
               class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -208,6 +226,13 @@ useEffect(() => {
               />
             )}
           </div>
+          <div className="flex sm:flex-col md:flex-row lg:flex-row xl:flex-row justify-center md:justify-around items-center">
+            <img
+              className="flex filter drop-shadow-xl appearance-none border-none  mt-4 w-auto h-[350px] rounded justify-center py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              src={`${process.env.REACT_APP_AWS}${data.image}`}
+              alt="Preview"
+            />{" "}
+          </div>
 
           <div class="input-groupfle shadow appearance-none border mt-5 rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2">
             <input
@@ -220,18 +245,18 @@ useEffect(() => {
               placeholder="ราคาราง/100 ซม."
             />
             <span className=" w-[10%] text-center text-gray-500 ml-2 m-auto p-auto ">
-              บาท
+              บาท/ ซม.
             </span>
           </div>
 
-          <p className="text-gray-700 items-center md:text-base mt-4 pl-5">
-            สามารถทำเป็นผ้าม่าน2ชั้นได้หรือไม่
+          <p className="text-gray-700 items-center sm:text-base md:text-base mt-5 pl-5">
+            สามารถทำเป็นม่าน2ชั้น ได้หรือไม่ ?
           </p>
 
           {["ได้", "ไม่ได้"].map((twolayer) => (
             <div
               key={twolayer}
-              className="flex-row text-center text-browntop text-lg mt-2 mb-2"
+              className="flex-row text-left text-browntop text-lg mt-2 mb-2"
             >
               <input
                 className="ml-2"
@@ -247,7 +272,7 @@ useEffect(() => {
             </div>
           ))}
 
-          <div class="flex items-center justify-center">
+          <div class="flex items-center mt-5 justify-center">
             <button
               class="w-full bg-stone-500 hover:bg-browntop text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               value="save"
@@ -257,6 +282,13 @@ useEffect(() => {
             </button>
           </div>
         </form>
+
+        <button
+          className="w-[100px] bg-white border border-red-500 mt-5 hover:bg-red-600 text-red-500 hover:text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline float-right"
+          onClick={() => handleDelete()}
+        >
+          ลบข้อมูล
+        </button>
       </div>
     </>
   );

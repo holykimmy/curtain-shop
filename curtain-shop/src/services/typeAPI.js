@@ -1,9 +1,9 @@
 import axios from "axios";
 const typeAPI = {
-  createProduct: async (formData) => {
+  createType: async (formData) => {
     return axios.post(`${process.env.REACT_APP_API}/type-cut/create`, formData);
   },
-  getAllTypes : () => {
+  getAllTypes: () => {
     return axios
       .get(`${process.env.REACT_APP_API}/type-cut/all/type`)
       .then((response) => response.data)
@@ -12,7 +12,7 @@ const typeAPI = {
         throw error;
       });
   },
-  getTypeById : async (typeId) => {
+  getTypeById: async (typeId) => {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API}/type-cut/type/${typeId}`
@@ -24,12 +24,12 @@ const typeAPI = {
     }
   },
 
-
-  updateTypeById: async (typeId,formData) => {
+  updateTypeById: async (typeId, formData) => {
+    console.log(typeId, formData);
     try {
-
       const response = await axios.put(
-        `${process.env.REACT_APP_API}/type-cut/update/${typeId}`,formData
+        `${process.env.REACT_APP_API}/type-cut/update/${typeId}`,
+        formData
       );
       return response.data;
     } catch (error) {
@@ -48,7 +48,7 @@ const typeAPI = {
       console.error("Error fetching :", error);
       throw error;
     }
-  },
+  }
 };
 
 export default typeAPI;
