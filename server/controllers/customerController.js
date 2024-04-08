@@ -497,12 +497,14 @@ exports.userCart = async (req, res) => {
         rail: item.rail,
         count: item.count,
         width: item.width,
-        height: item.height
+        height: item.height,
+        twolayer : item.twolayer,
+        totalPiece : item.totalPiece
       })),
 
       orderBy: idUser,
       totalPrice: cart.reduce(
-        (total, item) => total + item.price * item.count,
+        (total, item) => total + item.totalPiece * item.count,
         0
       )
     }).save();
@@ -546,11 +548,8 @@ exports.userUpdateADCart = async (req, res) => {
       existingCart.sendAddress = sendAddress;
       existingCart.deliveryIs = deliveryIs;
       existingCart.confirmed = confirmed;
-
       existingCart.windowimg = fileKeys;
-
       existingCart.totalPrice = existingCart.totalPrice;
-
       await existingCart.save();
 
       res.json(existingCart);
@@ -1385,6 +1384,22 @@ exports.updateOrderVerifyPayment = async (req, res) => {
 
     // ดำเนินการอัปเดตค่า endble ในคำสั่งซื้อที่ระบุ
     await Cart.updateOne({ _id: idOrder }, { verifypayment: verifypayment });
+
+    res.status(200).json({ message: "Order endble updated successfully." });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.updateOrderDepositPayment = async (req, res) => {
+  try {
+    const idOrder = req.params.id;
+    const { deposit } = req.body;
+    console.log("Update order endble for order:", idOrder);
+
+    // ดำเนินการอัปเดตค่า endble ในคำสั่งซื้อที่ระบุ
+    await Cart.updateOne({ _id: idOrder }, { deposit: deposit });
 
     res.status(200).json({ message: "Order endble updated successfully." });
   } catch (error) {

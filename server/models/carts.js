@@ -19,7 +19,9 @@ const CartSchema = mongoose.Schema(
         rail: { type: String },
         count: { type: Number, default: 1 },
         width: { type: Number },
-        height: { type: Number }
+        height: { type: Number },
+        totalPiece : {type:Number},
+        twolayer : { type:String}
       }
     ],
     orderBy: {
@@ -32,7 +34,7 @@ const CartSchema = mongoose.Schema(
     },
     detail: { type: String },
     enable: { type: Boolean, default: true },
-    deliveryIs: { type: Number },
+    deliveryIs: { type: String },
     totalPrice: { type: Number },
     confirmed: { type: Boolean, default: false },
     payment: { type: Boolean, default: false },
@@ -48,6 +50,7 @@ const CartSchema = mongoose.Schema(
     pandding: { type: Boolean, default: false },
     sendproduct: { type: Boolean, default: false },
     complete: { type: Boolean, default: false },
+    deposit: {type: Boolean, default:false},
     createdAt: {
       type: String,
       default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss")

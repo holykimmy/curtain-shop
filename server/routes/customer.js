@@ -42,7 +42,8 @@ const {
   updateSlip,
   deleteSlip,
   updateOrderCancelled,
-  updateOrderVerifyCancelled
+  updateOrderVerifyCancelled,
+  updateOrderDepositPayment
 } = require("../controllers/customerController");
 
 //middleware
@@ -94,9 +95,10 @@ router.get("/all/order/complete-s",auth,searchOrderComplete)
 router.put("/order/enable/:id", auth, updateOrderEnable);
 router.put("/order/cencelled/:id", auth, updateOrderCancelled);
 router.put("/order/verifycanceclled/:id", auth, updateOrderVerifyCancelled);
-
 router.put("/order/approve/:id", auth, updateOrderApprove);
 router.put("/order/verifypayment/:id", auth, updateOrderVerifyPayment);
+router.put("/order/deposit/:id", auth, updateOrderDepositPayment);
+
 router.put("/order/pandding/:id", auth, updateOrderPandding);
 router.put("/order/send/:id", auth, updateOrderSend);
 router.put("/order/complete/:id", auth, updateOrderComplete);
