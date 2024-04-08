@@ -23,15 +23,13 @@ module.exports = withMT({
       },
       screens: {
      
-        'sm': '300px',
+        'sm': '576px',
        
       
-        'md': '768px',
+        'md': '960px',
        
       
-        'lg': '992px',
-   
-        'xl': '1200px',
+        'lg': '1440px',
      
       },
       boxShadow: {
@@ -40,8 +38,6 @@ module.exports = withMT({
       fontFamily: {
         'Kanit':[ 'Kanit', 'sans-serif']
       },
-      
-
     },
   },
   plugins: [

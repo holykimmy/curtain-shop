@@ -241,6 +241,46 @@ function PaymentPage() {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
+  function handleDepositPayment(deposit) {
+    
+    let message;
+
+    if (deposit) {
+      message = "คุณต้องการจ่ายมัดจำก่อน 50% ใช่หรือไม่?";
+    } else {
+      message = "คุณต้องการจ่ายเต็มราคาเลยใช่หรือไม่?";
+    }
+
+    Swal.fire({
+      title: message,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "ใช่",
+      cancelButtonText: "ไม่"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // ทำการอัปเดตค่ามัดจำผ่าน customerAPI.updateOrderDepositPayment
+        customerAPI
+          .updateOrderDepositPayment(idOrder, deposit)
+          .then((response) => {
+            Swal.fire({
+              icon: "success"
+           
+          }).then(() => {
+            window.location.reload(); 
+          });
+          })
+          .catch((error) => {
+            Swal.fire({
+              text: "เกิดข้อผิดพลาด",
+              icon: "error"
+            });
+            console.error("Error updating deposit:", error);
+          });
+      }
+    });
+  }
+
   return (
     <>
       {" "}
@@ -306,7 +346,7 @@ function PaymentPage() {
                               </p>
                               <p className="text-sm leading-none text-gray-800">
                                 <span className="text-gray-600">
-                                  ขนาด : {item.width} x {item.height}ซม.
+                                  ขนาด : {item.width} x {item.height} ซม.
                                 </span>
                               </p>
 
@@ -334,11 +374,7 @@ function PaymentPage() {
                             </div>
 
                             <p className="text-xs sm:text-xs md:text-sm xl:text-sm font-semibold leading-6 text-gray-800">
-                              ราคา{" "}
-                              {numberWithCommas(
-                                item.product.price * item.count
-                              )}{" "}
-                              บาท
+                              ราคา {numberWithCommas(item.totalPiece)} บาท
                             </p>
                           </div>
                         </div>
@@ -346,14 +382,13 @@ function PaymentPage() {
                     ))}
                   </div>
                   <p className="text-base leading-4 text-gray-800  px-4 py-6 space-y-4 md:space-y-6 xl:space-y-8">
-                      รูปหน้าหน้าต่าง
-                    </p>
+                    รูปหน้าหน้าต่าง
+                  </p>
                   <div className="flex flex-row  justify-between items-start w-full space-y-4 md:space-y-6 xl:space-y-8">
-                 
                     {order.windowimg.map((url, index) => (
                       <img
                         key={index}
-                        className="w-[150px] md:block m-4 "
+                        className="w-[150px]  m-4 "
                         src={`${process.env.REACT_APP_AWS}${url}`}
                         alt="product"
                       />
@@ -363,33 +398,21 @@ function PaymentPage() {
                   <div className="flex justify-center md:flex-row flex-col items-stretch w-full space-y-4 md:space-y-0 md:space-x-6 xl:space-x-8">
                     <div className="flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 space-y-6   ">
                       <div className="flex justify-center items-center w-full space-y-4 flex-col border-gray-200 border-b pb-4">
-                        <div className="flex justify-between  w-full">
-                          <p className="text-base leading-4 text-gray-800">
-                            รายการสั่งซื้อ
-                          </p>
-                          <p className="text-base leading-4 text-gray-600">
-                            {numberWithCommas(order.totalPrice)} บาท
-                          </p>
-                        </div>
-
                         <div className="flex justify-between items-center w-full">
                           <p className="text-base leading-4 text-gray-800">
-                            ค่าขนส่ง
+                            การจัดส่ง
                           </p>
-                          <p className="text-base leading-4 text-gray-600">
-                            {numberWithCommas(order.deliveryIs)} บาท
+                          <p className="text-base leading-4 text-gray-600 whitespace-pre-wrap text-right">
+                            {order.deliveryIs}
                           </p>
                         </div>
                       </div>
                       <div className="flex justify-between items-center w-full">
-                        <p className="text-base font-semibold leading-4 text-gray-800">
+                        <p className="text-base font-semibold leading-4  text-gray-800">
                           ราคารวม
                         </p>
                         <p className="text-base font-semibold leading-4 text-gray-600">
-                          {numberWithCommas(
-                            order.totalPrice + order.deliveryIs
-                          )}{" "}
-                          บาท
+                          {numberWithCommas(order.totalPrice)} บาท
                         </p>
                       </div>
                     </div>
@@ -423,6 +446,31 @@ function PaymentPage() {
                           <p className="text-lg font-semibold leading-6 text-gray-800">
                             เลือกสลิปการโอนเงินของคุณ
                           </p>
+
+                          <div className="flex justify-between mt-4">
+                            <button
+                              className="py-2 px-4 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-md"
+                              onClick={() => handleDepositPayment(true)}
+                            >
+                              จ่ายแบบมัดจำ 50%
+                            </button>
+                            <button
+                              className="py-2 px-4 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-md"
+                              onClick={() => handleDepositPayment(false)}
+                            >
+                              จ่ายเต็มราคาเลย
+                            </button>
+                          </div>
+                          {order.deposit ? (
+                            <p className="text-xs sm:text-xs md:text-sm xl:text-sm font-semibold leading-6 text-gray-800">
+                              จำนวนที่ต้องชำระ{" "}
+                              {numberWithCommas(order.totalPrice * 0.5)} บาท
+                            </p>
+                          ) : (
+                            <p className="text-xs sm:text-xs md:text-sm xl:text-sm font-semibold leading-6 text-gray-800">
+                              ราคา {numberWithCommas(order.totalPrice)} บาท
+                            </p>
+                          )}
                           <div className="flex items-center shadow-md space-x-6 bg-white p-3 rounded-md">
                             <form id="uploadForm" encType="multipart/form-data">
                               <label className="block">

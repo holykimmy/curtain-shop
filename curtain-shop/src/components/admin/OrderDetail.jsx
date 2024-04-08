@@ -297,7 +297,7 @@ function OrderDetail() {
                             <p className="text-xs sm:text-xs md:text-sm xl:text-sm font-semibold leading-6 text-gray-800">
                               ราคา{" "}
                               {numberWithCommas(
-                                item.product.price * item.count
+                                 item.totalPiece
                               )}{" "}
                               บาท
                             </p>
@@ -331,24 +331,12 @@ function OrderDetail() {
                   <div className="flex justify-center md:flex-row flex-col items-stretch w-full space-y-4 md:space-y-0 md:space-x-6 xl:space-x-8">
                     <div className="flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 space-y-6   ">
                       <div className="flex justify-center items-center w-full space-y-4 flex-col border-gray-200 border-b pb-4">
-                        <div className="flex justify-between  w-full">
+                      <div className="flex justify-between items-center w-full">
                           <p className="text-base leading-4 text-gray-800">
-                            รายการสั่งซื้อ
+                            การจัดส่ง
                           </p>
-                          <p className="text-base leading-4 text-gray-600">
-                            {numberWithCommas(
-                              order.totalPrice - order.deliveryIs
-                            )}{" "}
-                            บาท
-                          </p>
-                        </div>
-
-                        <div className="flex justify-between items-center w-full">
-                          <p className="text-base leading-4 text-gray-800">
-                            ค่าขนส่ง
-                          </p>
-                          <p className="text-base leading-4 text-gray-600">
-                            {order.deliveryIs} บาท
+                          <p className="text-base leading-4 text-gray-600 whitespace-pre-wrap text-right">
+                         {order.deliveryIs}
                           </p>
                         </div>
                       </div>
@@ -365,7 +353,7 @@ function OrderDetail() {
                       <h3 className="text-xl font-semibold leading-5 text-gray-800">
                         ชำระสินค้า
                       </h3>
-                      {order.payment ? (
+                      {order.approve ? (
                         <div className="pb-4 md:pb-8 w-full md:w-60">
                           <img
                             className="w-[350px] h-[350px]"
@@ -463,19 +451,8 @@ function OrderDetail() {
                         ) : (
                           " "
                         )}
-
-                        {/* {!order.payment ? (
-                          "ลูกค้ายังไม่ได้ชำระเงิน"
-                        ) : (
-                          <button
-                            disabled={!order.payment}
-                            className="mt-6 md:mt-3 py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base leading-4 text-gray-800"
-                            onClick={() => handleVerifyOrder(order._id)}
-                          >
-                            ยืนยันการชำระเงินของลูกค้า
-                          </button>
-                        )} */}
-                        {!order.payment ? (
+                      
+                        {!order.payment  && order.approve ? (
                           "ลูกค้ายังไม่ได้ชำระเงิน"
                         ) : (
                           <>

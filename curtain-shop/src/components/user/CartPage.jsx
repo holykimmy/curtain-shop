@@ -115,28 +115,11 @@ function CartPage() {
 
   console.table(cart);
 
-//   const getTotalPiece = (item) => {
-//     // คำนวณจำนวนชิ้นของผ้าที่ต้องใช้
-//     const numberOfPieces = Math.ceil(parseInt(item.width) / parseInt(item.p_width));
-
-//     // คำนวณผ้า1ฝั่ง
-//     const fabricOneSide = parseInt(item.p_width) * numberOfPieces;
-
-//     // คำนวณผ้าทั้งหมด
-//     const totalFabric = fabricOneSide * 2;
-
-//     // คำนวณค่าผ้าต่อชิ้น
-//     const fabricCostPerPiece = (parseInt(item.height) * totalFabric * item.price) / 100;
-
-//     return fabricCostPerPiece;
-// };
-
   const getTotal = () => {
     return cart.reduce((currenValue, nextValue) => {
       return currenValue + nextValue.count * nextValue.totalPiece;
     }, 0);
   };
-
 
   const handleLogoutAuto = () => {
     // Logout user
@@ -158,12 +141,11 @@ function CartPage() {
       cancelButtonText: "ไม่ใช่"
     }).then((result) => {
       if (result.isConfirmed) {
-        // ยืนยันออกจากระบบ
+        
         localStorage.removeItem("token");
 
         setUserName("");
 
-        // ใช้ useNavigate เพื่อนำผู้ใช้กลับไปยังหน้าหลัก
         navigate("/"); // ลิงก์ไปยังหน้าหลัก
       }
     });
@@ -171,16 +153,16 @@ function CartPage() {
   //login check
 
   //save order
-
   const handleSaveOrder = async (e) => {
     console.log(idUser);
-    // console.log(cart);
+    console.log(cart);
     try {
       // เรียกใช้ API ด้วย Axios
       const response = await axios.post(
         `${process.env.REACT_APP_API}/customer/cart`,
         { idUser, cart }
       );
+
       // ตรวจสอบการตอบกลับจาก API
       if (response.status === 200) {
         console.log("บันทึกสำเร็จ!");
@@ -208,54 +190,56 @@ function CartPage() {
 
   const showCartItems = () => {
     return (
-      <div className="flex items-center justify-center mb-5">
-        <table class="table-auto w-[90%] border-collapse border border-gray-300 ">
-          <thead>
-            <tr className="">
-              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
+      <>
+        {" "}
+        <table className="min-w-full text-left text-sm font-light">
+          <thead className="border-b font-medium dark:border-neutral-500">
+            <tr className="border-b dark:border-neutral-500">
+              <th className="hidden sm:table-cell  text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ">
                 รูปภาพ
               </th>
-              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
+              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ">
                 รหัสสินค้า
               </th>
-              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
+              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ">
                 ยี่ห้อสินค้า
               </th>
-              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
-                รายการสินค้า
+              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ">
+                รายละเอียด
               </th>
-              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
+              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ">
                 ประเภท
               </th>
-              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
+              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ">
                 ม่าน2ชั้น
               </th>
-              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
+              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ">
                 ราง
               </th>
-              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
+              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ">
                 ขนาด
               </th>
 
-              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
+              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ">
                 จำนวนสินค้า
               </th>
-              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ...">
+              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ">
                 ราคา
               </th>
-              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ..."></th>
+              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 "></th>
             </tr>
           </thead>
           {cart.map((item) => (
             <ProductInCart idUser={idUser} key={item.productId} item={item} />
           ))}
         </table>
-      </div>
+      </>
     );
   };
 
-   const numberWithCommas = (x) => {
-    if (x == null) { // เพิ่มการตรวจสอบค่า null หรือ undefined
+  const numberWithCommas = (x) => {
+    if (x == null) {
+      // เพิ่มการตรวจสอบค่า null หรือ undefined
       return ""; // หรือค่าที่คุณต้องการให้ส่งออก
     }
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -280,10 +264,10 @@ function CartPage() {
         {/* <div className="flex-row"> Cart Page </div> */}
         <div className="col-md-8 text-brown-500 text-lg text-center my-5 ">
           {" "}
-          ตระกร้าสินค้า / {cart.length} product
+          ตระกร้าสินค้า  {cart.length} ชุด
         </div>
-        <div className="flex flex-col justify-between ">
-          {!cart.length ? <p>no product in cart</p> : showCartItems()}
+        <div className="overflow-x-auto">
+          {!cart.length ? <p>ไม่มีสินค้าในตระกร้า</p> : showCartItems()}
 
           <div className="flex-col items-center mr-10 justify-center">
             {" "}
@@ -293,18 +277,18 @@ function CartPage() {
             <hr />
             {cart.map((item, index) => (
               <>
-                <p key={index} className="ml-10  text-brown-400 my-2">
+                <p key={index} className="ml-10 text-sm md:text-base lg:text-base text-brown-400 my-2">
                   {item.name} ขนาด {item.width} x {item.height} เซนติเมตร จำนวน{" "}
                   {item.count} ชุด {item.rail}
                 </p>
-                <p className="ml-[60px]  text-brown-400 my-2">
-                   ราคา {numberWithCommas(item.totalPiece)} บาท 
+                <p className="ml-[60px]  text-sm md:text-base lg:text-base  text-brown-400 my-2">
+                  ราคา {numberWithCommas(item.totalPiece)} บาท
                 </p>
               </>
             ))}
             <hr />
             <hr />
-            <h4 className=" ml-10 text-brown-400 my-2 ">
+            <h4 className=" ml-10  text-sm md:text-base lg:text-base text-brown-400 my-2 ">
               ราคารวม : {numberWithCommas(getTotal())} บาท{" "}
             </h4>
             <hr />

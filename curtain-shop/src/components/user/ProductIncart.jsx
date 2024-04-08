@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import { MdDeleteForever } from "react-icons/md";
 import Swal from "sweetalert2";
 import typeAPI from "../../services/typeAPI";
+import { Link, useNavigate, useParams } from "react-router-dom";
+
 
 const ProductInCart = ({ item, idUser }) => {
   const dispatch = useDispatch();
@@ -11,45 +13,12 @@ const ProductInCart = ({ item, idUser }) => {
   const [cart, setCart] = useState([]);
   const [] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedType, setSelectedType] = useState("");
-  const [selectedTypeId, setSelectedTypeId] = useState("");
-  const [typeById, setTypeById] = useState("");
-  // console.log(item);
-  // useEffect(() => {
-  //   if (isLoading) {
-  //     Swal.fire({
-  //       customClass: {
-  //         popup: "bg-transparent"
-  //       },
-  //       backdrop: "rgba(255, 255, 255, 0.5)",
-  //       showConfirmButton: false,
-  //       didOpen: () => {
-  //         Swal.showLoading();
-  //       },
-  //       allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
-  //       allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
-  //     });
-  //   } else {
-  //     Swal.close();
-  //   }
-  // }, [isLoading]);
 
-  // const [types, setTypes] = useState([]);
-  // useEffect(() => {
-  //   const fetch = async () => {
-  //     try {
-  //       setIsLoading(true);
-  //       const type = await typeAPI.getAllTypes();
-  //       setTypes(type);
-  //       setIsLoading(false);
-  //     } catch (error) {
-  //       setIsLoading(false);
-  //       console.error("Error fetching all brands:", error);
-  //     }
-  //   };
+  const navigate = useNavigate();
 
-  //   fetch();
-  // }, []);
+console.log("testtt");
+  console.log(item);
+  
 
   console.log("-----------------------------");
   const getTotalPiece = (item) => {
@@ -63,9 +32,6 @@ const ProductInCart = ({ item, idUser }) => {
       numberOfPieces
     );
 
-    // คำนวณผ้า1ฝั่ง
-    // const fabricOneSide = item.p_width * numberOfPieces;
-    // console.log("fabricOneSide" ,item.p_width ,"*" ,numberOfPieces ,"=",fabricOneSide );
 
     // คำนวณผ้าทั้งหมด
     const totalFabric = numberOfPieces * 2;
@@ -135,47 +101,6 @@ const ProductInCart = ({ item, idUser }) => {
     return mergedCart;
   };
 
-  // console.log("after ", cart);
-
-  // const handleChangeCount = (e) => {
-  //   const count = e.target.value < 1 ? 1 : e.target.value;
-
-  //   //เผื่อจะใส่ quitity
-  //   if (count > item.quatity) {
-  //     toast.error("max avialable Quantity");
-  //     return;
-  //   }
-
-  //   let cart = {};
-
-  //   if (localStorage.getItem("cart")) {
-  //     cart = JSON.parse(localStorage.getItem("cart"));
-  //   }
-
-  //   //update count
-  //   const updatedCart = cart[idUser].map((product) => {
-  //     if (product.cartId === item.cartId) {
-  //       return {
-  //         ...product,
-  //         count: count,
-  //         totalPiece: getTotalPiece(product)
-  //       };
-  //     }
-  //     return product;
-  //   });
-
-  //   cart[idUser] = updatedCart;
-
-  //   //maege
-  //   const mergedCart = handleMergeProducts(updatedCart);
-  //   //save to localStorage
-  //   localStorage.setItem("cart", JSON.stringify(mergedCart));
-  //   dispatch({
-  //     type: "ADD_TO_CART",
-  //     payload: mergedCart
-  //   });
-
-  // };
   const handleChangeCount = (e) => {
     const count = e.target.value < 1 ? 1 : e.target.value;
 
@@ -292,7 +217,6 @@ const ProductInCart = ({ item, idUser }) => {
     });
   };
 
-
   const handleRemove = () => {
     let cart = {};
     if (localStorage.getItem("cart")) {
@@ -316,45 +240,58 @@ const ProductInCart = ({ item, idUser }) => {
       });
     }
   };
- 
+
   const numberWithCommas = (x) => {
-    if (x == null) { // เพิ่มการตรวจสอบค่า null หรือ undefined
+    if (x == null) {
+      // เพิ่มการตรวจสอบค่า null หรือ undefined
       return ""; // หรือค่าที่คุณต้องการให้ส่งออก
     }
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
-
-  
+  const handleDetailProduct = (productId, productName) => {
+    Swal.fire({
+      text: `คุณต้องการดูข้อมูลสินค้า ${productName} ใช่หรือไม่?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่",
+      cancelButtonText: "ไม่ใช่",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate(`/product-detail/${productId}`);
+      }
+    });
+  };
 
   return (
     <tbody>
-      <tr className="text-center ">
-        <td className="text-browntop px-2 py-1 border  border-gray-300 ...">
-          {" "}
+      <tr className="text-center "  onClick={() => handleDetailProduct (item.productId, item.name)} >
+        <td className=" hidden sm:table-cell  text-browntop px-2 py-1 border  border-gray-300   ">
           <img className="w-[300px] rounded" src={item.image} alt="product" />
         </td>
-        <td className="w-[100px] text-sm text-browntop px-2 py-1 border border-gray-300 ...">
-          {item.name}
+        <td className="w-[100px] text-sm text-browntop px-2 py-1 border border-gray-300">
+        {item.name}
         </td>
-        <td className="text-browntop text-sm  px-2 py-1 border border-gray-300 ...">
+        <td className="text-browntop text-sm  px-2 py-1 border border-gray-300">
           {item.brand}
         </td>
-        <td className="text-browntop text-xs text-left px-2 py-1 border border-gray-300 ...">
-          {item.detail}
+        <td className="text-browntop text-xs text-left px-2 py-1 border border-gray-300 ">
+          {item.detail.split("\r\n")[0]}
         </td>
-        <td className="w-[100px] text-browntop  text-sm px-2 py-1 border border-gray-300 ...">
+        <td className="w-[100px] text-browntop  text-sm px-2 py-1 border border-gray-300 ">
           {item.type}
         </td>
-        <td className=" w-[100px] text-browntop text-sm px-2 py-1 border border-gray-300 ...">
+        <td className=" w-[100px] text-browntop text-sm px-2 py-1 border border-gray-300 ">
           {item.twolayer}
         </td>
-        <td className="w-[100px] text-browntop text-sm px-2 py-1 border border-gray-300 ...">
+        <td className="w-[100px] text-browntop text-sm px-2 py-1 border border-gray-300 ">
           <select value={item.rail} onChange={handleRailChange}>
             <option value="รับราง">รับราง</option>
             <option value="ไม่รับราง">ไม่รับราง</option>
           </select>
         </td>
-        <td className="w-[280px] text-browntop text-sm px-2 py-1 border border-gray-300 ...">
+        <td className="w-[280px] text-browntop text-sm px-2 py-1 border border-gray-300 ">
           <input
             onChange={handleChangeWidth}
             className="form-control w-[100px]"
@@ -370,7 +307,7 @@ const ProductInCart = ({ item, idUser }) => {
           / ซม.
         </td>
 
-        <td className="w-[150px] text-browntop  text-sm px-2 py-1 border border-gray-300 ...">
+        <td className="w-[150px] text-browntop  text-sm px-2 py-1 border border-gray-300 ">
           <input
             onChange={handleChangeCount}
             className="form-control w-[75px]"
@@ -379,7 +316,7 @@ const ProductInCart = ({ item, idUser }) => {
           />{" "}
           ชุด
         </td>
-        <td className="text-browntop text-sm px-2 py-1 border border-gray-300 ...">
+        <td className="text-browntop text-sm px-2 py-1 border border-gray-300 ">
           {numberWithCommas(getTotalPiece(item))} บาท
         </td>
 
@@ -389,7 +326,6 @@ const ProductInCart = ({ item, idUser }) => {
             className="text-red-300  rounded-l-full h-10 w-10 hover:shadow-xl "
           />
         </td>
-  
       </tr>
     </tbody>
   );
