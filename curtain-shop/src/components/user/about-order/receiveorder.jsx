@@ -26,8 +26,6 @@ const ReceiveOrder = ({ idUser }) => {
         });
     };
     fetchData();
-
-  
   }, [idUser]);
 
   console.log(userOrder);
@@ -35,14 +33,13 @@ const ReceiveOrder = ({ idUser }) => {
   const handleCompleteOrder = async (idOrder) => {
     // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
     const confirmation = await Swal.fire({
-     
       text: "คุณได้รับคำสั่งซื้อเรียบร้อยแล้วใช่หรือไม่?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
-      cancelButtonColor:  "#d33",
+      cancelButtonColor: "#d33",
       confirmButtonText: "ยืนยัน",
-      cancelButtonText: "ยกเลิก",
+      cancelButtonText: "ยกเลิก"
     });
 
     // หากผู้ใช้กดปุ่มยืนยัน
@@ -53,7 +50,7 @@ const ReceiveOrder = ({ idUser }) => {
         await Swal.fire({
           title: "ยืนยันคำสั่งซื้อ",
           text: "คำสั่งซื้อสำเร็จสำเร็จแล้ว",
-          icon: "success",
+          icon: "success"
         });
         window.location.reload();
       } catch (error) {
@@ -67,7 +64,6 @@ const ReceiveOrder = ({ idUser }) => {
     navigate(`/payment/${idOrder}`);
   };
 
- 
   const handdleOrderdetail = async (idOrder) => {
     // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
     const confirmation = await Swal.fire({
@@ -77,17 +73,15 @@ const ReceiveOrder = ({ idUser }) => {
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "ยืนยัน",
-      cancelButtonText: "ยกเลิก",
+      cancelButtonText: "ยกเลิก"
     });
 
     // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
-      
-        navigate(`/order-detail/${idOrder}`, {});
+      navigate(`/order-detail/${idOrder}`, {});
     }
   };
 
-  
   const numberWithCommas = (x) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
@@ -148,8 +142,7 @@ const ReceiveOrder = ({ idUser }) => {
                         จำนวน : {item.count} หลา
                       </p>
                       <p className="text-sm text-gray-600">
-                        รวม :{" "}
-                        {numberWithCommas(item.product.price * item.count)} บาท
+                        รวม : {numberWithCommas(item.totalPiece)} บาท
                       </p>
                     </div>
                   </div>
@@ -168,12 +161,9 @@ const ReceiveOrder = ({ idUser }) => {
                   {order.sendAddress.postcode}
                 </p>
               )}
-              <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
-                ราคาสินค้า :{" "}
-                {numberWithCommas(order.totalPrice - order.deliveryIs)} บาท
-              </p>
-              <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
-                ค่าจัดส่ง : {numberWithCommas(order.deliveryIs)} บาท
+
+              <p className=" text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1 whitespace-pre-wrap">
+                การจัดส่ง : {order.deliveryIs.split("\n")[0]}
               </p>
               <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
                 ราคารวม : {numberWithCommas(order.totalPrice)} บาท
@@ -184,8 +174,11 @@ const ReceiveOrder = ({ idUser }) => {
                   ? "จัดส่งสินค้าเรียบร้อยแล้ว"
                   : "กำลังเตรียมจัดส่ง"}
               </p>
+             
+              <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
+              {order.postcodeOrder}
+              </p>
 
-           
               <div className="flex justify-between">
                 <div className="flex justify-start ">
                   {" "}
@@ -198,15 +191,12 @@ const ReceiveOrder = ({ idUser }) => {
                   </button>
                 </div>
                 <div className="flex justify-end ">
-             
-                 
-                    <button
-                      className="bg-blue-400 mt-3 mx-2 py-2 px-auto w-[150px] rounded-full shadow-xl hover:bg-blue-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
-                      onClick={() => handleCompleteOrder(order._id)}
-                    >
-                     ได้รับสินค้าแล้ว
-                    </button>
-                 
+                  <button
+                    className="bg-blue-400 mt-3 mx-2 py-2 px-auto w-[150px] rounded-full shadow-xl hover:bg-blue-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
+                    onClick={() => handleCompleteOrder(order._id)}
+                  >
+                    ได้รับสินค้าแล้ว
+                  </button>
                 </div>
               </div>
             </div>

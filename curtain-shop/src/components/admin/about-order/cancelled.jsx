@@ -216,11 +216,7 @@ const CancelOrder = ({ idUser }) => {
                               จำนวน : {item.count} หลา
                             </p>
                             <p className="text-sm text-gray-600">
-                              รวม :{" "}
-                              {numberWithCommas(
-                                item.product.price * item.count
-                              )}{" "}
-                              บาท
+                              รวม : {numberWithCommas(item.totalPiece)} บาท
                             </p>
                           </div>
                         </div>
@@ -240,13 +236,9 @@ const CancelOrder = ({ idUser }) => {
                         {order.sendAddress.postcode}
                       </p>
                     )}
-                    <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
-                      ราคาสินค้า :{" "}
-                      {numberWithCommas(order.totalPrice - order.deliveryIs)}{" "}
-                      บาท
-                    </p>
-                    <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
-                      ค่าจัดส่ง : {numberWithCommas(order.deliveryIs)} บาท
+
+                    <p className=" text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1 whitespace-pre-wrap">
+                      การจัดส่ง : {order.deliveryIs.split("\n")[0]}
                     </p>
                     <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
                       ราคารวม : {numberWithCommas(order.totalPrice)} บาท
@@ -359,8 +351,7 @@ const CancelOrder = ({ idUser }) => {
                         จำนวน : {item.count} หลา
                       </p>
                       <p className="text-sm text-gray-600">
-                        รวม :{" "}
-                        {numberWithCommas(item.product.price * item.count)} บาท
+                        รวม : {numberWithCommas(item.totalPiece)} บาท
                       </p>
                     </div>
                   </div>
@@ -379,12 +370,9 @@ const CancelOrder = ({ idUser }) => {
                   {order.sendAddress.postcode}
                 </p>
               )}
-              <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
-                ราคาสินค้า :{" "}
-                {numberWithCommas(order.totalPrice - order.deliveryIs)} บาท
-              </p>
-              <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
-                ค่าจัดส่ง : {numberWithCommas(order.deliveryIs)} บาท
+
+              <p className=" text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1 whitespace-pre-wrap">
+                การจัดส่ง : {order.deliveryIs.split("\n")[0]}
               </p>
               <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
                 ราคารวม : {numberWithCommas(order.totalPrice)} บาท
@@ -402,8 +390,8 @@ const CancelOrder = ({ idUser }) => {
                 สถานะ : {!order.enable ? "ยกเลิกสินค้าแล้ว" : null}
               </p>
               {order.verifycancelled ? (
-              <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-1">
-              ยกเลิกสินค้าโดยแอดมินเนื้องจาก {order.cancelReasonAd}
+                <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-1">
+                  ยกเลิกสินค้าโดยแอดมินเนื้องจาก {order.cancelReasonAd}
                 </p>
               ) : (
                 " "

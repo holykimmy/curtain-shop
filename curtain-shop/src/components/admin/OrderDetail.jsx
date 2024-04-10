@@ -188,6 +188,51 @@ function OrderDetail() {
     }
   };
 
+  const handlePanddingOrder = async (idOrder) => {
+    const confirmation = await Swal.fire({
+      text: "จัดเตรียมสินค้าเสร็จแล้วใช่หรือไม่?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่",
+      cancelButtonText: "ยกเลิก"
+    });
+
+    // หากผู้ใช้กดปุ่มยืนยัน
+    if (confirmation.isConfirmed) {
+      try {
+        const response = await orderAPI.updateOrderPandding(idOrder, true);
+        console.log(response);
+        await Swal.fire({
+          title: "เตรียมสินค้าพร้อมแล้ว",
+          text: "คำสั่งซื้อได้รับการยืนยันแล้ว",
+          icon: "success"
+        });
+        window.location.reload();
+      } catch (error) {
+        console.error("Error cancelling order:", error);
+        // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
+      }
+    }
+  };
+
+  const handleSendOrder = async (idOrder) => {
+    // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
+    const confirmation = await Swal.fire({
+      text: "จัดส่งสินค้าแล้วใช่หรือไม่?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่",
+      cancelButtonText: "ยกเลิก"
+    });
+
+    if (confirmation.isConfirmed) {
+      navigate(`/order-post/${idOrder}`, {});
+    }
+  };
   const numberWithCommas = (x) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
@@ -215,6 +260,11 @@ function OrderDetail() {
                 <p className="text-xs sm:text-xs md:text-base lg:text-md xl:text-md font-medium leading-6 text-gray-600">
                   วันที่สั่งซื้อ : {order.createdAt}{" "}
                 </p>
+                {!order.enable ? (
+                  <p className="text-xs sm:text-xs md:text-base lg:text-md xl:text-md font-medium leading-6 text-red-600">
+                    ลูกค้าได้ยกเลิกคำสั่งซื้อนี้แล้ว
+                  </p>
+                ) : null}
                 {order.verifycancelled ? (
                   <p className="text-xs sm:text-xs md:text-base lg:text-md xl:text-md font-medium leading-6 text-red-600">
                     ยกเลิกสินค้าโดยแอดมินเนื้องจาก {order.cancelReasonAd}
@@ -295,11 +345,7 @@ function OrderDetail() {
                             </div>
 
                             <p className="text-xs sm:text-xs md:text-sm xl:text-sm font-semibold leading-6 text-gray-800">
-                              ราคา{" "}
-                              {numberWithCommas(
-                                 item.totalPiece
-                              )}{" "}
-                              บาท
+                              ราคา {numberWithCommas(item.totalPiece)} บาท
                             </p>
                           </div>
                         </div>
@@ -331,12 +377,12 @@ function OrderDetail() {
                   <div className="flex justify-center md:flex-row flex-col items-stretch w-full space-y-4 md:space-y-0 md:space-x-6 xl:space-x-8">
                     <div className="flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 space-y-6   ">
                       <div className="flex justify-center items-center w-full space-y-4 flex-col border-gray-200 border-b pb-4">
-                      <div className="flex justify-between items-center w-full">
+                        <div className="flex justify-between items-center w-full">
                           <p className="text-base leading-4 text-gray-800">
                             การจัดส่ง
                           </p>
                           <p className="text-base leading-4 text-gray-600 whitespace-pre-wrap text-right">
-                         {order.deliveryIs}
+                            {order.deliveryIs}
                           </p>
                         </div>
                       </div>
@@ -354,13 +400,19 @@ function OrderDetail() {
                         ชำระสินค้า
                       </h3>
                       {order.approve ? (
-                        <div className="pb-4 md:pb-8 w-full md:w-60">
-                          <img
-                            className="w-[350px] h-[350px]"
-                            src={`${process.env.REACT_APP_AWS}${order.slipmoney}`}
-                            alt="product"
-                          />
-                        </div>
+                        <>
+                          {order.payment ? (
+                            <div className="pb-4 md:pb-8 w-full md:w-60">
+                              <img
+                                className="w-[350px] h-[350px]"
+                                src={`${process.env.REACT_APP_AWS}${order.slipmoney}`}
+                                alt="product"
+                              />
+                            </div>
+                          ) : (
+                            <p>ยังไม่ได้ชำระเงิน</p>
+                          )}
+                        </>
                       ) : (
                         <p>ยังไม่ได้ชำระเงิน</p>
                       )}
@@ -451,8 +503,8 @@ function OrderDetail() {
                         ) : (
                           " "
                         )}
-                      
-                        {!order.payment  && order.approve ? (
+
+                        {!order.payment && order.approve ? (
                           "ลูกค้ายังไม่ได้ชำระเงิน"
                         ) : (
                           <>
@@ -468,14 +520,32 @@ function OrderDetail() {
                           </>
                         )}
 
-                        {order.enable ? (
+                        {!order.pandding ? (
+                          <button
+                            className="mt-6 md:mt-3 py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base leading-4 text-gray-800"
+                            onClick={() => handlePanddingOrder(order._id)}
+                          >
+                            เตรียมสินค้าเสร็จแล้ว
+                          </button>
+                        ) : null}
+                        
+                        {!order.sendproduct ? (
+                          <button
+                            className="mt-6 md:mt-3 py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base leading-4 text-gray-800"
+                            onClick={() => handleSendOrder(order._id)}
+                          >
+                            จัดส่งสินค้าเรียบร้อยแล้ว
+                          </button>
+                        ) : null}
+
+                        {order.enable && !order.pandding && (
                           <button
                             className="mt-6 md:mt-3 py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base leading-4 text-gray-800"
                             onClick={() => handleCancelOrder(order._id)}
                           >
                             ยกเลิกคำสั่งซื้อ
                           </button>
-                        ) : null}
+                        )}
                       </div>
                     </div>
                   </div>

@@ -16,6 +16,7 @@ import jsPDF from "jspdf";
 const TABLE_HEAD = [
   "ลำดับ",
   "รายการ",
+  "ประเภท",
   "เพิ่มเติม",
   "ขนาด",
   "จำนวน",
@@ -173,6 +174,9 @@ function ReceptInvoiceDetail() {
                         </td>
                         <td className="p-2 border text-center border-blue-gray-50 text-gray-700">
                           {row.list}
+                        </td>
+                        <td className="p-2 border text-center border-blue-gray-50 text-gray-700">
+                          {row.p_type}
                         </td>
                         <td className="p-2 border text-left border-blue-gray-50 text-gray-700">
                           <div className="whitespace-pre-wrap">

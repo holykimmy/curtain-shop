@@ -145,7 +145,7 @@ const PrepareOrder = ({ idUser }) => {
                       </p>
                       <p className="text-sm text-gray-600">
                         รวม :{" "}
-                        {numberWithCommas(item.product.price * item.count)} บาท
+                        {numberWithCommas(item.totalPiece)} บาท
                       </p>
                     </div>
                   </div>
@@ -164,16 +164,13 @@ const PrepareOrder = ({ idUser }) => {
                   {order.sendAddress.postcode}
                 </p>
               )}
-              <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
-                ราคาสินค้า :{" "}
-                {numberWithCommas(order.totalPrice - order.deliveryIs)} บาท
-              </p>
-              <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
-                ค่าจัดส่ง : {numberWithCommas(order.deliveryIs)} บาท
-              </p>
-              <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
-                ราคารวม : {numberWithCommas(order.totalPrice)} บาท
-              </p>
+         
+         <p className=" text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1 whitespace-pre-wrap">
+                      การจัดส่ง : {order.deliveryIs.split("\n")[0]}
+                    </p>
+                    <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
+                      ราคารวม : {numberWithCommas(order.totalPrice)} บาท
+                    </p>
               <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
                 สถานะ :{" "}
                 {!order.pandding

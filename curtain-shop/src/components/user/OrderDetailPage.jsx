@@ -31,28 +31,24 @@ function OrderDetailPage() {
 
   const [isLoading, setIsLoading] = useState(true);
 
-  if (isLoading) {
-    Swal.fire({
-      html: "<span class='text-gray-600'>Loading...</span>",
-      backdrop: `
-    #ffff
-  
-  `,
-      customClass: {
-        popup: "shadow-2xl border border-gray-300"
-      },
-      showConfirmButton: false,
-      didOpen: () => {
-        Swal.showLoading();
-      },
-      willClose: () => {
-        if (!isLoading) {
-          Swal.close();
-        }
-      }
-    });
-  }
-  console.log(isLoading);
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.7)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
 
   useEffect(() => {
     const fetchData = () => {
@@ -61,12 +57,10 @@ function OrderDetailPage() {
         .then((orderData) => {
           setCurrentOrder(orderData);
           setIsLoading(false);
-          Swal.close();
         })
         .catch((err) => {
           console.error("error", err);
           setIsLoading(false);
-          Swal.close();
         });
     };
     fetchData();
@@ -183,7 +177,35 @@ function OrderDetailPage() {
   const handlePayment = async (idOrder) => {
     navigate(`/payment/${idOrder}`, {});
   };
+  const handleCompleteOrder = async (idOrder) => {
+    // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
+    const confirmation = await Swal.fire({
+      text: "คุณได้รับคำสั่งซื้อเรียบร้อยแล้วใช่หรือไม่?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ยืนยัน",
+      cancelButtonText: "ยกเลิก"
+    });
 
+    // หากผู้ใช้กดปุ่มยืนยัน
+    if (confirmation.isConfirmed) {
+      try {
+        const response = await customerAPI.updateOrderComplete(idOrder, true);
+        console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
+        await Swal.fire({
+          title: "ยืนยันคำสั่งซื้อ",
+          text: "คำสั่งซื้อสำเร็จสำเร็จแล้ว",
+          icon: "success"
+        });
+        window.location.reload();
+      } catch (error) {
+        console.error("Error cancelling order:", error);
+        // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
+      }
+    }
+  };
   const numberWithCommas = (x) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
@@ -214,8 +236,26 @@ function OrderDetailPage() {
                   หมายเลขออเดอร์ของคุณ : {order._id}
                 </h1>
                 <p className="text-xs sm:text-xs md:text-base lg:text-md xl:text-md font-medium leading-6 text-gray-600">
-                  วันที่สั่งซื้อ : {order.createdAt}{" "}
+                  วันที่สั่งซื้อ : {order.createdAt}
                 </p>
+                {!order.enable ? (
+                  <p className="text-xs sm:text-xs md:text-base lg:text-md xl:text-md font-medium leading-6 text-red-600">
+                    คุณได้ยกเลิกคำสั่งซื้อนี้แล้ว
+                  </p>
+                ) : null}
+                {order.verifycancelled ? (
+                  <p className="text-xs sm:text-xs md:text-base lg:text-md xl:text-md font-medium leading-6 text-red-600">
+                    ยกเลิกสินค้าโดยแอดมินเนื้องจาก {order.cancelReasonAd}
+                  </p>
+                ) : null}
+
+                {order.sendproduct ? (
+                  <p className="text-xs sm:text-xs md:text-base lg:text-md xl:text-md font-medium leading-6 text-gray-600">
+                    จัดส่งสินค้าเรียบร้อยแล้ว {order.postcodeOrder}
+                  </p>
+                ) : (
+                  " "
+                )}
               </div>
               <div className="mt-10 flex flex-col xl:flex-row jusitfy-center items-stretch  w-full xl:space-x-8 space-y-4 md:space-y-6 xl:space-y-0">
                 <div className="flex flex-col justify-start items-start w-full space-y-4 md:space-y-6 xl:space-y-8">
@@ -313,22 +353,16 @@ function OrderDetailPage() {
                       <div className="flex justify-center items-center w-full space-y-4 flex-col border-gray-200 border-b pb-4">
                         <div className="flex justify-between  w-full">
                           <p className="text-base leading-4 text-gray-800">
-                            รายการสั่งซื้อ
+                            การจัดส่ง
                           </p>
-                          <p className="text-base leading-4 text-gray-600">
-                            {numberWithCommas(
-                              order.totalPrice - order.deliveryIs
-                            )}{" "}
-                            บาท
+                          <p className="text-base leading-4 text-gray-600 whitespace-pre-wrap text-right">
+                            {order.deliveryIs}
                           </p>
                         </div>
 
                         <div className="flex justify-between items-center w-full">
-                          <p className="text-base leading-4 text-gray-800">
-                            ค่าขนส่ง
-                          </p>
-                          <p className="text-base leading-4 text-gray-600">
-                            {numberWithCommas(order.deliveryIs)} บาท
+                          <p className="text-base font-semibold leading-4 text-gray-800">
+                            ราคารวม
                           </p>
                         </div>
                       </div>
@@ -432,7 +466,7 @@ function OrderDetailPage() {
                           </p>
                         </div>
                       </div>
-                      <div className="flex w-full justify-center items-center md:justify-start md:items-start">
+                      <div className="flex flex-col w-full justify-center items-center md:justify-start md:items-start">
                         {!order.payment ? (
                           <button
                             onClick={() => handlePayment(order._id)}
@@ -442,8 +476,25 @@ function OrderDetailPage() {
                             ไปที่หน้าชำระเงิน
                           </button>
                         ) : (
+                          !order.verifypayment &&
                           "ท่านได้ทำการชำระเงินเรียบร้อยแล้ว"
                         )}
+
+                        {order.sendproduct ? (
+                          <>
+                            {!order.complete ? (
+                              <button
+                                onClick={() => handleCompleteOrder(order._id)}
+                                disabled={!order.approve}
+                                className="mt-6 py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base leading-4 text-gray-800"
+                              >
+                                ได้รับสินค้าแล้ว
+                              </button>
+                            ) : (
+                              "ได้รับสินค้าเรียบร้อยแล้ว"
+                            )}
+                          </>
+                        ) : null}
                       </div>
                     </div>
                   </div>

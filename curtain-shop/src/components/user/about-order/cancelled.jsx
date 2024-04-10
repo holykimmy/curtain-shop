@@ -19,7 +19,6 @@ const CancelOrder = ({ idUser }) => {
       customerAPI
         .getOrderById(idUser)
         .then((orderData) => {
-
           const cancelOrders = orderData.filter(
             (order) => order.enable === false
           );
@@ -30,41 +29,9 @@ const CancelOrder = ({ idUser }) => {
         });
     };
     fetchData();
-
   }, [idUser]);
 
   console.log(userOrder);
-
-  const handleCancelOrder = async (idOrder) => {
-    // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
-    const confirmation = await Swal.fire({
-      title: "ยืนยันการยกเลิกคำสั่งซื้อ",
-      text: "คุณแน่ใจหรือไม่ที่ต้องการยกเลิกคำสั่งซื้อนี้?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "ยืนยัน",
-      cancelButtonText: "ยกเลิก",
-    });
-
-    // หากผู้ใช้กดปุ่มยืนยัน
-    if (confirmation.isConfirmed) {
-      try {
-        const response = await customerAPI.updateOrderEnable(idOrder, false);
-        console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
-        await Swal.fire({
-          title: "ยกเลิกสำเร็จ",
-          text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
-          icon: "success",
-        });
-        window.location.reload();
-      } catch (error) {
-        console.error("Error cancelling order:", error);
-        // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
-      }
-    }
-  };
 
   const handdleOrderdetail = async (idOrder) => {
     // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
@@ -75,19 +42,15 @@ const CancelOrder = ({ idUser }) => {
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "ยืนยัน",
-      cancelButtonText: "ยกเลิก",
+      cancelButtonText: "ยกเลิก"
     });
 
     // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
-      
-        navigate(`/order-detail/${idOrder}`, {});
+      navigate(`/order-detail/${idOrder}`, {});
     }
   };
 
-  const handlePaymentOrder = async (idOrder) => {
-    navigate(`/payment/${idOrder}`);
-  };
   const numberWithCommas = (x) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
@@ -148,8 +111,7 @@ const CancelOrder = ({ idUser }) => {
                         จำนวน : {item.count} หลา
                       </p>
                       <p className="text-sm text-gray-600">
-                        รวม :{" "}
-                        {numberWithCommas(item.product.price * item.count)} บาท
+                        รวม : {numberWithCommas(item.totalPiece)} บาท
                       </p>
                     </div>
                   </div>
@@ -168,24 +130,20 @@ const CancelOrder = ({ idUser }) => {
                   {order.sendAddress.postcode}
                 </p>
               )}
-              <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
-                ราคาสินค้า :{" "}
-                {numberWithCommas(order.totalPrice - order.deliveryIs)} บาท
-              </p>
-              <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
-                ค่าจัดส่ง : {numberWithCommas(order.deliveryIs)} บาท
+
+              <p className=" text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1 whitespace-pre-wrap">
+                การจัดส่ง : {order.deliveryIs.split("\n")[0]}
               </p>
               <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
                 ราคารวม : {numberWithCommas(order.totalPrice)} บาท
               </p>
               <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
                 สถานะ:{" "}
-                { !order.enable
-                  ? `ยกเลิกสินค้าแล้วเนื้องจาก ${order.cancelReason}`
-                  : null }
+                {!order.enable
+                  ? "คุณได้ยกเลิกสินค้าแล้ว"
+                  : null}
               </p>
 
-           
               <div className="flex justify-between">
                 <div className="flex justify-start ">
                   {" "}
@@ -198,15 +156,13 @@ const CancelOrder = ({ idUser }) => {
                   </button>
                 </div>
                 <div className="flex justify-end ">
-             
-{/*                  
+                  {/*                  
                     <button
                       className="bg-blue-400 mt-3 mx-2 py-2 px-auto w-[150px] rounded-full shadow-xl hover:bg-blue-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
                       onClick={() => handleCompleteOrder(order._id)}
                     >
                      ได้รับสินค้าแล้ว
                     </button> */}
-                 
                 </div>
               </div>
             </div>
