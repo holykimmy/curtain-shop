@@ -9,41 +9,43 @@ const ReceptSchema = new mongoose.Schema(
     rows: [
       {
         list: String,
+        p_type: String,
+        rail: String,
         detail: String,
         counts: Number,
         width: Number,
         height: Number,
         unitprice: Number,
-        p_width:Number,
-        railprice:Number,
-        total_m: Number,
-      },
+        p_width: Number,
+        price_rail: Number,
+        total_m: Number
+      }
     ],
     deliveryDate: {
       type: String,
-      default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss"),
+      default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss")
     },
-    
+
     totalPrice: Number,
     quotation: {
       type: Boolean,
-      default: false 
+      default: false
     },
     invoice: {
       type: Boolean,
-      default: false 
+      default: false
     },
     createdAt: {
       type: String,
-      default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss"),
-    },
+      default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss")
+    }
   },
   { timestamps: true }
 );
 
-ReceptSchema.pre('save', function(next) {
+ReceptSchema.pre("save", function (next) {
   if (!this.createdAt) {
-    this.createdAt = moment().locale('th').format('YYYY-MM-DD HH:mm:ss');
+    this.createdAt = moment().locale("th").format("YYYY-MM-DD HH:mm:ss");
   }
   next();
 });

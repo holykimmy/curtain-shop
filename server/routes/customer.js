@@ -52,8 +52,6 @@ const uploadslip = require("../middleware/slip");
 const uploadshow = require("../middleware/show");
 const uploadwindow = require("../middleware/window");
 
-
-
 router.post("/register", register);
 router.post("/add-address", auth, createAddress);
 router.post("/login", loginUser);

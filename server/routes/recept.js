@@ -15,7 +15,7 @@ const { auth } = require("../middleware/auth");
 
 router.post("/create/quotation", auth, createQuotation);
 router.post("/create/invoice", auth, createInvoice);
-router.get("/all/quotation", auth, getAllQuotation);
+router.get("/all/quotation", getAllQuotation);
 router.get("/all/invoice", getAllInvoice);
 router.get("/:id", getReceptById);
 router.put("/update/:id", updateRecept);

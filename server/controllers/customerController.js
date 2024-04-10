@@ -1427,17 +1427,14 @@ exports.updateOrderPandding = async (req, res) => {
 exports.updateOrderEnable = async (req, res) => {
   try {
     const idOrder = req.params.id;
-    const { enable, cancelReasonAd } = req.body;
-    console.log("cancel text", enable, cancelReasonAd);
+    const { enable } = req.body;
+    console.log("cancel text", enable );
 
     console.log("Update order enable for order:", idOrder);
-    if (!cancelReasonAd) {
-      return res.status(500).json({ error: "กรุณาใส่รายละเอียดการยกเลิก" });
-    }
-
+   
     await Cart.updateOne(
       { _id: idOrder },
-      { enable: false, cancelReasonAd: cancelReasonAd }
+      { enable: false }
     );
     await Cart.updateOne({ _id: idOrder }, { verifycancelled: true });
 

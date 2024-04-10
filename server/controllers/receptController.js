@@ -9,6 +9,50 @@ const slugifyMultilingual = (text) =>
   slugify(text, { lower: true, locale: "th" });
 
 exports.createQuotation = (req, res) => {
+    const data = req.body;
+    console.log(data);
+  
+    Recept.findOne({
+      fullname: data.fullname,
+      subject: data.subject,
+      address: data.address,
+      deliveryDate: data.deliveryDate,
+      quotation: true,
+    })
+      .exec()
+      .then((existingRecept) => {
+        if (existingRecept) {
+          return res.status(400).json({ error: "ข้อมูลที่ต้องการบันทึกมีอยู่แล้ว" });
+        } else {
+          // แปลง counts และ total_m เป็นตัวเลข
+          data.rows.forEach((row) => {
+            row.counts = parseInt(row.counts);
+            row.total_m = parseFloat(row.total_m);
+          });
+  
+          return Recept.create({
+            fullname: data.fullname,
+            subject: data.subject,
+            address: data.address,
+            rows: data.rows,
+            deliveryDate: data.deliveryDate,
+            totalPrice: parseFloat(data.totalPrice), // แปลง totalPrice เป็นตัวเลข
+            quotation: true,
+          });
+        }
+      })
+      .then((createdRecept) => {
+        res.json(createdRecept);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).json({ error: "เกิดข้อผิดพลาดบนเซิร์ฟเวอร์" });
+      });
+  };
+  
+
+
+  exports.createQuotation2 = (req, res) => {
   const data = req.body;
   console.log(data);
   Recept.findOne({
@@ -32,7 +76,6 @@ exports.createQuotation = (req, res) => {
           rows: data.rows,
           deliveryDate: data.deliveryDate,
           totalPrice: data.totalPrice,
-
           quotation: true,
         });
       }
