@@ -12,6 +12,10 @@ import Swal from "sweetalert2";
 import { Link, useParams, useLocation } from "react-router-dom";
 // import PDFQuotation from "./PDFQuotation"; // Import PDFDocument component
 import jsPDF from "jspdf";
+import "jspdf-autotable";
+
+// ดาวน์โหลดฟอนต์ภาษาไทย หรือใช้ฟอนต์ที่มีอยู่ในโปรเจคของคุณ
+import { font } from "../../font/THSarabun.js";
 
 const TABLE_HEAD = [
   "ลำดับ",
@@ -19,9 +23,9 @@ const TABLE_HEAD = [
   "ประเภท",
   "เพิ่มเติม",
   "ขนาด",
-  "จำนวน",
-  "ราคาต่อหน่วย",
+  "ราคา/หลา",
   "ความกว้างหน้าผ้า",
+  "จำนวน",
   "รวม"
 ];
 
@@ -29,7 +33,6 @@ function ReceptQuotationDetail() {
   const { id } = useParams();
 
   const [data, setData] = useState({});
-  console.log("id quatation", id);
 
   useEffect(() => {
     receptAPI
@@ -42,52 +45,187 @@ function ReceptQuotationDetail() {
       });
   }, []);
 
-  console.log(data);
+  const generatePDF = (data, rows) => {
+    if (!data || !rows) {
+      console.error("Data or rows are undefined");
+      return;
+    }
 
-  const generatePDF = () => {
-    // Create a new jsPDF instance
     const doc = new jsPDF();
 
-    // Add content to the PDF
-    doc.text("ใบเสนอราคา", 105, 15, { align: "center" });
+    // doc.addFileToVFS("THSarabun.ttf", font);
+    // doc.addFont("THSarabun.ttf", "THSarabun", "normal");
+    // doc.setFont("THSarabun");
 
-    // Add customer information
-    doc.text(`เรียนคุณ: ${data.fullname}`, 20, 30);
-    doc.text(`เรื่อง: ${data.subject}`, 20, 40);
-    doc.text(`ที่อยู่: ${data.address}`, 20, 50);
-    doc.text(`วันที่: ${data.createdAt}`, 20, 60);
-    doc.text(`วันที่ส่งมอบ: ${data.deliveryDate}`, 20, 70);
+    const thaiFont = "THSarabun";
+    doc.addFileToVFS("THSarabun.ttf", font);
+    doc.addFont("THSarabun.ttf", thaiFont, "normal");
 
-    // Add table headers
-    doc.text(TABLE_HEAD.join(", "), 20, 90);
+    doc.setFont(thaiFont);
+    // คำนวณความกว้างของข้อความ "ใบเสนอราคา"
+    const textWidth1 = doc.getTextWidth("ใบเสนอราคา");
+    // คำนวณความกว้างของข้อความ "Quotation"
+    const textWidth2 = doc.getTextWidth("Quotation");
 
-    // Add table data
-    data.rows.forEach((row, index) => {
-      doc.text(
-        `${index + 1}, ${row.list}, ${row.detail}, ${row.width}, ${
-          row.counts
-        }, ${row.unitprice}, ${row.p_width}, ${row.total_m}`,
-        20,
-        100 + index * 10
-      );
+    // คำนวณความกว้างของข้อความทั้งหมด
+    const totalTextWidth = Math.max(textWidth1, textWidth2);
+
+    // คำนวณค่า x เพื่อจัดให้อยู่ตรงกับด้านซ้าย
+    const xCoordinate = 20;
+
+    // คำนวณค่า y เพื่อย้ายกล่องขึ้นไปด้านบน
+    const yCoordinate = 15;
+
+    // กำหนดตัวอักษรให้เป็นตัวหนาสำหรับ "ใบเสนอราคา"
+    // เขียนข้อความ "ใบเสนอราคา" พร้อมพื้นหลังสีเทาและ padding
+    doc.setFillColor(220);
+    doc.rect(xCoordinate, 25 - yCoordinate, totalTextWidth + 20, 20, "F"); // ปรับความสูงเป็น 20 และเพิ่ม padding 10 ทั้งสองข้าง
+    doc.setTextColor(0);
+
+    doc.text(
+      "ใบเสนอราคา",
+      xCoordinate + (totalTextWidth + 20) / 2,
+      33 - yCoordinate,
+      {
+        align: "center"
+      }
+    ); // ปรับ xCoordinate และ yCoordinate เพื่อให้ข้อความอยู่ตรงกลาง
+
+    // กำหนดตัวอักษรให้เป็นปกติสำหรับ "Quotation"
+    doc.text(
+      "Quotation",
+      xCoordinate + (totalTextWidth + 20) / 2,
+      41 - yCoordinate,
+      {
+        align: "center"
+      }
+    ); // ปรับ xCoordinate และ yCoordinate เพื่อให้ข้อความอยู่ตรงกลาง
+
+    // ข้อมูลลูกค้า
+    doc.setFontSize(14);
+    doc.text(`เรียนคุณ: ${data.fullname}`, 15, 38);
+    doc.text(`เรื่อง: ${data.subject}`, 15, 46);
+    doc.text(`ที่อยู่: ${data.address}`, 15, 54);
+    // doc.text(`วันที่: ${data.createdAt}`, 50, 38);
+    doc.text(`วันที่: ${data.createdAt}`, 100, 38);
+
+    // คำนวณความกว้างของข้อความ "ร้านเจริญกิจผ้าม่าน"
+    const textWidth4 = doc.getTextWidth("ร้านเจริญกิจผ้าม่าน");
+    // คำนวณความกว้างของข้อความ "2/562 ม.18 ซ.ธนะศรี ต.คูคต อ.ลำลูกกา"
+    const textWidth5 = doc.getTextWidth("2/562 ม.18 ซ.ธนะศรี ต.คูคต อ.ลำลูกกา");
+    // คำนวณความกว้างของข้อความ "จ.ปทุมธานี 12130 โทร. 0879700514"
+    const textWidth6 = doc.getTextWidth("จ.ปทุมธานี 12130 โทร. 0879700514");
+
+    // คำนวณค่า x-coordinate ใหม่โดยใช้ความกว้างของหน้ากระดาษ
+    const xCoordinateRight =
+      doc.internal.pageSize.width -
+      Math.max(textWidth4, textWidth5, textWidth6) +
+      38;
+
+    // แสดงข้อความ "ร้านเจริญกิจผ้าม่าน" และข้อความอื่นๆ โดยกำหนดตำแหน่ง x-coordinate ใหม่
+    doc.text("ร้านเจริญกิจผ้าม่าน", xCoordinateRight, 18, {
+      align: "right"
+    });
+    doc.text("2/562 ม.18 ซ.ธนะศรี ต.คูคต อ.ลำลูกกา", xCoordinateRight, 24, {
+      align: "right"
+    });
+    doc.text("จ.ปทุมธานี 12130 โทร. 0879700514", xCoordinateRight, 30, {
+      align: "right"
     });
 
-    // Add total price
+    // Table
+    let startY = 60;
+    // Specify Thai font for autoTable
+    const tableConfig = {
+      startY,
+      head: [TABLE_HEAD],
+      body: rows.map((row) => [
+        rows.indexOf(row) + 1,
+        row.list,
+        row.p_type,
+        row.detail,
+        `${row.width} x ${row.height} ซม.`,
+        `${row.unitprice} บาท`,
+        `${row.p_width} ซม.`,
+        `${row.counts} `,
+        `${numberWithCommas(row.total_m || 0)} บาท`
+      ]),
+
+      headStyles: {
+        fillColor: [217, 217, 217], // กำหนดสีเทาในรูปแบบ RGB
+        textColor: [10, 10, 16]
+      },
+      didDrawCell: (data) => {
+        // Adjust text style for Thai font
+        doc.setFontSize(14);
+        doc.setTextColor(0, 0, 0);
+      }
+    };
+    // Check if Thai font is available
+    if (typeof doc.getFontList === "function") {
+      const fontList = doc.getFontList();
+      if (fontList && fontList[thaiFont]) {
+        tableConfig.styles = { font: thaiFont };
+      }
+    }
+    doc.autoTable(tableConfig);
+
+    doc.setFontSize(12);
+    // ราคารวม
+    const totalPriceY = doc.autoTable.previous.finalY + 10;
+
     doc.text(
-      `ราคารวม : ${numberWithCommas(data.totalPrice || 0)} บาท`,
-      20,
-      120 + data.rows.length * 10
+      "**ทางร้านเจริญกิจหวังเป็นอย่างยิ่งว่าคงจะได้รับการพิจารณา",
+      16,
+      totalPriceY - 5
     );
 
-    // Add signature area
-    doc.rect(105, 160 + data.rows.length * 10, 90, 40);
-    doc.text("ลายเซ็น", 150, 175 + data.rows.length * 10);
+    doc.setFontSize(14);
+    doc.text(
+      `ราคารวม: ${numberWithCommas(data.totalPrice || 0)} บาท`,
+      xCoordinateRight + 32 -
+        doc.getTextWidth(
+          `ราคารวม: ${numberWithCommas(data.totalPrice || 0)} บาท`
+        ),
+      totalPriceY + 4,
+      {
+        align: "right"
+      }
+    );
 
-    // Add shop name
-    doc.text("ชื่อร้านค้า: Your Shop Name", 20, 220 + data.rows.length * 10);
+    // กำหนดขนาดและตำแหน่งเริ่มต้นของกล่อง
+  const boxWidth = 54;
+  const boxHeight = 40;
+  const marginLeft = 15;
+  const marginRight = 15;
+  const marginTop = 230;
+  const marginBottom = 15;
+  const gap = 8;
+  const startX = marginLeft;
+  const startY2 = marginTop;
 
-    // Save the PDF
-    doc.save("quotation.pdf");
+  // สร้างกล่องแรก
+  doc.rect(startX, startY2, boxWidth, boxHeight);
+  doc.text("ลงชื่อผู้อนุมัติ", startX + boxWidth / 2, startY2 + 10, { align: "center" });
+  doc.text(".........................", startX + boxWidth / 2, startY2 + 20, { align: "center" });
+  doc.text("วันที่......./......./.......", startX + boxWidth / 2, startY2 + 30, { align: "center" });
+
+  // สร้างกล่องที่สอง
+  const secondBoxX = startX + boxWidth + gap;
+  doc.rect(secondBoxX, startY2, boxWidth, boxHeight);
+  doc.text("กำหนดส่งมอบงาน/ติดตั้ง", secondBoxX + boxWidth / 2, startY2 + 10, { align: "center" });
+  doc.text(`วันที่ ${data.deliveryDate}` , secondBoxX + boxWidth / 2, startY2 + 20, { align: "center" });
+
+  // สร้างกล่องที่สาม
+  const thirdBoxX = secondBoxX + boxWidth + gap;
+  doc.rect(thirdBoxX, startY2, boxWidth, boxHeight);
+  doc.text("ขอแสดงความนับถือ", thirdBoxX + boxWidth / 2, startY2 + 10, { align: "center" });
+  doc.text("...................", thirdBoxX + boxWidth / 2, startY2 + 20, { align: "center" });
+  doc.text("(นางเบ็ญจา ฤทธ์ ผู้จัดการ)", thirdBoxX + boxWidth / 2, startY2 + 30, { align: "center" });
+
+
+    // บันทึกเป็น PDF
+    doc.save(`ใบเสนอราคา-${data.fullname}`);
   };
 
   const numberWithCommas = (x) => {
@@ -184,19 +322,20 @@ function ReceptQuotationDetail() {
                           </div>
                         </td>
                         <td className="p-2 border text-center border-blue-gray-50 text-gray-700">
-                          {row.width}
+                          {row.width} x {row.height} ซม.
+                        </td>
+
+                        <td className="p-2 border text-center border-blue-gray-50 text-gray-700">
+                          {row.unitprice} บาท
+                        </td>
+                        <td className="p-2 border text-center border-blue-gray-50 text-gray-700">
+                          {row.p_width} ซม.
                         </td>
                         <td className="p-2 border text-center border-blue-gray-50 text-gray-700">
                           {row.counts}
                         </td>
                         <td className="p-2 border text-center border-blue-gray-50 text-gray-700">
-                          {row.unitprice}
-                        </td>
-                        <td className="p-2 border text-center border-blue-gray-50 text-gray-700">
-                          {row.p_width}
-                        </td>
-                        <td className="p-2 border text-center border-blue-gray-50 text-gray-700">
-                          {numberWithCommas(row.total_m || 0)}
+                          {numberWithCommas(row.total_m || 0)} บาท
                         </td>
                       </tr>
                     ))}
@@ -212,7 +351,8 @@ function ReceptQuotationDetail() {
 
       <div className=" flex-row w-full flex justify-center">
         <button
-          onClick={generatePDF}
+          // onClick={generatePDF}
+          onClick={() => generatePDF(data, data.rows)}
           className="bg-brown-300 mt-3 mx-2 py-1 px-auto w-[180px] rounded-full shadow-xl hover:bg-brown-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
         >
           พิมพ์ใบเสนอราคา

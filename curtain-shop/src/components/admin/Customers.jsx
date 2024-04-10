@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbaradmin from "./Navbaradmin";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import productAPI from "../../services/productAPI";
 import SwitchButton from "./switchbutton";
 import CustomerAPI from "../../services/customerAPI";
@@ -12,6 +12,8 @@ function Customers() {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const location = useLocation();
+  console.log(location.state);
 
   useEffect(() => {
     if (isLoading) {
