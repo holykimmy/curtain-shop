@@ -13,15 +13,19 @@ import { Link, useParams, useLocation } from "react-router-dom";
 // import PDFQuotation from "./PDFQuotation"; // Import PDFDocument component
 import jsPDF from "jspdf";
 
+import "jspdf-autotable";
+
+import { font } from "../../font/THSarabun.js";
+
 const TABLE_HEAD = [
   "ลำดับ",
   "รายการ",
   "ประเภท",
   "เพิ่มเติม",
   "ขนาด",
-  "จำนวน",
-  "ราคาต่อหน่วย",
   "ความกว้างหน้าผ้า",
+  "ราคา/หลา",
+  "จำนวน",
   "รวม",
 ];
 
@@ -44,50 +48,122 @@ function ReceptInvoiceDetail() {
 
   console.log(data);
 
-  const generatePDF = () => {
-    // Create a new jsPDF instance
+  const generatePDF = (data, rows) => {
+    if (!data || !rows) {
+      console.error("Data or rows are undefined");
+      return;
+    }
+
     const doc = new jsPDF();
 
-    // Add content to the PDF
-    doc.text("ใบเสนอราคา", 105, 15, { align: "center" });
+    // doc.addFileToVFS("THSarabun.ttf", font);
+    // doc.addFont("THSarabun.ttf", "THSarabun", "normal");
+    // doc.setFont("THSarabun");
 
-    // Add customer information
-    doc.text(`เรียนคุณ: ${data.fullname}`, 20, 30);
-    doc.text(`เรื่อง: ${data.subject}`, 20, 40);
-    doc.text(`ที่อยู่: ${data.address}`, 20, 50);
-    doc.text(`วันที่: ${data.createdAt}`, 20, 60);
-    doc.text(`วันที่ส่งมอบ: ${data.deliveryDate}`, 20, 70);
+    const thaiFont = "THSarabun";
+    doc.addFileToVFS("THSarabun.ttf", font);
+    doc.addFont("THSarabun.ttf", thaiFont, "normal");
+    doc.setFont(thaiFont);
+   
+    // ข้อมูลลูกค้า
+    doc.setFontSize(16);
+    doc.text("นางเบ็ญจา ฤทธี", 15, 15);
 
-    // Add table headers
-    doc.text(TABLE_HEAD.join(", "), 20, 90);
+    doc.setFontSize(14);
+    doc.text("2/562 ม.18 ซ.ธนะศรี ต.คูคต อ.ลำลูกกา จ.ปทุมธานี 12130", 15, 23);
+    doc.text("โทร. 0879700514", 15, 31);
 
-    // Add table data
-    data.rows.forEach((row, index) => {
-      doc.text(
-        `${index + 1}, ${row.list}, ${row.detail}, ${row.width}, ${
-          row.counts
-        }, ${row.unitprice}, ${row.p_width}, ${row.total_m}`,
-        20,
-        100 + index * 10
-      );
+    doc.setFontSize(14);
+    doc.text(`เรียน: ${data.fullname}`, 15, 46);
+    doc.text(`ที่อยู่: ${data.address}`, 15, 54); 
+
+    // คำนวณความกว้างของข้อความ "ร้านเจริญกิจผ้าม่าน"
+    const textWidth4 = doc.getTextWidth("ใบแจ้งหนี้");
+    // คำนวณความกว้างของข้อความ "2/562 ม.18 ซ.ธนะศรี ต.คูคต อ.ลำลูกกา"
+    const textWidth5 = doc.getTextWidth(`วันที่: ${data.createdAt}`);
+    // คำนวณความกว้างของข้อความ "จ.ปทุมธานี 12130 โทร. 0879700514"
+    const textWidth6 = doc.getTextWidth("จ.ปทุมธานี 12130 โทร. 0879700514");
+
+    // คำนวณค่า x-coordinate ใหม่โดยใช้ความกว้างของหน้ากระดาษ
+    const xCoordinateRight =
+      doc.internal.pageSize.width -
+      Math.max(textWidth4, textWidth5, textWidth6) +
+      38;
+
+    // แสดงข้อความ "ร้านเจริญกิจผ้าม่าน" และข้อความอื่นๆ โดยกำหนดตำแหน่ง x-coordinate ใหม่
+    doc.setFontSize(17);
+    doc.text("ใบแจ้งหนี้", xCoordinateRight, 18, {
+      align: "right"
+    });
+    doc.setFontSize(14);
+
+    doc.text(`วันที่: ${data.createdAt}`, xCoordinateRight, 24, {
+      align: "right"
     });
 
-    // Add total price
+    // Table
+    let startY = 60;
+    // Specify Thai font for autoTable
+    const tableConfig = {
+      startY,
+      head: [TABLE_HEAD],
+      body: rows.map((row) => [
+        rows.indexOf(row) + 1,
+        row.list,
+        row.p_type,
+        row.detail,
+        `${row.width} x ${row.height} ซม.`,
+        `${row.p_width} ซม.`,
+        `${row.unitprice} บาท`,
+        `${row.counts} `,
+        `${numberWithCommas(row.total_m || 0)} บาท`
+      ]),
+
+      headStyles: {
+        fillColor: [217, 217, 217], // กำหนดสีเทาในรูปแบบ RGB
+        textColor: [10, 10, 16]
+      },
+
+      styles: {
+        fontSize: 13, // กำหนดขนาดฟอนต์ใหญ่ขึ้นเป็น 14
+        font: thaiFont // ใช้ Thai font
+      },
+
+      didDrawCell: (data) => {
+        // Adjust text style for Thai font
+        doc.setFontSize(13);
+        doc.setTextColor(0, 0, 0);
+      }
+    };
+    // Check if Thai font is available
+    if (typeof doc.getFontList === "function") {
+      const fontList = doc.getFontList();
+      if (fontList && fontList[thaiFont]) {
+        tableConfig.styles = { font: thaiFont };
+      }
+    }
+    doc.autoTable(tableConfig);
+
+    doc.setFontSize(12);
+    // ราคารวม
+    const totalPriceY = doc.autoTable.previous.finalY + 10;
+   
+    doc.setFontSize(14);
     doc.text(
-      `ราคารวม : ${numberWithCommas(data.totalPrice || 0)} บาท`,
-      20,
-      120 + data.rows.length * 10
+      `รวมเป็นเงิน ${numberWithCommas(data.totalPrice || 0)} บาท`,
+      xCoordinateRight +
+        28 -
+        doc.getTextWidth(
+          `ราคารวม: ${numberWithCommas(data.totalPrice || 0)} บาท`
+        ),
+      totalPriceY-3,
+      {
+        align: "right"
+      }
     );
 
-    // Add signature area
-    doc.rect(105, 160 + data.rows.length * 10, 90, 40);
-    doc.text("ลายเซ็น", 150, 175 + data.rows.length * 10);
-
-    // Add shop name
-    doc.text("ชื่อร้านค้า: Your Shop Name", 20, 220 + data.rows.length * 10);
-
-    // Save the PDF
-    doc.save("quotation.pdf");
+    // บันทึกเป็น PDF
+    doc.save(`ใบแจ้งหนี้-${data.fullname}`);
   };
 
   const numberWithCommas = (x) => {
@@ -212,7 +288,7 @@ function ReceptInvoiceDetail() {
 
       <div className=" flex-row w-full flex justify-center">
         <button
-          onClick={generatePDF}
+          onClick={() => generatePDF(data, data.rows)}
           className="bg-brown-300 mt-3 mx-2 py-1 px-auto w-[180px] rounded-full shadow-xl hover:bg-brown-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
         >
           พิมพ์ใบเสนอราคา

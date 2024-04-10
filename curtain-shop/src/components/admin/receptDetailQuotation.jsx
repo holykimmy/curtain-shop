@@ -103,7 +103,7 @@ function ReceptQuotationDetail() {
 
     // ข้อมูลลูกค้า
     doc.setFontSize(14);
-    doc.text(`เรียนคุณ: ${data.fullname}`, 15, 38);
+    doc.text(`เรียน: ${data.fullname}`, 15, 38);
     doc.text(`เรื่อง: ${data.subject}`, 15, 46);
     doc.text(`ที่อยู่: ${data.address}`, 15, 54);
     // doc.text(`วันที่: ${data.createdAt}`, 50, 38);
@@ -155,6 +155,12 @@ function ReceptQuotationDetail() {
         fillColor: [217, 217, 217], // กำหนดสีเทาในรูปแบบ RGB
         textColor: [10, 10, 16]
       },
+
+      styles: {
+        fontSize: 14, // กำหนดขนาดฟอนต์ใหญ่ขึ้นเป็น 14
+        font: thaiFont // ใช้ Thai font
+      },
+
       didDrawCell: (data) => {
         // Adjust text style for Thai font
         doc.setFontSize(14);
@@ -173,7 +179,6 @@ function ReceptQuotationDetail() {
     doc.setFontSize(12);
     // ราคารวม
     const totalPriceY = doc.autoTable.previous.finalY + 10;
-
     doc.text(
       "**ทางร้านเจริญกิจหวังเป็นอย่างยิ่งว่าคงจะได้รับการพิจารณา",
       16,
@@ -182,10 +187,11 @@ function ReceptQuotationDetail() {
 
     doc.setFontSize(14);
     doc.text(
-      `ราคารวม: ${numberWithCommas(data.totalPrice || 0)} บาท`,
-      xCoordinateRight + 32 -
+      `ราคารวม ${numberWithCommas(data.totalPrice || 0)} บาท`,
+      xCoordinateRight +
+        32 -
         doc.getTextWidth(
-          `ราคารวม: ${numberWithCommas(data.totalPrice || 0)} บาท`
+          `ราคารวม ${numberWithCommas(data.totalPrice || 0)} บาท`
         ),
       totalPriceY + 4,
       {
@@ -194,35 +200,62 @@ function ReceptQuotationDetail() {
     );
 
     // กำหนดขนาดและตำแหน่งเริ่มต้นของกล่อง
-  const boxWidth = 54;
-  const boxHeight = 40;
-  const marginLeft = 15;
-  const marginRight = 15;
-  const marginTop = 230;
-  const marginBottom = 15;
-  const gap = 8;
-  const startX = marginLeft;
-  const startY2 = marginTop;
+    const boxWidth = 54;
+    const boxHeight = 40;
+    const marginLeft = 15;
+    const marginRight = 15;
+    const marginTop = 230;
+    const marginBottom = 15;
+    const gap = 8;
+    const startX = marginLeft;
+    const startY2 = marginTop;
 
-  // สร้างกล่องแรก
-  doc.rect(startX, startY2, boxWidth, boxHeight);
-  doc.text("ลงชื่อผู้อนุมัติ", startX + boxWidth / 2, startY2 + 10, { align: "center" });
-  doc.text(".........................", startX + boxWidth / 2, startY2 + 20, { align: "center" });
-  doc.text("วันที่......./......./.......", startX + boxWidth / 2, startY2 + 30, { align: "center" });
+    // สร้างกล่องแรก
+    doc.rect(startX, startY2, boxWidth, boxHeight);
+    doc.text("ลงชื่อผู้อนุมัติ", startX + boxWidth / 2, startY2 + 10, {
+      align: "center"
+    });
+    doc.text(".........................", startX + boxWidth / 2, startY2 + 20, {
+      align: "center"
+    });
+    doc.text(
+      "วันที่......./......./.......",
+      startX + boxWidth / 2,
+      startY2 + 30,
+      { align: "center" }
+    );
 
-  // สร้างกล่องที่สอง
-  const secondBoxX = startX + boxWidth + gap;
-  doc.rect(secondBoxX, startY2, boxWidth, boxHeight);
-  doc.text("กำหนดส่งมอบงาน/ติดตั้ง", secondBoxX + boxWidth / 2, startY2 + 10, { align: "center" });
-  doc.text(`วันที่ ${data.deliveryDate}` , secondBoxX + boxWidth / 2, startY2 + 20, { align: "center" });
+    // สร้างกล่องที่สอง
+    const secondBoxX = startX + boxWidth + gap;
+    doc.rect(secondBoxX, startY2, boxWidth, boxHeight);
+    doc.text(
+      "กำหนดส่งมอบงาน/ติดตั้ง",
+      secondBoxX + boxWidth / 2,
+      startY2 + 10,
+      { align: "center" }
+    );
+    doc.text(
+      `วันที่ ${data.deliveryDate}`,
+      secondBoxX + boxWidth / 2,
+      startY2 + 20,
+      { align: "center" }
+    );
 
-  // สร้างกล่องที่สาม
-  const thirdBoxX = secondBoxX + boxWidth + gap;
-  doc.rect(thirdBoxX, startY2, boxWidth, boxHeight);
-  doc.text("ขอแสดงความนับถือ", thirdBoxX + boxWidth / 2, startY2 + 10, { align: "center" });
-  doc.text("...................", thirdBoxX + boxWidth / 2, startY2 + 20, { align: "center" });
-  doc.text("(นางเบ็ญจา ฤทธ์ ผู้จัดการ)", thirdBoxX + boxWidth / 2, startY2 + 30, { align: "center" });
-
+    // สร้างกล่องที่สาม
+    const thirdBoxX = secondBoxX + boxWidth + gap;
+    doc.rect(thirdBoxX, startY2, boxWidth, boxHeight);
+    doc.text("ขอแสดงความนับถือ", thirdBoxX + boxWidth / 2, startY2 + 10, {
+      align: "center"
+    });
+    doc.text("...................", thirdBoxX + boxWidth / 2, startY2 + 20, {
+      align: "center"
+    });
+    doc.text(
+      "(นางเบ็ญจา ฤทธี ผู้จัดการ)",
+      thirdBoxX + boxWidth / 2,
+      startY2 + 30,
+      { align: "center" }
+    );
 
     // บันทึกเป็น PDF
     doc.save(`ใบเสนอราคา-${data.fullname}`);
