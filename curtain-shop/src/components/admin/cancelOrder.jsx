@@ -110,7 +110,7 @@ function CancelOrder() {
   console.log(address);
 
 
-  const handleCancelOrder = async (idOrder, cancelReasonAd) => {
+  const handleCancelOrder = async (idOrder,order, cancelReasonAd) => {
     if (!cancelReasonAd.trim()) {
       Swal.fire({
         text: "กรุณาระบุเหตุผลที่ต้องการยกเลิก",
@@ -135,8 +135,8 @@ function CancelOrder() {
     if (confirmation.isConfirmed) {
       try {
         const response = await axios.put(
-          `${process.env.REACT_APP_API}/customer/order/enable/${idOrder}`,
-          { enable: false, cancelReasonAd }
+          `${process.env.REACT_APP_API}/customer/order/cencelled/${idOrder}`,
+          { cancelled: true ,order, cancelReasonAd }
         );
 
         if (response.status === 200) {
@@ -405,7 +405,7 @@ function CancelOrder() {
                         <button
                           className="bg-red-400 mt-3 mx-2 py-2 px-auto w-[200px] rounded-full shadow-xl hover:bg-red-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
                           onClick={() =>
-                            handleCancelOrder(order._id, cancelReasonAd)
+                            handleCancelOrder(order._id,order, cancelReasonAd)
                           }
                         >
                           ยกเลิกคำสั่งซื้อ

@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import customerAPI from "../../services/customerAPI";
 import r6 from "../img/r6.jpg";
+import bangkokBank from "../img/bank/bangkokbank.png";
 
 function PaymentPage() {
   const { idOrder } = useParams();
@@ -88,14 +89,11 @@ function PaymentPage() {
       }
     } else {
       setIsLoggedIn(false);
+      navigate("/login");
     }
   }, [idUser]);
-  console.log("testtt");
 
-  if (!isLoggedIn) {
-    console.log("hellotest tset ");
-    navigate("/");
-  }
+  console.log("testtt");
 
   const handleLogoutAuto = () => {
     // Logout user
@@ -242,7 +240,6 @@ function PaymentPage() {
   };
 
   function handleDepositPayment(deposit) {
-    
     let message;
 
     if (deposit) {
@@ -265,10 +262,9 @@ function PaymentPage() {
           .then((response) => {
             Swal.fire({
               icon: "success"
-           
-          }).then(() => {
-            window.location.reload(); 
-          });
+            }).then(() => {
+              window.location.reload();
+            });
           })
           .catch((error) => {
             Swal.fire({
@@ -384,7 +380,7 @@ function PaymentPage() {
                   <p className="text-base leading-4 text-gray-800  px-4 py-6 space-y-4 md:space-y-6 xl:space-y-8">
                     รูปหน้าหน้าต่าง
                   </p>
-                  <div className="flex flex-row  justify-between items-start w-full space-y-4 md:space-y-6 xl:space-y-8">
+                  <div className="flex flex-row justify-around items-start w-full space-y-4 md:space-y-6 xl:space-y-8">
                     {order.windowimg.map((url, index) => (
                       <img
                         key={index}
@@ -446,6 +442,21 @@ function PaymentPage() {
                           <p className="text-lg font-semibold leading-6 text-gray-800">
                             เลือกสลิปการโอนเงินของคุณ
                           </p>
+                          <div className="flex mr-3 items-center justify-start">
+                            <img
+                              className="h-14 filter drop-shadow-md mr-4"
+                              src={bangkokBank}
+                              alt="bank"
+                            />
+                            <div>
+                              <p className="text-lg pt-2 font-bold  text-indigo-900">
+                                071-0-73508-5
+                              </p>
+                              <p className="text-base font-semibold text-indigo-900">
+                                นางเบ็ญจา ฤทธี
+                              </p>
+                            </div>
+                          </div>
 
                           <div className="flex justify-between mt-4">
                             <button
@@ -462,13 +473,20 @@ function PaymentPage() {
                             </button>
                           </div>
                           {order.deposit ? (
-                            <p className="text-xs sm:text-xs md:text-sm xl:text-sm font-semibold leading-6 text-gray-800">
-                              จำนวนที่ต้องชำระ{" "}
-                              {numberWithCommas(order.totalPrice * 0.5)} บาท
+                            <p className="text-sm leading-6 text-gray-800">
+                              ราคาที่ต้องชำระ{" "}
+                              <span className="text-base font-bold">
+                                {numberWithCommas(order.totalPrice * 0.5)}
+                              </span>{" "}
+                              บาท
                             </p>
                           ) : (
-                            <p className="text-xs sm:text-xs md:text-sm xl:text-sm font-semibold leading-6 text-gray-800">
-                              ราคา {numberWithCommas(order.totalPrice)} บาท
+                            <p className="text-sm leading-6 text-gray-800">
+                              ราคาที่ต้องชำระ{" "}
+                              <span className="text-base font-bold">
+                                {numberWithCommas(order.totalPrice)}
+                              </span>{" "}
+                              บาท
                             </p>
                           )}
                           <div className="flex items-center shadow-md space-x-6 bg-white p-3 rounded-md">

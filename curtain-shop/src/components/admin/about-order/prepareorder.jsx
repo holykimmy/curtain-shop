@@ -64,7 +64,7 @@ const PrepareOrder = ({ idUser }) => {
     }
   };
 
-  const handlePanddingOrder = async (idOrder) => {
+  const handlePanddingOrder = async (idOrder,order) => {
     const confirmation = await Swal.fire({
       text: "จัดเตรียมสินค้าเสร็จแล้วใช่หรือไม่?",
       icon: "warning",
@@ -78,7 +78,7 @@ const PrepareOrder = ({ idUser }) => {
     // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
       try {
-        const response = await orderAPI.updateOrderPandding(idOrder, true);
+        const response = await orderAPI.updateOrderPandding(idOrder,order, true);
         console.log(response);
         await Swal.fire({
           title: "เตรียมสินค้าพร้อมแล้ว",
@@ -253,7 +253,7 @@ const PrepareOrder = ({ idUser }) => {
                       <div className="flex justify-end ">
                         <button
                           className="bg-green-400 mt-3 mx-2 py-2 px-auto w-[150px] rounded-full shadow-xl hover:bg-green-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
-                          onClick={() => handlePanddingOrder(order._id)}
+                          onClick={() => handlePanddingOrder(order._id,order)}
                         >
                           สินค้าเสร็จแล้ว
                         </button>
@@ -384,7 +384,7 @@ const PrepareOrder = ({ idUser }) => {
                 <div className="flex justify-end ">
                   <button
                     className="bg-green-400 mt-3 mx-2 py-2 px-auto w-[150px] rounded-full shadow-xl hover:bg-green-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
-                    onClick={() => handlePanddingOrder(order._id)}
+                    onClick={() => handlePanddingOrder(order._id,order)}
                   >
                     สินค้าเสร็จแล้ว
                   </button>

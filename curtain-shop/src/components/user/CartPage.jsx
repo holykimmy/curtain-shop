@@ -26,25 +26,6 @@ function CartPage() {
   });
 
   useEffect(() => {
-    if (isLoading) {
-      Swal.fire({
-        customClass: {
-          popup: "bg-transparent"
-        },
-        backdrop: "rgba(255, 255, 255, 0.7)",
-        showConfirmButton: false,
-        didOpen: () => {
-          Swal.showLoading();
-        },
-        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
-        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
-      });
-    } else {
-      Swal.close();
-    }
-  }, [isLoading]);
-
-  useEffect(() => {
     const authToken = localStorage.getItem("token");
 
     if (authToken) {
@@ -90,30 +71,7 @@ function CartPage() {
   console.log(cartObject);
   const cart = Object.values(cartObject[idUser] || {});
 
-  useEffect(() => {
-    if (cart.length > 0) {
-      setIsLoading(false);
-    } else {
-      if (isLoading) {
-        Swal.fire({
-          customClass: {
-            popup: "bg-transparent"
-          },
-          backdrop: "rgba(255, 255, 255, 0.7)",
-          showConfirmButton: false,
-          didOpen: () => {
-            Swal.showLoading();
-          },
-          allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
-          allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
-        });
-      } else {
-        Swal.close();
-      }
-    }
-  }, [isLoading, cart]);
-
-  console.table(cart);
+ 
 
   const getTotal = () => {
     return cart.reduce((currenValue, nextValue) => {

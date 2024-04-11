@@ -5,17 +5,13 @@ import { MdDeleteForever } from "react-icons/md";
 import Swal from "sweetalert2";
 import axios from "axios";
 import orderAPI from "../../../services/orderAPI";
-import customerAPI from "../../../services/customerAPI";
 
 const ApproveOrder = ({ idUser }) => {
   const navigate = useNavigate();
-
   const [userOrder, setUserOrder] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   console.log("idUser", idUser);
-  console.log("djkhfgajk;h");
-
 
   useEffect(() => {
     const fetchData = () => {
@@ -24,6 +20,8 @@ const ApproveOrder = ({ idUser }) => {
         .then((orderData) => {
           setUserOrder(orderData);
         })
+
+        
         .catch((err) => {
           console.error("error", err);
         });
@@ -36,7 +34,7 @@ const ApproveOrder = ({ idUser }) => {
 
   console.log(userOrder);
 
-  const handleCancelOrder = async (idOrder) => {
+  const handleCancelOrder = async (idOrder,idUser) => {
     // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
     const confirmation = await Swal.fire({
       title: "ยืนยันการยกเลิกคำสั่งซื้อ",
@@ -67,7 +65,12 @@ const ApproveOrder = ({ idUser }) => {
     }
   };
 
-  const handleApproveOrder = async (idOrder) => {
+
+  const handleApproveOrder = async (idOrder,order) => {
+
+    const { f_name, l_name, email } = order.orderBy;
+    console.log(f_name,l_name,email);
+
     const confirmation = await Swal.fire({
       title: "ยืนยันคำสั่งซื้อ",
       text: "คุณต้องการอนุมัติคำสั่งซื้อใช่หรือไม่?",
@@ -82,7 +85,7 @@ const ApproveOrder = ({ idUser }) => {
    
     if (confirmation.isConfirmed) {
       try {
-        const response = await orderAPI.updateOrderApprove(idOrder, true);
+        const response = await orderAPI.updateOrderApprove(idOrder,order, true );
         console.log(response); 
         await Swal.fire({
           title: "ยืนยันคำสั่งซื้อ",
@@ -249,7 +252,7 @@ const ApproveOrder = ({ idUser }) => {
                 <div className="flex justify-end ">
                   <button
                     className="bg-green-400 mt-3 mx-2 py-2 px-auto w-[120px] rounded-full shadow-xl hover:bg-green-600 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
-                    onClick={() => handleApproveOrder(order._id)}
+                    onClick={() => handleApproveOrder(order._id,order)}
                   >
                     อนุมัติคำสั่งซื้อ
                   </button>
@@ -384,10 +387,11 @@ const ApproveOrder = ({ idUser }) => {
                     ดูรายละเอียดคำสั่งซื้อ{" "}
                   </button>
                 </div>
+
                 <div className="flex justify-end ">
                   <button
                     className="bg-green-400 mt-3 mx-2 py-2 px-auto w-[120px] rounded-full shadow-xl hover:bg-green-600 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
-                    onClick={() => handleApproveOrder(order._id)}
+                    onClick={() => handleApproveOrder(order._id,order)}
                   >
                     อนุมัติคำสั่งซื้อ
                   </button>

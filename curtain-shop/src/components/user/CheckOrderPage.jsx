@@ -182,10 +182,12 @@ function CheckOrdeerPage() {
 
   const deliveryOptions = [
     {
-      title: "ทางร้านขนส่งพร้อมติดตั้ง \n ระยะเวลา: 7-14 วัน\n รับเฉพาะในพื้นที่กรุงเทพเท่านั้น มีค่าใช้จ่ายเพิ่มเติม"
+      title:
+        "ทางร้านขนส่งพร้อมติดตั้ง \n ระยะเวลา: 7-14 วัน\n รับเฉพาะในพื้นที่กรุงเทพเท่านั้น มีค่าใช้จ่ายเพิ่มเติม"
     },
     {
-      title: "จัดส่งสินค้าทางขนส่ง \n ระยะเวลา: 7-14 วัน \n ชำระค่าส่งปลายทาง \n"
+      title:
+        "จัดส่งสินค้าทางขนส่ง \n ระยะเวลา: 7-14 วัน \n ชำระค่าส่งปลายทาง \n"
     }
   ];
 
@@ -310,8 +312,9 @@ function CheckOrdeerPage() {
         title: "บันทึกข้อมูลเรียบร้อย",
         showConfirmButton: false,
         timer: 1500
+      }).then(() => {
+        navigate(`/payment/${idOrder}`);
       });
-      navigate(`/payment/${idOrder}`, idOrder);
     } catch (err) {
       console.error(err);
       Swal.fire({
@@ -432,12 +435,7 @@ function CheckOrdeerPage() {
                     name="deliveryOption"
                     value={option.title}
                     checked={selectedDelivery === option.title}
-                    onChange={() =>
-                      handleDeliveryChange(
-                        option.title,
-            
-                      )
-                    }
+                    onChange={() => handleDeliveryChange(option.title)}
                   />
                   <span className="peer-checked:border-gray-700 absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-8 border-gray-300 bg-white"></span>
                   <label
@@ -445,9 +443,9 @@ function CheckOrdeerPage() {
                     htmlFor={`radio_${option.title}`}
                   >
                     <div className="ml-5">
-                      <p className="mt-2 whitespace-pre-wrap m-2 text-gray-600 text-base ">{option.title}</p>
-                     
-  
+                      <p className="mt-2 whitespace-pre-wrap m-2 text-gray-600 text-base ">
+                        {option.title}
+                      </p>
                     </div>
                   </label>
                 </div>
@@ -529,7 +527,7 @@ function CheckOrdeerPage() {
                         การจัดส่ง
                       </p>
                       <p class="font-semibold text-sm md:text-base xl:text-base text-gray-900 whitespace-pre-wrap">
-                        {selectedDelivery} {" "}
+                        {selectedDelivery}{" "}
                       </p>
                     </div>
                   </div>
@@ -538,8 +536,7 @@ function CheckOrdeerPage() {
                       ราคารวมทั้งหมด
                     </p>
                     <p class="text-sm md:text-base xl:text-base font-semibold text-gray-900">
-                      {numberWithCommas(order.totalPrice)}{" "}
-                      บาท
+                      {numberWithCommas(order.totalPrice)} บาท
                     </p>
                   </div>
 

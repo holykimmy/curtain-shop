@@ -254,9 +254,8 @@ function CustomPage() {
   const [width, setWidth] = useState("");
   const [height, setHeight] = useState("");
 
-
   console.log("--------", idUser);
-  
+
   const addToCartForLoggedInUser = ({
     idUser,
     selectedRail,
@@ -337,16 +336,12 @@ function CustomPage() {
       if (data.rail === "รับราง") {
         pricerail = (data.price_rail * width) / 100;
       }
-      const TotalPiece =
-        fabricCostPerPiece * cart[idUser][existingProductIndex].count +
-        pricerail;
+      const TotalPiece = fabricCostPerPiece * cart[idUser][existingProductIndex].count + pricerail;
+
       cart[idUser][existingProductIndex].totalPiece = TotalPiece;
-      
     } else {
       const numberOfPieces = Math.ceil(width / data.p_width);
-      console.log(
-        "numberOfPieces",
-        width,
+      console.log("numberOfPieces",width,
         "/",
         data.p_width,
         " = ",
@@ -780,22 +775,33 @@ function CustomPage() {
         </div>
       ))}
       <div className="flex justify-center">
-        <button
-          onClick={() =>
-            handleAddToCart({
-              ...data,
-              width,
-              height,
-              selectedType,
-              selectedTwolayer,
-              pricerail,
-              selectedRail
-            })
-          }
-          className=" mt-10  mb-3 px-4 py-2 rounded-lg inline-block text-base bg-brown-200 hover:bg-browntop hover:shadow-xl text-white focus:outline-none focus:shadow-outline"
-        >
-          เพิ่มลงลงตระกร้าสินค้า
-        </button>
+        {isLoggedIn ? (
+          <button
+            onClick={() =>
+              handleAddToCart({
+                ...data,
+                width,
+                height,
+                selectedType,
+                selectedTwolayer,
+                pricerail,
+                selectedRail
+              })
+            }
+            className=" mt-10  mb-3 px-4 py-2 rounded-lg inline-block text-base bg-brown-200 hover:bg-browntop hover:shadow-xl text-white focus:outline-none focus:shadow-outline"
+          >
+            เพิ่มลงลงตระกร้าสินค้า
+          </button>
+        ) : (
+          <Link
+            to={{ pathname: "/login", state: `custom-product/${productId}` }}
+          >
+            <button className="my-4 text-white hover:shadow-2xl bg-red-400 rounded-xl p-2 w-[150px]">
+              {" "}
+              เข้าสู่ระบบเพื่อเพิ่มสินค้าลงตระกร้า{" "}
+            </button>
+          </Link>
+        )}
       </div>
       <Footer></Footer>
     </>

@@ -110,7 +110,7 @@ function PostOrder() {
 
 
 
-  const handleSendOrder = async (idOrder, postcodeOrder) => {
+  const handleSendOrder = async (idOrder,order, postcodeOrder) => {
     if (!postcodeOrder.trim()) {
       Swal.fire({
         text: "กรุณาระบุเลขพัสดุ หรือ แจ้งการตัดตั้งสำเร็จ",
@@ -136,7 +136,7 @@ function PostOrder() {
         console.log("testttt");
         const response = await axios.put(
           `${process.env.REACT_APP_API}/customer/order/send/${idOrder}`,
-          { sendproduct : true , postcodeOrder }
+          { sendproduct : true ,order, postcodeOrder }
         );
         
 
@@ -405,7 +405,7 @@ function PostOrder() {
                         <button
                           className="bg-green-400 mt-3 mx-2 py-2 px-auto w-[200px] rounded-full shadow-xl hover:bg-green-600 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
                           onClick={() =>
-                            handleSendOrder(order._id, postcodeOrder)
+                            handleSendOrder(order._id,order, postcodeOrder)
                           }
                         >
                           จัดส่งสินค้าแล้ว

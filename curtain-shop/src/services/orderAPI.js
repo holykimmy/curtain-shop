@@ -112,9 +112,9 @@ const OrderAPI = {
     })
   },
 
-  updateOrderApprove: async (idOrder, approve) => {
+  updateOrderApprove: async (idOrder,order,approve) => {
     try {
-      const response = await axios.put(`${process.env.REACT_APP_API}/customer/order/approve/${idOrder}`, { approve });
+      const response = await axios.put(`${process.env.REACT_APP_API}/customer/order/approve/${idOrder}`,{order , approve});
       return response.data;
     } catch (error) {
       console.error('Error updating order enable:', error);
@@ -122,9 +122,9 @@ const OrderAPI = {
     }
   },
 
-  updateOrderVerifyPayment: async (idOrder, verifypayment) => {
+  updateOrderVerifyPayment: async (idOrder,order, verifypayment) => {
     try {
-      const response = await axios.put(`${process.env.REACT_APP_API}/customer/order/verifypayment/${idOrder}`, { verifypayment });
+      const response = await axios.put(`${process.env.REACT_APP_API}/customer/order/verifypayment/${idOrder}`, { order,verifypayment });
       return response.data;
     } catch (error) {
       console.error('Error updating order enable:', error);
@@ -132,9 +132,9 @@ const OrderAPI = {
     }
   },
 
-  updateOrderPandding: async (idOrder, pandding) => {
+  updateOrderPandding: async (idOrder,order, pandding) => {
     try {
-      const response = await axios.put(`${process.env.REACT_APP_API}/customer/order/pandding/${idOrder}`, { pandding });
+      const response = await axios.put(`${process.env.REACT_APP_API}/customer/order/pandding/${idOrder}`, { order,pandding });
       return response.data;
     } catch (error) {
       console.error('Error updating order enable:', error);
@@ -143,30 +143,15 @@ const OrderAPI = {
   },
   
   
-  updateOrderSend: async (idOrder, sendproduct) => {
+  updateOrderSend: async (idOrder,order, sendproduct) => {
     try {
-      const response = await axios.put(`${process.env.REACT_APP_API}/customer/order/send/${idOrder}`, { sendproduct });
+      const response = await axios.put(`${process.env.REACT_APP_API}/customer/order/send/${idOrder}`, { order,sendproduct });
       return response.data;
     } catch (error) {
       console.error('Error updating order enable:', error);
       throw error; 
     }
   },
-
-  updateOrderVerifyCancelled: async (idOrder, veriflycancelled) => {
-    try {
-      const response = await axios.put(`${process.env.REACT_APP_API}/customer/order/cancelled/${idOrder}`, { veriflycancelled });
-      return response.data;
-    } catch (error) {
-      console.error('Error updating order enable:', error);
-      throw error; 
-    }
-  }
-  ,
-
-
-
-  
 
 
 

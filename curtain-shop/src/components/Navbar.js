@@ -74,7 +74,7 @@ function ProfileMenu({ isLoggedIn, handleLogout, userName, idUser }) {
         <Button
           variant="text"
           color="white"
-          className="flex items-center gap-1 rounded-full py-0.5 pr-2 pl-0.5 lg:ml-auto"
+          className="flex items-center gap-1 rounded-full py-0.5 pr-2 pl-0.5 md:ml-auto"
         >
           <p className="pl-3 pr-3 text-xs font-normal">{userName}</p>
           <CiUser className="border bg-white/25 rounded-full border-white p-0.5 h-9 w-9" />
@@ -204,7 +204,7 @@ function NavListMenu() {
             variant="small"
             className="font-normal text-Kanit"
           >
-            <MenuItem className="hidden items-center gap-2 text-base text-white text-Kanit lg:flex lg:rounded-full">
+            <MenuItem className="hidden items-center gap-2 text-base text-white text-Kanit md:flex md:rounded-full">
               <p className="text-xs">สินค้า</p>
               <ChevronDownIcon
                 strokeWidth={2}
@@ -215,14 +215,14 @@ function NavListMenu() {
             </MenuItem>
           </Typography>
         </MenuHandler>
-        <MenuList className="hidden grid-cols-5 gap-3 overflow-visible lg:grid text-b-font">
+        <MenuList className="hidden grid-cols-5 gap-3 overflow-visible md:grid text-b-font">
           <ul className="col-span-5 flex w-full flex-col">{renderItems}</ul>
         </MenuList>
       </Menu>
-      <MenuItem className="flex text-xs items-center gap-2 text-Kanit lg:hidden">
+      <MenuItem className="flex text-xs items-center gap-2 text-Kanit md:hidden">
         สินค้า
       </MenuItem>
-      <ul className="ml-6 flex  text-sm flex-col gap-1 lg:hidden text-white">
+      <ul className="ml-6 flex  text-sm flex-col gap-1 md:hidden text-white">
         {renderItems}
       </ul>
     </React.Fragment>
@@ -301,7 +301,7 @@ function NavListMenuAbout() {
             variant="small"
             className="font-normal text-Kanit"
           >
-            <MenuItem className="hidden items-center gap-2 text-base text-white text-Kanit lg:flex lg:rounded-full">
+            <MenuItem className="hidden items-center gap-2 text-base text-white text-Kanit md:flex md:rounded-full">
               <p className="text-xs">เกี่ยวกับผ้าม่าน</p>
               <ChevronDownIcon
                 strokeWidth={2}
@@ -312,14 +312,14 @@ function NavListMenuAbout() {
             </MenuItem>
           </Typography>
         </MenuHandler>
-        <MenuList className="hidden grid-cols-5 gap-3 overflow-visible lg:grid text-b-font">
+        <MenuList className="hidden grid-cols-5 gap-3 overflow-visible md:grid text-b-font">
           <ul className="col-span-5 flex w-full flex-col">{renderItems}</ul>
         </MenuList>
       </Menu>
-      <MenuItem className="flex text-xs items-center gap-2 text-Kanit lg:hidden">
+      <MenuItem className="flex text-xs items-center gap-2 text-Kanit md:hidden">
         เกี่ยวกับผ้าม่าน
       </MenuItem>
-      <ul className="ml-6 flex  text-sm flex-col gap-1 lg:hidden text-white">
+      <ul className="ml-6 flex  text-sm flex-col gap-1 md:hidden text-white">
         {renderItems}
       </ul>
     </React.Fragment>
@@ -328,7 +328,7 @@ function NavListMenuAbout() {
 
 function NavList() {
   return (
-    <ul className="mb-4 mt-2 flex flex-col  lg:mb-0 lg:mt-0 lg:flex-row lg:items-center">
+    <ul className="mb-4 mt-2 flex flex-col  md:mb-0 md:mt-0 md:flex-row md:items-center">
       <NavListMenu />
       {navListItems.map(({ label, to }, key) => (
         <Typography
@@ -338,7 +338,7 @@ function NavList() {
           color="white"
           className="font-Kanit text-xs"
         >
-          <MenuItem className="flex items-center gap-2 lg:rounded-full">
+          <MenuItem className="flex items-center gap-2 md:rounded-full">
             {label}
           </MenuItem>
         </Typography>
@@ -355,9 +355,11 @@ function ComplexNavbar({ isLoggedIn, idUser, userName, handleLogout }) {
   React.useEffect(() => {
     window.addEventListener(
       "resize",
-      () => window.innerWidth >= 960 && setIsNavOpen(false)
+      () => window.innerWidth <= 960 && setIsNavOpen(false)
     );
   }, []);
+  
+  
 
   useEffect(() => {
     // Check isLoggedIn and userName changes
@@ -374,7 +376,7 @@ function ComplexNavbar({ isLoggedIn, idUser, userName, handleLogout }) {
 
   return (
     <>
-      <Navbar className="fixed top-0 z-10 shadow-md h-max max-w-full border-none rounded-none  px-4 lg:px-8 py-2 bg-browntop">
+      <Navbar className="fixed top-0 z-10 shadow-md h-max max-w-full border-none rounded-none  px-4 md:px-8 py-2 bg-browntop">
         <div className="relative mx-auto flex items-center text-white">
           <Typography
             as="a"
@@ -383,11 +385,11 @@ function ComplexNavbar({ isLoggedIn, idUser, userName, handleLogout }) {
           >
             Curtain Shop
           </Typography>
-          <div className="absolute top-2/4 left-2/4 hidden -translate-x-2/4 -translate-y-2/4 lg:block">
+          <div className="absolute top-2/4 left-2/4 hidden -translate-x-2/4 -translate-y-2/4 md:block">
             <NavList />
           </div>
 
-          <div className="absolute top-2/4 left-2/4 hidden -translate-x-2/4 -translate-y-2/4 lg:block"></div>
+          <div className="absolute top-2/4 left-2/4 hidden -translate-x-2/4 -translate-y-2/4 md:block"></div>
 
           <IconButton
             size="sm"
@@ -410,7 +412,7 @@ function ComplexNavbar({ isLoggedIn, idUser, userName, handleLogout }) {
           <NavList />
         </MobileNav>
       </Navbar>
-      <div class="welcome pt-[60px]"></div>
+      <div class=" pt-[60px]"></div>
     </>
   );
 }

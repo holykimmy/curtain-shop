@@ -33,37 +33,6 @@ const ReceiveOrder = ({ idUser }) => {
   console.log("testttt");
   console.log(userOrder);
 
-  const handleCancelOrder = async (idOrder) => {
-    // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
-    const confirmation = await Swal.fire({
-      title: "ยืนยันการยกเลิกคำสั่งซื้อ",
-      text: "คุณแน่ใจหรือไม่ที่ต้องการยกเลิกคำสั่งซื้อนี้?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "ยืนยัน",
-      cancelButtonText: "ยกเลิก"
-    });
-
-    // หากผู้ใช้กดปุ่มยืนยัน
-    if (confirmation.isConfirmed) {
-      try {
-        const response = await customerAPI.updateOrderEnable(idOrder, false);
-        console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
-        await Swal.fire({
-          title: "ยกเลิกสำเร็จ",
-          text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
-          icon: "success"
-        });
-        window.location.reload();
-      } catch (error) {
-        console.error("Error cancelling order:", error);
-        // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
-      }
-    }
-  };
-
   const handleSearch = async () => {
     try {
       const searchData = await orderAPI.searchOrderSend(searchTerm);
@@ -75,7 +44,7 @@ const ReceiveOrder = ({ idUser }) => {
     }
   };
 
-  const handleSendOrder = async (idOrder) => {
+  const handleSendOrder = async (idOrder,order) => {
     // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
     const confirmation = await Swal.fire({
       text: "จัดส่งสินค้าแล้วใช่หรือไม่?",
@@ -248,7 +217,7 @@ const ReceiveOrder = ({ idUser }) => {
                       <div className="flex justify-end ">
                         <button
                           className="bg-green-400 mt-3 mx-2 py-2 px-auto w-[170px] rounded-full shadow-xl hover:bg-green-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
-                          onClick={() => handleSendOrder(order._id)}
+                          onClick={() => handleSendOrder(order._id,order)}
                         >
                           ส่งสินค้าเรียบร้อยแล้ว
                         </button>
@@ -374,7 +343,7 @@ const ReceiveOrder = ({ idUser }) => {
                 <div className="flex justify-end ">
                   <button
                     className="bg-green-400 mt-3 mx-2 py-2 px-auto w-[180px] rounded-full shadow-xl hover:bg-green-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
-                    onClick={() => handleSendOrder(order._id)}
+                    onClick={() => handleSendOrder(order._id,order)}
                   >
                     ส่งสินค้าเรียบร้อยแล้ว
                   </button>

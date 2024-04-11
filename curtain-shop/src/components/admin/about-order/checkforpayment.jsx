@@ -68,7 +68,7 @@ const WaitingForPayment = ({ idUser }) => {
     }
   };
 
-  const handleVerifyOrder = async (idOrder) => {
+  const handleVerifyOrder = async (idOrder,order) => {
     // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
     const confirmation = await Swal.fire({
       title: "ยืนยันการชำระเงิน",
@@ -84,7 +84,7 @@ const WaitingForPayment = ({ idUser }) => {
     // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
       try {
-        const response = await orderAPI.updateOrderVerifyPayment(idOrder, true);
+        const response = await orderAPI.updateOrderVerifyPayment(idOrder,order, true);
         console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
         await Swal.fire({
           title: "ยืนยันการชำระเงิน",
@@ -254,7 +254,7 @@ const WaitingForPayment = ({ idUser }) => {
                 <div className="flex justify-end ">
                   <button
                     className="bg-green-400 mt-3 mx-2 py-2 px-auto w-[150px] rounded-full shadow-xl hover:bg-green-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
-                    onClick={() => handleVerifyOrder(order._id)}
+                    onClick={() => handleVerifyOrder(order._id,order)}
                   >
                     ชำระเงินเรียบร้อย
                   </button>
@@ -384,7 +384,7 @@ const WaitingForPayment = ({ idUser }) => {
                 <div className="flex justify-end ">
                   <button
                     className="bg-green-400 mt-3 mx-2 py-2 px-auto w-[150px] rounded-full shadow-xl hover:bg-green-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
-                    onClick={() => handleVerifyOrder(order._id)}
+                    onClick={() => handleVerifyOrder(order._id,order)}
                   >
                     ชำระเงินเรียบร้อย
                   </button>

@@ -19,15 +19,10 @@ import { BsPinFill } from "react-icons/bs";
 function OrderDetail() {
   const { idOrder } = useParams();
   console.log("idOrder", idOrder);
-  const [velvetProducts, setVelvetProducts] = useState([]);
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
   const [userName, setUserName] = React.useState("");
   const [userData, setUserData] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [idUser, setIdUser] = React.useState("");
-
   const navigate = useNavigate();
   const [currentOrder, setCurrentOrder] = useState([]);
 
@@ -108,7 +103,7 @@ function OrderDetail() {
   console.log("dkjhafkdsj");
   console.log(address);
 
-  const handleVerifyOrder = async (idOrder) => {
+  const handleVerifyOrder = async (idOrder, order) => {
     // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
     const confirmation = await Swal.fire({
       title: "ยืนยันการชำระเงิน",
@@ -124,14 +119,19 @@ function OrderDetail() {
     // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
       try {
-        const response = await orderAPI.updateOrderVerifyPayment(idOrder, true);
+        const response = await orderAPI.updateOrderVerifyPayment(
+          idOrder,
+          order,
+          true
+        );
         console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
         await Swal.fire({
           title: "ยืนยันการชำระเงิน",
           text: "คำสั่งซื้อได้รับการยืนยันแล้ว",
           icon: "success"
+        }).then(() => {
+          window.location.reload();
         });
-        window.location.reload();
       } catch (error) {
         console.error("Error cancelling order:", error);
         // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
@@ -157,7 +157,7 @@ function OrderDetail() {
     }
   };
 
-  const handleApproveOrder = async (idOrder) => {
+  const handleApproveOrder = async (idOrder, order) => {
     // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
     const confirmation = await Swal.fire({
       title: "ยืนยันคำสั่งซื้อ",
@@ -173,14 +173,19 @@ function OrderDetail() {
     // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
       try {
-        const response = await orderAPI.updateOrderApprove(idOrder, true);
+        const response = await orderAPI.updateOrderApprove(
+          idOrder,
+          order,
+          true
+        );
         console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
         await Swal.fire({
           title: "ยืนยันคำสั่งซื้อ",
           text: "คำสั่งซื้อได้รับการยืนยันแล้ว",
           icon: "success"
+        }).then(() => {
+          window.location.reload();
         });
-        // window.location.reload();
       } catch (error) {
         console.error("Error cancelling order:", error);
         // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
@@ -188,7 +193,7 @@ function OrderDetail() {
     }
   };
 
-  const handlePanddingOrder = async (idOrder) => {
+  const handlePanddingOrder = async (idOrder, order) => {
     const confirmation = await Swal.fire({
       text: "จัดเตรียมสินค้าเสร็จแล้วใช่หรือไม่?",
       icon: "warning",
@@ -202,14 +207,19 @@ function OrderDetail() {
     // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
       try {
-        const response = await orderAPI.updateOrderPandding(idOrder, true);
+        const response = await orderAPI.updateOrderPandding(
+          idOrder,
+          order,
+          true
+        );
         console.log(response);
         await Swal.fire({
           title: "เตรียมสินค้าพร้อมแล้ว",
           text: "คำสั่งซื้อได้รับการยืนยันแล้ว",
           icon: "success"
+        }).then(() => {
+          window.location.reload();
         });
-        window.location.reload();
       } catch (error) {
         console.error("Error cancelling order:", error);
         // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
@@ -230,7 +240,7 @@ function OrderDetail() {
     });
 
     if (confirmation.isConfirmed) {
-      navigate(`/order-post/${idOrder}`, {});
+      navigate(`/order-post/${idOrder}`);
     }
   };
   const numberWithCommas = (x) => {
@@ -265,7 +275,7 @@ function OrderDetail() {
                     ลูกค้าได้ยกเลิกคำสั่งซื้อนี้แล้ว
                   </p>
                 ) : null}
-                {order.verifycancelled ? (
+                {order.cancelled ? (
                   <p className="text-xs sm:text-xs md:text-base lg:text-md xl:text-md font-medium leading-6 text-red-600">
                     ยกเลิกสินค้าโดยแอดมินเนื้องจาก {order.cancelReasonAd}
                   </p>
@@ -381,7 +391,7 @@ function OrderDetail() {
                           <p className="text-base leading-4 text-gray-800">
                             การจัดส่ง
                           </p>
-                          <p className="text-base leading-4 text-gray-600 whitespace-pre-wrap text-right">
+                          <p className="text-sm leading-4 text-gray-600 whitespace-pre-wrap text-right">
                             {order.deliveryIs}
                           </p>
                         </div>
@@ -402,13 +412,43 @@ function OrderDetail() {
                       {order.approve ? (
                         <>
                           {order.payment ? (
-                            <div className="pb-4 md:pb-8 w-full md:w-60">
-                              <img
-                                className="w-[350px] h-[350px]"
-                                src={`${process.env.REACT_APP_AWS}${order.slipmoney}`}
-                                alt="product"
-                              />
-                            </div>
+                            <>
+                              {order.deposit ? (
+                                <>
+                                  <p className="text-base  text-gray-800">
+                                    ชำระแบบมันจำ 50%
+                                  </p>
+                                  <p className="text-sm  text-gray-800">
+                                    จำนวนที่ต้องชำระ
+                                    <span className="text-base font-bold">
+                                      {numberWithCommas(order.totalPrice * 0.5)}
+                                    </span>{" "}
+                                    บาท
+                                  </p>
+                                </>
+                              ) : (
+                                <>
+                                <p className="text-base  text-gray-800">
+                                  ชำระราคาเต็ม
+                                </p>
+                                <p className="text-sm  text-gray-800">
+                                  จำนวนที่ต้องชำระ 
+                                  <span className="text-base font-bold">
+                                    {numberWithCommas(order.totalPrice)}
+                                  </span>{" "}
+                                  บาท
+                                </p>
+                              </>
+                              )}
+
+                              <div className="pb-4 md:pb-8 w-full md:w-60">
+                                <img
+                                  className="w-[350px] h-[350px]"
+                                  src={`${process.env.REACT_APP_AWS}${order.slipmoney}`}
+                                  alt="product"
+                                />
+                              </div>
+                            </>
                           ) : (
                             <p>ยังไม่ได้ชำระเงิน</p>
                           )}
@@ -496,7 +536,7 @@ function OrderDetail() {
                         {!order.approve ? (
                           <button
                             className="mt-6 md:mt-3 py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base leading-4 text-gray-800"
-                            onClick={() => handleApproveOrder(order._id)}
+                            onClick={() => handleApproveOrder(order._id, order)}
                           >
                             อนุมัติคำสั่งซื้อ
                           </button>
@@ -508,11 +548,11 @@ function OrderDetail() {
                           "ลูกค้ายังไม่ได้ชำระเงิน"
                         ) : (
                           <>
-                            {!order.verifypayment ? (
+                            {!order.verifypayment && !order.cancelled ? (
                               <button
                                 disabled={!order.payment}
                                 className="mt-6 md:mt-3 py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base leading-4 text-gray-800"
-                                onClick={() => handleVerifyOrder(order._id)}
+                                onClick={() => handleVerifyOrder(order._id,order)}
                               >
                                 ยืนยันการชำระเงินของลูกค้า
                               </button>
@@ -520,32 +560,32 @@ function OrderDetail() {
                           </>
                         )}
 
-                        {!order.pandding ? (
+                        {order.verifypayment && !order.pandding ? (
                           <button
                             className="mt-6 md:mt-3 py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base leading-4 text-gray-800"
-                            onClick={() => handlePanddingOrder(order._id)}
+                            onClick={() => handlePanddingOrder(order._id,order)}
                           >
                             เตรียมสินค้าเสร็จแล้ว
                           </button>
                         ) : null}
-                        
-                        {!order.sendproduct ? (
+
+                        {order.pandding && !order.sendproduct ? (
                           <button
                             className="mt-6 md:mt-3 py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base leading-4 text-gray-800"
-                            onClick={() => handleSendOrder(order._id)}
+                            onClick={() => handleSendOrder(order._id,order)}
                           >
                             จัดส่งสินค้าเรียบร้อยแล้ว
                           </button>
                         ) : null}
 
-                        {order.enable && !order.pandding && (
+                        {order.enable && !order.pandding && !order.cancelled ? (
                           <button
                             className="mt-6 md:mt-3 py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base leading-4 text-gray-800"
                             onClick={() => handleCancelOrder(order._id)}
                           >
                             ยกเลิกคำสั่งซื้อ
                           </button>
-                        )}
+                        ) : null}
                       </div>
                     </div>
                   </div>

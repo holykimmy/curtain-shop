@@ -6,7 +6,6 @@ import Swal from "sweetalert2";
 import typeAPI from "../../services/typeAPI";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
-
 const ProductInCart = ({ item, idUser }) => {
   const dispatch = useDispatch();
   const [updatedItem, setUpdatedItem] = useState(item);
@@ -16,9 +15,9 @@ const ProductInCart = ({ item, idUser }) => {
 
   const navigate = useNavigate();
 
-console.log("testtt");
+
+  console.log("testtt");
   console.log(item);
-  
 
   console.log("-----------------------------");
   const getTotalPiece = (item) => {
@@ -31,7 +30,6 @@ console.log("testtt");
       " = ",
       numberOfPieces
     );
-
 
     // คำนวณผ้าทั้งหมด
     const totalFabric = numberOfPieces * 2;
@@ -256,7 +254,7 @@ console.log("testtt");
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "ใช่",
-      cancelButtonText: "ไม่ใช่",
+      cancelButtonText: "ไม่ใช่"
     }).then((result) => {
       if (result.isConfirmed) {
         navigate(`/product-detail/${productId}`);
@@ -266,12 +264,17 @@ console.log("testtt");
 
   return (
     <tbody>
-      <tr className="text-center "  onClick={() => handleDetailProduct (item.productId, item.name)} >
-        <td className=" hidden sm:table-cell  text-browntop px-2 py-1 border  border-gray-300   ">
+      <tr
+        className="text-center "
+      >
+        <td 
+        className=" hidden sm:table-cell  text-browntop px-2 py-1 border  border-gray-300   "
+        onClick={() => handleDetailProduct(item.productId, item.name)}>
           <img className="w-[300px] rounded" src={item.image} alt="product" />
+
         </td>
         <td className="w-[100px] text-sm text-browntop px-2 py-1 border border-gray-300">
-        {item.name}
+          {item.name}
         </td>
         <td className="text-browntop text-sm  px-2 py-1 border border-gray-300">
           {item.brand}

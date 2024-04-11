@@ -127,7 +127,7 @@ function HomePage() {
         <Slideshow></Slideshow>
       </div>
       {/* <p className="m-5 text-xl">{userName}</p> */}
-      <Link to="/custom-product">
+      <Link to="/custom-product/65d595d39bec946346551c76">
         <div class="text-xl md:text-2xl xl:text-2xl text-b-font text-center  p-[30px]">
           {" "}
           ออกแบบผ้าม่านของคุณ{" "}
