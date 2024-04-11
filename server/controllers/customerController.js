@@ -16,6 +16,7 @@ const { body, validationResult } = require("express-validator");
 const Joi = require("joi");
 const fs = require("fs");
 const path = require("path");
+const nodemailer = require("nodemailer");
 
 exports.register = async (req, res) => {
   const { f_name, l_name, username, email, tell, password } = req.body;
@@ -1362,14 +1363,46 @@ exports.updateOrderApprove = async (req, res) => {
   try {
     const idOrder = req.params.id;
     const { approve } = req.body;
-    console.log("Update order endble for order:", idOrder);
+    const { order } = req.body;
+    const user = order.orderBy;
 
-    // ดำเนินการอัปเดตค่า endble ในคำสั่งซื้อที่ระบุ
     await Cart.updateOne({ _id: idOrder }, { approve: approve });
+
+
+    // ส่งอีเมล
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'charoenkit.curtain@gmail.com',
+        pass: 'ojpnyasephiohaqv'
+      }
+    });
+
+    const mailOptions = {
+      from: "charoenkit.curtain@gmail.com",
+      to: `${user.email} `,
+      subject: "สินค้าของคุณได้รับการยืนยันแล้ว",
+      text: `เรียนคุณ ${user.f_name} ${user.l_name}
+      Order : ${idOrder} ได้รับการยืนยันแล้ว 
+      กรุณาชำระเงินภายใน 48 ซม. หากท่านไม่ชำระเงินภายในระยะเวลาที่กำหนด 
+      คำสั่งซื้อของคุณจะถูกยกเลิกโดยอัตโนมัติ
+
+      https://cms-curtain-shop.vercel.app/payment/${idOrder}
+
+      `
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending email:", error);
+      } else {
+        console.log("Email sent:", info.response);
+      }
+    });
 
     res
       .status(200)
-      .json({ message: "Order  p_type endble updated successfully." });
+      .json({ message: "Order updated successfully." });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -1380,12 +1413,41 @@ exports.updateOrderVerifyPayment = async (req, res) => {
   try {
     const idOrder = req.params.id;
     const { verifypayment } = req.body;
-    console.log("Update order endble for order:", idOrder);
+    const { order } = req.body;
+    const user = order.orderBy;
 
     // ดำเนินการอัปเดตค่า endble ในคำสั่งซื้อที่ระบุ
     await Cart.updateOne({ _id: idOrder }, { verifypayment: verifypayment });
 
-    res.status(200).json({ message: "Order endble updated successfully." });
+    // ส่งอีเมล
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'charoenkit.curtain@gmail.com',
+        pass: 'ojpnyasephiohaqv'
+      }
+    });
+
+    const mailOptions = {
+      from: "charoenkit.curtain@gmail.com",
+      to: `${user.email} `,
+      subject: "ยืนยันการชำระเงินของคุณแล้ว",
+      text: `เรียนคุณ ${user.f_name} ${user.l_name}
+      Order : ${idOrder} ได้รับการยืนยันการชำระเงินเรียบร้อยแล้ว
+      ทางร้านกำลังดำเนินการตัดผ้าม่านให้คุณอยู่
+
+      `
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending email:", error);
+      } else {
+        console.log("Email sent:", info.response);
+      }
+    });
+
+    res.status(200).json({ message: "Order updated successfully." });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -1412,10 +1474,37 @@ exports.updateOrderPandding = async (req, res) => {
   try {
     const idOrder = req.params.id;
     const { pandding } = req.body;
-    console.log("Update order endble for order:", idOrder);
-
+    const { order } = req.body;
+    const user = order.orderBy;
     // ดำเนินการอัปเดตค่า endble ในคำสั่งซื้อที่ระบุ
     await Cart.updateOne({ _id: idOrder }, { pandding: pandding });
+
+    // ส่งอีเมล
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'charoenkit.curtain@gmail.com',
+        pass: 'ojpnyasephiohaqv'
+      }
+    });
+
+    const mailOptions = {
+      from: "charoenkit.curtain@gmail.com",
+      to: `${user.email} `,
+      subject: "สินค้าของคุณได้เสร็จรีบร้อยแล้ว",
+      text: `เรียนคุณ ${user.f_name} ${user.l_name}
+      Order : ${idOrder} 
+      ทางร้านได้เตรียมสินค้าเสร็จเรียบร้อยแล้ว
+      `
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending email:", error);
+      } else {
+        console.log("Email sent:", info.response);
+      }
+    });
 
     res.status(200).json({ message: "Order endble updated successfully." });
   } catch (error) {
@@ -1428,6 +1517,8 @@ exports.updateOrderEnable = async (req, res) => {
   try {
     const idOrder = req.params.id;
     const { enable } = req.body;
+    const { order } = req.body;
+    const user = order.orderBy;
     console.log("cancel text", enable );
 
     console.log("Update order enable for order:", idOrder);
@@ -1451,6 +1542,8 @@ exports.updateOrderSend = async (req, res) => {
   try {
     const idOrder = req.params.id;
     const { sendproduct, postcodeOrder } = req.body;
+    const { order } = req.body;
+    const user = order.orderBy;
     console.log(idOrder);
     console.log("postcode text", sendproduct, postcodeOrder);
 
@@ -1463,7 +1556,35 @@ exports.updateOrderSend = async (req, res) => {
       { _id: idOrder },
       { sendproduct: true, postcodeOrder: postcodeOrder }
     );
-    console.log(sendproduct, postcodeOrder);
+    console.log(postcodeOrder);
+
+
+    // ส่งอีเมล
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'charoenkit.curtain@gmail.com',
+        pass: 'ojpnyasephiohaqv'
+      }
+    });
+
+    const mailOptions = {
+      from: "charoenkit.curtain@gmail.com",
+      to: `${user.email} `,
+      subject: "คำสั่งซื้อของคุณได้รับการจัดส่งเรียบร้อยแล้ว",
+      text: `เรียนคุณ ${user.f_name} ${user.l_name}
+      Order : ${idOrder} ทางร้านได้จัดส่งสินค้าให้คุณเรียบร้อยแล้ว
+      เลขพัสดุของคุณคือ ${postcodeOrder}
+      `
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending email:", error);
+      } else {
+        console.log("Email sent:", info.response);
+      }
+    });
 
     res.status(200).json({ message: "Order send updated successfully." });
   } catch (error) {
@@ -1475,18 +1596,47 @@ exports.updateOrderSend = async (req, res) => {
 exports.updateOrderCancelled = async (req, res) => {
   try {
     const idOrder = req.params.id;
-    const { cancelled, cause } = req.body;
-
+    const { cancelled, cancelReasonAd } = req.body;
+    const { order } = req.body;
+    const user = order.orderBy;
     // ตรวจสอบว่ามีค่า cause หรือไม่
-    if (!cause) {
+    if (!cancelReasonAd) {
       return res.status(400).json({ error: "Cause is required." });
     }
 
     await Cart.updateOne(
       { _id: idOrder },
-      { cancelled: cancelled, cause: cause }
+      { cancelled: cancelled, cancelReasonAd : cancelReasonAd }
     );
-    console.log(cancelled, cause);
+    console.log(cancelled, cancelReasonAd);
+
+    // ส่งอีเมล
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'charoenkit.curtain@gmail.com',
+        pass: 'ojpnyasephiohaqv'
+      }
+    });
+
+    const mailOptions = {
+      from: "charoenkit.curtain@gmail.com",
+      to: `${user.email} `,
+      subject: "คำสั่งซื้อของคุณถูกยกเลิกแล้ว",
+      text: `เรียนคุณ ${user.f_name} ${user.l_name}
+      Order : ${idOrder} ของคุณได้ถูกยกเลิกแล้วเนื้องจาก ${cancelReasonAd}
+      `
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending email:", error);
+      } else {
+        console.log("Email sent:", info.response);
+      }
+    });
+
+   
 
     res.status(200).json({ message: "Order cancel updated successfully." });
   } catch (error) {
