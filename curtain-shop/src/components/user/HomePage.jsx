@@ -80,10 +80,10 @@ function HomePage() {
   const handleLogoutAuto = () => {
     // Logout user
     localStorage.removeItem("token");
-    setUserName(""); // Clear user name or any other relevant state
+    setUserName(""); // Clear 
 
-    // Redirect to login page or perform any other action
-    navigate("/"); // Redirect to login page
+    
+    navigate("/"); // Redirect
   };
 
   const handleLogout = () => {
@@ -101,7 +101,6 @@ function HomePage() {
         localStorage.removeItem("token");
         setUserName("");
 
-        // ใช้ useNavigate เพื่อนำผู้ใช้กลับไปยังหน้าหลัก
         navigate("/");
         window.location.reload(); //refresh
       }

@@ -10,6 +10,8 @@ function AddTypePage() {
   const [price_rail, setPrice_rail] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [bgimage, setImagebg] = useState(null);
+  const [imagePreviewBg, setImagePreviewBg] = useState(null);
   const [selectedTwolayer, setSelectedTwolayer] = useState("");
 
   const [isLoading, setIsLoading] = useState(true);
@@ -59,6 +61,16 @@ function AddTypePage() {
     setImagePreview(previewURL);
   };
 
+  const handleFileSelectionBg = (e) => {
+    const bgimage = e.target.files[0];
+    console.log("bgimage", bgimage);
+
+    setImagebg(bgimage); // อัปเดตค่าไฟล์ใหม่
+
+    // แสดงตัวอย่างรูปภาพ
+    const previewURL = URL.createObjectURL(bgimage);
+    setImagePreviewBg(previewURL);
+  };
   const handlePriceChange = (e) => {
     const inputNumber = e.target.value;
     // ตรวจสอบว่า inputNumber เป็นตัวเลขและมีค่ามากกว่าหรือเท่ากับ 0 หรือไม่
@@ -115,8 +127,17 @@ function AddTypePage() {
     formData.append("name", name);
     formData.append("price_rail", price_rail);
     formData.append("image", image);
+    formData.append("bgimage", bgimage);
     formData.append("twolayer", selectedTwolayer);
+    
+    console.log("formData:");
+    console.log(formData.get("name"));
+    console.log(formData.get("price_rail"));
+    console.log(formData.get("image"));
+    console.log(formData.get("bgimage"));
+    console.log(formData.get("twolayer"));
 
+    console.log("endl");
     typeAPI
       .createType(formData)
       .then((response) => {
@@ -177,6 +198,25 @@ function AddTypePage() {
               <img
                 className="flex appearance-none border-none  mt-4 w-auto h-[350px] rounded justify-center py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 src={imagePreview}
+                alt="Preview"
+              />
+            )}
+          </div>
+
+          <input
+            type="file"
+            name="bgimage"
+            id="bgimage"
+            
+            onChange={handleFileSelectionBg}
+          />
+
+          <div className="flex sm:flex-col md:flex-row lg:flex-row xl:flex-row justify-center md:justify-around items-center">
+            {/* Image preview */}
+            {imagePreviewBg && (
+              <img
+                className="flex appearance-none border-none  mt-4 w-auto h-[350px] rounded justify-center py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                src={imagePreviewBg}
                 alt="Preview"
               />
             )}

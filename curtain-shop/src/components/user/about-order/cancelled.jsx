@@ -20,7 +20,7 @@ const CancelOrder = ({ idUser }) => {
         .getOrderById(idUser)
         .then((orderData) => {
           const cancelOrders = orderData.filter(
-            (order) => order.enable === false
+            (order) => order.enable === false || order.cancelled === true
           );
           setUserOrder(cancelOrders);
         })

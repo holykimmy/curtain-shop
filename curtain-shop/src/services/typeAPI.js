@@ -37,6 +37,19 @@ const typeAPI = {
       throw error;
     }
   },
+  updateTypeBgById: async (typeId, formData) => {
+    console.log(typeId, formData);
+    try {
+      const response = await axios.put(
+        `${process.env.REACT_APP_API}/type-cut/update-bg/${typeId}`,
+        formData
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching :", error);
+      throw error;
+    }
+  },
 
   deleteTypeById: async (typeId) => {
     try {

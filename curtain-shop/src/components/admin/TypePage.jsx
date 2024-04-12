@@ -152,7 +152,6 @@ function AddTypePage() {
                 </th>
                 <th className="px-6 py-4 border-b border-blue-gray-100 bg-blue-gray-50 p-4 text-base text-center text-gray-700"/>
 
-               
               </tr>
             </thead>
             <tbody>

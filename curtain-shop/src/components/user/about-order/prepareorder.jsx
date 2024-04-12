@@ -28,7 +28,6 @@ const PrepareOrder = ({ idUser }) => {
     };
     fetchData();
 
-    // Return a cleanup function to clear the interval
     return () => clearInterval();
   }, [idUser]);
 
@@ -43,7 +42,7 @@ const PrepareOrder = ({ idUser }) => {
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "ยืนยัน",
-      cancelButtonText: "ยกเลิก",
+      cancelButtonText: "ยกเลิก"
     });
 
     // หากผู้ใช้กดปุ่มยืนยัน
@@ -53,7 +52,7 @@ const PrepareOrder = ({ idUser }) => {
         console.log(response);
         await Swal.fire({
           text: "รอการยืนยันจากทางร้านค้า",
-          icon: "success",
+          icon: "success"
         });
         window.location.reload();
       } catch (error) {
@@ -76,7 +75,7 @@ const PrepareOrder = ({ idUser }) => {
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "ยืนยัน",
-      cancelButtonText: "ยกเลิก",
+      cancelButtonText: "ยกเลิก"
     });
 
     // หากผู้ใช้กดปุ่มยืนยัน
@@ -144,8 +143,7 @@ const PrepareOrder = ({ idUser }) => {
                         จำนวน : {item.count} หลา
                       </p>
                       <p className="text-sm text-gray-600">
-                        รวม :{" "}
-                        {numberWithCommas(item.totalPiece)} บาท
+                        รวม : {numberWithCommas(item.totalPiece)} บาท
                       </p>
                     </div>
                   </div>
@@ -164,13 +162,13 @@ const PrepareOrder = ({ idUser }) => {
                   {order.sendAddress.postcode}
                 </p>
               )}
-         
-         <p className=" text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1 whitespace-pre-wrap">
-                      การจัดส่ง : {order.deliveryIs.split("\n")[0]}
-                    </p>
-                    <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
-                      ราคารวม : {numberWithCommas(order.totalPrice)} บาท
-                    </p>
+
+              <p className=" text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1 whitespace-pre-wrap">
+                การจัดส่ง : {order.deliveryIs.split("\n")[0]}
+              </p>
+              <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
+                ราคารวม : {numberWithCommas(order.totalPrice)} บาท
+              </p>
               <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
                 สถานะ :{" "}
                 {!order.pandding
@@ -183,7 +181,6 @@ const PrepareOrder = ({ idUser }) => {
                 {!order.sendproduct ? "รอการจัดส่ง" : "ส่งสินค้าเรียบร้อยแล้ว"}
               </p>
 
-         
               <div className="flex justify-between">
                 <div className="flex justify-start ">
                   {" "}

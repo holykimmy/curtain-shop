@@ -17,32 +17,97 @@ import { RiNotification3Fill } from "react-icons/ri";
 
 function Orders() {
   const [orderApprove, setOrderApprove] = useState([]);
-  const [orderPayment, setOrderPayment] = useState([]);
+  const [orderWaitPayment, setOrderWaitPayment] = useState([]);
+  const [orderVerifyPayment, setOrderVerifyPayment] = useState([]);
+  const [orderPrepare, setOrderPrepare] = useState([]);
+  const [orderSend, setOrderSend] = useState([]);
+  const [orderSended, setOrderSended] = useState([]);
+  const [orderComplete, setOrderComplete] = useState([]);
+  const [orderCancelled, setOrderCancelled] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.7)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
 
   useEffect(() => {
     const fetchData = () => {
+      setIsLoading(true);
+      orderAPI.getOrderApprove().then((orderData) => {
+        setOrderApprove(orderData);
+      });
+      orderAPI.getOrderPayment().then((orderData) => {
+        const paymentFalseOrders = orderData.filter(
+          (order) => order.payment === false
+        );
+        setOrderWaitPayment(paymentFalseOrders);
+      });
+      orderAPI.getOrderPayment().then((orderData) => {
+        const paymentTrueOrders = orderData.filter(
+          (order) => order.payment === true
+        );
+        setOrderVerifyPayment(paymentTrueOrders);
+      });
       orderAPI
-        .getOrderApprove()
+      .getOrderPrepare()
+      .then((orderData) => {
+        setOrderPrepare(orderData);
+      })
+      orderAPI
+        .getOrderSend()
         .then((orderData) => {
-          setOrderApprove(orderData);
-        })
-        .catch((err) => {
-          console.error("error", err);
-        });
-        orderAPI
-        .getOrderPayment()
-        .then((orderData) => {
-          const paymentFalseOrders = orderData.filter(
-            (order) => order.payment === false
+          const sendTrueOrders = orderData.filter(
+            (order) => order.sendproduct === false
           );
-          setOrderPayment(paymentFalseOrders);
+          setOrderSend(sendTrueOrders);
+        })
+        orderAPI
+        .getOrderSend()
+        .then((orderData) => {
+          const sendTrueOrders = orderData.filter(
+            (order) => order.sendproduct === true
+          );
+          setOrderSended(sendTrueOrders);
+        })
+        orderAPI
+        .getOrderComplete()
+        .then((orderData) => {
+          const completeTrueOrder = orderData.filter(
+            (order) => order.complete === true
+          );
+          setOrderComplete(completeTrueOrder);
+        })
+        orderAPI
+        .getOrderAll()
+        .then((orderData) => {
+          const completeTrueOrder = orderData.filter(
+            (order) => order.enable === false || order.cancelled === true
+          );
+          setOrderCancelled(completeTrueOrder);
         })
         .catch((err) => {
           console.error("error", err);
         });
+      setIsLoading(false);
+
+      
     };
     fetchData();
-
     // Return a cleanup function to clear the interval
     return () => clearInterval();
   }, []);
@@ -51,8 +116,6 @@ function Orders() {
 
   const [userName, setUserName] = React.useState("");
   const [userData, setUserData] = useState(null);
-
-  // const [selectedButton, setSelectedButton] = useState("");
 
   const { selectedButton } = useParams();
   const navigate = useNavigate();
@@ -128,14 +191,14 @@ function Orders() {
 
       <div className="flex justify-center flex-nowrap overflow-x-auto">
         <button
-          className={`bg-gray-200 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
+          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
             selectedButton === "approve" ? "bg-gray-300" : ""
           }`}
           onClick={() => navigate("/orders/approve")}
         >
           ที่ต้องอนุมัติคำสั่งซื้อ
           {orderApprove.length > 0 ? (
-            <div className="relative inline-block">
+            <div className="relative ml-2 inline-block">
               <RiNotification3Fill className=" h-8 w-8 text-red-300 filter drop-shadow-md" />
               <span className="absolute top-1 right-[1px] mr-1 mt-1 text-white  text-xs px-2">
                 {orderApprove.length > 99 ? "99+" : orderApprove.length}
@@ -144,17 +207,17 @@ function Orders() {
           ) : null}
         </button>
         <button
-          className={`bg-gray-200 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
+          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
             selectedButton === "waitPayment" ? "bg-gray-300" : ""
           }`}
           onClick={() => navigate("/orders/waitPayment")}
         >
           รอชำระเงิน
           {orderApprove.length > 0 ? (
-            <div className="relative inline-block">
+            <div className="relative ml-2 inline-block">
               <RiNotification3Fill className=" h-8 w-8 text-red-300 filter drop-shadow-md" />
               <span className="absolute top-1 right-[1px] mr-1 mt-1 text-white  text-xs px-2">
-                {orderPayment.length > 99 ? "99+" : orderPayment.length}
+                {orderWaitPayment.length > 99 ? "99+" : orderWaitPayment.length}
               </span>
             </div>
           ) : null}
@@ -167,92 +230,94 @@ function Orders() {
           onClick={() => navigate("/orders/checkPayment")}
         >
           ตรวจสอบการชำระเงิน
-          {orderApprove.length > 0 ? (
-            <div className="relative inline-block">
+          {orderVerifyPayment.length > 0 ? (
+            <div className="relative ml-2 inline-block">
               <RiNotification3Fill className=" h-8 w-8 text-red-300 filter drop-shadow-md" />
               <span className="absolute top-1 right-[1px] mr-1 mt-1 text-white  text-xs px-2">
-                {orderPayment.length > 99 ? "99+" : orderPayment.length}
+                {orderVerifyPayment.length > 99
+                  ? "99+"
+                  : orderVerifyPayment.length}
               </span>
             </div>
           ) : null}
         </button>
 
         <button
-          className={`bg-gray-200 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
-            selectedButton === "prepareDelivery" ? "bg-gray-200" : ""
+          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
+            selectedButton === "prepareDelivery" ? "bg-gray-300" : ""
           }`}
           onClick={() => navigate("/orders/prepareDelivery")}
         >
           ผ้าม่านที่กำลังดำเนินการ
-          {orderApprove.length > 0 ? (
-            <div className="relative inline-block">
+          {orderPrepare.length > 0 ? (
+            <div className="relative ml-2 inline-block">
               <RiNotification3Fill className=" h-8 w-8 text-red-300 filter drop-shadow-md" />
               <span className="absolute top-1 right-[1px] mr-1 mt-1 text-white  text-xs px-2">
-                {orderApprove.length > 99 ? "99+" : orderApprove.length}
+                {orderPrepare.length > 99 ? "99+" : orderPrepare.length}
               </span>
             </div>
           ) : null}
         </button>
         <button
-          className={`bg-gray-200 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
-            selectedButton === "sendOrder" ? "bg-gray-400" : ""
+          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
+            selectedButton === "sendOrder" ? "bg-gray-300" : ""
           }`}
           onClick={() => navigate("/orders/sendOrder")}
         >
           ที่ต้องจัดส่ง
-          {orderApprove.length > 0 ? (
-            <div className="relative inline-block">
+          {orderSend.length > 0 ? (
+            <div className="relative ml-2 inline-block">
               <RiNotification3Fill className=" h-8 w-8 text-red-300 filter drop-shadow-md" />
               <span className="absolute top-1 right-[1px] mr-1 mt-1 text-white  text-xs px-2">
-                {orderApprove.length > 99 ? "99+" : orderApprove.length}
+                {orderSend.length > 99 ? "99+" : orderSend.length}
               </span>
             </div>
           ) : null}
         </button>
         <button
-          className={`bg-gray-200 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
-            selectedButton === "sendOrdered" ? "bg-gray-400" : ""
+          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
+            selectedButton === "sendOrdered" ? "bg-gray-300" : ""
           }`}
           onClick={() => navigate("/orders/sendOrdered")}
         >
           ที่จัดส่งแล้ว
-          {orderApprove.length > 0 ? (
-            <div className="relative inline-block">
+          {orderSended.length > 0 ? (
+            <div className="relative ml-2 inline-block">
               <RiNotification3Fill className=" h-8 w-8 text-red-300 filter drop-shadow-md" />
               <span className="absolute top-1 right-[1px] mr-1 mt-1 text-white  text-xs px-2">
-                {orderApprove.length > 99 ? "99+" : orderApprove.length}
+                {orderSended.length > 99 ? "99+" : orderSended.length}
               </span>
             </div>
           ) : null}
         </button>
         <button
-          className={`bg-gray-200 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
-            selectedButton === "completed" ? "bg-gray-400" : ""
+          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
+            selectedButton === "completed" ? "bg-gray-300" : ""
           }`}
           onClick={() => navigate("/orders/completed")}
         >
           สำเร็จ
-          {orderApprove.length > 0 ? (
-            <div className="relative inline-block">
+          {orderComplete.length > 0 ? (
+            <div className="relative ml-2 inline-block">
               <RiNotification3Fill className=" h-8 w-8 text-red-300 filter drop-shadow-md" />
               <span className="absolute top-1 right-[1px] mr-1 mt-1 text-white  text-xs px-2">
-                {orderApprove.length > 99 ? "99+" : orderApprove.length}
+                {orderComplete.length > 99 ? "99+" : orderComplete.length}
               </span>
             </div>
           ) : null}
         </button>
         <button
-          className={`bg-gray-200 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
-            selectedButton === "cancelled" ? "bg-gray-200" : ""
+          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
+            selectedButton === "cancelled" ? "bg-gray-300" : ""
           }`}
           onClick={() => navigate("/orders/cancelled")}
         >
           ยกเลิกแล้ว
-          {orderApprove.length > 0 ? (
-            <div className="relative inline-block">
+          {orderComplete.length > 0 ? (
+            <div className="relative inline-block ml-2">
               <RiNotification3Fill className=" h-8 w-8 text-red-300 filter drop-shadow-md" />
               <span className="absolute top-1 right-[1px] mr-1 mt-1 text-white  text-xs px-2">
-                {orderApprove.length > 99 ? "99+" : orderApprove.length}
+                {orderComplete.length > 99 ? "99+" : orderComplete.length}
               </span>
             </div>
           ) : null}

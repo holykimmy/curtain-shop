@@ -9,15 +9,12 @@ import { IoMdEyeOff } from "react-icons/io";
 function LoginPage() {
   const [formData, setFormData] = useState({
     user: "",
-    password: "",
+    password: ""
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  console.log("test");
-  console.log("loca", location.state);
-
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -27,7 +24,7 @@ function LoginPage() {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: value
     }));
   };
   axios.defaults.withCredentials = true;
@@ -40,7 +37,7 @@ function LoginPage() {
         `${process.env.REACT_APP_API}/customer/login`,
         {
           user: formData.user,
-          password: formData.password,
+          password: formData.password
         }
       );
       // ตรวจสอบว่าการเข้าสู่ระบบสำเร็จหรือไม่
@@ -49,12 +46,10 @@ function LoginPage() {
 
         let intended = location.state; //redirec to path
         if (intended) {
-
           localStorage.setItem("token", response.data.token);
           axios.defaults.headers.common["authtoken"] = response.data.token; // Set token as a default header
-          navigate('../'+intended);
+          navigate("../" + intended);
         } else {
-          // หากบทบาทของผู้ใช้เป็น "admin" ให้นำผู้ใช้ไปยังหน้า "/menu"
           if (response.data.role === "admin") {
             localStorage.setItem("token", response.data.token);
             axios.defaults.headers.common["authtoken"] = response.data.token; // Set token as a default header
@@ -66,7 +61,6 @@ function LoginPage() {
           }
         }
       } else {
-        // หากการเข้าสู่ระบบไม่สำเร็จ แสดงข้อความผิดพลาดที่ได้จากเซิร์ฟเวอร์
         setError(
           response.data.error || "An error occurred. Please try again later."
         );
@@ -150,18 +144,20 @@ function LoginPage() {
                 onChange={handleChange}
                 placeholder="Enter password"
               />
-              <span>
-                <IoMdEyeOff
-                  className="w-6 h-6 mr-2 cursor-pointer "
-                  onClick={toggleShowPassword}
-                ></IoMdEyeOff>
-              </span>
+            </div>
+            <div className="ml-2 mb-2">
+              <input
+                type="checkbox"
+                checked={showPassword}
+                onChange={toggleShowPassword}
+              />
+              <p className="inline-block ml-2 text-sm text-b-font">แสดงรหัสผ่าน</p>
             </div>
 
-            {/* <p class="text-red-500 text-xs italic mb-6">
-              Please choose a password.
-            </p> */}
-            {error && <div className=" text-red text-xs"> {error} </div>}
+          
+            {error && (
+              <div className="text-red-300 text-xs ml-2 mb-2 "> {error} </div>
+            )}
             <div class="flex items-center justify-center">
               <button
                 class="w-full bg-stone-500 hover:bg-browntop hover:shadow-md text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
@@ -170,6 +166,14 @@ function LoginPage() {
               >
                 เข้าสู่ระบบ
               </button>
+            </div>
+            <div class="flex items-center justify-center mt-1">
+              <Link
+                to="/forgot-password"
+                class="text-sm text-b-font hover:text-b-gray"
+              >
+                ลืมรหัสผ่าน
+              </Link>
             </div>
             <div class="flex items-center justify-center mt-8">
               <p class="text-b-gray mr-3">ยังไม่ได้ลงทะเบียน?</p>

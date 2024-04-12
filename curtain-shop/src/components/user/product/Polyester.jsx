@@ -25,27 +25,25 @@ function Polyester() {
 
   const [isLoading, setIsLoading] = useState(true);
 
-  if (isLoading) {
-    Swal.fire({
-      html: "<span class='text-gray-600'>Loading...</span>",
-      backdrop: `
-    #ffff
-  
-  `,
-      customClass: {
-        popup: "shadow-2xl border border-gray-300", // เพิ่มเส้นขอบและกำหนดสีเทา
-      },
-      showConfirmButton: false, // ไม่แสดงปุ่มยืนยัน
-      didOpen: () => {
-        Swal.showLoading();
-      },
-      willClose: () => {
-        if (!isLoading) {
-          Swal.close();
-        }
-      },
-    });
-  }
+
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.7)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
 
 
   useEffect(() => {
@@ -93,9 +91,7 @@ function Polyester() {
   const handleLogoutAuto = () => {
     // Logout user
     localStorage.removeItem("token");
-    setUserName(""); // Clear user name or any other relevant state
-
-    // Redirect to login page or perform any other action
+    setUserName(""); // Clear user 
     navigate("/"); // Redirect to login page
   };
 
@@ -110,12 +106,10 @@ function Polyester() {
       cancelButtonText: "ไม่ใช่",
     }).then((result) => {
       if (result.isConfirmed) {
-        // ยืนยันออกจากระบบ
         localStorage.removeItem("token");
         setUserName("");
 
-        // ใช้ useNavigate เพื่อนำผู้ใช้กลับไปยังหน้าหลัก
-        navigate("/"); // ลิงก์ไปยังหน้าหลัก
+        navigate("/");
       }
     });
   };
@@ -138,19 +132,19 @@ function Polyester() {
 
   const [product, setProduct] = useState([]);
   useEffect(() => {
+    setIsLoading(true); 
+
     const fetchData = async () => {
       try {
         const productData = await productAPI.getProductTypePolyester();
         setProduct(productData);
         setIsLoading(false); 
-        Swal.close();
       } catch (err) {
-        setIsLoading(false);
-        Swal.close();
+        
         console.error("เกิดข้อผิดพลาดในการดึงข้อมูล", err);
+        setIsLoading(false);
       }
     };
-
     fetchData();
   }, []);
 

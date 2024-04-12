@@ -2,15 +2,9 @@ import React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { IoMdEyeOff } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 
 function RegisterPage() {
-
-
-  //set status
-
-
   const [data, setData] = useState({
     f_name: "",
     l_name: "",
@@ -18,12 +12,9 @@ function RegisterPage() {
     email: "",
     tell: "",
     password: "",
-    confirmPassword: "",
+    confirmPassword: ""
   });
-
   const [error, setError] = useState("");
-
-
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -52,6 +43,21 @@ function RegisterPage() {
   };
 
   const navigate = useNavigate();
+
+  const handleTellChange = (e) => {
+    const inputNumber = e.target.value;
+
+    if (inputNumber.length <= 10) {
+      // ตรวจสอบว่า inputNumber เป็นตัวเลขและมีค่ามากกว่าหรือเท่ากับ 0 หรือไม่
+      if (!isNaN(inputNumber) && Number(inputNumber) >= 0) {
+        setData((prevState) => ({
+          ...prevState,
+          tell: inputNumber
+        }));
+      }
+    }
+  };
+
   const submitForm = (e) => {
     e.preventDefault();
 
@@ -61,7 +67,7 @@ function RegisterPage() {
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
         Swal.fire({
           title: "Invalid Email Format",
-          icon: "error",
+          icon: "error"
         });
         return;
       }
@@ -69,7 +75,7 @@ function RegisterPage() {
       if (!/^(09|08|06|02)\d{0,8}$/.test(data.tell)) {
         Swal.fire({
           title: "Invalid Phone Number Format",
-          icon: "error",
+          icon: "error"
         });
         return;
       }
@@ -84,9 +90,9 @@ function RegisterPage() {
           username,
           email,
           tell,
-          password,
+          password
         })
-     
+
         .then((response) => {
           Swal.fire({
             title: "สมัครสมาชิกเสร็จสิ้น",
@@ -96,44 +102,29 @@ function RegisterPage() {
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
             confirmButtonText: "ไปยังหน้าเข้าสู่ระบบ",
-            cancelButtonText: "ไม่ต้องการ",
+            cancelButtonText: "ไม่ต้องการ"
           }).then((result) => {
             if (result.isConfirmed) {
               navigate("/login"); // นำผู้ใช้ไปยังหน้าเข้าสู่ระบบ
-            } else {
-              // สามารถดำเนินการต่อได้ตามต้องการ
             }
           });
         })
         .catch((err) => {
           Swal.fire({
             icon: "error",
-            text: err.response.data.error,
+            text: err.response.data.error
           });
         });
-
-        
     } else {
       Swal.fire({
-        title: " รหัสผ่านไม่ตรงกัน ",
-        icon: "error",
+        text: " รหัสผ่านไม่ตรงกัน ",
+        icon: "error"
       });
     }
   };
 
   const inputValue = (name) => (event) => {
     const value = event.target.value;
-    setData((prevState) => ({ ...prevState, [name]: value }));
-
-    if (name === "tell") {
-      if (!/^0\d{0,9}$/.test(value)) {
-        console.log("Invalid format for tell");
-        // หรือทำการจัดการตามที่คุณต้องการ
-        return;
-      }
-    }
-
-    console.log(name, "=", value);
     setData((prevState) => ({ ...prevState, [name]: value }));
   };
 
@@ -143,7 +134,7 @@ function RegisterPage() {
         <div class="container w-11/12 sm:w-96 mx-auto ">
           <form
             onSubmit={submitForm}
-            class="bg-white rounded-[18px] shadow px-8 pt-6 pb-8 mb-4  "
+            className="bg-white rounded-[18px] shadow px-8 pt-6 pb-8 mb-4  "
           >
             <p class="text-center text-2xl text-b-font font-bold">
               สมัครสมาชิก
@@ -276,7 +267,7 @@ function RegisterPage() {
                 type="tel"
                 value={data.tell}
                 required
-                onChange={inputValue("tell")}
+                onChange={handleTellChange}
                 placeholder="Enter number"
               />
             </div>
@@ -306,12 +297,6 @@ function RegisterPage() {
                 onChange={handlePasswordChange}
                 placeholder="Enter password"
               />
-              <span>
-                <IoMdEyeOff
-                  className="w-6 h-6 mr-2 cursor-pointer "
-                  onClick={toggleShowPassword}
-                ></IoMdEyeOff>
-              </span>
             </div>
 
             {/* Confirm Password Input */}
@@ -338,19 +323,24 @@ function RegisterPage() {
                 onChange={handleConfirmPasswordChange}
                 placeholder="Confirm password"
               />
-              <span>
-                <IoMdEyeOff
-                  className="w-6 h-6 mr-2 cursor-pointer "
-                  onClick={toggleShowPassword}
-                ></IoMdEyeOff>
-              </span>
+            </div>
+
+            <div className="ml-2 mb-2">
+              <input
+                type="checkbox"
+                checked={showPassword}
+                onChange={toggleShowPassword}
+              />
+              <p className="inline-block ml-2 text-sm text-b-font">
+                แสดงรหัสผ่าน
+              </p>
             </div>
 
             {passwordMatch ? null : (
               <p className="text-red-500">รหัสผ่านไม่ตรงกัน</p>
             )}
-            {error && {error}}
-             {/* {passwordMatch ? null : (
+            {error && { error }}
+            {/* {passwordMatch ? null : (
               <p className="text-red-500">รหัสผ่านไม่ตรงกัน</p>
             )}
             {error && <p className="text-red-500">{error.msg}</p>} */}

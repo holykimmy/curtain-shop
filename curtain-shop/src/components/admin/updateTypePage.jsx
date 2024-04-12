@@ -3,6 +3,8 @@ import Navbaradmin from "./Navbaradmin";
 import Swal from "sweetalert2";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import typeAPI from "../../services/typeAPI";
+import { IoIosAddCircleOutline } from "react-icons/io";
+
 function UpdateTypePage() {
   const { id } = useParams();
   const [data, setData] = useState([]);
@@ -10,6 +12,10 @@ function UpdateTypePage() {
   const [price_rail, setPrice_rail] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+
+  const [bgimage, setImagebg] = useState(null);
+  const [imagePreviewBg, setImagePreviewBg] = useState(null);
+
   const [selectedTwolayer, setSelectedTwolayer] = useState("");
   const navigate = useNavigate();
 
@@ -71,6 +77,22 @@ function UpdateTypePage() {
   }, []);
 
   console.log(data);
+
+  const handdleAddImg = (id) => {
+    console.log(id);
+    Swal.fire({
+      text: "คุณต้องการเพิ่มรูปภาพใช่หรือไม่?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "ใช่",
+      cancelButtonText: "ไม่ใช่"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate(`/update-typebg/${id}`);
+      }
+    });
+  };
+
   const handleFileSelection = (e) => {
     const image = e.target.files[0];
     console.log("image", image);
@@ -80,6 +102,17 @@ function UpdateTypePage() {
     // แสดงตัวอย่างรูปภาพ
     const previewURL = URL.createObjectURL(image);
     setImagePreview(previewURL);
+  };
+
+  const handleFileSelectionBg = (e) => {
+    const bgimage = e.target.files[0];
+    console.log("bgimage", bgimage);
+
+    setImagebg(bgimage); // อัปเดตค่าไฟล์ใหม่
+
+    // แสดงตัวอย่างรูปภาพ
+    const previewURL = URL.createObjectURL(bgimage);
+    setImagePreviewBg(previewURL);
   };
 
   const handlePriceChange = (e) => {
@@ -95,35 +128,35 @@ function UpdateTypePage() {
   };
 
   console.log(data.name);
- const handleDelete = () => {
-  Swal.fire({
-    text: `คุณต้องการลบ ${data.name} ใช่หรือไม่?`,
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "ใช่",
-    cancelButtonText: "ไม่ใช่"
-  }).then((result) => {
-    if (result.isConfirmed) {
-      typeAPI
-        .deleteTypeById(id)
-        .then((response) => {
-          Swal.fire({
-            text: "ลบข้อมูลสำเร็จ",
-            icon: "success"
-          }).then(() => {
-            navigate("/type"); 
+  const handleDelete = () => {
+    Swal.fire({
+      text: `คุณต้องการลบ ${data.name} ใช่หรือไม่?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่",
+      cancelButtonText: "ไม่ใช่"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        typeAPI
+          .deleteTypeById(id)
+          .then((response) => {
+            Swal.fire({
+              text: "ลบข้อมูลสำเร็จ",
+              icon: "success"
+            }).then(() => {
+              navigate("/type");
+            });
+          })
+          .catch((error) => {
+            console.error("Error deleting product:", error);
           });
-        })
-        .catch((error) => {
-          console.error("Error deleting product:", error);
-        });
-    } else {
-      console.log("Cancelled delete operation");
-    }
-  });
-};
+      } else {
+        console.log("Cancelled delete operation");
+      }
+    });
+  };
 
   console.log(name, price_rail, image, selectedTwolayer);
 
@@ -148,6 +181,9 @@ function UpdateTypePage() {
     formData.append("price_rail", price_rail);
     if (image) {
       formData.append("image", image);
+    }
+    if (bgimage) {
+      formData.append("bgimage", bgimage);
     }
     formData.append("twolayer", selectedTwolayer);
 
@@ -208,6 +244,16 @@ function UpdateTypePage() {
             />
           </div>
 
+          <div class="flex mt-2 ml-3 pl-4  mb-5  items-center">
+            <IoIosAddCircleOutline className="inline-block h-6 w-6 bg-brown-300  text-white rounded-full drop-shadow-md" />
+            <Link
+              to={`/update-typebg/${id}`}
+              className=" text-base hover:text-brown-500 text-stone-500 py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            >
+              เพิ่มรูปภาพเพื่อแสดงตัวอย่างผ้าม่านได้ที่นี่
+            </Link>
+          </div>
+
           <input
             type="file"
             name="image"
@@ -226,6 +272,7 @@ function UpdateTypePage() {
               />
             )}
           </div>
+
           <div className="flex sm:flex-col md:flex-row lg:flex-row xl:flex-row justify-center md:justify-around items-center">
             <img
               className="flex filter drop-shadow-xl appearance-none border-none  mt-4 w-auto h-[350px] rounded justify-center py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"

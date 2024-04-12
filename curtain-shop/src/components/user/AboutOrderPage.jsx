@@ -11,8 +11,10 @@ import PrepareOrder from "./about-order/prepareorder";
 import RecieveOrder from "./about-order/receiveorder";
 import CompleteOrder from "./about-order/completeorder";
 import CancelOrder from "./about-order/cancelled";
-
+import orderAPI from "../../services/orderAPI";
+import { RiNotification3Fill } from "react-icons/ri";
 import customerAPI from "../../services/customerAPI";
+
 function AboutOrderPage() {
   //login
 
@@ -22,13 +24,70 @@ function AboutOrderPage() {
   const [userName, setUserName] = React.useState("");
   const [idUser, setIdUser] = React.useState("");
 
+  const [orderWaitPayment, setOrderWaitPayment] = useState([]);
+  const [orderPrepare, setOrderPrepare] = useState([]);
+  const [orderRecive, setOrderRecive] = useState([]);
+  const [orderComplete, setOrderComplete] = useState([]);
+  const [orderCancelled, setOrderCancelled] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+ 
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.7)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const waitPaymentData = await customerAPI.getOrderByIdWaitPayment(idUser);
+        setOrderWaitPayment(waitPaymentData);
+        const prepareData = await customerAPI.getOrderByIdPrepare(idUser);
+        setOrderPrepare(prepareData);
+        const sendData = await customerAPI.getOrderByIdSend(idUser);
+        setOrderRecive(sendData);
+        const completeData = await customerAPI.getOrderByIdComplete(idUser);
+        setOrderComplete(completeData);
+        const allOrderData = await customerAPI.getOrderById(idUser);
+        const cancelOrders = allOrderData.filter((order) => order.enable === false || order.cancelled === true);
+        setOrderCancelled(cancelOrders);
+      } catch (error) {
+        setIsLoading(false);
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchData();
+  
+    return () => clearInterval();
+  }, [idUser]);
+  
+  console.log(orderRecive);
+  console.table(orderCancelled)
+
   const [user, setUser] = React.useState({
     username: "",
     f_name: "",
     l_name: "",
     email: "",
     tell: "",
-    address: "",
+    address: ""
   });
 
   const { selectedButton } = useParams();
@@ -72,7 +131,7 @@ function AboutOrderPage() {
           l_name: l_name,
           email: decodedToken.user.email,
           tell: decodedToken.user.tell,
-          address: decodedToken.user.address,
+          address: decodedToken.user.address
         });
 
         setIsLoggedIn(true);
@@ -98,7 +157,6 @@ function AboutOrderPage() {
     localStorage.removeItem("token");
     setUserName(""); // Clear user name or any other relevant state
 
-    // Redirect to login page or perform any other action
     navigate("/"); // Redirect to login page
   };
 
@@ -110,7 +168,7 @@ function AboutOrderPage() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "ใช่",
-      cancelButtonText: "ไม่ใช่",
+      cancelButtonText: "ไม่ใช่"
     }).then((result) => {
       if (result.isConfirmed) {
         // ยืนยันออกจากระบบ
@@ -134,62 +192,10 @@ function AboutOrderPage() {
         console.error("erro", err);
       }
     };
-    const interval = setInterval(() => {
-      fetchData();
-    }, 5000);
 
     fetchData();
-    return () => clearInterval(interval);
   }, [idUser]);
 
-  const handleEditAddress = (addressData) => {
-    const { id } = addressData;
-    navigate(`/edit-address/${id}`);
-  };
-
-  const handleDeleteAddress = async (id) => {
-    // แสดง Confirm Dialog เพื่อยืนยันการลบที่อยู่
-    const confirmation = await Swal.fire({
-      title: "คุณแน่ใจหรือไม่?",
-      text: "ท่านต้องการที่จะลบที่อยู่นี้ใช่หรือไม่?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "ใช่, ลบที่อยู่",
-      cancelButtonText: "ยกเลิก",
-    });
-
-    // ถ้าผู้ใช้ยืนยันการลบ
-    if (confirmation.isConfirmed) {
-      try {
-        // ทำการลบที่อยู่โดยส่งคำขอไปยังเซิร์ฟเวอร์
-        const response = await axios.delete(
-          `${process.env.REACT_APP_API}/customer/delete-address/${idUser}/${id}`
-        );
-
-        // ถ้าการลบสำเร็จ
-        if (response.status === 200) {
-          // อัปเดต UI และแสดงข้อความแจ้งเตือน
-          setAddress(address.filter((addr) => addr.id !== id));
-          Swal.fire({
-            icon: "success",
-            title: "ลบที่อยู่สำเร็จ",
-            timer: 1500,
-            showConfirmButton: false,
-          });
-        } else {
-          console.log("เกิดข้อผิดพลาดในการลบที่อยู่");
-        }
-      } catch (error) {
-        // แสดงข้อความแจ้งเตือนเมื่อเกิดข้อผิดพลาด
-        Swal.fire({
-          icon: "error",
-          title: "เกิดข้อผิดพลาด",
-          text: "ไม่สามารถลบที่อยู่ได้",
-        });
-        console.error(error);
-      }
-    }
-  };
   //login
   return (
     <>
@@ -207,45 +213,86 @@ function AboutOrderPage() {
       </div>
       <div className="flex justify-center flex-nowrap overflow-x-auto">
         <button
-          className={`bg-gray-200 w-[200px] shadow-md hover:bg-gray-400 hover:text-white  hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 ${
-            selectedButton === "waitPayment" ? "bg-gray-400" : ""
+          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
+            selectedButton === "waitPayment" ? "bg-gray-300" : ""
           }`}
           onClick={() => navigate("/about-order/waitPayment")}
         >
           รอการชำระ
+          {orderWaitPayment.length > 0 ? (
+            <div className="relative ml-2 inline-block">
+              <RiNotification3Fill className=" h-8 w-8 text-red-300 filter drop-shadow-md" />
+              <span className="absolute top-1 right-[1px] mr-1 mt-1 text-white  text-xs px-2">
+                {orderWaitPayment.length > 99 ? "99+" : orderWaitPayment.length}
+              </span>
+            </div>
+          ) : null}
         </button>
         <button
-          className={`bg-gray-200 w-[200px] shadow-md hover:bg-gray-400 hover:text-white  hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 ${
+          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
             selectedButton === "prepareDelivery" ? "bg-gray-400" : ""
           }`}
           onClick={() => navigate("/about-order/prepareDelivery")}
         >
           กำลังดำเนินการ
+          {orderPrepare.length > 0 ? (
+            <div className="relative ml-2 inline-block">
+              <RiNotification3Fill className=" h-8 w-8 text-red-300 filter drop-shadow-md" />
+              <span className="absolute top-1 right-[1px] mr-1 mt-1 text-white  text-xs px-2">
+                {orderPrepare.length > 99 ? "99+" : orderPrepare.length}
+              </span>
+            </div>
+          ) : null}
         </button>
         <button
-          className={`bg-gray-200 w-[200px] shadow-md hover:bg-gray-400 hover:text-white  hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 ${
+          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
             selectedButton === "receiveorder" ? "bg-gray-400" : ""
           }`}
           onClick={() => navigate("/about-order/receiveorder")}
         >
           ที่ต้องได้รับ
+          {orderRecive.length > 0 ? (
+            <div className="relative ml-2 inline-block">
+              <RiNotification3Fill className=" h-8 w-8 text-red-300 filter drop-shadow-md" />
+              <span className="absolute top-1 right-[1px] mr-1 mt-1 text-white  text-xs px-2">
+                {orderRecive.length > 99 ? "99+" : orderRecive.length}
+              </span>
+            </div>
+          ) : null}
         </button>
         <button
-          className={`bg-gray-200 w-[200px] shadow-md hover:bg-gray-400 hover:text-white  hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 ${
+          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
             selectedButton === "completed" ? "bg-gray-400" : ""
           }`}
           onClick={() => navigate("/about-order/completed")}
         >
           สำเร็จ
+          {orderComplete.length > 0 ? (
+            <div className="relative ml-2 inline-block">
+              <RiNotification3Fill className=" h-8 w-8 text-red-300 filter drop-shadow-md" />
+              <span className="absolute top-1 right-[1px] mr-1 mt-1 text-white  text-xs px-2">
+                {orderComplete.length > 99 ? "99+" : orderComplete.length}
+              </span>
+            </div>
+          ) : null}
         </button>
         <button
-          className={`bg-gray-200 w-[200px] shadow-md hover:bg-gray-400 hover:text-white  hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 ${
+          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
             selectedButton === "cancelled" ? "bg-gray-400" : ""
           }`}
           onClick={() => navigate("/about-order/cancelled")}
         >
           ยกเลิกแล้ว
+          {orderCancelled.length > 0 ? (
+            <div className="relative ml-2 inline-block">
+              <RiNotification3Fill className=" h-8 w-8 text-red-300 filter drop-shadow-md" />
+              <span className="absolute top-1 right-[1px] mr-1 mt-1 text-white  text-xs px-2">
+                {orderCancelled.length > 99 ? "99+" : orderCancelled.length}
+              </span>
+            </div>
+          ) : null}
         </button>
+        
       </div>
       <div className="">{renderContent()}</div>
     </>

@@ -55,6 +55,7 @@ function Products() {
       setSearchResults(searchData); 
       setIsLoading(false)
     } catch (error) {
+      setIsLoading(false)
       console.error("Error fetching search results:", error);
       // แสดงข้อความผิดพลาดหรือจัดการข้อผิดพลาดตามที่ต้องการ
     }
@@ -132,6 +133,7 @@ function Products() {
         setWaveProducts(waveData);
         setIsLoading(false);
       } catch (error) {
+        setIsLoading(false)
         console.error("Error fetching products:", error);
       }
     };

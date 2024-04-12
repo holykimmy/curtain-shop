@@ -2,16 +2,9 @@ import React, { useEffect, useState } from "react";
 import Navbaradmin from "./Navbaradmin";
 import { Link, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import blackout from "../img/products/blackout.jpeg";
-import { FaTrashAlt } from "react-icons/fa";
-import productAPI from "../../services/productAPI";
 import Swal from "sweetalert2";
 import axios from "axios";
-import SwitchButton from "./switchbutton";
-import SwitchBtnConfirm from "./switchbtnconfirm";
-import SwitchBtnSend from "./switchbtnsend";
 import customerAPI from "../../services/customerAPI";
-import orderAPI from "../../services/orderAPI";
 
 import { jwtDecode } from "jwt-decode";
 import { BsPinFill } from "react-icons/bs";
@@ -19,13 +12,9 @@ import { BsPinFill } from "react-icons/bs";
 function PostOrder() {
   const { idOrder } = useParams();
   console.log("idOrder", idOrder);
-  const [velvetProducts, setVelvetProducts] = useState([]);
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
   const [userName, setUserName] = React.useState("");
   const [userData, setUserData] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [idUser, setIdUser] = React.useState("");
 
   const navigate = useNavigate();
@@ -252,7 +241,7 @@ function PostOrder() {
                             </div>
 
                             <p className="text-xs sm:text-xs md:text-sm xl:text-sm font-semibold leading-6 text-gray-800">
-                              ราคา {numberWithCommas(item.product.price * item.count)} บาท
+                            ราคา {numberWithCommas(item.totalPiece)} บาท
                             </p>
                           </div>
                         </div>
@@ -283,21 +272,12 @@ function PostOrder() {
                   <div className="flex justify-center md:flex-row flex-col items-stretch w-full space-y-4 md:space-y-0 md:space-x-6 xl:space-x-8">
                     <div className="flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 space-y-6   ">
                       <div className="flex justify-center items-center w-full space-y-4 flex-col border-gray-200 border-b pb-4">
-                        <div className="flex justify-between  w-full">
-                          <p className="text-base leading-4 text-gray-800">
-                            รายการสั่งซื้อ
-                          </p>
-                          <p className="text-base leading-4 text-gray-600">
-                            {order.totalPrice - order.deliveryIs} บาท
-                          </p>
-                        </div>
-
                         <div className="flex justify-between items-center w-full">
                           <p className="text-base leading-4 text-gray-800">
-                            ค่าขนส่ง
+                            การจัดส่ง
                           </p>
-                          <p className="text-base leading-4 text-gray-600">
-                            {order.deliveryIs} บาท
+                          <p className="text-sm leading-4 text-gray-600 whitespace-pre-wrap text-right">
+                            {order.deliveryIs}
                           </p>
                         </div>
                       </div>

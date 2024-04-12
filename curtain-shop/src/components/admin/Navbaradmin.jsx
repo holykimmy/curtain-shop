@@ -12,7 +12,6 @@ import {
 } from "@material-tailwind/react";
 import {
   ChevronDownIcon,
-  InboxArrowDownIcon,
   PowerIcon,
   Bars2Icon,
 } from "@heroicons/react/24/outline";
@@ -114,10 +113,7 @@ function ComplexNavbar() {
   }, []);
 
   const profileMenuItems = [
-    {
-      label: "การแจ้งเตือน",
-      icon: InboxArrowDownIcon,
-    },
+
     {
       label: "ออกจากระบบ",
       icon: PowerIcon,

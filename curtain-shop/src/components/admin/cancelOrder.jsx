@@ -109,8 +109,7 @@ function CancelOrder() {
   console.log("dkjhafkdsj");
   console.log(address);
 
-
-  const handleCancelOrder = async (idOrder,order, cancelReasonAd) => {
+  const handleCancelOrder = async (idOrder, order, cancelReasonAd) => {
     if (!cancelReasonAd.trim()) {
       Swal.fire({
         text: "กรุณาระบุเหตุผลที่ต้องการยกเลิก",
@@ -136,7 +135,7 @@ function CancelOrder() {
       try {
         const response = await axios.put(
           `${process.env.REACT_APP_API}/customer/order/cencelled/${idOrder}`,
-          { cancelled: true ,order, cancelReasonAd }
+          { cancelled: true, order, cancelReasonAd }
         );
 
         if (response.status === 200) {
@@ -162,7 +161,6 @@ function CancelOrder() {
   const numberWithCommas = (x) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
-
 
   return (
     <>
@@ -252,7 +250,7 @@ function CancelOrder() {
                             </div>
 
                             <p className="text-xs sm:text-xs md:text-sm xl:text-sm font-semibold leading-6 text-gray-800">
-                              ราคา {numberWithCommas(item.product.price * item.count)} บาท
+                              ราคา {numberWithCommas(item.totalPiece)} บาท{" "}
                             </p>
                           </div>
                         </div>
@@ -275,7 +273,9 @@ function CancelOrder() {
                           />
                         ))
                       ) : (
-                        <p className="text-red-500 text-base">ไม่ได้แนบรูปภาพ</p>
+                        <p className="text-red-500 text-base">
+                          ไม่ได้แนบรูปภาพ
+                        </p>
                       )}
                     </div>
                   </div>
@@ -283,21 +283,12 @@ function CancelOrder() {
                   <div className="flex justify-center md:flex-row flex-col items-stretch w-full space-y-4 md:space-y-0 md:space-x-6 xl:space-x-8">
                     <div className="flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 space-y-6   ">
                       <div className="flex justify-center items-center w-full space-y-4 flex-col border-gray-200 border-b pb-4">
-                        <div className="flex justify-between  w-full">
+                      <div className="flex justify-between items-center w-full">
                           <p className="text-base leading-4 text-gray-800">
-                            รายการสั่งซื้อ
+                            การจัดส่ง
                           </p>
-                          <p className="text-base leading-4 text-gray-600">
-                            {order.totalPrice - order.deliveryIs} บาท
-                          </p>
-                        </div>
-
-                        <div className="flex justify-between items-center w-full">
-                          <p className="text-base leading-4 text-gray-800">
-                            ค่าขนส่ง
-                          </p>
-                          <p className="text-base leading-4 text-gray-600">
-                            {order.deliveryIs} บาท
+                          <p className="text-sm leading-4 text-gray-600 whitespace-pre-wrap text-right">
+                            {order.deliveryIs}
                           </p>
                         </div>
                       </div>
@@ -405,7 +396,7 @@ function CancelOrder() {
                         <button
                           className="bg-red-400 mt-3 mx-2 py-2 px-auto w-[200px] rounded-full shadow-xl hover:bg-red-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
                           onClick={() =>
-                            handleCancelOrder(order._id,order, cancelReasonAd)
+                            handleCancelOrder(order._id, order, cancelReasonAd)
                           }
                         >
                           ยกเลิกคำสั่งซื้อ

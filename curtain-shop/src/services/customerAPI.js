@@ -21,6 +21,16 @@ const CustomerAPI = {
       });
   },
 
+  getCustomerById: async (id) => {
+    return axios
+      .get(`${process.env.REACT_APP_API}/customer/${id}`)
+      .then((response) => response.data)
+      .catch((error) => {
+        console.error(error);
+        throw error;
+      });
+  },
+
 
   getCustomerAddressById: async (customerId) => {
     return axios

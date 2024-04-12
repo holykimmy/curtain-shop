@@ -444,15 +444,15 @@ function PaymentPage() {
                           </p>
                           <div className="flex mr-3 items-center justify-start">
                             <img
-                              className="h-14 filter drop-shadow-md mr-4"
+                              className="h-14 sx:h-10 filter drop-shadow-md mr-4"
                               src={bangkokBank}
                               alt="bank"
                             />
                             <div>
-                              <p className="text-lg pt-2 font-bold  text-indigo-900">
+                              <p className="text-lg  sx:text-base pt-2 font-bold  text-indigo-900">
                                 071-0-73508-5
                               </p>
-                              <p className="text-base font-semibold text-indigo-900">
+                              <p className="text-base sx:text-sm font-semibold text-indigo-900">
                                 นางเบ็ญจา ฤทธี
                               </p>
                             </div>

@@ -90,7 +90,7 @@ function CartPage() {
 
   const handleLogout = () => {
     Swal.fire({
-      title: `คุณต้องการออกจากระบบใช่หรือไม่?`,
+      text: `คุณต้องการออกจากระบบใช่หรือไม่?`,
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -156,13 +156,13 @@ function CartPage() {
               <th className="hidden sm:table-cell  text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ">
                 รูปภาพ
               </th>
-              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ">
+              <th className="text-xs font-normal text-browntop px-2 py-1 border  border-gray-300 ">
                 รหัสสินค้า
               </th>
               <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ">
                 ยี่ห้อสินค้า
               </th>
-              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ">
+              <th className="hidden sm:table-cell text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ">
                 รายละเอียด
               </th>
               <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ">

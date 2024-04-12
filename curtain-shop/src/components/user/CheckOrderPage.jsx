@@ -136,12 +136,11 @@ function CheckOrdeerPage() {
       cancelButtonText: "ไม่ใช่"
     }).then((result) => {
       if (result.isConfirmed) {
-        // ยืนยันออกจากระบบ
+    
         localStorage.removeItem("token");
         setUserName("");
 
-        // ใช้ useNavigate เพื่อนำผู้ใช้กลับไปยังหน้าหลัก
-        navigate("/"); // ลิงก์ไปยังหน้าหลัก
+        navigate("/"); 
       }
     });
   };
@@ -203,38 +202,35 @@ function CheckOrdeerPage() {
     const files = event.target.files;
     const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
     const newSelectedFiles = [...selectedFiles]; // คัดลอกรูปภาพที่เลือกไว้ก่อนหน้านี้
-
+    
     // ตรวจสอบจำนวนรูปภาพที่เลือก
     if (newSelectedFiles.length + files.length > 5) {
       // แสดงข้อความแจ้งเตือนถ้าเกิน 5 รูป
       Swal.fire({
         icon: "warning",
-        title: "เกินจำนวนรูปภาพที่กำหนด",
         text: "คุณสามารถอัปโหลดรูปภาพได้ไม่เกิน 5 รูป"
       });
       return;
     }
-
+  
     // เพิ่มรูปภาพใหม่เข้าไปในอาร์เรย์
-    for (let i = 0; i < Math.min(files.length, 4); i++) {
+    for (let i = 0; i < files.length; i++) {
       const file = files[i];
       if (allowedTypes.includes(file.type)) {
-        if (!allowedTypes.includes(file.type)) {
-          // แสดงข้อความแจ้งเตือนถ้าไฟล์ไม่ใช่ png, jpeg หรือ jpg
-          Swal.fire({
-            icon: "error",
-            title: "ไฟล์ไม่ถูกต้อง",
-            text: "กรุณาเลือกไฟล์ที่เป็น .png, .jpeg หรือ .jpg เท่านั้น"
-          });
-          return;
-        }
         newSelectedFiles.push(file);
+      } else {
+        // แสดงข้อความแจ้งเตือนถ้าไฟล์ไม่ใช่ png, jpeg หรือ jpg
+        Swal.fire({
+          icon: "error",
+          text: "กรุณาเลือกไฟล์ที่เป็น .png, .jpeg หรือ .jpg เท่านั้น"
+        });
       }
     }
-
+  
     // อัปเดตรูปภาพที่เลือก
     setSelectedFiles(newSelectedFiles);
   }
+  
 
   function handleRemoveFile(index) {
     const updatedFiles = [...selectedFiles];
@@ -331,8 +327,8 @@ function CheckOrdeerPage() {
   // console.table(selectedFiles);
   return (
     <>
-      {" "}
       <div className="h-screen w-full bg-gradient-to-r from-5% from-white via-50% via-brown-bg to-90% to-white">
+      {" "}
         <Navbar
           isLoggedIn={isLoggedIn}
           handleLogout={handleLogout}
@@ -340,7 +336,7 @@ function CheckOrdeerPage() {
           idUser={idUser}
         ></Navbar>
 
-        <div class="titlea bg-brown-bg py-1 shadow-md">
+        <div class="titlea bg-brown-bg py-1 shadow-md ">
           <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-9 xl:h-9 text-b-font"></BsPinFill>
           <h5 className=" inline-block text-base md:text-lg xl:text-lg text-b-font  pl-4 p-2 my-1">
             ยืนยันคำสั่งซื้อ
@@ -348,7 +344,8 @@ function CheckOrdeerPage() {
         </div>
 
         <form encType="multipart/form-data" onSubmit={submitForm}>
-          <div class="grid sm:px-10 lg:grid-cols-2 lg:px-20 xl:px-32">
+        <div class="grid sm:px-10 lg:grid-cols-2 lg:px-20 xl:px-32">
+          {/* <div class="py-14 px-4 md:px-100 2xl:px-100 2xl:container 2xl:mx-auto"> */}
             <div class="px-4 pt-8">
               <p class="text-sm md:text-lg xl:text-lg text-b-font">
                 ข้อมูลคำสั่งซื้อ
@@ -442,8 +439,8 @@ function CheckOrdeerPage() {
                     className="peer-checked:border-2 peer-checked:border-gray-700 peer-checked:bg-gray-50 flex cursor-pointer select-none rounded-lg border border-gray-300 p-4"
                     htmlFor={`radio_${option.title}`}
                   >
-                    <div className="ml-5">
-                      <p className="mt-2 whitespace-pre-wrap m-2 text-gray-600 text-base ">
+                    <div className="ml-5 sx:ml-0">
+                      <p className="mt-2 whitespace-pre-wrap m-2 text-gray-600 text-sm  ">
                         {option.title}
                       </p>
                     </div>
@@ -454,7 +451,7 @@ function CheckOrdeerPage() {
 
             <div class="bg-brown-blog mt-10  px-4 pt-8 lg:mt-0">
               <select
-                className="mb-2 rounded-lg text-sm"
+                className="mb-2 rounded-lg text-xs md:text-sm lg:text-sm xl:text-sm"
                 onChange={(e) => handleAddressSelect(e.target.value)}
               >
                 <option value="">โปรดเลือกที่อยู่ที่ต้องการจัดส่ง</option>
@@ -526,7 +523,7 @@ function CheckOrdeerPage() {
                       <p class="text-sm md:text-base xl:text-base font-medium text-gray-900">
                         การจัดส่ง
                       </p>
-                      <p class="font-semibold text-sm md:text-base xl:text-base text-gray-900 whitespace-pre-wrap">
+                      <p class="font-semibold text-xs md:text-sm xl:text-base text-right text-gray-900 whitespace-pre-wrap">
                         {selectedDelivery}{" "}
                       </p>
                     </div>
@@ -568,7 +565,7 @@ function CheckOrdeerPage() {
                           onMouseLeave={() => setHoveredIndex(-1)}
                         >
                           <img
-                            className="flex h-[200px] filter drop-shadow-xl"
+                            className="flex h-[200px] filter drop-shadow-xl "
                             src={URL.createObjectURL(file)}
                             alt={`รูปที่ ${index + 1}`}
                           />

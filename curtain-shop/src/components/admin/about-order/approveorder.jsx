@@ -11,7 +11,6 @@ const ApproveOrder = ({ idUser }) => {
   const [userOrder, setUserOrder] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  console.log("idUser", idUser);
 
   useEffect(() => {
     const fetchData = () => {
@@ -20,8 +19,6 @@ const ApproveOrder = ({ idUser }) => {
         .then((orderData) => {
           setUserOrder(orderData);
         })
-
-        
         .catch((err) => {
           console.error("error", err);
         });

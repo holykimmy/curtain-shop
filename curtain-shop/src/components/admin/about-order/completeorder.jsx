@@ -12,8 +12,7 @@ const CompleteOrder = ({ idUser }) => {
   const [userOrder, setUserOrder] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  console.log("idUser", idUser);
-  console.log("djkhfgajk;h");
+
 
   useEffect(() => {
     const fetchData = () => {

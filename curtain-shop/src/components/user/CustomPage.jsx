@@ -4,7 +4,6 @@ import Navbar from "../Navbar";
 import { BsPinFill } from "react-icons/bs";
 import productAPI from "../../services/productAPI";
 import typeAPI from "../../services/typeAPI";
-
 import Footer from "../Footer";
 import TransformedImage from "./Tranformedimage";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -173,6 +172,7 @@ function CustomPage() {
 
     fetch();
   }, []);
+  console.log("testtt");
   console.table(types);
 
   //product
@@ -214,7 +214,6 @@ function CustomPage() {
 
   //login
   const [selectedType, setSelectedType] = useState("");
-  const [selectedTypeId, setSelectedTypeId] = useState("");
   const [pricerail, setPricerail] = useState("");
   const [selectedRail, setSelectedRail] = useState("");
   const [typeById, setTypeById] = useState("");
@@ -234,19 +233,18 @@ function CustomPage() {
     setSelectedRail(event.target.value);
   };
 
-  // const handleRadioChange = (event) => {
-  //   setSelectedType(event.target.value);
-  //   setSelectedTypeId(id)
-  // };
 
-  const handleRadioChange = (twolayer, name, price_rail) => {
-    console.log("rin", price_rail, twolayer);
+  const [bgType, setBgType] = useState("");
 
-    setSelectedType(name); // Set the selected type name
-    setTypeById(twolayer); // Set the selected type id
+  const handleRadioChange = (twolayer, name, price_rail,bgimage) => {
+    console.log("rin", price_rail, twolayer,bgimage);
+    setSelectedType(name); 
+    setTypeById(twolayer); 
     setPricerail(price_rail);
+    setBgType(bgimage);
   };
   console.log("handch", pricerail);
+  console.log("bgtype",bgType);
   //add to cart
 
   // const cart = useSelector((state) => state.cart);
@@ -336,12 +334,16 @@ function CustomPage() {
       if (data.rail === "รับราง") {
         pricerail = (data.price_rail * width) / 100;
       }
-      const TotalPiece = fabricCostPerPiece * cart[idUser][existingProductIndex].count + pricerail;
+      const TotalPiece =
+        fabricCostPerPiece * cart[idUser][existingProductIndex].count +
+        pricerail;
 
       cart[idUser][existingProductIndex].totalPiece = TotalPiece;
     } else {
       const numberOfPieces = Math.ceil(width / data.p_width);
-      console.log("numberOfPieces",width,
+      console.log(
+        "numberOfPieces",
+        width,
         "/",
         data.p_width,
         " = ",
@@ -436,17 +438,6 @@ function CustomPage() {
     height,
     ...data
   }) => {
-    console.table(
-      "pr",
-      pricerail,
-      "sr",
-      selectedRail,
-      "st",
-      selectedType,
-      width,
-      height,
-      data
-    );
 
     if (selectedType) {
       if (!selectedTwolayer) {
@@ -472,7 +463,27 @@ function CustomPage() {
     if (!width || !height) {
       Swal.fire({
         icon: "warning",
-        title: "กรุณาระบุขนาดของสินค้า",
+        text: "กรุณาระบุขนาดของสินค้า",
+        showConfirmButton: false,
+        timer: 1500 // 1.5 วินาที
+      });
+      return;
+    }
+
+    if (height < 149) {
+      Swal.fire({
+        icon: "warning",
+        text: "หน้าต่างต้องมีความสูงมากกว่า 150 ซม.",
+        showConfirmButton: false,
+        timer: 1500 // 1.5 วินาที
+      });
+      return;
+    }
+
+    if (width < 99) {
+      Swal.fire({
+        icon: "warning",
+        title: "หน้าต่างต้องมีความกว้างมากกว่า 100 ซม.",
         showConfirmButton: false,
         timer: 1500 // 1.5 วินาที
       });
@@ -509,17 +520,21 @@ function CustomPage() {
     }
   };
 
+  useEffect(() => {
+    setIsLoading(true)
+    setSelectedCurtain((prev) => ({
+      ...prev,
+      main: bgType
+    }));
+    setIsLoading(false)
+  }, [bgType]);
+
+  
   const default_product = {
     id: 1,
-    main: "test2_ocvii1"
+    main: bgType
   };
 
-  const index = "curtain-";
-  const [curtain, setCurtain] = useState([
-    default_product,
-    { id: 2, main: "test1_gvyquf" },
-    { id: 3, main: "curtain_fev3fs" }
-  ]);
 
   const [selectedCurtain, setSelectedCurtain] = useState(default_product);
 
@@ -557,7 +572,7 @@ function CustomPage() {
       <div className="flex flex-nowrap overflow-x-auto max-w-screen">
         {product.map((product) => (
           <div key={product._id} className="p-2">
-            <div className="rounded-lg w-[200px] shadow-3xl hover:shadow-2xl h-auto md:h-full flex-col md:pb-2 bg-white ">
+            <div className="rounded-lg w-[180px] shadow-3xl hover:shadow-2xl h-auto md:h-full flex-col md:pb-2 bg-white ">
               <div className="relative ">
                 <img
                   className="w-full rounded-t-lg bg-contain bg-center"
@@ -580,23 +595,25 @@ function CustomPage() {
         ))}
       </div>
       <div className="flex flex-wrap justify-center">
-        <div className="flex p-11 justify-center ">
+        <div className=" flex flex-wrap p-11 justify-center items-center">
           <img
-            className="w-[200px] h-[280px] mt-[25px] rounded shadow-xl "
+            className="flex w-[200px] h-[280px] mt-[25px] rounded shadow-xl "
             src={data.image}
             alt="product"
           />
-          <CloudinaryContext cloudName="dwmpdaqqh" className="w-[400px]">
+          <CloudinaryContext className="flex w-[320px] " cloudName="dwmpdaqqh">
             <div className="image__container">
               <div className="image">
                 <TransformedImage
                   rgb={background}
                   selectedCurtain={selectedCurtain}
+                  
                 />
               </div>{" "}
             </div>
           </CloudinaryContext>
-          <div className="pl-10 pr-10 pt-5 ">
+
+          <div className="flex-col sx:p-0 sm:p-0 pl-10 pr-10 pt-5 ">
             <p className="text-base mx-4 my-4 text-brown-400">
               ชื่อสินค้า : {data.name}
             </p>
@@ -625,17 +642,18 @@ function CustomPage() {
           </div>
         </div>
       </div>
-      <div className="flex flex-row mb-10">
+      <div className="flex flex-wrap items-center mb-10">
         <div className=" basis-1/3 items-center">
-          <p className="text-gray-700 md:text-base mt-4 pl-5 text-center ">
+          <p className="text-gray-700 text-sm mt-4 pl-5 text-center ">
             ต้องการสั่งตัดผ้าม่านแบบใด
           </p>
 
           {types.map((item, index) => (
             <div
               key={index}
-              className=" basis-1/3 text-center  text-browntop text-lg mt-2  mb-2"
+              className=" basis-1/3 text-center  text-browntop text-base mt-2  mb-2"
             >
+              
               <input
                 className="ml-2"
                 type="radio"
@@ -644,7 +662,7 @@ function CustomPage() {
                 value={item.name}
                 checked={selectedType === item.name}
                 onChange={() =>
-                  handleRadioChange(item.twolayer, item.name, item.price_rail)
+                  handleRadioChange(item.twolayer, item.name, item.price_rail,item.bgimage)
                 }
               />
               <label className="ml-2" htmlFor={item.name}>
@@ -653,16 +671,16 @@ function CustomPage() {
             </div>
           ))}
 
-          <p className="text-center text-gray-700 md:text-base mt-4 pl-5">
+          <p className="text-center text-gray-700 text-sm mt-4 pl-5">
             ** ทางร้านมีบริการรับตัดม่านหลุดย์
           </p>
         </div>
 
-        <div className="w-3/5 flex flex-nowrap overflow-x-auto">
+        <div className="w-3/5 ml-3 flex flex-nowrap overflow-x-auto">
           {types.map((item, index) => (
             <div key={index} className="p-2">
               <div className="rounded-lg shadow-3xl hover:shadow-2xl md:h-full flex-col md:pb-2 bg-white">
-                <div className="relative h-[200px] w-[300px]">
+                <div className="relative  h-[140px] w-[200px] sx:h-[140px] sx:w-[200px] md:h-[200px] md:w-[300px] lg:h-[200px] lg:w-[300px] xl:h-[200px] xl:w-[300px]">
                   <img
                     className="w-auto h-full object-cover rounded-t-lg bg-contain bg-center"
                     src={`${process.env.REACT_APP_AWS}${item.image}`}
@@ -701,20 +719,21 @@ function CustomPage() {
         <div>
           <p className="mt-4 ml-5 text-sm text-brown-400">กว้าง</p>
           <input
-            class="appearance-none rounded w-[150px] py-2 px-3 ml-2 my-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            class="appearance-none rounded w-[140px] py-2 px-3 ml-2 my-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             type="number"
             value={width}
             required
-            min="0"
+            min="100"
             onChange={(e) => setWidth(e.target.value)}
           />
         </div>
         <div>
-          <p className="mt-4 text-sm ml-5 text-brown-400">ยาว</p>
+          <p className="mt-4 text-sm ml-5 text-brown-400">สูง</p>
           <input
-            class="appearance-none  rounded w-[150px] py-2 px-3 ml-2 my-2  text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            class="appearance-none  rounded w-[140px] py-2 px-3 ml-2 my-2  text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             value={height}
             type="number"
+            min="150"
             required
             onChange={(e) => setHeight(e.target.value)}
           />
@@ -723,7 +742,7 @@ function CustomPage() {
       </div>
       {typeById === "ได้" ? (
         <>
-          <p className="text-base mx-4 my-4 text-brown-400">
+          <p className="text-base mx-7 my-4 text-brown-400">
             ต้องการทำเป็นม่าน2ชั้นหรือไม่
           </p>{" "}
           {["ทำ", "ไม่ทำ"].map((twolayer) => (
@@ -732,7 +751,7 @@ function CustomPage() {
               className=" flex-row text-left  text-browntop text-lg mt-2  mb-2"
             >
               <input
-                className="ml-2"
+                className="ml-5 text-base"
                 type="radio"
                 id={twolayer}
                 name="selectedTwolayer"
@@ -754,14 +773,14 @@ function CustomPage() {
           </p>
         </>
       )}
-      <p className="text-base mx-4 my-4 text-brown-400">ต้องการรับรางหรือไม่</p>{" "}
+      <p className="text-base mx-7 my-4 text-brown-400">ต้องการรับรางหรือไม่</p>{" "}
       {["รับราง", "ไม่รับราง"].map((rail) => (
         <div
           key={rail}
-          className=" flex-row text-left  text-browntop text-lg mt-2  mb-2"
+          className=" flex-row text-left  text-browntop text-base mt-2  mb-2"
         >
           <input
-            className="ml-2"
+            className="ml-5 text-base"
             type="radio"
             id={rail}
             name="selectedRail"

@@ -7,6 +7,9 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 //user
 import { ThemeProvider } from "@material-tailwind/react";
 import LoginPage from "./components/LoginPage";
+import ForgotPage from "./components/ForgotPage";
+import ResetPage from "./components/ResetPage";
+
 import HomePage from "./components/user/HomePage";
 import RegisterPage from "./components/RegisterPage";
 import ContactPage from "./components/user/ContactPage";
@@ -15,6 +18,9 @@ import ProductsPage from "./components/user/ProductsPage";
 import AccountPage from "./components/user/AccountPage";
 import AddressPage from "./components/user/AddressPage";
 import EditAddressPage from "./components/user/EditAddressPage";
+
+import AccountEditPage  from "./components/user/AccountEditPage";
+
 
 import ProductDetail from "./components/user/ProductDetail";
 import CategoryPage from "./components/user/CategoryPage";
@@ -61,6 +67,8 @@ import AddBrandPage from "./components/admin/AddBrandPage";
 import AddTypePage from "./components/admin/AddTypePage";
 import TypePage from "./components/admin/TypePage";
 import UpdateTypePage from "./components/admin/updateTypePage";
+import UpdateTypeBgPage from "./components/admin/updateTypeBgPage";
+
 
 
 import CategoryProduct from "./components/admin/AddCategoryAndType";
@@ -88,11 +96,14 @@ import { useDispatch, useSelector } from "react-redux";
 const router = createBrowserRouter([
   { path: "/", element: <HomePage /> },
   { path: "/login", element: <LoginPage /> },
+  { path: "/forgot-password", element: <ForgotPage /> },
+  { path: "/reset-password/:idUser", element: <ResetPage /> },
   { path: "/register", element: <RegisterPage /> },
   { path: "/service", element: <ServicePage /> },
   { path: "/contact", element: <ContactPage /> },
   { path: "/products", element: <ProductsPage /> },
   { path: "/account", element: <AccountPage /> },
+  { path: "/edit-profile", element: <AccountEditPage /> },
   { path: "/address", element: <AddressPage /> },
   { path: "/edit-address/:id", element: <EditAddressPage /> },
 
@@ -135,6 +146,8 @@ const router = createBrowserRouter([
   { path: "/quotation-update/:id", element: <UpdateQuotationPage />},
   { path: "/invoice-update/:id", element: <UpdateInvoicePage />},
   { path: "/update-type/:id", element: <UpdateTypePage /> },
+  { path: "/update-typebg/:id", element: <UpdateTypeBgPage /> },
+
 
 
 

@@ -71,9 +71,8 @@ function Cotton() {
   const handleLogoutAuto = () => {
     // Logout user
     localStorage.removeItem("token");
-    setUserName(""); // Clear user name or any other relevant state
+    setUserName(""); // Clear user
 
-    // Redirect to login page or perform any other action
     navigate("/"); // Redirect to login page
   };
 
@@ -88,12 +87,10 @@ function Cotton() {
       cancelButtonText: "ไม่ใช่",
     }).then((result) => {
       if (result.isConfirmed) {
-        // ยืนยันออกจากระบบ
         localStorage.removeItem("token");
         setUserName("");
 
-        // ใช้ useNavigate เพื่อนำผู้ใช้กลับไปยังหน้าหลัก
-        navigate("/"); // ลิงก์ไปยังหน้าหลัก
+        navigate("/"); 
       }
     });
   };
@@ -117,15 +114,40 @@ function Cotton() {
     });
   };
 
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.7)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
 
   const [product, setProduct] = useState([]);
   useEffect(() => {
+    setIsLoading(true); 
+
     const fetchData = async () => {
       try {
         const productData = await productAPI.getProductTypeCotton();
         setProduct(productData);
+        setIsLoading(false); 
+
       } catch (err) {
         console.error("เกิดข้อผิดพลาดในการดึงข้อมูล", err);
+        setIsLoading(false); 
       }
     };
    

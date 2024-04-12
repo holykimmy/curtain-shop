@@ -156,16 +156,7 @@ function UpdateProductPage() {
     }));
   };
 
-  // const handlePwidtchChange = (e) => {
-  //   const inputNumber = e.target.value;
-  //   // ตรวจสอบว่า inputNumber เป็นตัวเลขและมีค่ามากกว่าหรือเท่ากับ 0 หรือไม่
-  //   if (!isNaN(inputNumber) && Number(inputNumber) >= 0) {
-  //     setData((prevState) => ({
-  //       ...prevState,
-  //       price: inputNumber,
-  //     }));
-  //   }
-  // };
+
   const handlePriceChange = (e) => {
     const inputNumber = e.target.value;
     // ตรวจสอบว่า inputNumber เป็นตัวเลขและมีค่ามากกว่าหรือเท่ากับ 0 หรือไม่
@@ -187,17 +178,6 @@ function UpdateProductPage() {
       }));
     }
   };
-
-  // const handlePriceChange = (event) => {
-  //   let inputValue = event.target.value;
-  //   inputValue = inputValue.replace(/^0+/, "");
-  //   const numericValue = Math.abs(Number(inputValue));
-
-  //   setData((prevState) => ({
-  //     ...prevState,
-  //     price: numericValue,
-  //   }));
-  // };
 
   const handleFileSelection = (e) => {
     const image = e.target.files[0];

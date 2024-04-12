@@ -13,8 +13,6 @@ const WaitingForPayment = ({ idUser }) => {
   const [userOrder, setUserOrder] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  console.log("idUser", idUser);
-  console.log("djkhfgajk;h");
 
   useEffect(() => {
     const fetchData = () => {
@@ -91,11 +89,11 @@ const WaitingForPayment = ({ idUser }) => {
           title: "ยืนยันการชำระเงิน",
           text: "คำสั่งซื้อได้รับการยืนยันแล้ว",
           icon: "success",
+        }).then(() => {
+          window.location.reload();
         });
-        // window.location.reload();
       } catch (error) {
         console.error("Error cancelling order:", error);
-        // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
       }
     }
   };

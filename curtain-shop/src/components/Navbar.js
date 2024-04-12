@@ -47,7 +47,7 @@ function ProfileMenu({ isLoggedIn, handleLogout, userName, idUser }) {
         {
           label: "แก้ไขโปรไฟล์",
           icon: Cog6ToothIcon,
-          to: "/edit-profile",
+          to: `/edit-profile`,
         },
         {
           label: "ดูคำสั่งซื้อ",
@@ -74,9 +74,9 @@ function ProfileMenu({ isLoggedIn, handleLogout, userName, idUser }) {
         <Button
           variant="text"
           color="white"
-          className="flex items-center gap-1 rounded-full py-0.5 pr-2 pl-0.5 md:ml-auto"
+          className="flex items-center gap-1 rounded-full py-0.5 pr-2 pl-0.5 lg:ml-auto"
         >
-          <p className="pl-3 pr-3 text-xs font-normal">{userName}</p>
+          <p className="hidden sm:inline-block pl-3 pr-3 text-xs font-normal">{userName}</p>
           <CiUser className="border bg-white/25 rounded-full border-white p-0.5 h-9 w-9" />
           <ChevronDownIcon
             strokeWidth={2.5}
@@ -171,11 +171,7 @@ const navListMenuItems = [
     description: "7",
     to: "/product/blackout",
   },
-  {
-    title: "อุปกรณ์ในการติดตั้ง",
-    description: "4",
-    to: "/product/equipment",
-  },
+  
 ];
 
 function NavListMenu() {
@@ -184,7 +180,7 @@ function NavListMenu() {
   const renderItems = navListMenuItems.map(({ title, description, to }) => (
     <Link to={to} key={title}>
       <MenuItem>
-        <Typography variant="h7" className="mb-1 text-xs font-Kanit">
+        <Typography variant="h7" className="mb-1 text-xs md:text-sm font-Kanit">
           {title}
         </Typography>
         {/* <Typography variant="small" className="font-normal font-Kanit ">
@@ -204,8 +200,8 @@ function NavListMenu() {
             variant="small"
             className="font-normal text-Kanit"
           >
-            <MenuItem className="hidden items-center gap-2 text-base text-white text-Kanit md:flex md:rounded-full">
-              <p className="text-xs">สินค้า</p>
+            <MenuItem className="hidden items-center gap-2 text-base text-white text-Kanit lg:flex lg:rounded-full">
+              <p className="text-xs md:text-sm">สินค้า</p>
               <ChevronDownIcon
                 strokeWidth={2}
                 className={`h-3 w-3 transition-transform ${
@@ -215,14 +211,14 @@ function NavListMenu() {
             </MenuItem>
           </Typography>
         </MenuHandler>
-        <MenuList className="hidden grid-cols-5 gap-3 overflow-visible md:grid text-b-font">
+        <MenuList className="hidden grid-cols-5 gap-3 overflow-visible lg:grid text-b-font">
           <ul className="col-span-5 flex w-full flex-col">{renderItems}</ul>
         </MenuList>
       </Menu>
-      <MenuItem className="flex text-xs items-center gap-2 text-Kanit md:hidden">
+      <MenuItem className="flex text-xs md:text-sm items-center gap-2 text-Kanit lg:hidden">
         สินค้า
       </MenuItem>
-      <ul className="ml-6 flex  text-sm flex-col gap-1 md:hidden text-white">
+      <ul className="ml-6 flex  text-xs md:text-sm flex-col gap-1 lg:hidden text-white">
         {renderItems}
       </ul>
     </React.Fragment>
@@ -280,7 +276,7 @@ function NavListMenuAbout() {
     ({ title, description, to }) => (
       <Link to={to} key={title}>
         <MenuItem>
-          <Typography variant="h7" className="mb-1 text-xs font-Kanit">
+          <Typography variant="h7" className="mb-1 text-xs md:text-sm font-Kanit">
             {title}
           </Typography>
           {/* <Typography variant="small" className="font-normal font-Kanit ">
@@ -301,8 +297,8 @@ function NavListMenuAbout() {
             variant="small"
             className="font-normal text-Kanit"
           >
-            <MenuItem className="hidden items-center gap-2 text-base text-white text-Kanit md:flex md:rounded-full">
-              <p className="text-xs">เกี่ยวกับผ้าม่าน</p>
+            <MenuItem className="hidden items-center gap-2 text-base text-white text-Kanit lg:flex lg:rounded-full">
+              <p className="text-xs md:text-sm">เกี่ยวกับผ้าม่าน</p>
               <ChevronDownIcon
                 strokeWidth={2}
                 className={`h-3 w-3 transition-transform ${
@@ -312,14 +308,14 @@ function NavListMenuAbout() {
             </MenuItem>
           </Typography>
         </MenuHandler>
-        <MenuList className="hidden grid-cols-5 gap-3 overflow-visible md:grid text-b-font">
+        <MenuList className="hidden grid-cols-5 gap-3 overflow-visible lg:grid text-b-font">
           <ul className="col-span-5 flex w-full flex-col">{renderItems}</ul>
         </MenuList>
       </Menu>
-      <MenuItem className="flex text-xs items-center gap-2 text-Kanit md:hidden">
+      <MenuItem className="flex text-xs md:text-sm items-center gap-2 text-Kanit lg:hidden">
         เกี่ยวกับผ้าม่าน
       </MenuItem>
-      <ul className="ml-6 flex  text-sm flex-col gap-1 md:hidden text-white">
+      <ul className="ml-6 flex  text-xs md:text-sm flex-col gap-1 lg:hidden text-white">
         {renderItems}
       </ul>
     </React.Fragment>
@@ -328,7 +324,7 @@ function NavListMenuAbout() {
 
 function NavList() {
   return (
-    <ul className="mb-4 mt-2 flex flex-col  md:mb-0 md:mt-0 md:flex-row md:items-center">
+    <ul className="mb-4 mt-2 flex flex-col  lg:mb-0 lg:mt-0 lg:flex-row lg:items-center">
       <NavListMenu />
       {navListItems.map(({ label, to }, key) => (
         <Typography
@@ -336,9 +332,9 @@ function NavList() {
           as="a"
           href={to}
           color="white"
-          className="font-Kanit text-xs"
+          className="font-Kanit text-xs md:text-sm lg:text-sm"
         >
-          <MenuItem className="flex items-center gap-2 md:rounded-full">
+          <MenuItem className="flex items-center gap-2 lg:rounded-full">
             {label}
           </MenuItem>
         </Typography>
@@ -370,26 +366,23 @@ function ComplexNavbar({ isLoggedIn, idUser, userName, handleLogout }) {
 
   const navigate = useNavigate();
 
-  // console.log("c isLoggedIn:", isLoggedIn);
-  // console.log("c handleLogout:", handleLogout);
-  // console.log("c userName: ", userName);
 
   return (
     <>
-      <Navbar className="fixed top-0 z-10 shadow-md h-max max-w-full border-none rounded-none  px-4 md:px-8 py-2 bg-browntop">
+      <Navbar className="fixed top-0 z-10 shadow-md h-max max-w-full border-none rounded-none  px-4 lg:px-8 py-2 bg-browntop">
         <div className="relative mx-auto flex items-center text-white">
           <Typography
             as="a"
             href="/"
-            className="mr-4 ml-2  text-xs sm:text-sm md:text-base xl:text-md font-Kanit cursor-pointer py-1.5 font-medium"
+            className="mr-4 ml-2  text-xs sm:text-sm lg:text-base xl:text-md font-Kanit cursor-pointer py-1.5 font-medium"
           >
             Curtain Shop
           </Typography>
-          <div className="absolute top-2/4 left-2/4 hidden -translate-x-2/4 -translate-y-2/4 md:block">
+          <div className="absolute top-2/4 left-[40%] hidden -translate-x-2/4 -translate-y-2/4 lg:block">
             <NavList />
           </div>
 
-          <div className="absolute top-2/4 left-2/4 hidden -translate-x-2/4 -translate-y-2/4 md:block"></div>
+          <div className="absolute top-2/4 left-2/4 hidden -translate-x-2/4 -translate-y-2/4 lg:block"></div>
 
           <IconButton
             size="sm"

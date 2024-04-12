@@ -279,7 +279,7 @@ const ProductInCart = ({ item, idUser }) => {
         <td className="text-browntop text-sm  px-2 py-1 border border-gray-300">
           {item.brand}
         </td>
-        <td className="text-browntop text-xs text-left px-2 py-1 border border-gray-300 ">
+        <td className="hidden sm:table-cell text-browntop text-xs text-left px-2 py-1 border border-gray-300 ">
           {item.detail.split("\r\n")[0]}
         </td>
         <td className="w-[100px] text-browntop  text-sm px-2 py-1 border border-gray-300 ">
@@ -289,7 +289,7 @@ const ProductInCart = ({ item, idUser }) => {
           {item.twolayer}
         </td>
         <td className="w-[100px] text-browntop text-sm px-2 py-1 border border-gray-300 ">
-          <select value={item.rail} onChange={handleRailChange}>
+          <select className="mb-2 rounded-lg text-sm" value={item.rail} onChange={handleRailChange}>
             <option value="รับราง">รับราง</option>
             <option value="ไม่รับราง">ไม่รับราง</option>
           </select>
@@ -297,13 +297,13 @@ const ProductInCart = ({ item, idUser }) => {
         <td className="w-[280px] text-browntop text-sm px-2 py-1 border border-gray-300 ">
           <input
             onChange={handleChangeWidth}
-            className="form-control w-[100px]"
+            className="form-control w-[100px] mb-2 rounded-lg text-sm"
             type="number"
             value={item.width}
           />{" "}
           <input
             onChange={handleChangeHeight}
-            className="form-control w-[100px]"
+            className="form-control w-[100px] mb-2 rounded-lg text-sm "
             type="number"
             value={item.height}
           />
@@ -313,7 +313,7 @@ const ProductInCart = ({ item, idUser }) => {
         <td className="w-[150px] text-browntop  text-sm px-2 py-1 border border-gray-300 ">
           <input
             onChange={handleChangeCount}
-            className="form-control w-[75px]"
+            className="form-control w-[75px] mb-2 rounded-lg text-sm"
             type="number"
             value={item.count}
           />{" "}

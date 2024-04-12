@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import Footer from "../Footer";
 import customerAPI from "../../services/customerAPI";
-function ContactPage() {
+function AccoutPage() {
   //login
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -169,29 +169,29 @@ function ContactPage() {
       ></Navbar>{" "}
       <div class="titlea bg-brown-bg  w-full  h-full py-1 shadow-md">
         <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-9 xl:h-9 text-b-font"></BsPinFill>
-        <h5 className=" inline-block text-lg md:text-xl xl:text-2xl text-b-font  pl-4 p-2 my-1">
+        <h5 className=" inline-block text-base  text-b-font  pl-4 p-2 my-1">
           โปรไฟล์ส่วนตัว
         </h5>
       </div>
       <div className="flex-col justify-center">
         <div className="flex">
-          <h5 className=" inline-block text-lg md:text-xl xl:text-2xl text-b-font  mt-5 ml-3 pl-4  ">
+          <h5 className=" inline-block text-base  text-b-font  mt-5 ml-3 pl-4  ">
             username : {user.username}
           </h5>
         </div>
         <div className="flex">
-          <h5 className=" inline-block text-lg md:text-xl xl:text-2xl text-b-font  mt-2 ml-3 pl-4 ">
+          <h5 className=" inline-block text-base  text-b-font  mt-2 ml-3 pl-4 ">
             ชื่อ - นามสกุล : {userName}
           </h5>
         </div>
 
         <div className="flex">
-          <h5 className=" inline-block text-lg md:text-xl xl:text-2xl text-b-font  mt-2 ml-3 pl-4 ">
+          <h5 className=" inline-block text-base  text-b-font  mt-2 ml-3 pl-4 ">
             อีเมลล์ : {user.email}
           </h5>
         </div>
         <div className="flex">
-          <h5 className=" inline-block text-lg md:text-xl xl:text-2xl text-b-font  mt-2 ml-3 pl-4 ">
+          <h5 className=" inline-block text-base  text-b-font  mt-2 ml-3 pl-4 ">
             เบอร์โทร : {user.tell}
           </h5>
         </div>
@@ -251,7 +251,7 @@ function ContactPage() {
       <div class="flex items-center justify-center mt-8">
         <Link
           to="/address"
-          class="w-[50%] text-center bg-brown-500 hover:bg-browntop hover:shadow-md text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          class="w-[50%] text-center bg-brown-400 hover:bg-browntop hover:shadow-md text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           value="save"
           type="submit"
         >
@@ -261,4 +261,4 @@ function ContactPage() {
     </>
   );
 }
-export default ContactPage;
+export default AccoutPage;
