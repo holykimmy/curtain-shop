@@ -63,6 +63,29 @@ exports.create = (req, res) => {
     });
 };
 
+exports.updateBg = (req, res) => {
+  const id = req.params.id;
+  const data = req.body;
+  const file = req.file;
+
+  // ตรวจสอบว่ามีการอัปโหลดไฟล์ภาพมาด้วยหรือไม่
+  if (!file) {
+    return res.status(400).json({ error: "กรุณาเลือกรูปภาพ" });
+  }
+
+  TypeofCurtain.findByIdAndUpdate(id, { bgimage: file.filename }, { new: true })
+    .then((updatedType) => {
+      if (!updatedType) {
+        return res.status(404).json({ error: "ไม่พบประเภทผ้าม่านที่ต้องการอัปเดต" });
+      }
+      res.json(updatedType);
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "เกิดข้อผิดพลาดในการอัปเดตข้อมูล" });
+    });
+};
+
+
 exports.getAllTypes = (req, res) => {
   TypeofCurtain.find()
     .then((types) => {
@@ -160,85 +183,6 @@ exports.updateTypeById = (req, res) => {
     });
 };
 
-// exports.updateTypeById = (req, res) => {
-//     const typeId = req.params.id;
-//     const newData = req.body;
-
-//     console.log(
-//       newData.name,
-//       newData.price_rail,
-//       newData.image,
-//       newData.twolayer
-//     );
-//     console.log(typeId, newData);
-//     console.log(req.file);
-
-//     // Check if a new image is uploaded
-//     if (req.file) {
-//       console.log("have image : ");
-//       newData.image = req.file.key; // Update image field with S3 key
-//       // Find and update the type of curtain
-//       TypeofCurtain.findById(typeId)
-//         .exec()
-//         .then((type) => {
-//           console.log(type.image);
-//           if (type && type.image) {
-//             const params = {
-//               Bucket: "image-products-charoenkit",
-//               Key: type.image
-//             };
-//             s3.deleteObject(params, function (err, data) {
-//               if (err) {
-//                 console.error("Error deleting old image:", err);
-//               } else {
-//                 console.log("Delete successful");
-//               }
-//             });
-//           }
-//           // Update the type of curtain after deleting the old image
-//           updateType(typeId, newData, res);
-//         })
-//         .catch((err) => {
-//           res.status(500).json({ error: "Failed to update data" });
-//         });
-//     } else {
-//       // If no new image is uploaded, update the type of curtain directly
-//       updateType(typeId, newData, res);
-//     }
-//   };
-
-//   function updateType(typeId, newData, res) {
-//     let slug = slugifyMultilingual(
-//       `${slugify(newData.name)}-${slugify(newData.price_rail)}-${Date.now()}`
-//     );
-//     console.log("no image", typeId);
-//     console.log(newData.image);
-//     TypeofCurtain.findById(typeId)
-//       .exec()
-//       .then((type) => {
-//         if (!type) {
-//           return res.status(404).json({ error: "ไม่พบประภทนี้" });
-//         } else {
-//           console.log("testtff");
-//           console.log(type.image);
-//           type.name = newData.name || type.name;
-//           type.price_rail = newData.price_rail || type.price_rail;
-//           type.image = newData.image || type.image;
-//           type.twolayer = newData.twolayer || type.twolayer;
-//           slud = slug;
-
-//           return type.save();
-//         }
-//       })
-//       .then((updateTypes) => {
-//         res.json(updateTypes);
-//       })
-//       .catch((err) => {
-//         console.log(err);
-//         res.status(500).json({ error: "Failed to update data" });
-//       });
-//   }
-
 exports.deleteTypeById = (req, res) => {
   const typeId = req.params.id;
   TypeofCurtain.findByIdAndDelete(typeId)
@@ -259,7 +203,7 @@ exports.deleteTypeById = (req, res) => {
           console.log("Old image deleted successfully");
         }
       });
-      
+
       res.json({ message: "ลบประเภทแบบม่านเรียบร้อยแล้ว" });
     })
     .catch((err) => {

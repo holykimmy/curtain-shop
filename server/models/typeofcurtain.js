@@ -11,6 +11,10 @@ const TypeofCurtain = mongoose.Schema(
     image: {
       type: String
     },
+    bgimage:{
+      type:String,
+      default: "test2_ocvii1"
+    },
     slug: {
       type: String,
       lowercase: true,

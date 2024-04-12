@@ -43,7 +43,9 @@ const {
   deleteSlip,
   updateOrderCancelled,
   updateOrderVerifyCancelled,
-  updateOrderDepositPayment
+  updateOrderDepositPayment,
+  findUserByEmail,resetPassword,
+  UpdateProfile
 } = require("../controllers/customerController");
 
 //middleware
@@ -55,6 +57,10 @@ const uploadwindow = require("../middleware/window");
 router.post("/register", register);
 router.post("/add-address", auth, createAddress);
 router.post("/login", loginUser);
+router.post("/forgot-password", findUserByEmail);
+router.post("/reset-password/:id", resetPassword);
+router.put("/edit-profile/:id",UpdateProfile)
+
 router.get("/all", getAllCustomers);
 router.get("/:id", auth, getCustomerById);
 router.get("/search", search);

@@ -67,6 +67,114 @@ const validatelogin = (data) => {
   return schema.validate(data);
 };
 
+exports.findUserByEmail = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email: email });
+    if (user) {
+      // ส่งอีเมล
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: "charoenkit.curtain@gmail.com",
+          pass: "ojpnyasephiohaqv"
+        }
+      });
+
+      const mailOptions = {
+        from: "charoenkit.curtain@gmail.com",
+        to: `${email} `,
+        subject: "reset Password",
+        text: `เรียนคุณ ${user.f_name} ${user.l_name}
+        
+        แก้ไขรหัสผ่านได้ที่ลิงค์นี้
+
+        http://localhost:3000/reset-password/${user._id}`
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error("Error sending email:", error);
+          return res
+            .status(500)
+            .json({ message: "เกิดข้อผิดพลาดในการส่งอีเมล" });
+        } else {
+          console.log("Email sent:", info.response);
+          return res.status(200).json(user);
+        }
+      });
+    } else {
+      return res.status(404).json({ message: "ไม่พบ email ของคุณ" });
+    }
+  } catch (error) {
+    console.error("Error finding user by email:", error);
+    return res.status(500).json({ message: "เกิดข้อผิดพลาดในการค้นหาผู้ใช้" });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  const idUser = req.params.id;
+  const newPassword = req.body.password;
+  console.log(idUser);
+  console.log(newPassword);
+  console.log(req.body);
+
+  if (!newPassword) {
+    return res.status(400).json({ error: "กรุณากรอกรหัสผ่าน" });
+  }
+
+  try {
+    // อัปเดตรหัสผ่านของผู้ใช้โดยใช้ idUser และรหัสผ่านใหม่
+    const salt = await bcrypt.genSalt(Number(process.env.SALT));
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    await User.findByIdAndUpdate(idUser, { password: hashedPassword });
+
+    // ส่งคำตอบเมื่อการรีเซ็ตรหัสผ่านสำเร็จ
+    res.status(200).json({ message: "เปลี่นยรหัสผ่านสำเร็จ" });
+  } catch (error) {
+    console.error(error);
+    // ถ้าเกิดข้อผิดพลาดในการอัปเดต ส่งคำตอบกลับว่า Internal Server Error
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.UpdateProfile = (req, res) => {
+  const idUser = req.params.id;
+  const { f_name, l_name, username, email, tell } = req.body;
+  console.log(idUser);
+  console.log(req.body);
+  // Find the customer by ID
+  User.findById(idUser)
+    .then((customer) => {
+      if (!customer) {
+        return res
+          .status(404)
+          .json({ success: false, error: "Customer not found" });
+      }
+
+      // Update customer data
+      customer.f_name = f_name;
+      customer.l_name = l_name;
+      customer.email = email;
+      customer.tell = tell;
+
+      // Save the updated customer data
+      return customer.save();
+    })
+    .then(() => {
+      res.json({
+        success: true,
+        message: "Customer profile updated successfully"
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      res
+        .status(500)
+        .json({ success: false, error: "Failed to update customer profile" });
+    });
+};
+
 exports.loginUser = async (req, res) => {
   //check user
   const { user, password } = req.body;
@@ -499,8 +607,8 @@ exports.userCart = async (req, res) => {
         count: item.count,
         width: item.width,
         height: item.height,
-        twolayer : item.twolayer,
-        totalPiece : item.totalPiece
+        twolayer: item.twolayer,
+        totalPiece: item.totalPiece
       })),
 
       orderBy: idUser,
@@ -1368,13 +1476,12 @@ exports.updateOrderApprove = async (req, res) => {
 
     await Cart.updateOne({ _id: idOrder }, { approve: approve });
 
-
     // ส่งอีเมล
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: "gmail",
       auth: {
-        user: 'charoenkit.curtain@gmail.com',
-        pass: 'ojpnyasephiohaqv'
+        user: "charoenkit.curtain@gmail.com",
+        pass: "ojpnyasephiohaqv"
       }
     });
 
@@ -1400,9 +1507,7 @@ exports.updateOrderApprove = async (req, res) => {
       }
     });
 
-    res
-      .status(200)
-      .json({ message: "Order updated successfully." });
+    res.status(200).json({ message: "Order updated successfully." });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -1421,10 +1526,10 @@ exports.updateOrderVerifyPayment = async (req, res) => {
 
     // ส่งอีเมล
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: "gmail",
       auth: {
-        user: 'charoenkit.curtain@gmail.com',
-        pass: 'ojpnyasephiohaqv'
+        user: "charoenkit.curtain@gmail.com",
+        pass: "ojpnyasephiohaqv"
       }
     });
 
@@ -1481,10 +1586,10 @@ exports.updateOrderPandding = async (req, res) => {
 
     // ส่งอีเมล
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: "gmail",
       auth: {
-        user: 'charoenkit.curtain@gmail.com',
-        pass: 'ojpnyasephiohaqv'
+        user: "charoenkit.curtain@gmail.com",
+        pass: "ojpnyasephiohaqv"
       }
     });
 
@@ -1519,14 +1624,11 @@ exports.updateOrderEnable = async (req, res) => {
     const { enable } = req.body;
     const { order } = req.body;
     const user = order.orderBy;
-    console.log("cancel text", enable );
+    console.log("cancel text", enable);
 
     console.log("Update order enable for order:", idOrder);
-   
-    await Cart.updateOne(
-      { _id: idOrder },
-      { enable: false }
-    );
+
+    await Cart.updateOne({ _id: idOrder }, { enable: false });
     await Cart.updateOne({ _id: idOrder }, { verifycancelled: true });
 
     return res
@@ -1558,13 +1660,12 @@ exports.updateOrderSend = async (req, res) => {
     );
     console.log(postcodeOrder);
 
-
     // ส่งอีเมล
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: "gmail",
       auth: {
-        user: 'charoenkit.curtain@gmail.com',
-        pass: 'ojpnyasephiohaqv'
+        user: "charoenkit.curtain@gmail.com",
+        pass: "ojpnyasephiohaqv"
       }
     });
 
@@ -1606,16 +1707,16 @@ exports.updateOrderCancelled = async (req, res) => {
 
     await Cart.updateOne(
       { _id: idOrder },
-      { cancelled: cancelled, cancelReasonAd : cancelReasonAd }
+      { cancelled: cancelled, cancelReasonAd: cancelReasonAd }
     );
     console.log(cancelled, cancelReasonAd);
 
     // ส่งอีเมล
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: "gmail",
       auth: {
-        user: 'charoenkit.curtain@gmail.com',
-        pass: 'ojpnyasephiohaqv'
+        user: "charoenkit.curtain@gmail.com",
+        pass: "ojpnyasephiohaqv"
       }
     });
 
@@ -1635,8 +1736,6 @@ exports.updateOrderCancelled = async (req, res) => {
         console.log("Email sent:", info.response);
       }
     });
-
-   
 
     res.status(200).json({ message: "Order cancel updated successfully." });
   } catch (error) {
