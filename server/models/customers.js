@@ -65,7 +65,7 @@ const validate = (data) => {
       .required()
       .label("Password")
       .messages({
-        "string.pattern.base": "รหัสผ่านต้องมีอักษรภาษาอังกฤษและตัวเลข",
+        "string.pattern.base": "รหัสผ่านต้องมีอักษรภาษาอังกฤษและตัวเลขและต้องมีความยาวมากกว่า7ตัวขึ้นไป",
       }),
   });
   return schema.validate(data);
