@@ -3,7 +3,9 @@ const router = express.Router();
 const {
   register,
   getAllCustomers,
-  search,
+  getCustomers,
+  updateEnable,
+  updateRole,
   createAddress,
   loginUser,
   getCustomerAddressById,
@@ -33,6 +35,7 @@ const {
   searchOrderPrepare,
   searchOrderSend,
   searchOrderComplete,
+  searchOrderAll,
   updateOrderEnable,
   updateOrderComplete,
   updateOrderApprove,
@@ -60,10 +63,13 @@ router.post("/login", loginUser);
 router.post("/forgot-password", findUserByEmail);
 router.post("/reset-password/:id", resetPassword);
 router.put("/edit-profile/:id",UpdateProfile)
+router.put("/update-enable/:id", auth, updateEnable);
+router.put("/update-role/:id", auth, updateRole);
 
 router.get("/all", getAllCustomers);
 router.get("/:id", auth, getCustomerById);
-router.get("/search", search);
+router.get("/all/c-search",auth,getCustomers)
+
 // router.get("/address/:id", auth ,getCustomerAddressById);
 // router.get("/get-address/:id/:addressId",auth , getAddress);
 router.get("/address/:id", auth, getAddressByUserId);
@@ -94,7 +100,7 @@ router.get("/all/order/payment-s",auth,searchOrderPayment)
 router.get("/all/order/prepare-s",auth,searchOrderPrepare)
 router.get("/all/order/send-s",auth,searchOrderSend)
 router.get("/all/order/complete-s",auth,searchOrderComplete)
-
+router.get("/all/order/all-s",auth,searchOrderAll)
 //update
 router.put("/order/enable/:id", auth, updateOrderEnable);
 router.put("/order/cencelled/:id", auth, updateOrderCancelled);

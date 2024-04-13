@@ -129,7 +129,6 @@ exports.getProductTypeVis = (req, res) => {
 
 exports.search = (req, res) => {
   const { name } = req.query;
-  // Use a regular expression to perform a case-insensitive partial match on both first and last names
   const regex = new RegExp(name, "i");
   Products.find({ $or: [{ name: regex }, { brand: regex }, { p_type: regex }] })
     .exec()

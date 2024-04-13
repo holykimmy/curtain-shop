@@ -33,6 +33,12 @@ const customerSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    enable: {
+      type:Boolean,
+      default: true,
+    }
+
+    ,
     role: {
       type: String,
 

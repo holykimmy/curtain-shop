@@ -61,10 +61,9 @@ exports.register = async (req, res) => {
 
     const mailOptions = {
       from: "charoenkit.curtain@gmail.com",
-      to: `${user.email} `,
+      to: `${email} `,
       subject: "สมัครสมาชิกสำเร็จ",
-      text: `เรียนคุณ ${user.f_name} ${user.l_name}
-      ยินดีต้อนรับ ท่านได้ทำการสมัครสมาชิกเรียบร้อยแล้ว
+      text: `ยินดีต้อนรับ คุณ${f_name} ${l_name} ท่านได้ทำการสมัครสมาชิกเรียบร้อยแล้ว
       `
     };
 
@@ -92,6 +91,45 @@ const validatelogin = (data) => {
   });
   return schema.validate(data);
 };
+
+
+exports.updateEnable = async (req, res) => {
+  const idUser = req.params.id;
+  const { enable } = req.body;
+  try {
+    const updatedCustomer = await User.findByIdAndUpdate(
+      idUser,
+      { enable: enable },
+      { new: true }
+    );
+    if (!updatedCustomer) {
+      return res.status(404).json({ error: 'Customer not found' });
+    }
+    res.json(updatedCustomer);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
+exports.updateRole = async (req, res) => {
+  const idUser = req.params.id;
+  const { role } = req.body;
+  try {
+    const updatedCustomer = await User.findByIdAndUpdate(
+      idUser,
+      { role: role },
+      { new: true }
+    );
+    if (!updatedCustomer) {
+      return res.status(404).json({ error: 'Customer not found' });
+    }
+    res.json(updatedCustomer);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
 
 exports.findUserByEmail = async (req, res) => {
   const { email } = req.body;
@@ -212,12 +250,17 @@ exports.loginUser = async (req, res) => {
     }
     //หา user
     const userFound = await User.findOne({
-      $or: [{ email: user }, { tell: user }]
+     $or: [{ email: user }, { tell: user }]
     });
 
     //ไม่เจอ
     if (!userFound) {
       return res.status(401).json({ error: "email หรือ เบอร์โปทรไม่ถูกต้อง" });
+    }
+
+    //ตรวจสอบว่าบัญชีถูกระงับหรือไม่
+    if (!userFound.enable) {
+      return res.status(401).json({ error: "บัญชีของคุณถูกระงับ กรุณติดต่อเรา" });
     }
 
     const validPassword = await bcrypt.compare(password, userFound.password);
@@ -268,6 +311,33 @@ exports.getAllCustomers = (req, res) => {
     });
 };
 
+
+exports.getCustomers = (req, res) => {
+  const { name } = req.query;
+  console.log("testt sresfjf");
+  
+  // ตรวจสอบว่ามีค่า name และไม่ว่างเปล่า
+  if (!name || name.trim() === "") {
+    return res.status(400).json({ error: "Name parameter is required" });
+  }
+  
+  const regex = new RegExp(name, "i");
+
+  User.find({ $or: [{ f_name: regex }, { l_name: regex }] })
+    .exec()
+    .then((customers) => {
+      res.json(customers);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ error: err.message });
+    });
+};
+
+
+
+
+
 exports.getCustomerById = (req, res) => {
   const customerId = req.params.id;
 
@@ -304,19 +374,8 @@ exports.getCustomerAddressById = (req, res) => {
     });
 };
 
-exports.search = (req, res) => {
-  const { name } = req.query;
-  const regex = new RegExp(name, "i");
-  User.find({ $or: [{ f_name: regex }, { l_name: regex }] })
-    .exec()
-    .then((customers) => {
-      res.json(customers);
-    })
-    .catch((err) => {
-      // console.error(err);
-      res.status(500).json({ error: err.message });
-    });
-};
+
+
 
 exports.getAddress = (req, res) => {
   console.log("-------getAddress-------");
@@ -816,6 +875,7 @@ exports.getOrderByIdPrepare = async (req, res) => {
       payment: true,
       verifypayment: true,
       sendproduct: false,
+      cancelled:false,
       complete: false
     })
       .populate([
@@ -1140,6 +1200,7 @@ exports.getOrderPrepare = async (req, res) => {
       verifypayment: true,
       pandding: false,
       sendproduct: false,
+      cancelled:false,
       complete: false
     })
       .populate([
@@ -1296,7 +1357,6 @@ exports.searchOrderPayment = async (req, res) => {
   const regex = new RegExp(name, "i");
 
   try {
-    // ค้นหาข้อมูลคำสั่งซื้อตามเงื่อนไขที่กำหนด
     let cart = await Cart.find({
       enable: true,
       confirmed: true,
@@ -1323,7 +1383,6 @@ exports.searchOrderPayment = async (req, res) => {
       ])
       .exec();
 
-    // กรองข้อมูลที่ต้องการแสดงเฉพาะข้อมูลที่ตรงกับเงื่อนไข
     const filteredCart = cart.filter((order) => {
       const { f_name, l_name } = order.orderBy;
       const { _id } = order;
@@ -1355,6 +1414,7 @@ exports.searchOrderPrepare = async (req, res) => {
       verifypayment: true,
       pandding: false,
       sendproduct: false,
+      cancelled:false,
       complete: false
     })
       .populate([
@@ -1493,6 +1553,47 @@ exports.searchOrderComplete = async (req, res) => {
   }
 };
 
+exports.searchOrderAll = async (req, res) => {
+  const { name } = req.query;
+  const regex = new RegExp(name, "i");
+
+  try {
+    // ค้นหาข้อมูลคำสั่งซื้อตามเงื่อนไขที่กำหนด
+    let cart = await Cart.find({})
+      .populate([
+        {
+          path: "products.product",
+          select: "productId brand p_type name p_width price color image detail"
+        },
+        {
+          path: "orderBy",
+          select: "_id f_name l_name username email tell createdAt updatedAt"
+        },
+        {
+          path: "sendAddress",
+          select:
+            "id name tell houseNo sub_district district province postcode idUser"
+        }
+      ])
+      .exec();
+
+    // กรองข้อมูลที่ต้องการแสดงเฉพาะข้อมูลที่ตรงกับเงื่อนไข
+    const filteredCart = cart.filter((order) => {
+      const { f_name, l_name } = order.orderBy;
+      const { _id } = order;
+      return (
+        f_name.match(regex) ||
+        l_name.match(regex) ||
+        _id.toString().match(regex)
+      );
+    });
+
+    res.json(filteredCart);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 exports.updateOrderApprove = async (req, res) => {
   try {
     const idOrder = req.params.id;
@@ -1515,7 +1616,7 @@ exports.updateOrderApprove = async (req, res) => {
       from: "charoenkit.curtain@gmail.com",
       to: `${user.email} `,
       subject: "สินค้าของคุณได้รับการยืนยันแล้ว",
-      text: `เรียนคุณ ${user.f_name} ${user.l_name}
+      text: `เรียนคุณ${user.f_name} ${user.l_name}
       Order : ${idOrder} ได้รับการยืนยันแล้ว 
       กรุณาชำระเงินภายใน 48 ซม. หากท่านไม่ชำระเงินภายในระยะเวลาที่กำหนด 
       คำสั่งซื้อของคุณจะถูกยกเลิกโดยอัตโนมัติ
@@ -1563,9 +1664,11 @@ exports.updateOrderVerifyPayment = async (req, res) => {
       from: "charoenkit.curtain@gmail.com",
       to: `${user.email} `,
       subject: "ยืนยันการชำระเงินของคุณแล้ว",
-      text: `เรียนคุณ ${user.f_name} ${user.l_name}
+      text: `เรียนคุณ${user.f_name} ${user.l_name}
       Order : ${idOrder} ได้รับการยืนยันการชำระเงินเรียบร้อยแล้ว
       ทางร้านกำลังดำเนินการตัดผ้าม่านให้คุณอยู่
+      
+      https://cms-curtain-shop.vercel.app/order-detail/${idOrder}
 
       `
     };
@@ -1623,9 +1726,11 @@ exports.updateOrderPandding = async (req, res) => {
       from: "charoenkit.curtain@gmail.com",
       to: `${user.email} `,
       subject: "สินค้าของคุณได้เสร็จรีบร้อยแล้ว",
-      text: `เรียนคุณ ${user.f_name} ${user.l_name}
+      text: `เรียนคุณ${user.f_name} ${user.l_name}
       Order : ${idOrder} 
       ทางร้านได้เตรียมสินค้าเสร็จเรียบร้อยแล้ว
+
+      https://cms-curtain-shop.vercel.app/order-detail/${idOrder}
       `
     };
 
@@ -1699,9 +1804,11 @@ exports.updateOrderSend = async (req, res) => {
       from: "charoenkit.curtain@gmail.com",
       to: `${user.email} `,
       subject: "คำสั่งซื้อของคุณได้รับการจัดส่งเรียบร้อยแล้ว",
-      text: `เรียนคุณ ${user.f_name} ${user.l_name}
+      text: `เรียนคุณ${user.f_name} ${user.l_name}
       Order : ${idOrder} ทางร้านได้จัดส่งสินค้าให้คุณเรียบร้อยแล้ว
       เลขพัสดุของคุณคือ ${postcodeOrder}
+
+      https://cms-curtain-shop.vercel.app/order-detail/${idOrder}
       `
     };
 
@@ -1750,8 +1857,10 @@ exports.updateOrderCancelled = async (req, res) => {
       from: "charoenkit.curtain@gmail.com",
       to: `${user.email} `,
       subject: "คำสั่งซื้อของคุณถูกยกเลิกแล้ว",
-      text: `เรียนคุณ ${user.f_name} ${user.l_name}
+      text: `เรียนคุณ${user.f_name} ${user.l_name}
       Order : ${idOrder} ของคุณได้ถูกยกเลิกแล้วเนื้องจาก ${cancelReasonAd}
+
+      https://cms-curtain-shop.vercel.app/order-detail/${idOrder}
       `
     };
 
