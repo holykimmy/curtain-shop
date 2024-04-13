@@ -11,29 +11,49 @@ const ApproveOrder = ({ idUser }) => {
   const [userOrder, setUserOrder] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.5)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
+  useEffect(() => {
+    setIsLoading(true)
     const fetchData = () => {
       orderAPI
         .getOrderApprove()
         .then((orderData) => {
           setUserOrder(orderData);
+          setIsLoading(false)
         })
         .catch((err) => {
           console.error("error", err);
+          setIsLoading(false)
         });
     };
     fetchData();
 
-    // Return a cleanup function to clear the interval
-    return () => clearInterval();
   }, [idUser]);
 
   console.log(userOrder);
 
   const handleCancelOrder = async (idOrder,idUser) => {
-    // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
-    const confirmation = await Swal.fire({
+
+    const confirmation = await 
+    Swal.fire({
       title: "ยืนยันการยกเลิกคำสั่งซื้อ",
       text: "คุณแน่ใจหรือไม่ที่ต้องการยกเลิกคำสั่งซื้อนี้?",
       icon: "warning",
@@ -52,22 +72,20 @@ const ApproveOrder = ({ idUser }) => {
   
 
   const handleSearch = async () => {
+    setIsLoading(true)
     try {
       const searchData = await orderAPI.searchOrderApprove(searchTerm);
-      console.log("search", searchTerm);
-      setSearchResults(searchData); // เซตค่า searchResults ที่ได้จากการค้นหาเข้า state
+      setSearchResults(searchData); 
+      setIsLoading(false)
     } catch (error) {
       console.error("Error fetching search results:", error);
-      // แสดงข้อความผิดพลาดหรือจัดการข้อผิดพลาดตามที่ต้องการ
+      setIsLoading(false)
     }
   };
 
 
   const handleApproveOrder = async (idOrder,order) => {
-
-    const { f_name, l_name, email } = order.orderBy;
-    console.log(f_name,l_name,email);
-
+ 
     const confirmation = await Swal.fire({
       title: "ยืนยันคำสั่งซื้อ",
       text: "คุณต้องการอนุมัติคำสั่งซื้อใช่หรือไม่?",
@@ -79,17 +97,17 @@ const ApproveOrder = ({ idUser }) => {
       cancelButtonText: "ยกเลิก",
     });
 
-   
     if (confirmation.isConfirmed) {
       try {
+        setIsLoading(true)
         const response = await orderAPI.updateOrderApprove(idOrder,order, true );
-        console.log(response); 
         await Swal.fire({
           title: "ยืนยันคำสั่งซื้อ",
           text: "คำสั่งซื้อได้รับการยืนยันแล้ว",
           icon: "success",
+        }).then(() => {
+          window.location.reload();
         });
-        window.location.reload();
       } catch (error) {
         console.error("Error cancelling order:", error);
       }

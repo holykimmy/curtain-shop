@@ -49,8 +49,8 @@ function Products() {
 
 
   const handleSearch = async () => {
+    setIsLoading(true)
     try {
-      setIsLoading(true)
       const searchData = await productAPI.getSearch(searchTerm);
       setSearchResults(searchData); 
       setIsLoading(false)
@@ -71,7 +71,7 @@ function Products() {
       // Set up axios default headers
       axios.defaults.headers.common["authtoken"] = authToken;
 
-      const decodedToken = jwtDecode(authToken); // Decode the token
+      const decodedToken = jwtDecode(authToken); 
 
       if (decodedToken && decodedToken.user) {
         const { f_name, l_name } = decodedToken.user;
@@ -79,22 +79,18 @@ function Products() {
       }
 
       if (decodedToken && decodedToken.user) {
-        // Check if user is admin
         if (decodedToken.user.role !== "admin") {
-          // If user is not admin, redirect to login page or show unauthorized message
-          // Redirecting to login page:
-          window.location.href = "/login"; // Change '/login' to your actual login page route
-          // Showing unauthorized message:
-          // Swal.fire("Unauthorized", "You are not authorized to access this page", "error");
+          
+          window.location.href = "/login"; 
+          
         } else {
           setUserData(decodedToken.user);
         }
       }
     } else {
-      // If no token found, redirect to login page or show unauthorized message
-      // Redirecting to login page:
-      window.location.href = "/login"; // Change '/login' to your actual login page route
-      // Showing unauthorized message:
+     
+      window.location.href = "/login"; 
+      
       Swal.fire(
         "Unauthorized",
         "You are not authorized to access this page",

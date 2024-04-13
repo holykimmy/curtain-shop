@@ -11,50 +11,61 @@ import axios from "axios";
 
 function ContactPage() {
   const { productId } = useParams();
-  const [data, setData] = useState({
-   
-  });
+  const [data, setData] = useState({});
 
   const [product, setProduct] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
+  console.log("test");
+  console.log(data.p_type);
+  const firstdata = data.p_type ? data.p_type.split(",")[0].trim() : "";
+  console.log(firstdata);
 
   useEffect(() => {
     setIsLoading(true);
     const fetchData = async () => {
       try {
-      
-
         let productData;
-
         // ตรวจสอบค่า data.p_type และกำหนดให้เรียกใช้ productAPI ตามที่ต้องการ
-        if (data.p_type === "ผ้าใยสังเคราะห์ (polyester)") {
+        if (firstdata === "ผ้าใยสังเคราะห์ (polyester)") {
           productData = await productAPI.getProductTypePolyester();
-        } else if (data.p_type === "ผ้าฝ้าย (cotton)") {
+          setProduct(productData);
+          setIsLoading(false);
+        } else if (firstdata === "ผ้าฝ้าย (cotton)") {
           productData = await productAPI.getProductTypeCotton();
-        } else if (data.p_type === "ผ้ากำมะหยี่ (velvet)") {
+          setProduct(productData);
+          setIsLoading(false);
+        } else if (firstdata === "ผ้ากำมะหยี่ (velvet)") {
           productData = await productAPI.getProductTypeVelvet();
-        } else if (data.p_type === "ผ้าซาติน (satin)") {
+          setProduct(productData);
+          setIsLoading(false);
+        } else if (firstdata === "ผ้าซาติน (satin)") {
           productData = await productAPI.getProductTypeSatin();
-        } else if (data.p_type === "ผ้าลินิน (linen)") {
+          setProduct(productData);
+          setIsLoading(false);
+        } else if (firstdata === "ผ้าลินิน (linen)") {
           productData = await productAPI.getProductTypeLinen();
-        } else if (data.p_type === "ผ้าผสม (mixed)") {
+          setProduct(productData);
+          setIsLoading(false);
+        } else if (firstdata === "ผ้าใยผสม (mixed)") {
           productData = await productAPI.getProductTypeMixed();
-        } else if (data.p_type === "ผ้ากันแสง (blackout)") {
+          setProduct(productData);
+          setIsLoading(false);
+        } else if (firstdata === "ผ้ากันแสง (blackout)") {
           productData = await productAPI.getProductTypeBlackout();
-        } else if (data.p_type === "ม่อนลอน (wave)") {
-          productData = await productAPI.getProductTypeWave();
+          setProduct(productData);
+          setIsLoading(false);
         }
 
-        setProduct(productData);
-        setIsLoading(false)
+        setIsLoading(false);
+
       } catch (err) {
         console.error("เกิดข้อผิดพลาดในการดึงข้อมูล", err);
+        setIsLoading(false);
       }
     };
-
     fetchData();
-  }, [data.p_type,productId]);
+  }, [firstdata]);
+  console.log(product);
 
   //login
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -67,7 +78,7 @@ function ContactPage() {
     l_name: "",
     email: "",
     tell: "",
-    address: "",
+    address: ""
   });
 
   useEffect(() => {
@@ -88,7 +99,6 @@ function ContactPage() {
       Swal.close();
     }
   }, [isLoading]);
-
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");
@@ -111,7 +121,7 @@ function ContactPage() {
           l_name: l_name,
           email: decodedToken.user.email,
           tell: decodedToken.user.tell,
-          address: decodedToken.user.address,
+          address: decodedToken.user.address
         });
 
         setIsLoggedIn(true);
@@ -148,7 +158,7 @@ function ContactPage() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "ใช่",
-      cancelButtonText: "ไม่ใช่",
+      cancelButtonText: "ไม่ใช่"
     }).then((result) => {
       if (result.isConfirmed) {
         // ยืนยันออกจากระบบ
@@ -171,11 +181,11 @@ function ContactPage() {
         const productData = res.data;
         // console.log("Product Data:", productData); // ให้ดูค่า productData ที่ได้รับมา
         //ถ้าเจอ
-        setData(productData)
-       
+        setData(productData);
+
         setIsLoading(false);
       } catch (error) {
-        setIsLoading(false); 
+        setIsLoading(false);
         console.error(error);
       }
     };
@@ -191,7 +201,7 @@ function ContactPage() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "ใช่",
-      cancelButtonText: "ไม่ใช่",
+      cancelButtonText: "ไม่ใช่"
     }).then((result) => {
       if (result.isConfirmed) {
         navigate(`/product-detail/${productId}`);
@@ -213,11 +223,10 @@ function ContactPage() {
         ></Navbar>
         <div class="titlea bg-brown-bg  w-full  h-full py-1 shadow-md">
           <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-9 xl:h-9 text-b-font"></BsPinFill>
-          <h5 className=" inline-block text-lg md:text-xl xl:text-2xl text-b-font  pl-4 p-2 my-1">
+          <h5 className=" inline-block text-sm sx:text-sm sm:text-sm md:text-md xl:text-md text-b-font  pl-4 p-2 my-1">
             {data.p_type}
           </h5>
         </div>
-        {/* {product.map((product) => ( */}
         <div className="flex overflow-x-auto max-w-screen justify-center m-5 ">
           <div className=" p-2 md:p-4 w-[90%]">
             <div key={data.productId} className="flex justify-center">
@@ -247,7 +256,7 @@ function ContactPage() {
                   </div>
                   <div className="text-base mt-4 text-brown-400 whitespace-pre-wrap">
                     {data.detail}
-                  </div> 
+                  </div>
                   <p className="mt-4 text-base text-brown-400">
                     ความกว้างของหน้าผ้า : {data.p_width} ซม.
                   </p>
@@ -258,7 +267,6 @@ function ContactPage() {
                   <Link
                     to="/gauging-curtain"
                     className=" mt-2 mb-3 px-4 py-2 rounded-lg inline-block text-sm  text-brown-500 hover:text-brown-300 hover:text-base"
-                    // onClick={() => handleEditProduct(product._id, product.name)}
                   >
                     สามารถดูวิธีการวัดขนาดของผ้าม่านได้ที่นี่
                     <HiOutlineCursorClick className="inline-block h-5 w-auto ml-2" />
@@ -267,7 +275,6 @@ function ContactPage() {
                     <button
                       onClick={() => handleCustom(productId, data.name)}
                       className=" mt-10  mb-3 px-4 py-2 rounded-lg inline-block text-base bg-brown-200 hover:bg-browntop hover:shadow-xl text-white focus:outline-none focus:shadow-outline"
-                      // onClick={() => handleEditProduct(product._id, product.name)}
                     >
                       เพิ่มลงลงตระกร้าสินค้า
                     </button>
@@ -277,9 +284,8 @@ function ContactPage() {
             </div>
           </div>
         </div>
-        {/* ))} */}
 
-        <div className="font-semibold text-brown-600 text-base md:text-lg lg:text-lg ml-10 my-5 ">
+        <div className="font-semibold text-brown-600 text-sm md:text-base lg:text-base ml-10 my-5 ">
           {" "}
           สินค้าแนะนำเพิ่มเติมเกี่ยวกับสินค้าในหมวด {data.p_type}
         </div>
@@ -326,7 +332,6 @@ function ContactPage() {
 
         <Footer></Footer>
       </div>
-      )}
     </>
   );
 }

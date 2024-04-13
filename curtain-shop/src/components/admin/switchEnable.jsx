@@ -2,27 +2,28 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
-const SwitchButtonConfirm = ({ visibility, productId }) => {
-  const [isOn, setIsOn] = useState(visibility);
+const SwitchButton = ({ enable, idUser }) => {
+  const [isOn, setIsOn] = useState(enable);
 
   const toggleSwitch = () => {
-    const newVisibility = !isOn;
-    setIsOn(newVisibility);
+    const enable = !isOn;
+    setIsOn(enable);
 
+    // แสดง SweetAlert2 สำหรับการยืนยัน
     Swal.fire({
       title: `ยืนยันการเปลี่ยนแปลงสถานะ`,
-      text: `คุณต้องการเปลี่ยนสถานะเป็น ${newVisibility ? 'อนุมติคำสั่งซื้อ' : 'ไม่อนุมัติคำสั่งซื้อ'} ใช่หรือไม่?`,
+      text: `คุณต้องการเปลี่ยนสถานะเป็น ${enable ? 'ใช้งานได้' : 'ปิดการใช้งาน'} ใช่หรือไม่?`,
       icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'ใช่',
       cancelButtonText: 'ไม่ใช่',
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log("id",productId);
-        console.log(visibility);
-        axios.put(`${process.env.REACT_APP_API}/product/update-visibility/${productId}`, { visibility: newVisibility })
+        // ส่งข้อมูลการเปลี่ยนแปลงไปยังเซิร์ฟเวอร์
+        console.log("id",idUser);
+        console.log(enable);
+        axios.put(`${process.env.REACT_APP_API}/customer/update-enable/${idUser}`, { enable: enable })
           .then(response => {
-            console.log('Visibility updated successfully');
             Swal.fire({
               title: 'เปลี่ยนแปลงสถานะสำเร็จ',
               icon: 'success',
@@ -35,10 +36,11 @@ const SwitchButtonConfirm = ({ visibility, productId }) => {
               text: 'เกิดข้อผิดพลาดในการเปลี่ยนแปลงสถานะ',
               icon: 'error',
             });
-            setIsOn(!newVisibility);
+            setIsOn(!enable);
           });
       } else {
-        setIsOn(!newVisibility); 
+        
+        setIsOn(!enable); // ย้อนกลับการเปลี่ยนแปลงในสถานะ UI
       }
     });
   };
@@ -58,10 +60,10 @@ const SwitchButtonConfirm = ({ visibility, productId }) => {
         />
       </button>
       <span className={`ml-5 sm:text-sm md:text-base  ${isOn ? 'text-green-500' : 'text-gray-700'}`}>
-        {isOn ? 'อนุมติคำสั่งซื้อ' : 'ไม่อนุมัติคำสั่งซื้อ'}
+        {isOn ? 'ใช้งานได้' : 'ปิดการใช้งาน'}
       </span>
     </div>
   );
 };
 
-export default SwitchButtonConfirm;
+export default SwitchButton;

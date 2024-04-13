@@ -46,74 +46,63 @@ function Orders() {
   }, [isLoading]);
 
   useEffect(() => {
-    const fetchData = () => {
-      setIsLoading(true);
-      orderAPI.getOrderApprove().then((orderData) => {
-        setOrderApprove(orderData);
-      });
-      orderAPI.getOrderPayment().then((orderData) => {
-        const paymentFalseOrders = orderData.filter(
+    setIsLoading(true);
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const orderDataApprove = await orderAPI.getOrderApprove();
+        setOrderApprove(orderDataApprove);
+  
+        const orderDataPayment = await orderAPI.getOrderPayment();
+        const paymentFalseOrders = orderDataPayment.filter(
           (order) => order.payment === false
         );
         setOrderWaitPayment(paymentFalseOrders);
-      });
-      orderAPI.getOrderPayment().then((orderData) => {
-        const paymentTrueOrders = orderData.filter(
+  
+        const paymentTrueOrders = orderDataPayment.filter(
           (order) => order.payment === true
         );
         setOrderVerifyPayment(paymentTrueOrders);
-      });
-      orderAPI
-      .getOrderPrepare()
-      .then((orderData) => {
-        setOrderPrepare(orderData);
-      })
-      orderAPI
-        .getOrderSend()
-        .then((orderData) => {
-          const sendTrueOrders = orderData.filter(
-            (order) => order.sendproduct === false
-          );
-          setOrderSend(sendTrueOrders);
-        })
-        orderAPI
-        .getOrderSend()
-        .then((orderData) => {
-          const sendTrueOrders = orderData.filter(
-            (order) => order.sendproduct === true
-          );
-          setOrderSended(sendTrueOrders);
-        })
-        orderAPI
-        .getOrderComplete()
-        .then((orderData) => {
-          const completeTrueOrder = orderData.filter(
-            (order) => order.complete === true
-          );
-          setOrderComplete(completeTrueOrder);
-        })
-        orderAPI
-        .getOrderAll()
-        .then((orderData) => {
-          const completeTrueOrder = orderData.filter(
-            (order) => order.enable === false || order.cancelled === true
-          );
-          setOrderCancelled(completeTrueOrder);
-        })
-        .catch((err) => {
-          console.error("error", err);
-        });
-      setIsLoading(false);
-
-      
+  
+        const orderDataPrepare = await orderAPI.getOrderPrepare();
+        setOrderPrepare(orderDataPrepare);
+  
+        const orderDataSend = await orderAPI.getOrderSend();
+        const sendFalseOrders = orderDataSend.filter(
+          (order) => order.sendproduct === false
+        );
+        setOrderSend(sendFalseOrders);
+  
+        const sendTrueOrders = orderDataSend.filter(
+          (order) => order.sendproduct === true
+        );
+        setOrderSended(sendTrueOrders);
+  
+        const orderDataComplete = await orderAPI.getOrderComplete();
+        const completeTrueOrders = orderDataComplete.filter(
+          (order) => order.complete === true
+        );
+        setOrderComplete(completeTrueOrders);
+  
+        const orderDataAll = await orderAPI.getOrderAll();
+        const cancelledOrders = orderDataAll.filter(
+          (order) => order.enable === false || order.cancelled === true
+        );
+        setOrderCancelled(cancelledOrders);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        
+      } 
     };
-    fetchData();
-    // Return a cleanup function to clear the interval
-    return () => clearInterval();
-  }, []);
-  console.log("test");
-  console.log(orderApprove.length);
 
+    setIsLoading(false);
+    fetchData();
+
+ 
+
+  }, []);
+  
+ 
   const [userName, setUserName] = React.useState("");
   const [userData, setUserData] = useState(null);
 
@@ -149,7 +138,6 @@ function Orders() {
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");
-    console.log("authToken", authToken);
 
     if (authToken) {
       // Set up axios default headers
@@ -298,12 +286,11 @@ function Orders() {
         >
           สำเร็จ
           {orderComplete.length > 0 ? (
-            <div className="relative ml-2 inline-block">
-              <RiNotification3Fill className=" h-8 w-8 text-red-300 filter drop-shadow-md" />
-              <span className="absolute top-1 right-[1px] mr-1 mt-1 text-white  text-xs px-2">
-                {orderComplete.length > 99 ? "99+" : orderComplete.length}
+        
+              <span className="ml-2">
+                ({orderComplete.length > 99 ? "99+" : orderComplete.length})
               </span>
-            </div>
+      
           ) : null}
         </button>
         <button
@@ -313,13 +300,12 @@ function Orders() {
           onClick={() => navigate("/orders/cancelled")}
         >
           ยกเลิกแล้ว
-          {orderComplete.length > 0 ? (
-            <div className="relative inline-block ml-2">
-              <RiNotification3Fill className=" h-8 w-8 text-red-300 filter drop-shadow-md" />
-              <span className="absolute top-1 right-[1px] mr-1 mt-1 text-white  text-xs px-2">
-                {orderComplete.length > 99 ? "99+" : orderComplete.length}
-              </span>
-            </div>
+          {orderCancelled.length > 0 ? (
+            
+              <span className="ml-2">
+                ({orderCancelled.length > 99 ? "99+" : orderCancelled.length})
+                </span>
+            
           ) : null}
         </button>
       </div>

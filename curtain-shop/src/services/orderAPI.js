@@ -111,6 +111,15 @@ const OrderAPI = {
         throw err;
     })
   },
+  searchOrderAll: async (name) => {
+    return axios 
+    .get(`${process.env.REACT_APP_API}/customer/all/order/all-s?name=${name}`)
+    .then((response) => response.data)
+    .catch((err)=>{
+        console.error(err);
+        throw err;
+    })
+  },
 
   updateOrderApprove: async (idOrder,order,approve) => {
     try {

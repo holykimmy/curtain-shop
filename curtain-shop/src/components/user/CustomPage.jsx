@@ -542,18 +542,54 @@ function CustomPage() {
 
   const [product, setProduct] = useState([]);
 
+  console.log("test");
+  console.log(data.p_type);
+  const firstdata = data.p_type ? data.p_type.split(",")[0].trim() : "";
+  console.log(firstdata);
+
   useEffect(() => {
+    setIsLoading(true);
     const fetchData = async () => {
       try {
-        const productData = await productAPI.getProductTypePolyester();
-        setProduct(productData);
+        let productData;
+        // ตรวจสอบค่า data.p_type และกำหนดให้เรียกใช้ productAPI ตามที่ต้องการ
+        if (firstdata === "ผ้าใยสังเคราะห์ (polyester)") {
+          productData = await productAPI.getProductTypePolyester();
+          setProduct(productData);
+          setIsLoading(false);
+        } else if (firstdata === "ผ้าฝ้าย (cotton)") {
+          productData = await productAPI.getProductTypeCotton();
+          setProduct(productData);
+          setIsLoading(false);
+        } else if (firstdata === "ผ้ากำมะหยี่ (velvet)") {
+          productData = await productAPI.getProductTypeVelvet();
+          setProduct(productData);
+          setIsLoading(false);
+        } else if (firstdata === "ผ้าซาติน (satin)") {
+          productData = await productAPI.getProductTypeSatin();
+          setProduct(productData);
+          setIsLoading(false);
+        } else if (firstdata === "ผ้าลินิน (linen)") {
+          productData = await productAPI.getProductTypeLinen();
+          setProduct(productData);
+          setIsLoading(false);
+        } else if (firstdata === "ผ้าใยผสม (mixed)") {
+          productData = await productAPI.getProductTypeMixed();
+          setProduct(productData);
+          setIsLoading(false);
+        } else if (firstdata === "ผ้ากันแสง (blackout)") {
+          productData = await productAPI.getProductTypeBlackout();
+          setProduct(productData);
+          setIsLoading(false);
+        }
       } catch (err) {
         console.error("เกิดข้อผิดพลาดในการดึงข้อมูล", err);
+        setIsLoading(false);
       }
     };
-
     fetchData();
-  }, []);
+  }, [firstdata]);
+  console.log(product);
 
   return (
     <>

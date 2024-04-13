@@ -51,8 +51,8 @@ function AboutOrderPage() {
   }, [isLoading]);
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchData = async () => {
-      setIsLoading(true);
       try {
         const waitPaymentData = await customerAPI.getOrderByIdWaitPayment(idUser);
         setOrderWaitPayment(waitPaymentData);
@@ -68,14 +68,11 @@ function AboutOrderPage() {
       } catch (error) {
         setIsLoading(false);
         console.error("Error fetching data:", error);
-      } finally {
-        setIsLoading(false);
-      }
+      } 
+      setIsLoading(false);
     };
     
     fetchData();
-  
-    return () => clearInterval();
   }, [idUser]);
   
   console.log(orderRecive);

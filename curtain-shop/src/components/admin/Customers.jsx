@@ -6,20 +6,19 @@ import productAPI from "../../services/productAPI";
 import SwitchButton from "./switchbutton";
 import CustomerAPI from "../../services/customerAPI";
 import Swal from "sweetalert2";
+import SwitchEnable from "./switchEnable";
 
 function Customers() {
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const location = useLocation();
-  console.log(location.state);
 
   useEffect(() => {
     if (isLoading) {
       Swal.fire({
         customClass: {
-          popup: "bg-transparent",
+          popup: "bg-transparent"
         },
         backdrop: "rgba(255, 255, 255, 0.5)",
         showConfirmButton: false,
@@ -27,7 +26,7 @@ function Customers() {
           Swal.showLoading();
         },
         allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
-        allowEscapeKey: false, // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
       });
     } else {
       Swal.close();
@@ -35,15 +34,16 @@ function Customers() {
   }, [isLoading]);
 
   useEffect(() => {
-    setIsLoading(true)
+    setIsLoading(true);
     const fetchData = () => {
       CustomerAPI.getAllCustomer()
         .then((orderData) => {
           setData(orderData);
-          setIsLoading(false)
+          setIsLoading(false);
         })
         .catch((err) => {
           console.error("error", err);
+          setIsLoading(false);
         });
     };
     fetchData();
@@ -52,12 +52,13 @@ function Customers() {
   const handleSearch = async () => {
     setIsLoading(true);
     try {
-      const searchData = await productAPI.getSearch(searchTerm);
-      setSearchResults(searchData); // เซตค่า searchResults ที่ได้จากการค้นหาเข้า state
-      setIsLoading(false)
+      const searchData = await CustomerAPI.getSearch(searchTerm);
+      setSearchResults(searchData);
+      console.log(searchData);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching search results:", error);
-      // แสดงข้อความผิดพลาดหรือจัดการข้อผิดพลาดตามที่ต้องการ
+      setIsLoading(false);
     }
   };
 
@@ -93,19 +94,11 @@ function Customers() {
             </div>
           </button>
         </label>
-        {searchResults.length > 0 ? (
-          searchResults.map((product) => (
-            <div key={product._id} className="flex justify-center"></div>
-          ))
-        ) : (
-          searchTerm &&  <>
-        <p className="text-sm text-gray-600">ไม่พบข้อมูล</p>
-        <hr className="w-full mt-4 mb-2 border-gray-300" />
-      </>
-        )}
-        {data.map((customer) => (
-          <div key={customer._id} className="flex justify-center">
-            <div className="flex justify-between w-[97%] sm:w-[97%] md:w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
+        {searchResults.length > 0
+          ? searchResults.map((customer) => (
+              <>
+              <div key={customer._id} className="flex justify-center">
+            <div className="flex  flex-col justify-between w-[97%] sm:w-[97%] md:w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
               <div className="pl-5 w-[60%]">
                 <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
                   ชื่อ - นามสกุล : {customer.f_name}{" "}
@@ -117,9 +110,7 @@ function Customers() {
                 <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
                   เบอร์โทรศัพท์ : {customer.tell}
                 </p>
-                {/* <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                  ที่อยู่ :{" "}
-                </p> */}
+            
                 {customer.address && customer.address.length > 0 && (
                   <>
                     {customer.address.map((address, index) => (
@@ -147,15 +138,76 @@ function Customers() {
                   </>
                 )}
               </div>
-              <div>
-                <div>
-                  <button className=" bg-blue-200 py-2 px-auto w-[80px] rounded-full shadow-xl hover:bg-blue-400 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-xs md:text-md lg:text-md xl:text-md  text-white ">
-                    แก้ไขข้อมูล
-                  </button>
-                </div>
-                <button className="bg-red-300 mt-3 py-2 px-auto w-[80px] rounded-full shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-xs md:text-md lg:text-md xl:text-md text-white">
-                  ลบข้อมูล
-                </button>
+              <div className="flex items-center ml-7 mt-5 ">
+                
+                <SwitchEnable
+                  enable={customer.enable}
+                  idUser={customer._id}
+                />
+                
+              
+              </div>
+            </div>
+          </div>
+                <hr className="w-full mt-4 mb-2 border-gray-300" />
+              </>
+            ))
+          : searchTerm && (
+              <>
+                <p className="text-sm text-gray-600">ไม่พบข้อมูล</p>
+                <hr className="w-full mt-4 mb-2 border-gray-300" />
+              </>
+            )}
+        {data.map((customer) => (
+          <div key={customer._id} className="flex justify-center">
+            <div className="flex  flex-col justify-between w-[97%] sm:w-[97%] md:w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
+              <div className="pl-5 w-[60%]">
+                <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                  ชื่อ - นามสกุล : {customer.f_name}{" "}
+                  <span className="ml-2"> {customer.l_name} </span>
+                </p>
+                <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                  อีเมลล์ : {customer.email}
+                </p>
+                <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                  เบอร์โทรศัพท์ : {customer.tell}
+                </p>
+            
+                {customer.address && customer.address.length > 0 && (
+                  <>
+                    {customer.address.map((address, index) => (
+                      <div key={index} className="mt-4">
+                        <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                          ที่อยู่ {index + 1} :{" "}
+                        </p>
+                        <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                          บ้านเลขที่ : {address.houseNo}
+                        </p>
+                        <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                          แขวง/ตำบล : {address.sub_district}
+                        </p>
+                        <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                          เขต/อำเภอ : {address.district}
+                        </p>
+                        <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                          จังหวัด : {address.province}
+                        </p>
+                        <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                          รหัสไปรษณีย์ : {address.postcode}
+                        </p>
+                      </div>
+                    ))}
+                  </>
+                )}
+              </div>
+              <div className="flex items-center ml-7 mt-5 ">
+                
+                <SwitchEnable
+                  enable={customer.enable}
+                  idUser={customer._id}
+                />
+                
+              
               </div>
             </div>
           </div>

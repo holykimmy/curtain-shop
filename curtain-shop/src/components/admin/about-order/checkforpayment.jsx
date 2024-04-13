@@ -13,10 +13,30 @@ const WaitingForPayment = ({ idUser }) => {
   const [userOrder, setUserOrder] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.5)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
 
   useEffect(() => {
     const fetchData = () => {
+      setIsLoading(true)
+
       orderAPI
         .getOrderPayment()
         .then((orderData) => {
@@ -24,21 +44,22 @@ const WaitingForPayment = ({ idUser }) => {
             (order) => order.payment === true
           );
           setUserOrder(paymentTrueOrders);
+          setIsLoading(false)
+
         })
         .catch((err) => {
           console.error("error", err);
+          setIsLoading(false)
+
         });
     };
     fetchData();
 
-    // Return a cleanup function to clear the interval
-    return () => clearInterval();
   }, [idUser]);
 
   console.log(userOrder);
 
   const handleCancelOrder = async (idOrder) => {
-    // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
     const confirmation = await Swal.fire({
       title: "ยืนยันการยกเลิกคำสั่งซื้อ",
       text: "คุณแน่ใจหรือไม่ที่ต้องการยกเลิกคำสั่งซื้อนี้?",
@@ -57,18 +78,23 @@ const WaitingForPayment = ({ idUser }) => {
   };
 
   const handleSearch = async () => {
+    setIsLoading(true)
+
     try {
       const searchData = await orderAPI.searchOrderPayment(searchTerm);
-      console.log("search", searchTerm);
-      setSearchResults(searchData); 
+      const paymentTrueOrders = searchData.filter(
+        (order) => order.payment === true
+      );
+      setSearchResults(paymentTrueOrders); 
+      setIsLoading(false)
+
     } catch (error) {
       console.error("Error fetching search results:", error);
-      // แสดงข้อความผิดพลาดหรือจัดการข้อผิดพลาดตามที่ต้องการ
+      setIsLoading(false)
     }
   };
 
   const handleVerifyOrder = async (idOrder,order) => {
-    // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
     const confirmation = await Swal.fire({
       title: "ยืนยันการชำระเงิน",
       text: "ลูกค้าชำระเงินสำเร็จแล้วใช่หรือไม่?",
@@ -84,13 +110,14 @@ const WaitingForPayment = ({ idUser }) => {
     if (confirmation.isConfirmed) {
       try {
         const response = await orderAPI.updateOrderVerifyPayment(idOrder,order, true);
-        console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
         await Swal.fire({
           title: "ยืนยันการชำระเงิน",
           text: "คำสั่งซื้อได้รับการยืนยันแล้ว",
           icon: "success",
-        });
-        // window.location.reload();
+        }).then(()=>{
+          window.location.reload();
+        })
+        
       } catch (error) {
         console.error("Error cancelling order:", error);
         // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
@@ -150,7 +177,7 @@ const WaitingForPayment = ({ idUser }) => {
       {searchResults.length > 0 ? (
         searchResults.map((order) => (
           <>
-          <div key={order._id} className="flex justify-center">
+         <div key={order._id} className="flex justify-center">
           <div className="flex justify-between w-[97%] sm:w-[97%] md:w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
             <div className="pl-5 w-full">
               <p className=" text-center text-sm sm:text-xs md:text-xs lg:text-base xl:text-xbasel text-brown-400">
@@ -208,8 +235,9 @@ const WaitingForPayment = ({ idUser }) => {
                       </p>
                     </div>
                   </div>
-                  {index !== order.products.length - 1 && <hr className="w-full mt-10 mb-2 border-gray-300" />} 
-
+                  {index !== order.products.length - 1 && (
+                    <hr className="w-full mt-4 mb-2 border-gray-300" />
+                  )}
                 </div>
               ))}
               {/* </div> */}
@@ -266,7 +294,7 @@ const WaitingForPayment = ({ idUser }) => {
                   </button>
                 </div>
               </div>
-            </div> 
+            </div>
           </div>
         </div>
         <hr className="w-full mt-4 mb-2 border-gray-300" /></>

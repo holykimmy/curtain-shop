@@ -13,10 +13,30 @@ const ReceiveOrder = ({ idUser }) => {
   const [userOrder, setUserOrder] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.5)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
 
   useEffect(() => {
     const fetchData = () => {
+      setIsLoading(true)
+
       orderAPI
         .getOrderSend()
         .then((orderData) => {
@@ -24,94 +44,43 @@ const ReceiveOrder = ({ idUser }) => {
             (order) => order.sendproduct === true
           );
           setUserOrder(sendTrueOrders);
+          setIsLoading(false)
+
         })
         .catch((err) => {
           console.error("error", err);
+          setIsLoading(false)
+
         });
     };
     fetchData();
 
-    // Return a cleanup function to clear the interval
-    return () => clearInterval();
   }, [idUser]);
 
   console.log(userOrder);
 
-  const handleCancelOrder = async (idOrder) => {
-    // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
-    const confirmation = await Swal.fire({
-      title: "ยืนยันการยกเลิกคำสั่งซื้อ",
-      text: "คุณแน่ใจหรือไม่ที่ต้องการยกเลิกคำสั่งซื้อนี้?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "ยืนยัน",
-      cancelButtonText: "ยกเลิก"
-    });
-
-    // หากผู้ใช้กดปุ่มยืนยัน
-    if (confirmation.isConfirmed) {
-      try {
-        const response = await customerAPI.updateOrderEnable(idOrder, false);
-        console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
-        await Swal.fire({
-          title: "ยกเลิกสำเร็จ",
-          text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
-          icon: "success"
-        });
-        window.location.reload();
-      } catch (error) {
-        console.error("Error cancelling order:", error);
-        // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
-      }
-    }
-  };
 
   const handleSearch = async () => {
+    setIsLoading(true)
+
     try {
+
       const searchData = await orderAPI.searchOrderSend(searchTerm);
-      console.log("search", searchTerm);
-      setSearchResults(searchData); // เซตค่า searchResults ที่ได้จากการค้นหาเข้า state
+      const sendTrueOrders = searchData.filter(
+        (order) => order.sendproduct === true
+      );
+      setSearchResults(sendTrueOrders); 
+      setIsLoading(false)
+
     } catch (error) {
       console.error("Error fetching search results:", error);
-      // แสดงข้อความผิดพลาดหรือจัดการข้อผิดพลาดตามที่ต้องการ
+      setIsLoading(false)
+
     }
   };
 
-  const handleSendOrder = async (idOrder) => {
-    // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
-    const confirmation = await Swal.fire({
-      title: "ยืนยันคำสั่งซื้อ",
-      text: "จัดส่งสินค้าแล้วใช่หรือไม่?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "ใช่",
-      cancelButtonText: "ยกเลิก"
-    });
-
-    // หากผู้ใช้กดปุ่มยืนยัน
-    if (confirmation.isConfirmed) {
-      try {
-        const response = await orderAPI.updateOrderSend(idOrder, true);
-        console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
-        await Swal.fire({
-          title: "ยืนยันคำสั่งซื้อ",
-          text: "จัดส่งสินค้าเรียบร้อยแล้ว",
-          icon: "success"
-        });
-        window.location.reload();
-      } catch (error) {
-        console.error("Error cancelling order:", error);
-        // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
-      }
-    }
-  };
 
   const handdleOrderdetail = async (idOrder) => {
-    // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
     const confirmation = await Swal.fire({
       title: "ดูรายละเอียดคำสั่งซื้อ",
       icon: "warning",

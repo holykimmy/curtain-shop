@@ -13,8 +13,29 @@ const CancelOrder = ({ idUser }) => {
   const [userOrder, setUserOrder] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.5)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
+
+  useEffect(() => {
+    setIsLoading(true);
     const fetchData = () => {
       orderAPI
         .getOrderAll()
@@ -23,29 +44,32 @@ const CancelOrder = ({ idUser }) => {
             (order) => order.enable === false || order.cancelled === true
           );
           setUserOrder(completeTrueOrder);
+          setIsLoading(false);
         })
         .catch((err) => {
           console.error("error", err);
+          setIsLoading(false);
         });
     };
-    fetchData();
 
-    // Return a cleanup function to clear the interval
-    return () => clearInterval();
+    fetchData();
   }, [idUser]);
 
   console.log(userOrder);
 
-
-
   const handleSearch = async () => {
+    setIsLoading(true);
+
     try {
-      const searchData = await orderAPI.searchOrderApprove(searchTerm);
-      console.log("search", searchTerm);
-      setSearchResults(searchData); // เซตค่า searchResults ที่ได้จากการค้นหาเข้า state
+      const searchData = await orderAPI.searchOrderAll(searchTerm);
+      const completeTrueOrder = searchData.filter(
+        (order) => order.enable === false || order.cancelled === true
+      );
+      setSearchResults(completeTrueOrder);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching search results:", error);
-      // แสดงข้อความผิดพลาดหรือจัดการข้อผิดพลาดตามที่ต้องการ
+      setIsLoading(false);
     }
   };
 
@@ -116,7 +140,6 @@ const CancelOrder = ({ idUser }) => {
                       ชื่อ : {order.orderBy.f_name} {order.orderBy.l_name}
                     </p>
 
-                    {/* <div className="flex flex-wrap justify-center py-4"> */}
                     {order.products.map((item, index) => (
                       <div
                         key={item._id}
@@ -159,7 +182,7 @@ const CancelOrder = ({ idUser }) => {
                           </div>
                         </div>
                         {index !== order.products.length - 1 && (
-                          <hr className="w-full mt-10 mb-2 border-gray-300" />
+                          <hr className="w-full mt-4 mb-2 border-gray-300" />
                         )}
                       </div>
                     ))}
@@ -182,10 +205,16 @@ const CancelOrder = ({ idUser }) => {
                       ราคารวม : {numberWithCommas(order.totalPrice)} บาท
                     </p>
 
-
                     <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-1">
-                      {!order.enable ? "ยกเลิกสินค้าแล้ว" : null}
+                      {!order.enable ? " สถานะ : ยกเลิกสินค้าโดยลูกค้า" : null}
                     </p>
+                    {order.verifycancelled ? (
+                      <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-1">
+                        ยกเลิกสินค้าโดยแอดมินเนื้องจาก {order.cancelReasonAd}
+                      </p>
+                    ) : (
+                      " "
+                    )}
 
                     <div className="flex justify-between">
                       <div className="flex justify-start ">
@@ -198,21 +227,7 @@ const CancelOrder = ({ idUser }) => {
                           ดูรายละเอียดคำสั่งซื้อ{" "}
                         </button>
                       </div>
-                      <div className="flex justify-end ">
-                        {/* <button
-                          className="bg-green-400 mt-3 mx-2 py-2 px-auto w-[150px] rounded-full shadow-xl hover:bg-green-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
-                          onClick={() => handlePanddingOrder(order._id)}
-                        >
-                          สินค้าเสร็จแล้ว
-                        </button>
-
-                        <button
-                          className="bg-red-300 mt-3  mx-2 py-2 px-auto w-[120px] rounded-full shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
-                          onClick={() => handleCancelOrder(order._id)}
-                        >
-                          ยกเลิกคำสั่งซื้อ
-                        </button> */}
-                      </div>
+                      <div className="flex justify-end "></div>
                     </div>
                   </div>
                 </div>
@@ -243,7 +258,6 @@ const CancelOrder = ({ idUser }) => {
                 ชื่อ : {order.orderBy.f_name} {order.orderBy.l_name}
               </p>
 
-              {/* <div className="flex flex-wrap justify-center py-4"> */}
               {order.products.map((item, index) => (
                 <div
                   key={item._id}
@@ -308,9 +322,8 @@ const CancelOrder = ({ idUser }) => {
                 ราคารวม : {numberWithCommas(order.totalPrice)} บาท
               </p>
 
-        
               <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-1">
-                 {!order.enable ? " สถานะ : ยกเลิกสินค้าโดยลูกค้า" : null}
+                {!order.enable ? " สถานะ : ยกเลิกสินค้าโดยลูกค้า" : null}
               </p>
               {order.verifycancelled ? (
                 <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-1">
@@ -331,21 +344,7 @@ const CancelOrder = ({ idUser }) => {
                     ดูรายละเอียดคำสั่งซื้อ{" "}
                   </button>
                 </div>
-                <div className="flex justify-end ">
-                  {/* <button
-                    className="bg-green-400 mt-3 mx-2 py-2 px-auto w-[150px] rounded-full shadow-xl hover:bg-green-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
-                    onClick={() => handlePanddingOrder(order._id)}
-                  >
-                    สินค้าเสร็จแล้ว
-                  </button>
-
-                  <button
-                    className="bg-red-300 mt-3  mx-2 py-2 px-auto w-[120px] rounded-full shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
-                    onClick={() => handleCancelOrder(order._id)}
-                  >
-                    ยกเลิกคำสั่งซื้อ
-                  </button> */}
-                </div>
+                <div className="flex justify-end "></div>
               </div>
             </div>
           </div>

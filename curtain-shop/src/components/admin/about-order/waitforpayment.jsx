@@ -13,9 +13,29 @@ const WaitingForPayment = ({ idUser }) => {
   const [userOrder, setUserOrder] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.5)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
 
   useEffect(() => {
     const fetchData = () => {
+      setIsLoading(true);
       orderAPI
         .getOrderPayment()
         .then((orderData) => {
@@ -23,21 +43,20 @@ const WaitingForPayment = ({ idUser }) => {
             (order) => order.payment === false
           );
           setUserOrder(paymentFalseOrders);
+          setIsLoading(false);
         })
         .catch((err) => {
           console.error("error", err);
+          setIsLoading(false);
         });
     };
+
     fetchData();
 
-    // Return a cleanup function to clear the interval
-    return () => clearInterval();
   }, [idUser]);
 
-  console.log(userOrder);
 
   const handleCancelOrder = async (idOrder) => {
-    // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
     const confirmation = await Swal.fire({
       title: "ยืนยันการยกเลิกคำสั่งซื้อ",
       text: "คุณแน่ใจหรือไม่ที่ต้องการยกเลิกคำสั่งซื้อนี้?",
@@ -46,7 +65,7 @@ const WaitingForPayment = ({ idUser }) => {
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "ยืนยัน",
-      cancelButtonText: "ยกเลิก",
+      cancelButtonText: "ยกเลิก"
     });
 
     // หากผู้ใช้กดปุ่มยืนยัน
@@ -55,15 +74,18 @@ const WaitingForPayment = ({ idUser }) => {
     }
   };
 
- 
   const handleSearch = async () => {
+    setIsLoading(true);
     try {
       const searchData = await orderAPI.searchOrderPayment(searchTerm);
-      console.log("search", searchTerm);
-      setSearchResults(searchData); // เซตค่า searchResults ที่ได้จากการค้นหาเข้า state
+      const paymentFalseOrders = searchData.filter(
+        (order) => order.payment === false
+      );
+      setSearchResults(paymentFalseOrders);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching search results:", error);
-      // แสดงข้อความผิดพลาดหรือจัดการข้อผิดพลาดตามที่ต้องการ
+      setIsLoading(false);
     }
   };
 
@@ -77,18 +99,17 @@ const WaitingForPayment = ({ idUser }) => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "ใช่",
-      cancelButtonText: "ยกเลิก",
+      cancelButtonText: "ยกเลิก"
     });
 
     // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
       try {
         const response = await orderAPI.updateOrderVerifyPayment(idOrder, true);
-        console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
         await Swal.fire({
           title: "ยืนยันการชำระเงิน",
           text: "คำสั่งซื้อได้รับการยืนยันแล้ว",
-          icon: "success",
+          icon: "success"
         }).then(() => {
           window.location.reload();
         });
@@ -107,7 +128,7 @@ const WaitingForPayment = ({ idUser }) => {
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "ยืนยัน",
-      cancelButtonText: "ยกเลิก",
+      cancelButtonText: "ยกเลิก"
     });
 
     // หากผู้ใช้กดปุ่มยืนยัน
@@ -116,14 +137,13 @@ const WaitingForPayment = ({ idUser }) => {
     }
   };
 
-
   const numberWithCommas = (x) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
   return (
     <>
-       <label
+      <label
         className="mx-auto mt-4 mb-4 relative bg-white min-w-sm max-w-2xl flex flex-col md:flex-row items-center justify-center border py-2 px-2 rounded-2xl gap-2 shadow-xl focus-within:border-gray-300"
         for="search-bar"
       >
@@ -148,10 +168,10 @@ const WaitingForPayment = ({ idUser }) => {
         </button>
       </label>
 
-      {searchResults.length > 0 ? (
-        searchResults.map((order) => (
-          <>
-          <div key={order._id} className="flex justify-center">
+      {searchResults.length > 0
+        ? searchResults.map((order) => (
+            <>
+              <div key={order._id} className="flex justify-center">
           <div className="flex justify-between w-[97%] sm:w-[97%] md:w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
             <div className="pl-5 w-full">
               <p className=" text-center text-sm sm:text-xs md:text-xs lg:text-base xl:text-xbasel text-brown-400">
@@ -204,13 +224,13 @@ const WaitingForPayment = ({ idUser }) => {
                         จำนวน : {item.count} หลา
                       </p>
                       <p className="text-sm text-gray-600">
-                        รวม :{" "}
-                        {numberWithCommas(item.totaPiece)} บาท
+                        รวม : {numberWithCommas(item.totalPiece)} บาท
                       </p>
                     </div>
                   </div>
-                  {index !== order.products.length - 1 && <hr className="w-full mt-10 mb-2 border-gray-300" />} 
-
+                  {index !== order.products.length - 1 && (
+                    <hr className="w-full mt-4 mb-2 border-gray-300" />
+                  )}
                 </div>
               ))}
               {/* </div> */}
@@ -223,8 +243,8 @@ const WaitingForPayment = ({ idUser }) => {
                   {order.sendAddress.postcode}
                 </p>
               )}
-             
-             <p className=" text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1 whitespace-pre-wrap">
+
+              <p className=" text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1 whitespace-pre-wrap">
                 การจัดส่ง : {order.deliveryIs.split("\n")[0]}
               </p>
               <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
@@ -253,13 +273,6 @@ const WaitingForPayment = ({ idUser }) => {
                 </div>
                 <div className="flex justify-end ">
                   <button
-                    className="bg-green-400 mt-3 mx-2 py-2 px-auto w-[150px] rounded-full shadow-xl hover:bg-green-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
-                    onClick={() => handleVerifyOrder(order._id)}
-                  >
-                    ชำระเงินเรียบร้อย
-                  </button>
-
-                  <button
                     className="bg-red-300 mt-3  mx-2 py-2 px-auto w-[120px] rounded-full shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
                     onClick={() => handleCancelOrder(order._id)}
                   >
@@ -267,21 +280,20 @@ const WaitingForPayment = ({ idUser }) => {
                   </button>
                 </div>
               </div>
-            </div> 
+            </div>
           </div>
         </div>
-        <hr className="w-full mt-4 mb-2 border-gray-300" /></>
-        ))
-      ) : (
-        searchTerm &&  <>
-        <p className="text-sm text-gray-600">ไม่พบข้อมูล</p>
-        <hr className="w-full mt-4 mb-2 border-gray-300" />
-      </>
-      )}
+              <hr className="w-full mt-4 mb-2 border-gray-300" />
+            </>
+          ))
+        : searchTerm && (
+            <>
+              <p className="text-sm text-gray-600">ไม่พบข้อมูล</p>
+              <hr className="w-full mt-4 mb-2 border-gray-300" />
+            </>
+          )}
       {userOrder.map((order) => (
-       
         <div key={order._id} className="flex justify-center">
-        
           <div className="flex justify-between w-[97%] sm:w-[97%] md:w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
             <div className="pl-5 w-full">
               <p className=" text-center text-sm sm:text-xs md:text-xs lg:text-base xl:text-xbasel text-brown-400">
@@ -334,8 +346,7 @@ const WaitingForPayment = ({ idUser }) => {
                         จำนวน : {item.count} หลา
                       </p>
                       <p className="text-sm text-gray-600">
-                        รวม :{" "}
-                        {numberWithCommas(item.totalPiece)} บาท
+                        รวม : {numberWithCommas(item.totalPiece)} บาท
                       </p>
                     </div>
                   </div>
@@ -354,20 +365,18 @@ const WaitingForPayment = ({ idUser }) => {
                   {order.sendAddress.postcode}
                 </p>
               )}
-             
-             <p className=" text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1 whitespace-pre-wrap">
+
+              <p className=" text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1 whitespace-pre-wrap">
                 การจัดส่ง : {order.deliveryIs.split("\n")[0]}
               </p>
               <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
                 ราคารวม : {numberWithCommas(order.totalPrice)} บาท
               </p>
-             
+
               {order.approve ? (
                 <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-1">
                   สถานะการชำระเงิน :{" "}
-                  {order.payment
-                    ? "ชำระเงินเรียบร้อย"
-                    : "รอการชำระเงิน"}
+                  {order.payment ? "ชำระเงินเรียบร้อย" : "รอการชำระเงิน"}
                 </p>
               ) : (
                 ""
@@ -385,8 +394,6 @@ const WaitingForPayment = ({ idUser }) => {
                   </button>
                 </div>
                 <div className="flex justify-end ">
-                 
-
                   <button
                     className="bg-red-300 mt-3  mx-2 py-2 px-auto w-[120px] rounded-full shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
                     onClick={() => handleCancelOrder(order._id)}
@@ -397,9 +404,7 @@ const WaitingForPayment = ({ idUser }) => {
               </div>
             </div>
           </div>
-
         </div>
-         
       ))}
     </>
   );

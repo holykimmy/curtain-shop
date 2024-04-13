@@ -108,10 +108,10 @@ const CustomerAPI = {
 
   getSearch: (search) => {
     return axios
-      .get(`${process.env.REACT_APP_API}/customer/?name=${search}`)
+      .get(`${process.env.REACT_APP_API}/customer/all/c-search?name=${search}`)
       .then((response) => response.data)
       .catch((error) => {
-        console.error("error fetch ", error);
+        console.error("Error fetching p_type options:", error);
         throw error;
       });
   },
