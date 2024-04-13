@@ -50,6 +50,32 @@ exports.register = async (req, res) => {
     const salt = await bcrypt.genSalt(Number(process.env.SALT));
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
+    // ส่งอีเมล
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "charoenkit.curtain@gmail.com",
+        pass: "ojpnyasephiohaqv"
+      }
+    });
+
+    const mailOptions = {
+      from: "charoenkit.curtain@gmail.com",
+      to: `${user.email} `,
+      subject: "สมัครสมาชิกสำเร็จ",
+      text: `เรียนคุณ ${user.f_name} ${user.l_name}
+      ยินดีต้อนรับ ท่านได้ทำการสมัครสมาชิกเรียบร้อยแล้ว
+      `
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending email:", error);
+      } else {
+        console.log("Email sent:", info.response);
+      }
+    });
+
     //save
     await new User({ ...req.body, password: hashedPassword }).save();
     res.status(201).json({ message: "สมัครรสมาชิกสำเร็จ" });
