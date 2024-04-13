@@ -58,6 +58,27 @@ function RegisterPage() {
     }
   };
 
+  const [isLoading, setIsLoading] = useState(true);
+  console.log("test");
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.7)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false,
+        allowEscapeKey: false
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
+
   const submitForm = (e) => {
     e.preventDefault();
 
@@ -83,6 +104,7 @@ function RegisterPage() {
       console.log("Password matched. Ready to save data.");
       // console.table({ f_name, l_name, username, email, tell, password });
       console.log("API URL = ", process.env.REACT_APP_API);
+      setIsLoading(true);
       axios
         .post(`${process.env.REACT_APP_API}/customer/register`, {
           f_name,
@@ -92,30 +114,26 @@ function RegisterPage() {
           tell,
           password
         })
-
         .then((response) => {
+          setIsLoading(false);
           Swal.fire({
-            title: "สมัครสมาชิกเสร็จสิ้น",
-            text: "คุณต้องการไปยังหน้าเข้าสู่ระบบหรือไม่?",
+            text: "สมัครสมาชิกเสร็จสิ้น",
             icon: "success",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "ไปยังหน้าเข้าสู่ระบบ",
-            cancelButtonText: "ไม่ต้องการ"
-          }).then((result) => {
-            if (result.isConfirmed) {
-              navigate("/login"); // นำผู้ใช้ไปยังหน้าเข้าสู่ระบบ
-            }
+            showCancelButton: false
+          }).then(() => {
+            navigate("/login");
           });
         })
         .catch((err) => {
+          setIsLoading(false);
+
           Swal.fire({
             icon: "error",
             text: err.response.data.error
           });
         });
     } else {
+      setIsLoading(false);
       Swal.fire({
         text: " รหัสผ่านไม่ตรงกัน ",
         icon: "error"
