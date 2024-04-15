@@ -13,14 +13,14 @@ import bangkokBank from "../img/bank/bangkokbank.png";
 function PaymentPage() {
   const { idOrder } = useParams();
   console.log("idOrder", idOrder);
-
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const [userName, setUserName] = React.useState("");
   const [idUser, setIdUser] = React.useState("");
   const [currentOrder, setCurrentOrder] = useState([]);
-
+  const [depositOrder, setDepositOrder] = useState("");
+  const [totalDeposit, setTotalDisposit] = useState("");
   const [user, setUser] = React.useState({
     username: "",
     f_name: "",
@@ -30,26 +30,56 @@ function PaymentPage() {
     address: ""
   });
 
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.7)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
+
   useEffect(() => {
     const fetchData = () => {
+      setIsLoading(true)
       customerAPI
         .getOrderByIdOrder(idOrder)
         .then((orderData) => {
           setCurrentOrder(orderData);
+          console.log("in order", orderData[0].deposit);
+          if (orderData[0].deposit) {
+            setTotalDisposit(orderData[0].totalPrice * 0.5);
+          } else {
+            setTotalDisposit(orderData[0].totalPrice);
+          }
+          setIsLoading(false);
         })
         .catch((err) => {
           console.error("error", err);
+          setIsLoading(false);
         });
     };
     fetchData();
+  }, [idOrder, depositOrder, totalDeposit]);
 
-    // Return a cleanup function to clear the interval
-    return () => clearInterval();
-  }, [idOrder]);
+
+  console.log("testtt", depositOrder);
 
   console.log("order : ", currentOrder);
+  console.log("check order toto dis", totalDeposit);
 
-  console.log("check order");
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");
@@ -141,8 +171,7 @@ function PaymentPage() {
     };
     fetchData();
 
-    // Return a cleanup function to clear the interval
-    return () => clearInterval();
+    
   }, [idUser]);
   console.log(address);
 
@@ -240,6 +269,8 @@ function PaymentPage() {
   };
 
   function handleDepositPayment(deposit) {
+    
+
     let message;
 
     if (deposit) {
@@ -248,7 +279,7 @@ function PaymentPage() {
       message = "คุณต้องการจ่ายเต็มราคาเลยใช่หรือไม่?";
     }
 
-    console.log("testt deposit : ",deposit);
+    console.log("testt deposit : ", deposit);
 
     Swal.fire({
       title: message,
@@ -262,11 +293,12 @@ function PaymentPage() {
         customerAPI
           .updateOrderDepositPayment(idOrder, deposit)
           .then((response) => {
+            
             Swal.fire({
               icon: "success"
-            }).then(() => {
-              navigate(`/payment/${idOrder}`);
             });
+            setDepositOrder(deposit);
+           
           })
           .catch((error) => {
             Swal.fire({
@@ -397,7 +429,7 @@ function PaymentPage() {
                     <div className="flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 space-y-6   ">
                       <div className="flex justify-center items-center w-full space-y-4 flex-col border-gray-200 border-b pb-4">
                         <div className="flex justify-between items-center w-full">
-                        <p className="text-xs md:text-sm xl:text-base leading-4 text-gray-800">
+                          <p className="text-xs md:text-sm xl:text-base leading-4 text-gray-800">
                             การจัดส่ง
                           </p>
                           <p className="text-xs md:text-sm xl:text-base  leading-4 text-gray-600 whitespace-pre-wrap text-right">
@@ -474,23 +506,15 @@ function PaymentPage() {
                               จ่ายเต็มราคาเลย
                             </button>
                           </div>
-                          {order.deposit ? (
-                            <p className="text-sm leading-6 text-gray-800">
-                              ราคาที่ต้องชำระ{" "}
-                              <span className="text-base font-bold">
-                                {numberWithCommas(order.totalPrice * 0.5)}
-                              </span>{" "}
-                              บาท
-                            </p>
-                          ) : (
-                            <p className="text-sm leading-6 text-gray-800">
-                              ราคาที่ต้องชำระ{" "}
-                              <span className="text-base font-bold">
-                                {numberWithCommas(order.totalPrice)}
-                              </span>{" "}
-                              บาท
-                            </p>
-                          )}
+
+                          <p className="text-sm leading-6 text-gray-800">
+                            ราคาที่ต้องชำระ{" "}
+                            <span className="text-base font-bold">
+                              {numberWithCommas(totalDeposit)}
+                            </span>{" "}
+                            บาท
+                          </p>
+
                           <div className="flex items-center shadow-md space-x-6 bg-white p-3 rounded-md">
                             <form id="uploadForm" encType="multipart/form-data">
                               <label className="block">

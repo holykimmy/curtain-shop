@@ -98,9 +98,10 @@ function RegisterPage() {
             icon: "success",
             showCancelButton: false,
             timer: 1500
-          }).then(() => {
-            navigate("/login");
-          });
+          })
+          // .then(() => {
+          //   navigate("/login");
+          // });
         })
         .catch((err) => {
          

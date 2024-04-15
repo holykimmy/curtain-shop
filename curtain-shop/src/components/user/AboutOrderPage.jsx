@@ -50,9 +50,11 @@ function AboutOrderPage() {
     }
   }, [isLoading]);
 
+
   useEffect(() => {
-    setIsLoading(true);
     const fetchData = async () => {
+      setIsLoading(true);
+
       try {
         const waitPaymentData = await customerAPI.getOrderByIdWaitPayment(idUser);
         setOrderWaitPayment(waitPaymentData);
@@ -65,6 +67,7 @@ function AboutOrderPage() {
         const allOrderData = await customerAPI.getOrderById(idUser);
         const cancelOrders = allOrderData.filter((order) => order.enable === false || order.cancelled === true);
         setOrderCancelled(cancelOrders);
+        
       } catch (error) {
         setIsLoading(false);
         console.error("Error fetching data:", error);
