@@ -54,13 +54,13 @@ const SwitchButton = ({ visibility, productId }) => {
       <button
         className={`${
           isOn ? 'bg-green-500' : 'bg-gray-300'
-        } w-[72px] h-[25px] md:w-18 md:h-8 rounded-full p-1 transition-colors duration-300 ease-in-out`}
+        } w-[68px] h-[25px] md:w-18 md:h-8 rounded-full p-1 transition-colors duration-300 ease-in-out`}
         onClick={toggleSwitch}
       >
         {/* sm:w-4 sm:h-4 */}
         <span
           className={`${
-            isOn ? 'translate-x-5 md:translate-x-4' : 'translate-x-[-15px] md:translate-x-[-14px] '
+            isOn ? 'translate-x-5 md:translate-x-4' : 'translate-x-[-15px] md:translate-x-[-10px] '
           } inline-block w-[18px] h-[18px] md:w-6 md:h-6 rounded-full  bg-white shadow-md transform transition-transform duration-300 ease-in-out`}
         />
       </button>

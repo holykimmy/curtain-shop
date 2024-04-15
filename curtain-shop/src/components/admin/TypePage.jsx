@@ -171,7 +171,7 @@ function AddTypePage() {
                     <img
                       src={`${process.env.REACT_APP_AWS}${item.image}`}
                       alt="types"
-                      className="h-[150px] max-w-full"
+                      className="w-[400px] max-w-full object-contain"
                     />
                   </td>
                   <td className="p-2 pr-5 border justify-center border-blue-gray-50 text-gray-700">

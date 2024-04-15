@@ -272,7 +272,8 @@ function AddProductPage() {
             />
           </div>
           {/* Input for file selection */}
-          <input
+          <input 
+          className="my-5"
             type="file"
             name="image"
             id="image"
@@ -280,7 +281,7 @@ function AddProductPage() {
             onChange={handleFileSelection}
           />
 
-          <div className="flex sm:flex-col md:flex-row lg:flex-row xl:flex-row justify-center md:justify-around items-center">
+          <div className="flex flex-col md:flex-row lg:flex-row xl:flex-row justify-center md:justify-around items-center">
             {/* Image preview */}
             {imagePreview && (
               <img
@@ -366,7 +367,7 @@ function AddProductPage() {
         </form>
       </div>
       <Link
-        to="/menu"
+        to="/dashboard"
         type="button"
         class="fixed bottom-0 flex justify-center ml-2 mb-2 w-1/2 px-5 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white border rounded-lg gap-x-2 sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700"
       >
