@@ -159,15 +159,15 @@ const CustomerAPI = {
   //     }
   // },
 
-  updateOrderEnable: async (idOrder, cancelReasonAd) => {
+  updateOrderEnable: async (idOrder) => {
 
     console.log("id order : ",idOrder);
-    console.log("cancel order : ",cancelReasonAd);
+    console.log("cancel order : ");
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_API}/customer/order/enable/${idOrder}`,
+        `${process.env.REACT_APP_API}/customer/order/enable/${idOrder}`
         
-        { cancelReason: cancelReasonAd }
+
       );
       return response.data;
     } catch (error) {

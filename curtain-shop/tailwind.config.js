@@ -22,7 +22,7 @@ module.exports = withMT({
         "b-gray": "#6A6969"
       },
       screens: {
-        sx: "300px",
+      
         sm: "576px",
         md: "768px",
 

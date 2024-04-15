@@ -229,7 +229,7 @@ function AccoutPage() {
               <div className="flex">
                 <div className="flex">
                   <button
-                    className=" mx-4 mt-4  mb-2 px-4 py-2 rounded-lg inline-block text-base bg-green-500 hover:bg-browntop hover:shadow-xl text-white focus:outline-none focus:shadow-outline"
+                    className=" mx-4 mt-4  mb-2 px-4 py-2 rounded-lg inline-block text-base bg-green-400 hover:bg-green-600 hover:shadow-xl text-white focus:outline-none focus:shadow-outline"
                     onClick={() => handleEditAddress(addressData)}
                   >
                     แก้ไขที่อยู่
@@ -237,7 +237,7 @@ function AccoutPage() {
                 </div>
                 <div className="flex">
                   <button
-                    className="mx-4 mt-4 mb-2 px-4 py-2 rounded-lg inline-block text-base bg-red-400 hover:bg-browntop hover:shadow-xl text-white focus:outline-none focus:shadow-outline"
+                    className="mx-4 mt-4 mb-2 px-4 py-2 rounded-lg inline-block text-base bg-red-400 hover:bg-red-600 hover:shadow-xl text-white focus:outline-none focus:shadow-outline"
                     onClick={() => handleDeleteAddress(addressData)}
                   >
                     ลบที่อยู่
@@ -251,7 +251,7 @@ function AccoutPage() {
       <div class="flex items-center justify-center mt-8">
         <Link
           to="/address"
-          class="w-[50%] text-center bg-brown-400 hover:bg-browntop hover:shadow-md text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          class="w-[50%] text-center bg-stone-500 hover:bg-browntop hover:shadow-md text-white font-bold py-2 px-4 mb-5 rounded focus:outline-none focus:shadow-outline"
           value="save"
           type="submit"
         >

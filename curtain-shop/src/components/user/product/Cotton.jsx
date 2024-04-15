@@ -100,7 +100,7 @@ function Cotton() {
     
   ) => {
     Swal.fire({
-      title: `คุณต้องการดูข้อมูลสินค้า ${productName} ใช่หรือไม่?`,
+      text: `คุณต้องการดูข้อมูลสินค้า ${productName} ใช่หรือไม่?`,
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -165,7 +165,7 @@ function Cotton() {
 
       <div class="titlea bg-brown-bg py-1 shadow-md">
         <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-9 xl:h-9 text-b-font"></BsPinFill>
-        <h5 className=" inline-block text-lg md:text-xl xl:text-2xl text-b-font  pl-4 p-2 my-1">
+        <h5 className=" inline-block text-base md:text-lg xl:text-xl text-b-font  pl-4 p-2 my-1">
           ผ้าฝ้าย ( velvet )
         </h5>
       </div>
@@ -194,20 +194,20 @@ function Cotton() {
               </div>
 
               {/* <div class="px-6 py-4 pl-5"> */}
-              <div class="pt-4 px-4 font-semibold text-brown-600 text-base md:text-base lg:text-lg inline-block hover:text-browntop transition duration-500 ease-in-out">
+              <div class="pt-4 px-4 font-semibold text-brown-600 text-sm md:text-base lg:text-lg inline-block hover:text-browntop transition duration-500 ease-in-out">
                 รายละเอียด
               </div>
               <div class="pt-2 px-4 font-semibold text-brown-600 text-sm md:text-base lg:text-base inline-block hover:text-browntop transition duration-500 ease-in-out">
                 รหัส : {product.name}
               </div>
-              <div className="pt-2 pb-4 px-4  text-sm md:text-base lg:text-base xl:text-base text-brown-400 whitespace-pre-wrap">
+              <div className="pt-2 pb-4 px-4  text-xs md:text-sm lg:text-base xl:text-base text-brown-400 whitespace-pre-wrap">
                 {product.detail.split("\r\n")[0]}
               </div>
               {/* </div> */}
 
               <button
                 onClick={() => handleDetailProduct(product._id, product.name)}
-                class="pl-5 mt-3 text-brown-500 text-sm md:base hover:text-browntop inline-flex items-center"
+                class="pl-5 mt-2 mb-1 text-brown-500 text-xs md:text-sm xl:text-base hover:text-browntop inline-flex items-center"
               >
                 อ่านพิ่มเติม
                 <HiOutlineArrowSmRight />

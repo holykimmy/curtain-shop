@@ -80,11 +80,11 @@ function LoginPage() {
 
   return (
     <>
-      <div className="w-full bg-brown-bg flex h-screen items-center justify-center">
-        <div class="container w-11/12 sm:w-96 mx-auto">
+      <div className="flex flex-col h-screen justify-center items-center bg-gradient-to-t from-brown-bg p-2">
+        <div class="mx-auto  items-center  rounded-[18px] shadow px-8 pt-6 pb-8  bg-white ">
           <form
             onSubmit={submitForm}
-            class="bg-white rounded-[18px] shadow px-8 pt-6 pb-8 mb-4  "
+            class="bg-white rounded-[18px] px-8 pt-6 pb-8 mb-4  "
           >
             <p class="text-center text-2xl text-b-font font-bold">
               เข้าสู่ระบบ
@@ -151,16 +151,17 @@ function LoginPage() {
                 checked={showPassword}
                 onChange={toggleShowPassword}
               />
-              <p className="inline-block ml-2 text-sm text-b-font">แสดงรหัสผ่าน</p>
+              <p className="inline-block ml-2 text-sm text-b-font">
+                แสดงรหัสผ่าน
+              </p>
             </div>
 
-          
             {error && (
               <div className="text-red-300 text-xs ml-2 mb-2 "> {error} </div>
             )}
             <div class="flex items-center justify-center">
               <button
-                class="w-full bg-stone-500 hover:bg-browntop hover:shadow-md text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                class="w-full bg-stone-500 my-4 hover:bg-browntop hover:shadow-md text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 value="save"
                 type="submit"
               >

@@ -173,7 +173,7 @@ function CustomPage() {
     fetch();
   }, []);
   console.log("testtt");
-  console.table(types);
+  // console.table(types);
 
   //product
   useEffect(() => {
@@ -233,18 +233,17 @@ function CustomPage() {
     setSelectedRail(event.target.value);
   };
 
-
   const [bgType, setBgType] = useState("");
 
-  const handleRadioChange = (twolayer, name, price_rail,bgimage) => {
-    console.log("rin", price_rail, twolayer,bgimage);
-    setSelectedType(name); 
-    setTypeById(twolayer); 
+  const handleRadioChange = (twolayer, name, price_rail, bgimage) => {
+    console.log("rin", price_rail, twolayer, bgimage);
+    setSelectedType(name);
+    setTypeById(twolayer);
     setPricerail(price_rail);
     setBgType(bgimage);
   };
   console.log("handch", pricerail);
-  console.log("bgtype",bgType);
+  console.log("bgtype", bgType);
   //add to cart
 
   // const cart = useSelector((state) => state.cart);
@@ -260,6 +259,7 @@ function CustomPage() {
     selectedType,
     selectedTwolayer,
     pricerail,
+    typeById,
     width,
     height,
     ...data
@@ -268,7 +268,7 @@ function CustomPage() {
 
     // ตรวจสอบค่า localStorage.getItem('cart')
     const cartFromStorage = localStorage.getItem("cart");
-    console.log("localStorage.getItem('cart'):", cartFromStorage);
+    // console.log("localStorage.getItem('cart'):", cartFromStorage);
 
     try {
       if (cartFromStorage) {
@@ -276,7 +276,6 @@ function CustomPage() {
       }
     } catch (error) {
       console.error("Error parsing JSON:", error);
-
       localStorage.removeItem("cart");
     }
 
@@ -296,14 +295,14 @@ function CustomPage() {
       });
     }
     console.log("------------end--------");
-    console.table(
-      data.id,
-      selectedType,
-      selectedRail,
-      selectedTwolayer,
-      width,
-      height
-    );
+    // console.table(
+    //   data.id,
+    //   selectedType,
+    //   selectedRail,
+    //   selectedTwolayer,
+    //   width,
+    //   height
+    // );
 
     if (!cart[idUser]) {
       cart[idUser] = [];
@@ -324,19 +323,54 @@ function CustomPage() {
     function generateCartId() {
       return Math.floor(Math.random() * 1000000); // สร้างเลขสุ่ม 6 หลักเป็น cartId
     }
-
+    console.log(data);
     if (existingProductIndex !== -1) {
       // เพิ่มค่า count ของสินค้านี้
       cart[idUser][existingProductIndex].count++;
-      const totalFabric = Math.ceil(width / data.p_width) * 2;
+      const numberOfPieces = Math.ceil(width / data.p_width);
+      console.log(
+        "numberOfPieces",
+        width,
+        "/",
+        data.p_width,
+        " = ",
+        numberOfPieces
+      );
+
+      // คำนวณผ้าทั้งหมด
+      const totalFabric = numberOfPieces * 2;
+      console.log("totalFabric", numberOfPieces, "* 2 = ", totalFabric);
+
+      // คำนวณค่าผ้าต่อชิ้น
       const fabricCostPerPiece = (height * totalFabric * data.price) / 100;
-      let pricerail = 0;
-      if (data.rail === "รับราง") {
-        pricerail = (data.price_rail * width) / 100;
+      console.log(
+        "fabricCostPerPiece",
+        "[",
+        height,
+        "*",
+        totalFabric,
+        "*",
+        data.price,
+        "]/100",
+        " = ",
+        fabricCostPerPiece
+      );
+
+      let priceofrail = 0;
+      console.log(selectedRail);
+      if (selectedRail === "รับราง") {
+        priceofrail = (pricerail * width) / 100;
+        console.log(
+          "price rail [",
+          pricerail,
+          "*",
+          width,
+          " ]/100 = ",
+          priceofrail
+        );
       }
-      const TotalPiece =
-        fabricCostPerPiece * cart[idUser][existingProductIndex].count +
-        pricerail;
+      console.log("price rail", priceofrail);
+      const TotalPiece = fabricCostPerPiece + priceofrail;
 
       cart[idUser][existingProductIndex].totalPiece = TotalPiece;
     } else {
@@ -369,20 +403,21 @@ function CustomPage() {
         fabricCostPerPiece
       );
 
-      let pricerail = 0;
-      if (data.rail === "รับราง") {
-        pricerail = (pricerail * width) / 100;
+      let priceofrail = 0;
+      console.log(selectedRail);
+      if (selectedRail === "รับราง") {
+        priceofrail = (pricerail * width) / 100;
         console.log(
           "price rail [",
           pricerail,
           "*",
           width,
           " ]/100 = ",
-          pricerail
+          priceofrail
         );
       }
-      console.log("price rail", pricerail);
-      const TotalPiece = fabricCostPerPiece + pricerail;
+      console.log("price rail", priceofrail);
+      const TotalPiece = fabricCostPerPiece + priceofrail;
 
       const productData = {
         productId: data.id,
@@ -438,7 +473,6 @@ function CustomPage() {
     height,
     ...data
   }) => {
-
     if (selectedType) {
       if (!selectedTwolayer) {
         Swal.fire({
@@ -505,7 +539,6 @@ function CustomPage() {
     if (!isLoggedIn) {
       navigate("/login");
     } else {
-      // กรณีที่ผู้ใช้เข้าสู่ระบบแล้ว
       addToCartForLoggedInUser({
         idUser,
         selectedRail,
@@ -521,20 +554,18 @@ function CustomPage() {
   };
 
   useEffect(() => {
-    setIsLoading(true)
+    setIsLoading(true);
     setSelectedCurtain((prev) => ({
       ...prev,
       main: bgType
     }));
-    setIsLoading(false)
+    setIsLoading(false);
   }, [bgType]);
 
-  
   const default_product = {
     id: 1,
     main: bgType
   };
-
 
   const [selectedCurtain, setSelectedCurtain] = useState(default_product);
 
@@ -589,7 +620,7 @@ function CustomPage() {
     };
     fetchData();
   }, [firstdata]);
-  console.log(product);
+  // console.log(product);
 
   return (
     <>
@@ -643,36 +674,35 @@ function CustomPage() {
                 <TransformedImage
                   rgb={background}
                   selectedCurtain={selectedCurtain}
-                  
                 />
               </div>{" "}
             </div>
           </CloudinaryContext>
 
-          <div className="flex-col sx:p-0 sm:p-0 pl-10 pr-10 pt-5 ">
-            <p className="text-base mx-4 my-4 text-brown-400">
+          <div className="flex-col p-0 sm:p-0 pl-10 pr-10 pt-5 ">
+            <p className="text-base md:text-lg lg:text-lg xl:text-lg mx-4 my-4 text-brown-400">
               ชื่อสินค้า : {data.name}
             </p>
-            <p className="text-sm my-2 text-brown-400">
+            <p className="text-sm my-2 md:text-base lg:text-base xl:text-base text-brown-400">
               ยี่ห้อสินค้า : {data.brand}
             </p>
-            <p className="text-sm my-2 text-brown-400">
+            <p className="text-sm md:text-base lg:text-base xl:text-base my-2 text-brown-400">
               ประเภทของผ้าม่าน : {data.p_type}
             </p>
             <div
               style={{ backgroundColor: data.color }}
-              className="h-7 w-[60%] text-white text-sm rounded-full shadow-xl inline-block pl-5 ml-4 mr-2"
-            >
-              {" "}
-              {data.color}{" "}
+              className="text-center flex items-center text-xs sm:text-sm lg:text-base xl:text-base h-7 w-[60%] text-white rounded-full shadow-xl "
+              >
+              <p className="mx-auto">
+              {data.color}</p>
             </div>
-            <div className="text-sm mt-4 text-brown-400 whitespace-pre-wrap">
+            <div className="text-sm md:text-base lg:text-base xl:text-base x mt-4 text-brown-400 whitespace-pre-wrap">
               {data.detail}
             </div>
-            <p className="mt-4 text-sm text-brown-400">
+            <p className="mt-4 text-sm md:text-base lg:text-base xl:text-base text-brown-400">
               ความกว้างของหน้าผ้า : {data.p_width} เซนติเมตร
             </p>
-            <p className="mt-4 text-sm text-brown-400">
+            <p className="mt-4 text-sm md:text-base lg:text-base xl:text-base text-brown-400">
               ราคาสินค้า : {data.price} บาท/หลา
             </p>
           </div>
@@ -689,7 +719,6 @@ function CustomPage() {
               key={index}
               className=" basis-1/3 text-center  text-browntop text-base mt-2  mb-2"
             >
-              
               <input
                 className="ml-2"
                 type="radio"
@@ -698,7 +727,12 @@ function CustomPage() {
                 value={item.name}
                 checked={selectedType === item.name}
                 onChange={() =>
-                  handleRadioChange(item.twolayer, item.name, item.price_rail,item.bgimage)
+                  handleRadioChange(
+                    item.twolayer,
+                    item.name,
+                    item.price_rail,
+                    item.bgimage
+                  )
                 }
               />
               <label className="ml-2" htmlFor={item.name}>
@@ -745,7 +779,6 @@ function CustomPage() {
           <Link
             to="/gauging-curtain"
             className=" mt-2 mb-3 px-4 py-2 rounded-lg inline-block text-base  text-brown-500 hover:text-brown-300 hover:text-lg"
-            // onClick={() => handleEditProduct(product._id, product.name)}
           >
             สามารถดูวิธีการวัดขนาดของผ้าม่านได้ที่นี่
           </Link>

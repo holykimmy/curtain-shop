@@ -27,7 +27,7 @@ function EditAddressPage() {
     sub_district: "",
     district: "",
     province: "",
-    postcode: "",
+    postcode: ""
   });
   // console.table(_id,idUser);
 
@@ -38,7 +38,7 @@ function EditAddressPage() {
     l_name: "",
     email: "",
     tell: "",
-    address: "",
+    address: ""
   });
 
   useEffect(() => {
@@ -62,7 +62,7 @@ function EditAddressPage() {
           l_name: l_name,
           email: decodedToken.user.email,
           tell: decodedToken.user.tell,
-          address: decodedToken.user.address,
+          address: decodedToken.user.address
         });
 
         setIsLoggedIn(true);
@@ -100,7 +100,7 @@ function EditAddressPage() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "ใช่",
-      cancelButtonText: "ไม่ใช่",
+      cancelButtonText: "ไม่ใช่"
     }).then((result) => {
       if (result.isConfirmed) {
         // ยืนยันออกจากระบบ
@@ -118,7 +118,7 @@ function EditAddressPage() {
     sub_district: "",
     district: "",
     province: "",
-    postcode: "",
+    postcode: ""
   });
 
   useEffect(() => {
@@ -127,7 +127,7 @@ function EditAddressPage() {
         $district: window.jQuery("#sub_district"),
         $amphoe: window.jQuery("#district"),
         $province: window.jQuery("#province"),
-        $zipcode: window.jQuery("#postcode"),
+        $zipcode: window.jQuery("#postcode")
       });
 
       // เมื่อ autocomplete ใส่ค่าเข้ามาให้ trigger event change เพื่ออัปเดต state ของ input fields
@@ -146,7 +146,7 @@ function EditAddressPage() {
           sub_district: data.district[0].name,
           district: data.amphoe[0].name,
           province: data.province[0].name,
-          postcode: data.zipcode,
+          postcode: data.zipcode
         });
       });
     }
@@ -156,7 +156,7 @@ function EditAddressPage() {
     const { id, value } = e.target;
     setAddress((prevState) => ({
       ...prevState,
-      [id]: value,
+      [id]: value
     }));
   };
 
@@ -183,7 +183,7 @@ function EditAddressPage() {
         sub_district: mydata.sub_district,
         district: mydata.district,
         province: mydata.province,
-        postcode: mydata.postcode,
+        postcode: mydata.postcode
       });
     }
   }, [mydata]);
@@ -204,7 +204,7 @@ function EditAddressPage() {
         sub_district: address.sub_district,
         district: address.district,
         province: address.province,
-        postcode: address.postcode,
+        postcode: address.postcode
       };
 
       const response = await customerAPI.updateAddress(id, updatedAddress);
@@ -212,21 +212,21 @@ function EditAddressPage() {
       if (response.status === 200) {
         // แสดงข้อความยืนยันการเปลี่ยนแปลงที่อยู่
         Swal.fire({
-          title: "ยืนยันการเปลี่ยนแปลงที่อยู่",
+      
           text: "คุณต้องการเปลี่ยนแปลงที่อยู่ใช่หรือไม่?",
           icon: "question",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
           confirmButtonText: "ใช่",
-          cancelButtonText: "ไม่ใช่",
+          cancelButtonText: "ไม่ใช่"
         }).then((result) => {
           if (result.isConfirmed) {
             // แสดงข้อความสำเร็จ
             Swal.fire({
               icon: "success",
-              title: "บันทึกที่อยู่สำเร็จ",
-              text: "ข้อมูลที่อยู่ถูกบันทึกเรียบร้อยแล้ว",
+
+              text: "ข้อมูลที่อยู่ถูกบันทึกเรียบร้อยแล้ว"
             });
           }
         });
@@ -235,7 +235,7 @@ function EditAddressPage() {
         Swal.fire({
           icon: "error",
           title: "บันทึกที่อยู่ไม่สำเร็จ",
-          text: "ไม่สามารถบันทึกที่อยู่ได้ในขณะนี้ กรุณาลองใหม่ภายหลัง",
+          text: "ไม่สามารถบันทึกที่อยู่ได้ในขณะนี้ กรุณาลองใหม่ภายหลัง"
         });
       }
     } catch (error) {
@@ -243,23 +243,24 @@ function EditAddressPage() {
       // แสดงข้อความข้อผิดพลาด
       Swal.fire({
         icon: "error",
-        text: error.response.data.error,
+        text: error.response.data.error
       });
     }
   };
 
   return (
     <>
-      <Navbar
-        isLoggedIn={isLoggedIn}
-        handleLogout={handleLogout}
-        userName={userName}
-        idUser={idUser}
-      ></Navbar>
-
-      <div className=" w-full  flex h-screen items-center justify-center bg-brown-bg ">
-        <div class=" mx-4 items-center w-11/12 sm:w-96  rounded-[18px] shadow px-8 pt-6 pb-8 mb-4 bg-white ">
-          <p class="text-center text-2xl text-b-font font-bold">เพิ่มที่อยู่</p>
+      <div className="flex flex-col h-screen justify-center items-center bg-gradient-to-r from-brown-bg p-2">
+        <Navbar
+          isLoggedIn={isLoggedIn}
+          handleLogout={handleLogout}
+          userName={userName}
+          idUser={idUser}
+        ></Navbar>
+        <div class="mx-auto  items-center  rounded-[18px] shadow px-8 pt-6 pb-8  bg-white ">
+          <p class="text-center text-base md:text-lg  text-b-font font-bold">
+            แก้ไขที่อยู่
+          </p>
 
           <form onSubmit={handleSubmit} class="bg-white ">
             <p class="text-browntop mt-3 ml-2 ">ที่อยู่</p>
@@ -341,7 +342,7 @@ function EditAddressPage() {
               value="save"
               type="submit"
             >
-              เพิ่มที่อยู่
+             แก้ไข
             </button>
           </form>
         </div>

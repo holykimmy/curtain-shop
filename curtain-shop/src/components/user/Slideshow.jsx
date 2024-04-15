@@ -19,7 +19,7 @@ const proprietes = {
   transitionDuration: 500,
   infinite: true,
   indicators: true,
-  arrows: true,
+  arrows: true
 };
 
 const Slideshow = () => {
@@ -29,30 +29,28 @@ const Slideshow = () => {
         <Slide {...proprietes} className="flex">
           {[img1, img2, img3, img4, img5, img6, img7, img8, img9, img10].map(
             (img, index) => (
-              <div key={index} className="flex  justify-center flex-row each-slide items-center m-4">
+              <div
+                key={index}
+                className="flex  justify-center flex-row each-slide items-center "
+              >
                 <div className=" flex flex-row justify-center">
                   <div className="flex">
                     <img
-                      className="  h-[400px] md:h-[450px] justify-center mx-2"
+                      className=" object-contain h-[350px] md:h-[450px] justify-center my-2"
                       src={img}
                       alt={`img${index + 1}`}
                     />
                   </div>
-                  {/* <div className="flex">
-                    <img
-                      className=" h-[400px] md:h-[450px] justify-center mx-2"
-                      src={`img${2}`}
-                      alt={`img${index + 2}`}
-                    />
-                  </div> */}
                 </div>
               </div>
             )
           )}
-        </Slide><Link to="product/polyester">
-        <div className="top-right absolute rounded-l-3xl top-[8px] right-0 w-[20%] p-2 pl-5 text-xs md:text-md lg:text-xl bg-white/75 text-b-font shadow-lg hover:shadow-2xl">
-          รูปแบบผ้าม่าน
-        </div></Link>
+        </Slide>
+        <Link to="product/polyester">
+          <div className="top-right absolute rounded-l-3xl top-[8px] right-0 w-[100px] sm:w-[120px] md:w-[150px] lg:w-[150px] xl:w-[150px] p-2 pl-5 text-xs md:text-md lg:text-xl bg-white/75 text-b-font shadow-lg hover:shadow-2xl">
+            รูปแบบผ้าม่าน
+          </div>
+        </Link>
       </div>
     </div>
   );

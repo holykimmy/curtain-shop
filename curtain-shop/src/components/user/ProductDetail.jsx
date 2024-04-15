@@ -227,40 +227,41 @@ function ContactPage() {
             {data.p_type}
           </h5>
         </div>
-        <div className="flex overflow-x-auto max-w-screen justify-center m-5 ">
-          <div className=" p-2 md:p-4 w-[90%]">
+        
+        <div className="flex overflow-x-auto max-w-screen justify-center  ">
+          <div className=" p-2 md:p-4  sx:w-full sm:w-full md:w-[90%] ">
             <div key={data.productId} className="flex justify-center">
-              <div className="flex justify-between w-[90%] h-auto shadow-md border rounded mt-2 mb-4 p-3">
+              <div className="flex flex-col items-center  sm:flex-col md:flex-col lg:flex-row xl:flex-row justify-between w-[90%] h-auto shadow-md border rounded mt-2 mb-4 p-3">
                 <img
-                  className="w-[40%] rounded"
+                  className="w-[400px] md:h-full rounded "
                   src={data.image}
                   alt="product"
                 />
 
                 <div className="pl-10 pr-10 pt-5 ">
-                  <p className="text-lg mx-4 my-4 text-brown-400">
+                  <p className="text-base sm:text-base md:text-lg lg:text-lg xl:text-lg mx-4 my-4 text-brown-400">
                     ชื่อสินค้า : {data.name}
                   </p>
-                  <p className="text-base my-2 text-brown-400">
+                  <p className="text-xs  sm:text-sm md:text-base lg:text-base xl:text-base my-2 text-brown-400">
                     ยี่ห้อสินค้า : {data.brand}
                   </p>
-                  <p className="text-base my-2 text-brown-400">
+                  <p className="text-xs sm:text-sm md:text-base lg:text-base xl:text-base my-2 text-brown-400">
                     ประเภทของผ้าม่าน : {data.p_type}
                   </p>
                   <div
-                    style={{ backgroundColor: data.color }}
-                    className="h-7 w-[60%] text-white rounded-full shadow-xl inline-block pl-5 ml-4 mr-2"
-                  >
+                    style={{ backgroundColor: product.color }}
+                    className="m-2 text-center flex items-center text-xs sm:text-sm lg:text-base xl:text-base h-7 w-[60%] text-white rounded-full shadow-xl "
+                    >
                     {" "}
-                    {data.color}{" "}
+                    <p className="items-center mx-auto ">{product.color}</p>
                   </div>
-                  <div className="text-base mt-4 text-brown-400 whitespace-pre-wrap">
+                  <div className="text-xs sm:text-sm md:text-base lg:text-base xl:text-base mt-4 text-brown-400 whitespace-pre-wrap">
                     {data.detail}
                   </div>
-                  <p className="mt-4 text-base text-brown-400">
+                  <p className=" mt-4 text-xs sm:text-sm  md:text-base lg:text-base xl:text-base text-brown-400">
                     ความกว้างของหน้าผ้า : {data.p_width} ซม.
                   </p>
-                  <p className="mt-4 text-base text-brown-400">
+                  <p className="mt-4 text-xs sm:text-sm md:text-base lg:text-base xl:text-base text-brown-400">
                     ราคาสินค้า : {data.price} บาท/หลา
                   </p>
 
@@ -293,23 +294,22 @@ function ContactPage() {
           {product &&
             product.map((product) => (
               <div key={product._id} className="p-2 md:p-4">
-                <div className="rounded-lg w-[230px] shadow-3xl hover:shadow-2xl h-auto md:h-full flex-col md:pb-5 bg-white ">
+                <div className="rounded-lg w-[180px] md:w-[200px] lg:w-[200px] xl:w-[230px]  shadow-3xl hover:shadow-2xl h-auto md:h-full flex-col md:pb-5 bg-white ">
                   <div className="relative ">
                     <img
                       className="w-full rounded-t-lg bg-contain bg-center"
                       src={product.image}
                       alt="product"
                     />
-                    <div className="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25  rounded-t-lg "></div>
-                    <div className="absolute shadow-md rounded-r-lg bottom-0 left-0 bg-white/30 px-4 py-2 text-white text-sm hover:bg-white hover:text-browntop transition duration-500 ease-in-out">
+                    <div className="absolute shadow-md rounded-r-lg bottom-0 left-0 bg-white/30 px-4 py-2 text-white text-xs md:text-md hover:bg-white hover:text-browntop transition duration-500 ease-in-out">
                       {product.p_type}
                     </div>
                   </div>
 
-                  <div className="pt-4 px-4 font-semibold text-brown-600 text-base md:text-base lg:text-lg inline-block hover:text-browntop transition duration-500 ease-in-out">
+                  <div className="pt-4 px-4 font-semibold text-brown-600 text-xs md:text-sm lg:text-sm inline-block hover:text-browntop transition duration-500 ease-in-out">
                     รายละเอียด
                   </div>
-                  <div className="pt-2 px-4 font-semibold text-brown-600 text-sm md:text-base lg:text-base inline-block hover:text-browntop transition duration-500 ease-in-out">
+                  <div className="pt-2 px-4 font-semibold text-brown-600 text-xs md:text-sm lg:text-sm inline-block hover:text-browntop transition duration-500 ease-in-out">
                     ยี่ห้อ : {product.brand}
                   </div>
                   <div className="pt-2 pb-4 px-4  text-xs md:text-sm lg:text-sm xl:text-base text-brown-400 whitespace-pre-wrap">

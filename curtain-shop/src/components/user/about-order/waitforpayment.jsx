@@ -31,7 +31,7 @@ const WaitForPayment = ({ idUser }) => {
   console.log("order :", userOrder);
 
   const handleCancelOrder = async (idOrder) => {
-    // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
+    console.log("testtttt");
     const confirmation = await Swal.fire({
       text: "คุณแน่ใจหรือไม่ที่ต้องการยกเลิกคำสั่งซื้อนี้?",
       icon: "warning",
@@ -197,7 +197,7 @@ const WaitForPayment = ({ idUser }) => {
                 <div className="flex justify-end ">
                   {!order.payment ? (
                     <button
-                      className="bg-blue-400 mt-3 mx-2 py-2 px-auto w-[100px] rounded-full shadow-xl hover:bg-blue-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
+                      className="bg-blue-400 mt-3 mx-2 py-2 px-2 rounded-lg shadow-xl hover:bg-blue-200 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-sm md:text-sm lg:text-base xl:text-base  text-white"
                       disabled={!order.approve}
                       onClick={() => handlePaymentOrder(order._id)}
                     >
@@ -210,7 +210,7 @@ const WaitForPayment = ({ idUser }) => {
                   )}
                   {!order.payment ? (
                     <button
-                      className="bg-red-300 mt-3  mx-2 py-2 px-auto w-[120px] rounded-full shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
+                      className="bg-red-300 mt-3  mx-2 py-2 px-2 rounded-lg shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-sm md:text-sm lg:text-base xl:text-base  text-white"
                       onClick={() => handleCancelOrder(order._id)}
                     >
                       ยกเลิกคำสั่งซื้อ

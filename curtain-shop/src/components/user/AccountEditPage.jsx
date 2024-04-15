@@ -246,33 +246,33 @@ function EditAccoutPage() {
           แก้ไขข้อมูล
         </h5>
       </div>
-      <div className="flex-col justify-center">
+      <div className="flex-col justify-center ">
         <div className="flex">
-          <h5 className=" inline-block text-base  text-b-font  mt-5 ml-3 pl-4  ">
+          <h5 className="inline-block text-base  text-b-font ml-2 mt-2 md:mt-5 md:ml-3 md:pl-4  ">
             username : {data.username}
           </h5>
         </div>
         <form onSubmit={submitForm}>
-          <div className="flex items-center mt-5 pl-4">
-            <div className=" inline-block text-base  text-b-font   ml-3   ">
+          <div className="flex items-center justify-between px-3 md:justify-start mt-5 md:pl-4 ">
+            <div className=" inline-block text-base  text-b-font   md:ml-3   ">
               {" "}
               ชื่อ :{" "}
             </div>
             <input
-              class="appearance-none border-gray-300 rounded w-[400px] ml-3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="appearance-none border-gray-300 rounded w-[280px] md:w-[400px] ml-3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="f_name"
               type="text"
               value={data.f_name}
               onChange={inputValue("f_name")}
             />
           </div>
-          <div className="flex items-center mt-5  pl-4">
-            <div className=" inline-block text-base  text-b-font   ml-3   ">
+          <div className="flex items-center justify-between px-3 md:justify-start mt-5 md:pl-4 ">
+            <div className=" inline-block text-base  text-b-font   md:ml-3   ">
               {" "}
               นามสกุล :{" "}
             </div>
             <input
-              class="appearance-none border-gray-300 rounded w-[400px] ml-3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="appearance-none border-gray-300 rounded w-[280px] md:w-[400px] ml-3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="l_name"
               type="text"
               value={data.l_name}
@@ -280,26 +280,26 @@ function EditAccoutPage() {
             />
           </div>
 
-          <div className="flex items-center mt-5 pl-4">
-            <div className=" inline-block text-base  text-b-font   ml-3   ">
+          <div className="flex items-center justify-between px-3 md:justify-start mt-5 md:pl-4 ">
+            <div className=" inline-block text-base  text-b-font   md:ml-3   ">
               {" "}
-              นามสกุล :{" "}
+              email :{" "}
             </div>
             <input
-              class="appearance-none border-gray-300 rounded w-[400px] ml-3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="appearance-none border-gray-300 rounded w-[280px] md:w-[400px] ml-3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="email"
               type="email"
               value={data.email}
               onChange={inputValue("email")}
             />
           </div>
-          <div className="flex items-center mt-5 pl-4">
-            <div className=" inline-block text-base  text-b-font   ml-3   ">
+          <div className="flex items-center justify-between px-3 md:justify-start mt-5 md:pl-4 ">
+            <div className=" inline-block text-base  text-b-font   md:ml-3   ">
               {" "}
               เบอร์โทร :{" "}
             </div>
             <input
-              class="appearance-none border-gray-300 rounded w-[400px] ml-3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="appearance-none border-gray-300 rounded w-[280px] md:w-[400px] ml-3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="tell"
               type="text"
               value={data.tell}

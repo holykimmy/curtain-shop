@@ -280,7 +280,7 @@ function PaymentPage() {
   return (
     <>
       {" "}
-      <div className="h-screen w-full bg-gradient-to-r from-5% from-white via-50% via-brown-bg to-90% to-white">
+      <div className="h-screen w-full">
         <Navbar
           isLoggedIn={isLoggedIn}
           handleLogout={handleLogout}
@@ -384,7 +384,7 @@ function PaymentPage() {
                     {order.windowimg.map((url, index) => (
                       <img
                         key={index}
-                        className="w-[150px]  m-4 "
+                        className="w-[150px]  m-4 drop-shadow-md "
                         src={`${process.env.REACT_APP_AWS}${url}`}
                         alt="product"
                       />
@@ -395,10 +395,10 @@ function PaymentPage() {
                     <div className="flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 space-y-6   ">
                       <div className="flex justify-center items-center w-full space-y-4 flex-col border-gray-200 border-b pb-4">
                         <div className="flex justify-between items-center w-full">
-                          <p className="text-base leading-4 text-gray-800">
+                        <p className="text-xs md:text-sm xl:text-base leading-4 text-gray-800">
                             การจัดส่ง
                           </p>
-                          <p className="text-base leading-4 text-gray-600 whitespace-pre-wrap text-right">
+                          <p className="text-xs md:text-sm xl:text-base  leading-4 text-gray-600 whitespace-pre-wrap text-right">
                             {order.deliveryIs}
                           </p>
                         </div>

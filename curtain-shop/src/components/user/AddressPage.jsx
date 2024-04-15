@@ -17,12 +17,12 @@ function AddressPage() {
   const [userName, setUserName] = React.useState("");
   const [idUser, setIdUser] = React.useState("");
   const [user, setUser] = React.useState({
-    username:"",
+    username: "",
     f_name: "",
     l_name: "",
     email: "",
     tell: "",
-    address: "",
+    address: ""
   });
   useEffect(() => {
     const authToken = localStorage.getItem("token");
@@ -46,7 +46,7 @@ function AddressPage() {
           l_name: l_name,
           email: decodedToken.user.email,
           tell: decodedToken.user.tell,
-          address: decodedToken.user.address,
+          address: decodedToken.user.address
         });
 
         setIsLoggedIn(true);
@@ -84,7 +84,7 @@ function AddressPage() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "ใช่",
-      cancelButtonText: "ไม่ใช่",
+      cancelButtonText: "ไม่ใช่"
     }).then((result) => {
       if (result.isConfirmed) {
         // ยืนยันออกจากระบบ
@@ -104,7 +104,7 @@ function AddressPage() {
     sub_district: "",
     district: "",
     province: "",
-    postcode: "",
+    postcode: ""
   });
 
   useEffect(() => {
@@ -113,7 +113,7 @@ function AddressPage() {
         $district: window.jQuery("#sub_district"),
         $amphoe: window.jQuery("#district"),
         $province: window.jQuery("#province"),
-        $zipcode: window.jQuery("#postcode"),
+        $zipcode: window.jQuery("#postcode")
       });
 
       // เมื่อ autocomplete ใส่ค่าเข้ามาให้ trigger event change เพื่ออัปเดต state ของ input fields
@@ -129,7 +129,7 @@ function AddressPage() {
           sub_district: data.district[0].name,
           district: data.amphoe[0].name,
           province: data.province[0].name,
-          postcode: data.zipcode,
+          postcode: data.zipcode
         });
       });
     }
@@ -160,7 +160,7 @@ function AddressPage() {
         sub_district: document.getElementById("sub_district").value,
         district: document.getElementById("district").value,
         province: document.getElementById("province").value,
-        postcode: document.getElementById("postcode").value,
+        postcode: document.getElementById("postcode").value
       };
 
       setAddress(updatedAddress); // Update the address state
@@ -170,7 +170,7 @@ function AddressPage() {
         `${process.env.REACT_APP_API}/customer/add-address`,
         {
           id: idUser,
-          address: [updatedAddress], // Send the updated address
+          address: [updatedAddress] // Send the updated address
         }
       );
 
@@ -180,14 +180,14 @@ function AddressPage() {
         Swal.fire({
           icon: "success",
           title: "บันทึกที่อยู่สำเร็จ",
-          text: "ข้อมูลที่อยู่ถูกบันทึกเรียบร้อยแล้ว",
+          text: "ข้อมูลที่อยู่ถูกบันทึกเรียบร้อยแล้ว"
         });
       } else {
         // Show error message
         Swal.fire({
           icon: "error",
           title: "บันทึกที่อยู่ไม่สำเร็จ",
-          text: "ไม่สามารถบันทึกที่อยู่ได้ในขณะนี้ กรุณาลองใหม่ภายหลัง",
+          text: "ไม่สามารถบันทึกที่อยู่ได้ในขณะนี้ กรุณาลองใหม่ภายหลัง"
         });
       }
     } catch (error) {
@@ -195,26 +195,28 @@ function AddressPage() {
       // Show error message
       Swal.fire({
         icon: "error",
-        text: error.response.data.error,
+        text: error.response.data.error
       });
     }
   };
 
   return (
     <>
-      <Navbar
-        isLoggedIn={isLoggedIn}
-        handleLogout={handleLogout}
-        userName={userName}
-        idUser={idUser}
-      ></Navbar>
-      <div className=" w-full  flex h-screen items-center justify-center bg-brown-bg ">
-        <div class=" mx-4 items-center w-11/12 sm:w-96 rounded-[18px] shadow px-8 pt-6 pb-8 mb-4 bg-white ">
-          <p class="text-center text-2xl text-b-font font-bold">เพิ่มที่อยู่</p>
+      <div className="flex flex-col h-screen justify-center items-center bg-gradient-to-r from-brown-bg p-2">
+        <Navbar
+          isLoggedIn={isLoggedIn}
+          handleLogout={handleLogout}
+          userName={userName}
+          idUser={idUser}
+        ></Navbar>
+        <div class="mx-auto  items-center  rounded-[18px] shadow px-8 pt-6 pb-8  bg-white ">
+          <p class="text-center text-base md:text-lg  text-b-font font-bold">
+            เพิ่มที่อยู่
+          </p>
           {/* {JSON.stringify(address)} */}
 
-          <form onSubmit={handleSubmit} class="bg-white ">
-            <p class="text-browntop mt-3 ml-2 ">ที่อยู่</p>
+          <form onSubmit={handleSubmit} className="">
+            <p className="text-browntop mt-3 ml-2 ">ที่อยู่</p>
             <input
               className="m-auto mt-2 mb-3 items-center shadow appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="houseNo"
@@ -244,7 +246,7 @@ function AddressPage() {
               placeholder="บ้านเลขที่ 101/11 ,ซอย สุขใจ, อาคาร A ขั้น 29 , ห้อง 101"
             />
 
-            <p class="text-browntop mt-3 ml-2 ">แขวง/ตำบล</p>
+            <p className="text-browntop mt-3 ml-2 ">แขวง/ตำบล</p>
 
             <input
               className="m-auto mt-2 mb-3 items-center shadow appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -256,7 +258,7 @@ function AddressPage() {
               placeholder="แขวง/ตำบล"
             />
 
-            <p class="text-browntop mt-3 ml-2 ">เขต/อำเภอ</p>
+            <p className="text-browntop mt-3 ml-2 ">เขต/อำเภอ</p>
             <input
               className="m-auto mt-2 mb-3 items-center shadow appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="district"
@@ -267,7 +269,7 @@ function AddressPage() {
               placeholder="เขต/อำเภอ"
             />
 
-            <p class="text-browntop mt-3 ml-2 ">จังหวัด</p>
+            <p className="text-browntop mt-3 ml-2 ">จังหวัด</p>
             <input
               className="m-auto mt-2 mb-3 items-center shadow appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="province"
@@ -277,7 +279,7 @@ function AddressPage() {
               onChange={inputValue("province")}
               placeholder="จังหวัด"
             />
-            <p class="text-browntop mt-3 ml-2 ">รหัสไปรษณีย์</p>
+            <p className="text-browntop mt-3 ml-2 ">รหัสไปรษณีย์</p>
             <input
               className="m-auto mt-2 mb-3 items-center shadow appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="postcode"
@@ -289,7 +291,7 @@ function AddressPage() {
             />
 
             <button
-              class="w-full mt-3 bg-stone-500 hover:bg-browntop text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              class="w-full mt-3 mb-3 bg-stone-400 hover:bg-browntop text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               value="save"
               type="submit"
             >

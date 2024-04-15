@@ -130,7 +130,7 @@ function OrderDetailPage() {
 
   const handleLogout = () => {
     Swal.fire({
-      title: `คุณต้องการออกจากระบบใช่หรือไม่?`,
+      text: `คุณต้องการออกจากระบบใช่หรือไม่?`,
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -270,7 +270,7 @@ function OrderDetailPage() {
                       >
                         <div className="pb-4 md:pb-8 w-full md:w-60">
                           <img
-                            className="w-[200px] h-[270px]"
+                            className="w-[200px] h-[270px] drop-shadow-xl"
                             src={item.product.image}
                             alt="product"
                           />
@@ -323,7 +323,7 @@ function OrderDetailPage() {
                             <p className="text-xs sm:text-xs md:text-sm xl:text-sm font-semibold leading-6 text-gray-800">
                               ราคา{" "}
                               {numberWithCommas(
-                                item.product.price * item.count
+                                item.totalPiece
                               )}{" "}
                               บาท
                             </p>
@@ -352,19 +352,15 @@ function OrderDetailPage() {
                     <div className="flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 space-y-6   ">
                       <div className="flex justify-center items-center w-full space-y-4 flex-col border-gray-200 border-b pb-4">
                         <div className="flex justify-between  w-full">
-                          <p className="text-base leading-4 text-gray-800">
+                          <p className="text-xs md:text-sm xl:text-base leading-4 text-gray-800">
                             การจัดส่ง
                           </p>
-                          <p className="text-base leading-4 text-gray-600 whitespace-pre-wrap text-right">
+                          <p className="text-xs md:text-sm xl:text-base  leading-4 text-gray-600 whitespace-pre-wrap text-right">
                             {order.deliveryIs}
                           </p>
                         </div>
 
-                        <div className="flex justify-between items-center w-full">
-                          <p className="text-base font-semibold leading-4 text-gray-800">
-                            ราคารวม
-                          </p>
-                        </div>
+                        
                       </div>
                       <div className="flex justify-between items-center w-full">
                         <p className="text-base font-semibold leading-4 text-gray-800">
@@ -382,7 +378,7 @@ function OrderDetailPage() {
                       {order.payment ? (
                         <div className="pb-4 md:pb-8 w-full md:w-60">
                           <img
-                            className="w-[350px] "
+                            className="w-[350px] drop-shadow-xl"
                             src={`${process.env.REACT_APP_AWS}${order.slipmoney}`}
                             alt="product"
                           />
@@ -466,7 +462,7 @@ function OrderDetailPage() {
                           </p>
                         </div>
                       </div>
-                      <div className="flex flex-col w-full justify-center items-center md:justify-start md:items-start">
+                      <div className="flex flex-col w-full  justify-center items-center md:justify-start md:items-start">
                         {!order.payment ? (
                           <button
                             onClick={() => handlePayment(order._id)}

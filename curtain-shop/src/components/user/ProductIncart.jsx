@@ -15,54 +15,25 @@ const ProductInCart = ({ item, idUser }) => {
 
   const navigate = useNavigate();
 
-
   console.log("testtt");
   console.log(item);
 
   console.log("-----------------------------");
   const getTotalPiece = (item) => {
     const numberOfPieces = Math.ceil(item.width / item.p_width);
-    console.log(
-      "numberOfPieces",
-      item.width,
-      "/",
-      item.p_width,
-      " = ",
-      numberOfPieces
-    );
 
     // คำนวณผ้าทั้งหมด
     const totalFabric = numberOfPieces * 2;
-    console.log("totalFabric", numberOfPieces, "* 2 = ", totalFabric);
 
     // คำนวณค่าผ้าต่อชิ้น
     const fabricCostPerPiece = (item.height * totalFabric * item.price) / 100;
-    console.log(
-      "fabricCostPerPiece",
-      "[",
-      item.height,
-      "*",
-      totalFabric,
-      "*",
-      item.price,
-      "]/100",
-      " = ",
-      fabricCostPerPiece
-    );
 
+    console.table(item.rail, item.price_rail, item.width);
     let pricerail = 0;
     if (item.rail === "รับราง") {
       pricerail = (item.price_rail * item.width) / 100;
-      console.log(
-        "price rail [",
-        item.price_rail,
-        "*",
-        item.width,
-        " ]/100 = ",
-        pricerail
-      );
     }
-    console.log("price rail", pricerail);
+    console.log("af  = ", pricerail);
     const TotalPiece = fabricCostPerPiece * item.count + pricerail;
     return TotalPiece;
   };
@@ -149,7 +120,7 @@ const ProductInCart = ({ item, idUser }) => {
   };
 
   const handleChangeWidth = (e) => {
-    const width = e.target.value < 1 ? 1 : e.target.value;
+    const width = e.target.value < 100 ? 100 : e.target.value;
 
     // คำนวณค่า totalPiece ใหม่
     const updatedItem = {
@@ -166,7 +137,7 @@ const ProductInCart = ({ item, idUser }) => {
   };
 
   const handleChangeHeight = (e) => {
-    const height = e.target.value < 1 ? 1 : e.target.value;
+    const height = e.target.value < 150 ? 150 : e.target.value;
     // คำนวณค่า totalPiece ใหม่
     const updatedItem = {
       ...item,
@@ -186,33 +157,18 @@ const ProductInCart = ({ item, idUser }) => {
 
     // ทำการอัปเดตค่าใน item โดยตรง
     item.rail = value;
+    // คำนวณค่า totalPiece ใหม่
+    const updatedItem = {
+      ...item,
+      rail: item.rail,
+      totalPiece: getTotalPiece({ ...item, rail: item.rail })
+    };
 
-    //save to localStorage
-    let cart = [];
-    if (localStorage.getItem("cart")) {
-      cart = JSON.parse(localStorage.getItem("cart"));
-    }
+    // อัพเดทสถานะใน local state ทันที
+    setUpdatedItem(updatedItem);
 
-    const updatedCart = cart[idUser].map((product) => {
-      if (product.cartId === item.cartId) {
-        return {
-          ...product,
-          rail: value
-        };
-      }
-      return product;
-    });
-
-    cart[idUser] = updatedCart;
-    //merge
-    const mergedCart = handleMergeProducts(updatedCart);
-    //save
-    localStorage.setItem("cart", JSON.stringify(mergedCart));
-
-    dispatch({
-      type: "ADD_TO_CART",
-      payload: mergedCart
-    });
+    // อัพเดทตะกร้าสินค้าใน local storage และ Redux store
+    updateCart(updatedItem);
   };
 
   const handleRemove = () => {
@@ -264,14 +220,12 @@ const ProductInCart = ({ item, idUser }) => {
 
   return (
     <tbody>
-      <tr
-        className="text-center "
-      >
-        <td 
-        className=" hidden sm:table-cell  text-browntop px-2 py-1 border  border-gray-300   "
-        onClick={() => handleDetailProduct(item.productId, item.name)}>
+      <tr className="text-center ">
+        <td
+          className=" hidden sm:table-cell  text-browntop px-2 py-1 border  border-gray-300   "
+          onClick={() => handleDetailProduct(item.productId, item.name)}
+        >
           <img className="w-[300px] rounded" src={item.image} alt="product" />
-
         </td>
         <td className="w-[100px] text-sm text-browntop px-2 py-1 border border-gray-300">
           {item.name}
@@ -288,39 +242,48 @@ const ProductInCart = ({ item, idUser }) => {
         <td className=" w-[100px] text-browntop text-sm px-2 py-1 border border-gray-300 ">
           {item.twolayer}
         </td>
-        <td className="w-[100px] text-browntop text-sm px-2 py-1 border border-gray-300 ">
-          <select className="mb-2 rounded-lg text-sm" value={item.rail} onChange={handleRailChange}>
+        <td className=" text-browntop text-sm px-2 py-1 border border-gray-300 ">
+          <select
+            className="mb-2 rounded-lg text-sm w-[110px]"
+            value={item.rail}
+            onChange={handleRailChange}
+          >
             <option value="รับราง">รับราง</option>
             <option value="ไม่รับราง">ไม่รับราง</option>
           </select>
         </td>
-        <td className="w-[280px] text-browntop text-sm px-2 py-1 border border-gray-300 ">
-          <input
-            onChange={handleChangeWidth}
-            className="form-control w-[100px] mb-2 rounded-lg text-sm"
-            type="number"
-            value={item.width}
-          />{" "}
+        <td className="text-browntop text-sm px-2 py-1 border  border-gray-300">
+          <div className="flex items-center">
+            <input
+              onChange={handleChangeWidth}
+              className="form-control sx:w-[57px]  sm:w-[57px] md:w-[75px] lg:w-[75px] xl:w-[75px] mb-2 rounded-lg text-sm mr-2"
+              type="number"
+              value={item.width}
+            />
+           
           <input
             onChange={handleChangeHeight}
-            className="form-control w-[100px] mb-2 rounded-lg text-sm "
+            className="form-control sx:w-[57px]  sm:w-[57px] md:w-[75px] lg:w-[75px] xl:w-[75px] mb-2 rounded-lg text-sm"
             type="number"
             value={item.height}
-          />
-          / ซม.
+          /> <span className="w-[50px]">/ ซม.</span>
+          </div>
         </td>
 
         <td className="w-[150px] text-browntop  text-sm px-2 py-1 border border-gray-300 ">
+        <div className="flex items-center">
           <input
             onChange={handleChangeCount}
-            className="form-control w-[75px] mb-2 rounded-lg text-sm"
+            className="form-control w-[50px] mb-2 rounded-lg text-sm"
             type="number"
             value={item.count}
           />{" "}
-          ชุด
+          <span className="w-[50px]">ชุด</span>
+          </div>
         </td>
         <td className="text-browntop text-sm px-2 py-1 border border-gray-300 ">
-          {numberWithCommas(getTotalPiece(item))} บาท
+        <div className="flex items-center">
+          {numberWithCommas(getTotalPiece(item))}  <span className="w-[50px]">บาท</span> </div>
         </td>
 
         <td className="px-2 py-1 border border-gray-300 ...">

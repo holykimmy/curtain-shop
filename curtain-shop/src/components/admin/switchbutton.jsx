@@ -27,7 +27,7 @@ const SwitchButton = ({ visibility, productId }) => {
             console.log('Visibility updated successfully');
             // แจ้งเตือนการเปลี่ยนแปลงเสร็จสิ้น
             Swal.fire({
-              title: 'เปลี่ยนแปลงสถานะสำเร็จ',
+              text: 'เปลี่ยนแปลงสถานะสำเร็จ',
               icon: 'success',
             });
           })
@@ -50,20 +50,21 @@ const SwitchButton = ({ visibility, productId }) => {
   };
 
   return (
-    <div className="flex justify-start">
+    <div className="flex justify-start items-center">
       <button
         className={`${
           isOn ? 'bg-green-500' : 'bg-gray-300'
-        } sm:w-12 sm:h-7 md:w-14 md:h-8 rounded-full p-1 transition-colors duration-300 ease-in-out`}
+        } w-[72px] h-[25px] md:w-18 md:h-8 rounded-full p-1 transition-colors duration-300 ease-in-out`}
         onClick={toggleSwitch}
       >
+        {/* sm:w-4 sm:h-4 */}
         <span
           className={`${
-            isOn ? 'translate-x-3' : 'translate-x-0'
-          } inline-block sm:w-4 sm:h-4 md:w-6 md:h-6 rounded-full  bg-white shadow-md transform transition-transform duration-300 ease-in-out`}
+            isOn ? 'translate-x-5 md:translate-x-4' : 'translate-x-[-15px] md:translate-x-[-14px] '
+          } inline-block w-[18px] h-[18px] md:w-6 md:h-6 rounded-full  bg-white shadow-md transform transition-transform duration-300 ease-in-out`}
         />
       </button>
-      <span className={`ml-5 sm:text-sm md:text-base  ${isOn ? 'text-green-500' : 'text-gray-700'}`}>
+      <span className={`ml-5 text-sx md:text-base  ${isOn ? 'text-green-500' : 'text-gray-700'}`}>
         {isOn ? 'มีสินค้าในร้านค้า' : 'ไม่มีสินค้า'}
       </span>
     </div>

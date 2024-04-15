@@ -10,16 +10,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import axios from "axios";
-// import jwtDecode from "jwt-decode";
 
 function HomePage() {
-  const slides = [
-    "https://i.ibb.co/ncrXc2V/1.png",
-    "https://i.ibb.co/B3s7v4h/2.png",
-    "https://i.ibb.co/ncrXc2V/1.png",
-    "https://i.ibb.co/B3s7v4h/2.png",
-    "https://i.ibb.co/XXR8kzF/3.png",
-  ];
+  // const slides = [
+  //   "https://i.ibb.co/ncrXc2V/1.png",
+  //   "https://i.ibb.co/B3s7v4h/2.png",
+  //   "https://i.ibb.co/ncrXc2V/1.png",
+  //   "https://i.ibb.co/B3s7v4h/2.png",
+  //   "https://i.ibb.co/XXR8kzF/3.png",
+  // ];
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
@@ -125,7 +124,6 @@ function HomePage() {
       <div className="max-w-full h-[400px] mb-[100px]">
         <Slideshow></Slideshow>
       </div>
-      {/* <p className="m-5 text-xl">{userName}</p> */}
       <Link to="/custom-product/65d595d39bec946346551c76">
         <div class="text-xl md:text-2xl xl:text-2xl text-b-font text-center  p-[30px]">
           {" "}
@@ -144,12 +142,12 @@ function HomePage() {
             </h5>
           </div>
         </div>
-        <div class="about flex shadow-md">
-          <div class="sideabout  flex-[50%]">
-            <img class="shadow-2xl" src={about} alt="about" width="95%" />
+        <div className="flex flex-col md:flex-row lg:flex-row xl:flex-row items-center shadow-md">
+          <div className="flex-[50%]">
+            <img className=" flex shadow-2xl w-[200px] md:w-[400px]" src={about} alt="about" />
           </div>
-          <div class="sideabout flex-[75%] text-xs md:text-base xl:text-xl text-b-font md:py-[100px] ">
-            <p class="py-[30px] text-center ">
+          <div className="flex-[75%] text-sm md:text-base xl:text-base text-b-font md:py-[100px] ">
+            <p className="py-5  text-left p-2 ">
               ร้านค้าเจริญกิจผ้าม่าน
               ร้านของเราเป็นหน้าร้านสำหรับการสั่งตัดผ้าม่านตามออเดอร์โดยเฉพาะ
               เปิดให้บริการเกี่ยวกับด้านผ้าม่านมานาน มีความรู้ ความเชี่ยวชาญ
@@ -163,7 +161,7 @@ function HomePage() {
               เพื่อให้ได้ผลงานที่ทันสมัย สวยงาม และสอดคล้องกับความต้องการ
               รวมไปถึงไลฟ์สไตล์ของลูกค้า
             </p>
-            <p class="py-[50px] text-center">
+            <p className="py-5  text-left p-2">
               ร้านเจริญกิจผ้าม่าน
               ไม่เพียงแค่ให้บริการด้านการออกแบบที่สวยงามและตัดเย็บผ้าม่านที่มีคุณภาพสูงเท่านั้น
               แต่ร้านเรายังเน้นเรื่องการใส่ใจในทุกๆ รายละเอียดก่อนการติดตั้ง
@@ -179,7 +177,7 @@ function HomePage() {
         </div>
       </div>
 
-      <div class=" text-xs md:text-base xl:text-xl text-b-font text-center py-[30px] md:py-[50px]  ">
+      <div class=" text-sm md:text-base xl:text-xl text-b-font text-center py-[30px] md:py-[50px]  ">
         <p>นอกการติดตั้งผ้าม่านแล้ว ทางร้านเรายังมีมู่ลี่ </p>
         <p>และวอลเปเปอร์ติดผนังห้องอีกด้วย</p>
       </div>

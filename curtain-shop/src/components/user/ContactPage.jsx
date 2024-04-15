@@ -116,7 +116,7 @@ function ContactPage() {
         </div>
         <div className="flex justify-center items-center ">
           <img
-            className="shadow-lg object-cover h-[400px] md:h-[500px] w-full  md:bg-center md:m-auto"
+            className=" drop-shadow-lg object-contain h-[400px] md:h-[500px] w-full  md:bg-center md:m-auto"
             src={img1}
             alt="img"
           />
