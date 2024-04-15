@@ -96,6 +96,7 @@ const validatelogin = (data) => {
 exports.updateEnable = async (req, res) => {
   const idUser = req.params.id;
   const { enable } = req.body;
+  console.log("testtt");
   try {
     const updatedCustomer = await User.findByIdAndUpdate(
       idUser,
@@ -1753,14 +1754,14 @@ exports.updateOrderEnable = async (req, res) => {
   try {
     const idOrder = req.params.id;
     const { enable } = req.body;
-    const { order } = req.body;
-    const user = order.orderBy;
+    // const { order } = req.body;
+    // const user = order.orderBy;
     console.log("cancel text", enable);
 
     console.log("Update order enable for order:", idOrder);
 
     await Cart.updateOne({ _id: idOrder }, { enable: false });
-    await Cart.updateOne({ _id: idOrder }, { verifycancelled: true });
+    // await Cart.updateOne({ _id: idOrder }, { verifycancelled: true });
 
     return res
       .status(200)
