@@ -248,6 +248,8 @@ function PaymentPage() {
       message = "คุณต้องการจ่ายเต็มราคาเลยใช่หรือไม่?";
     }
 
+    console.log("testt deposit : ",deposit);
+
     Swal.fire({
       title: message,
       icon: "question",
