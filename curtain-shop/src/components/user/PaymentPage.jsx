@@ -263,7 +263,7 @@ function PaymentPage() {
             Swal.fire({
               icon: "success"
             }).then(() => {
-              window.location.reload();
+              navigate(`/payment/${idOrder}`);
             });
           })
           .catch((error) => {

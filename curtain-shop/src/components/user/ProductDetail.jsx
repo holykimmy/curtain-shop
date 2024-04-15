@@ -249,11 +249,11 @@ function ContactPage() {
                     ประเภทของผ้าม่าน : {data.p_type}
                   </p>
                   <div
-                    style={{ backgroundColor: product.color }}
+                    style={{ backgroundColor: data.color }}
                     className="m-2 text-center flex items-center text-xs sm:text-sm lg:text-base xl:text-base h-7 w-[60%] text-white rounded-full shadow-xl "
                     >
                     {" "}
-                    <p className="items-center mx-auto ">{product.color}</p>
+                    <p className="items-center mx-auto ">{data.color}</p>
                   </div>
                   <div className="text-xs sm:text-sm md:text-base lg:text-base xl:text-base mt-4 text-brown-400 whitespace-pre-wrap">
                     {data.detail}
