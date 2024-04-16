@@ -19,7 +19,7 @@ function Products() {
   const [polyesterProducts, setPolesterProducts] = useState([]);
   const [mixedProducts, setMixedProducts] = useState([]);
   const [blackoutProducts, setBlackoutProducts] = useState([]);
-  const [waveProducts, setWaveProducts] = useState([]);
+  const [sheerProducts, setSheerProducts] = useState([]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -118,8 +118,8 @@ function Products() {
         const blackoutData = await productAPI.getProductTypeBlackout();
         setBlackoutProducts(blackoutData);
 
-        const waveData = await productAPI.getProductTypeWave();
-        setWaveProducts(waveData);
+        const sheerData = await productAPI.getProductTypeSheer();
+        setSheerProducts(sheerData);
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
@@ -691,6 +691,74 @@ function Products() {
         </h5>
       </div>
       {blackoutProducts.map((product) => (
+        <div key={product._id} className="flex justify-center ">
+          <div className="flex flex-col items-center md:items-start jusify-center md:flex-row md:justify-between w-[97%] sm:w-[97%] md:w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
+            <img
+              className=" w-[150px]  sm:w-w-[150px]  md:w-[200px] lg:w-[300px] lg:h-[400px] rounded bg-contain bg-center shadow-md"
+              src={product.image}
+              alt="product"
+            />
+
+            <div className="pl-5 md:w-[58%] mt-2">
+              <p className="text-sm sm:text-sm md:text-base lg:text-lg  text-brown-400">
+                ชื่อสินค้า : {product.name}
+              </p>
+              <p className="text-sm sm:text-sm md:text-base lg:text-lg  text-brown-400">
+                แบรนด์สินค้า : {product.brand}
+              </p>
+              <p className="text-sm sm:text-sm md:text-base lg:text-lg  text-brown-400">
+                ประเภทของผ้าม่าน : {product.p_type}
+              </p>
+              <div
+                style={{ backgroundColor: product.color }}
+                className="m-2 text-center flex items-center text-xs sm:text-sm lg:text-base xl:text-base h-7 w-[60%] text-white rounded-full shadow-xl "
+              >
+                {" "}
+                <p className="items-center mx-auto ">{product.color}</p>
+              </div>
+              <div className="text-xs md:text-sm lg:text-base xl-text-lg text-brown-400 whitespace-pre-wrap">
+                รายละเอียดสินค้า : {product.detail}
+              </div>
+              <div className="text-sm sm:text-sm md:text-base lg:text-md xl-text-lg text-brown-400 whitespace-pre-wrap">
+                ความกว้างของหน้าผ้า : {product.p_width} เซนติเมตร{" "}
+              </div>
+
+              <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                ราคา : {product.price} บาท
+              </p>
+              <div className="mt-5"></div>
+              <SwitchButton
+                visibility={product.visibility}
+                productId={product._id}
+              />
+            </div>
+
+            <div className="flex-row justify-center items-center md:flex-col md:mt-0 mt-10 ">
+              <button
+                className=" bg-blue-300 mt-3 m-2 py-2 px-auto w-[80px] md:w-full rounded-lg shadow-xl hover:bg-blue-400 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-xs md:text-sm  text-white"
+                onClick={() => handleEditProduct(product._id, product.name)}
+              >
+                แก้ไขข้อมูล
+              </button>
+
+              <button
+                className=" bg-red-300 mt-3 m-2 py-2 px-auto w-[80px] md:w-full rounded-lg shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-xs md:text-sm text-white"
+                onClick={() => handleDeleteProduct(product._id, product.name)}
+              >
+                ลบข้อมูล
+              </button>
+            </div>
+          </div>
+        </div>
+      ))}
+
+<div className="titlea bg-gray-100 py-1 shadow-md">
+        <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-8 xl:h-8 text-b-font"></BsPinFill>
+        <h5 className=" inline-block text-base md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
+          ผ้าโปร่ง (sheer)
+        </h5>
+      </div>
+      {sheerProducts.map((product) => (
         <div key={product._id} className="flex justify-center ">
           <div className="flex flex-col items-center md:items-start jusify-center md:flex-row md:justify-between w-[97%] sm:w-[97%] md:w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
             <img
