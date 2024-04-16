@@ -44,7 +44,7 @@ import Cotton from "./components/user/product/Cotton";
 import Linen from "./components/user/product/Linen";
 import Mixed from "./components/user/product/Mixed";
 import Blackout from "./components/user/product/Blackout";
-import Wave from "./components/user/product/Wave";
+import Sheer from "./components/user/product/Sheer";
 import Satin from "./components/user/product/Satin";
 import Equipment from "./components/user/product/Equipment";
 
@@ -130,7 +130,7 @@ const router = createBrowserRouter([
   { path: "/product/linen", element: <Linen /> },
   { path: "/product/blackout", element: <Blackout /> },
   { path: "/product/mixed", element: <Mixed /> },
-  { path: "/product/wave", element: <Wave /> },
+  { path: "/product/sheer", element: <Sheer /> },
   { path: "/product/equipment", element: <Equipment /> },
 
   //admin

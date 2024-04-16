@@ -171,6 +171,11 @@ const navListMenuItems = [
     description: "7",
     to: "/product/blackout",
   },
+  {
+    title: "ผ้าโปร่ง",
+    description: "8",
+    to: "/product/sheer",
+  },
   
 ];
 

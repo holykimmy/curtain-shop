@@ -131,6 +131,7 @@ function AddCategoryPage() {
             "ผ้าใยสังเคราะห์ (polyester)",
             "ผ้าใยผสม (mixed)",
             "ผ้ากันแสง (blackout)",
+            "ผ้าโปร่ง (sheer)"
           ].map((type) => (
             <div key={type} className="text-browntop text-lg mt-2 ml-2 mb-2 ">
               <input

@@ -54,10 +54,13 @@ function ContactPage() {
           productData = await productAPI.getProductTypeBlackout();
           setProduct(productData);
           setIsLoading(false);
+        } else if (firstdata === "ผ้าโปร่ง (sheer)") {
+          productData = await productAPI.getProductTypeSheer();
+          setProduct(productData);
+          setIsLoading(false);
         }
 
         setIsLoading(false);
-
       } catch (err) {
         console.error("เกิดข้อผิดพลาดในการดึงข้อมูล", err);
         setIsLoading(false);
@@ -227,7 +230,7 @@ function ContactPage() {
             {data.p_type}
           </h5>
         </div>
-        
+
         <div className="flex overflow-x-auto max-w-screen justify-center  ">
           <div className=" p-2 md:p-4  sx:w-full sm:w-full md:w-[90%] ">
             <div key={data.productId} className="flex justify-center">
@@ -251,7 +254,7 @@ function ContactPage() {
                   <div
                     style={{ backgroundColor: data.color }}
                     className="m-2 text-center flex items-center text-xs sm:text-sm lg:text-base xl:text-base h-7 w-[60%] text-white rounded-full shadow-xl "
-                    >
+                  >
                     {" "}
                     <p className="items-center mx-auto ">{data.color}</p>
                   </div>

@@ -159,9 +159,9 @@ const productAPI = {
         throw error;
       });
   },
-  getProductTypeWave: async () => {
+  getProductTypeSheer: async () => {
     return axios
-      .get(`${process.env.REACT_APP_API}/product/type?name=wave-curtains`)
+      .get(`${process.env.REACT_APP_API}/product/type?name=sheer`)
       .then((response) => response.data)
       .catch((error) => {
         console.error(error);

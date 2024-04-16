@@ -8,7 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import axios from "axios";
-function Wave() {
+function Sheer() {
   //token login
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -16,6 +16,14 @@ function Wave() {
   const [userData, setUserData] = useState(null);
   const [userName, setUserName] = React.useState("");
   const [idUser, setIdUser] = useState(null);
+  const [user, setUser] = React.useState({
+    f_name: "",
+    l_name: "",
+    email: "",
+    tell: "",
+    address: ""
+  });
+
   useEffect(() => {
     const authToken = localStorage.getItem("token");
 
@@ -27,59 +35,77 @@ function Wave() {
 
       if (decodedToken && decodedToken.user) {
         const { f_name, l_name } = decodedToken.user;
+
         const id = decodedToken.id;
-        setIdUser(`${id}`);
         setUserName(`${f_name} ${l_name}`);
+        setIdUser(`${id}`);
+        console.log("addresssjhf", decodedToken.user.addres);
+        setUser({
+          f_name: f_name,
+          l_name: l_name,
+          email: decodedToken.user.email,
+          tell: decodedToken.user.tell,
+          address: decodedToken.user.address
+        });
+
         setIsLoggedIn(true);
       } else {
         setUserData(decodedToken.user);
+      }
+
+      if (
+        decodedToken &&
+        decodedToken.exp &&
+        decodedToken.exp * 1000 < Date.now()
+      ) {
+        // Token expired, logout user
+        handleLogoutAuto();
       }
     } else {
       setIsLoggedIn(false);
     }
   }, []);
 
-  const handleDetailProduct = (
-    productId,
-    productName,
-    
-  ) => {
+  const handleLogoutAuto = () => {
+    // Logout user
+    localStorage.removeItem("token");
+    setUserName(""); // Clear user
+
+    navigate("/"); // Redirect
+  };
+
+  const handleLogout = () => {
     Swal.fire({
-      title: `คุณต้องการดูข้อมูลสินค้า ${productName} ใช่หรือไม่?`,
+      title: `คุณต้องการออกจากระบบใช่หรือไม่?`,
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "ใช่",
-      cancelButtonText: "ไม่ใช่",
+      cancelButtonText: "ไม่ใช่"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem("token");
+        setUserName("");
+        navigate("/");
+      }
+    });
+  };
+  const handleDetailProduct = (productId, productName) => {
+    Swal.fire({
+      text: `คุณต้องการดูข้อมูลสินค้า ${productName} ใช่หรือไม่?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่",
+      cancelButtonText: "ไม่ใช่"
     }).then((result) => {
       if (result.isConfirmed) {
         navigate(`/product-detail/${productId}`);
       }
     });
   };
-
-  const handleLogout = () => {
-    Swal.fire({
-      text: `คุณต้องการออกจากระบบใช่หรือไม่?`,
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "ใช่",
-      cancelButtonText: "ไม่ใช่",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        localStorage.removeItem("token");
-        setUserName("");
-
-        navigate("/"); 
-        window.location.reload();
-      }
-    });
-  };
-  //login check
-
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -106,15 +132,15 @@ function Wave() {
     setIsLoading(true);
     const fetchData = async () => {
       try {
-        const productData = await productAPI.getProductTypeWave();
+        const productData = await productAPI.getProductTypeSheer();
         setProduct(productData);
         setIsLoading(false);
       } catch (err) {
-        console.error("เกิดข้อผิดพลาดในการดึงข้อมูล", err);
         setIsLoading(false);
+        console.error("เกิดข้อผิดพลาดในการดึงข้อมูล", err);
       }
     };
-  
+
     fetchData();
   }, []);
 
@@ -129,7 +155,7 @@ function Wave() {
       <div class="titlea bg-brown-bg py-1 shadow-md">
         <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-9 xl:h-9 text-b-font"></BsPinFill>
         <h5 className=" inline-block text-base md:text-lg xl:text-xl text-b-font  pl-4 p-2 my-1">
-          ม่านลอน( wave)
+          ผ้ากันแสง ( blackout )
         </h5>
       </div>
 
@@ -184,4 +210,4 @@ function Wave() {
     </>
   );
 }
-export default Wave;
+export default Sheer;

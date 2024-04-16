@@ -612,6 +612,10 @@ function CustomPage() {
           productData = await productAPI.getProductTypeBlackout();
           setProduct(productData);
           setIsLoading(false);
+        } else if (firstdata === "ผ้าโปร่ง (sheer)") {
+          productData = await productAPI.getProductTypeSheer();
+          setProduct(productData);
+          setIsLoading(false);
         }
       } catch (err) {
         console.error("เกิดข้อผิดพลาดในการดึงข้อมูล", err);
@@ -692,9 +696,8 @@ function CustomPage() {
             <div
               style={{ backgroundColor: data.color }}
               className="text-center flex items-center text-xs sm:text-sm lg:text-base xl:text-base h-7 w-[60%] text-white rounded-full shadow-xl "
-              >
-              <p className="mx-auto">
-              {data.color}</p>
+            >
+              <p className="mx-auto">{data.color}</p>
             </div>
             <div className="text-sm md:text-base lg:text-base xl:text-base x mt-4 text-brown-400 whitespace-pre-wrap">
               {data.detail}
