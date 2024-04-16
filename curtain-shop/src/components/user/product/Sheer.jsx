@@ -143,6 +143,7 @@ function Sheer() {
 
     fetchData();
   }, []);
+  console.log(product);
 
   return (
     <>
