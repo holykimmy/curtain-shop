@@ -67,15 +67,22 @@ const WaitForPayment = ({ idUser }) => {
 
     if (confirmation.isConfirmed) {
       try {
+        setIsLoading(true);
+
         const response = await customerAPI.updateOrderEnable(idOrder, false);
         console.log(response);
+        setIsLoading(false);
+
         await Swal.fire({
           text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
           icon: "success"
+        }).then(() => {
+          window.location.reload();
         });
-        window.location.reload();
       } catch (error) {
         console.error("Error cancelling order:", error);
+        setIsLoading(false);
+
       }
     }
   };

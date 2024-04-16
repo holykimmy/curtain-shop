@@ -208,17 +208,24 @@ function ReceptInvoiceDetail() {
     // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
       try {
+        setIsLoading(true);
+
         const response = await receptAPI.updateToQuotation(id);
         console.log(response);
+        setIsLoading(false);
+
         await Swal.fire({
           text: "ทำเป็นใบเสนอเรียบร้อยแล้ว",
           icon: "success",
         }).then(()=>{
+
           navigate(`/quotation-detail/${id}`)
         })
         
       } catch (error) {
         console.error("Error ", error);
+        setIsLoading(false);
+
       }
     }
   };

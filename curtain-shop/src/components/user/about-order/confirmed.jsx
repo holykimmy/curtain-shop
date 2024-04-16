@@ -35,7 +35,6 @@ const Confirmed = ({ idUser }) => {
   console.log("djkhfgajk;h");
 
   useEffect(() => {
-    
     const fetchData = async () => {
       setIsLoading(true);
 
@@ -44,15 +43,13 @@ const Confirmed = ({ idUser }) => {
         const confirmOrders = orderData.filter((order) => !order.confirmed);
         setUserOrder(confirmOrders);
         setIsLoading(false);
-
       } catch (error) {
         console.error("error", error);
         setIsLoading(false);
       }
     };
-    
-      fetchData();
-    
+
+    fetchData();
   }, [idUser]);
 
   console.log("testttt");
@@ -72,15 +69,22 @@ const Confirmed = ({ idUser }) => {
 
     if (confirmation.isConfirmed) {
       try {
+        setIsLoading(true);
+
         const response = await customerAPI.updateOrderEnable(idOrder, false);
         console.log(response);
+        setIsLoading(false);
+
         await Swal.fire({
           text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
           icon: "success"
+        }).then(() => {
+          window.location.reload();
         });
-        window.location.reload();
       } catch (error) {
         console.error("Error cancelling order:", error);
+        setIsLoading(false);
+
       }
     }
   };
@@ -89,20 +93,7 @@ const Confirmed = ({ idUser }) => {
     navigate(`/check-order/${idOrder}`, {});
   };
 
-  const handdleOrderdetail = async (idOrder) => {
-    const confirmation = await Swal.fire({
-      text: "ดูรายละเอียดคำสั่งซื้อ",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "ยืนยัน",
-      cancelButtonText: "ยกเลิก"
-    });
-    if (confirmation.isConfirmed) {
-      navigate(`/check-order/${idOrder}`, {});
-    }
-  };
+ 
 
   const numberWithCommas = (x) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -172,7 +163,6 @@ const Confirmed = ({ idUser }) => {
                   {index !== order.products.length - 1 && (
                     <hr className="w-full mt-4 mb-2 border-gray-300" />
                   )}
-
                 </div>
               ))}
               {/* </div> */}
@@ -195,7 +185,6 @@ const Confirmed = ({ idUser }) => {
                 <div className="flex justify-end ">
                   <button
                     className="bg-blue-400 mt-3 mx-2 py-2 px-2 rounded-lg shadow-xl hover:bg-blue-200 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-sm md:text-sm lg:text-base xl:text-base  text-white"
-        
                     onClick={() => handleCheckOrder(order._id)}
                   >
                     ยืนยันคำสั่งซื้อ

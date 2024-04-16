@@ -129,7 +129,6 @@ function Products() {
     fetchData();
   }, []);
 
-  // const history = useHistory();
   const navigate = useNavigate();
 
   const handleEditProduct = (productId, productName) => {
@@ -159,18 +158,20 @@ function Products() {
       confirmButtonText: "ใช่",
       cancelButtonText: "ไม่ใช่"
     }).then((result) => {
+      setIsLoading(true);
+
       if (result.isConfirmed) {
-        // ทำการลบสินค้าโดยใช้ ID ของสินค้า
         productAPI
           .deleteProduct(productId)
           .then((response) => {
+            setIsLoading(false);
             console.log("Product deleted successfully");
-            // อัพเดท state หรือทำอื่น ๆ ตามต้องการหลังจากลบสินค้าเสร็จสิ้น
-            // เรียก fetchData เพื่ออัพเดทข้อมูลใหม่หลังจากลบสินค้า
             window.location.reload();
           })
           .catch((error) => {
             console.error("Error deleting product:", error);
+            setIsLoading(false);
+
           });
       } else {
         // ผู้ใช้เลือกยกเลิกการลบสินค้า

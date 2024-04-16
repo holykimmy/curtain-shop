@@ -51,6 +51,8 @@ function OrderDetailPage() {
   }, [isLoading]);
 
   useEffect(() => {
+    setIsLoading(true);
+
     const fetchData = () => {
       customerAPI
         .getOrderByIdOrder(idOrder)
@@ -65,8 +67,7 @@ function OrderDetailPage() {
     };
     fetchData();
 
-    // Return a cleanup function to clear the interval
-    return () => clearInterval();
+   
   }, [idOrder]);
 
   console.log(currentOrder);
@@ -155,24 +156,27 @@ function OrderDetailPage() {
 
   useEffect(() => {
     const fetchData = () => {
+      setIsLoading(true);
+
       customerAPI
         .getCustomerAddressById(idUser)
         .then((addressData) => {
           setAddress(addressData);
+          setIsLoading(false);
+
         })
         .catch((err) => {
           console.error("error", err);
+          setIsLoading(false);
+
         });
     };
-    fetchData();
 
-    // Return a cleanup function to clear the interval
-    return () => clearInterval();
+    fetchData(); 
   }, [idUser]);
   console.log("dkjhafkdsj");
   console.log(address);
 
-  const [sendAddress, setSendAddress] = useState("");
 
   const handlePayment = async (idOrder) => {
     navigate(`/payment/${idOrder}`, {});
@@ -192,17 +196,20 @@ function OrderDetailPage() {
     // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
       try {
+        setIsLoading(true);
         const response = await customerAPI.updateOrderComplete(idOrder, true);
         console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
         await Swal.fire({
           title: "ยืนยันคำสั่งซื้อ",
           text: "คำสั่งซื้อสำเร็จสำเร็จแล้ว",
           icon: "success"
-        });
-        window.location.reload();
+        }).then(()=>{
+          window.location.reload();
+        })
       } catch (error) {
         console.error("Error cancelling order:", error);
-        // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
+                setIsLoading(false);
+
       }
     }
   };

@@ -192,6 +192,10 @@ function EditAccoutPage() {
       email,
       tell
     });
+    setIsLoading(true); 
+    setIsLoading(false); 
+
+
     // ตรวจสอบรูปแบบของอีเมลและหมายเลขโทรศัพท์
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       // แสดงข้อความข้อผิดพลาด
@@ -211,7 +215,8 @@ function EditAccoutPage() {
       return;
     }
 
-    // ยืนยันการแก้ไขข้อมูลก่อนส่งไปยังฐานข้อมูล
+    
+
     Swal.fire({
       title: "ยืนยันการแก้ไขข้อมูล",
       icon: "question",
@@ -222,7 +227,7 @@ function EditAccoutPage() {
       cancelButtonText: "ยกเลิก"
     }).then((result) => {
       if (result.isConfirmed) {
-        // ส่งข้อมูลไปยัง API endpoint
+        setIsLoading(true); 
         axios
           .put(`${process.env.REACT_APP_API}/customer/edit-profile/${idUser}`, {
             f_name,
@@ -231,7 +236,7 @@ function EditAccoutPage() {
             tell
           })
           .then((response) => {
-            // แสดงข้อความยืนยันการแก้ไข
+            setIsLoading(false); 
             Swal.fire({
               text: "แก้ไขข้อมูลเรียบร้อยแล้ว",
               icon: "success",
@@ -243,7 +248,8 @@ function EditAccoutPage() {
             });
           })
           .catch((err) => {
-            // แสดงข้อความข้อผิดพลาด
+            setIsLoading(false); 
+
             Swal.fire({
               icon: "error",
               text: err.response.data.error

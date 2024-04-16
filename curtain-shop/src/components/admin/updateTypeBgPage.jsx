@@ -47,10 +47,11 @@ function UpdateTypePage() {
         const types = await typeAPI.getTypeById(id);
         setData(types);
         setIsLoading(false);
-        Swal.close();
       } catch (error) {
-        setIsLoading(false);
+        
         console.error("Error fetching all brands:", error);
+        setIsLoading(false);
+
       }
     };
 
@@ -70,6 +71,8 @@ function UpdateTypePage() {
         Swal.close();
       } catch (error) {
         console.error("Error fetching all brands:", error);
+        setIsLoading(false);
+
       }
     };
 
@@ -93,19 +96,7 @@ function UpdateTypePage() {
 
   const submitForm = (e) => {
     e.preventDefault();
-
-    Swal.fire({
-      customClass: {
-        popup: "bg-transparent"
-      },
-      backdrop: "rgba(255, 255, 255, 0.7)",
-      showConfirmButton: false,
-      didOpen: () => {
-        Swal.showLoading();
-      },
-      allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
-      allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
-    });
+    setIsLoading(false);
 
     const formData = new FormData();
     formData.append("name", name);
@@ -128,6 +119,7 @@ function UpdateTypePage() {
     console.log(formData.get("twolayer"));
 
     console.log("endlAPI");
+    
 
     update(e, id, formData);
   };
@@ -137,17 +129,21 @@ function UpdateTypePage() {
     e.preventDefault();
     try {
       const response = await typeAPI.updateTypeBgById(id, formData);
-      Swal.close();
+      setIsLoading(false);
       Swal.fire({
         text: "เพิ่มข้อมูลเรียบร้อย",
         icon: "success"
-      });
-      window.location.reload();
+      }).then(()=>{
+        window.location.reload();
+      })
+      
     } catch (err) {
       Swal.fire({
         icon: "error",
         text: err.response.data.error
       });
+      setIsLoading(false);
+
     }
   };
 

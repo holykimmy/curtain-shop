@@ -25,6 +25,26 @@ function CartPage() {
     address: ""
   });
 
+  
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.7)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
+
   useEffect(() => {
     const authToken = localStorage.getItem("token");
 
@@ -115,15 +135,15 @@ function CartPage() {
     console.log(idUser);
     console.log(cart);
     try {
-      // เรียกใช้ API ด้วย Axios
+      setIsLoading(true);
       const response = await axios.post(
         `${process.env.REACT_APP_API}/customer/cart`,
         { idUser, cart }
       );
 
-      // ตรวจสอบการตอบกลับจาก API
       if (response.status === 200) {
         console.log("บันทึกสำเร็จ!");
+        setIsLoading(false);
 
         Swal.fire({
           icon: "success",
@@ -138,11 +158,13 @@ function CartPage() {
         });
       } else {
         console.log("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
-        // จัดการเรื่องข้อผิดพลาดตามที่คุณต้องการ
+        setIsLoading(false);
+
       }
     } catch (error) {
       console.error("เกิดข้อผิดพลาดในการเรียกใช้ API:", error);
-      // จัดการเรื่องข้อผิดพลาดตามที่คุณต้องการ
+      setIsLoading(false);
+
     }
   };
 

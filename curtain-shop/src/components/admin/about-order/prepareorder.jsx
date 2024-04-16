@@ -102,15 +102,20 @@ const PrepareOrder = ({ idUser }) => {
     // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
       try {
+        setIsLoading(true);
+
         const response = await orderAPI.updateOrderPandding(
           idOrder,
           order,
           true
         );
+        setIsLoading(false);
+
         await Swal.fire({
           text: "เตรียมสินค้าพร้อมแล้ว",
           icon: "success"
         }).then(() => {
+
           window.location.reload();
         });
       } catch (error) {

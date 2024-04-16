@@ -49,8 +49,8 @@ function UpdateTypePage() {
         setIsLoading(false);
         Swal.close();
       } catch (error) {
-        setIsLoading(false);
         console.error("Error fetching all brands:", error);
+        setIsLoading(false);
       }
     };
 
@@ -67,9 +67,9 @@ function UpdateTypePage() {
         setPrice_rail(types.price_rail);
         setSelectedTwolayer(types.twolayer);
         setIsLoading(false);
-        Swal.close();
       } catch (error) {
         console.error("Error fetching all brands:", error);
+        setIsLoading(false);
       }
     };
 
@@ -77,21 +77,6 @@ function UpdateTypePage() {
   }, []);
 
   console.log(data);
-
-  const handdleAddImg = (id) => {
-    console.log(id);
-    Swal.fire({
-      text: "คุณต้องการเพิ่มรูปภาพใช่หรือไม่?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "ใช่",
-      cancelButtonText: "ไม่ใช่"
-    }).then((result) => {
-      if (result.isConfirmed) {
-        navigate(`/update-typebg/${id}`);
-      }
-    });
-  };
 
   const handleFileSelection = (e) => {
     const image = e.target.files[0];
@@ -102,17 +87,6 @@ function UpdateTypePage() {
     // แสดงตัวอย่างรูปภาพ
     const previewURL = URL.createObjectURL(image);
     setImagePreview(previewURL);
-  };
-
-  const handleFileSelectionBg = (e) => {
-    const bgimage = e.target.files[0];
-    console.log("bgimage", bgimage);
-
-    setImagebg(bgimage); // อัปเดตค่าไฟล์ใหม่
-
-    // แสดงตัวอย่างรูปภาพ
-    const previewURL = URL.createObjectURL(bgimage);
-    setImagePreviewBg(previewURL);
   };
 
   const handlePriceChange = (e) => {
@@ -138,10 +112,13 @@ function UpdateTypePage() {
       confirmButtonText: "ใช่",
       cancelButtonText: "ไม่ใช่"
     }).then((result) => {
+      setIsLoading(true);
+
       if (result.isConfirmed) {
         typeAPI
           .deleteTypeById(id)
           .then((response) => {
+            setIsLoading(false);
             Swal.fire({
               text: "ลบข้อมูลสำเร็จ",
               icon: "success"
@@ -151,9 +128,11 @@ function UpdateTypePage() {
           })
           .catch((error) => {
             console.error("Error deleting product:", error);
+            setIsLoading(false);
           });
       } else {
         console.log("Cancelled delete operation");
+        setIsLoading(false);
       }
     });
   };
@@ -163,18 +142,7 @@ function UpdateTypePage() {
   const submitForm = (e) => {
     e.preventDefault();
 
-    Swal.fire({
-      customClass: {
-        popup: "bg-transparent"
-      },
-      backdrop: "rgba(255, 255, 255, 0.7)",
-      showConfirmButton: false,
-      didOpen: () => {
-        Swal.showLoading();
-      },
-      allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
-      allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
-    });
+    setIsLoading(true);
 
     const formData = new FormData();
     formData.append("name", name);
@@ -206,17 +174,20 @@ function UpdateTypePage() {
     e.preventDefault();
     try {
       const response = await typeAPI.updateTypeById(id, formData);
-      Swal.close();
+      setIsLoading(false);
       Swal.fire({
         text: "เพิ่มข้อมูลเรียบร้อย",
         icon: "success"
+      }).then(() => {
+        window.location.reload();
       });
-      window.location.reload();
     } catch (err) {
       Swal.fire({
         icon: "error",
         text: err.response.data.error
       });
+      setIsLoading(false);
+
     }
   };
 

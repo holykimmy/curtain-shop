@@ -97,6 +97,7 @@ const ApproveOrder = ({ idUser }) => {
           order,
           true
         );
+        setIsLoading(false);
         await Swal.fire({
           text: "คำสั่งซื้อได้รับการยืนยันแล้ว",
           icon: "success"
@@ -105,6 +106,8 @@ const ApproveOrder = ({ idUser }) => {
         });
       } catch (error) {
         console.error("Error cancelling order:", error);
+        setIsLoading(false);
+
       }
     }
   };

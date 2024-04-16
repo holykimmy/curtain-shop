@@ -46,7 +46,6 @@ function Orders() {
   }, [isLoading]);
 
   useEffect(() => {
-    setIsLoading(true);
     const fetchData = async () => {
       try {
         setIsLoading(true);
@@ -89,9 +88,12 @@ function Orders() {
           (order) => order.enable === false || order.cancelled === true
         );
         setOrderCancelled(cancelledOrders);
+        setIsLoading(false);
+
       } catch (error) {
         console.error("Error fetching data:", error);
-        
+        setIsLoading(false);
+
       } 
     };
 
@@ -99,7 +101,6 @@ function Orders() {
     fetchData();
 
  
-
   }, []);
   
  

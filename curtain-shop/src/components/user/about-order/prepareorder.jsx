@@ -57,9 +57,9 @@ const PrepareOrder = ({ idUser }) => {
   console.log(userOrder);
 
   const handleCancelOrder = async (idOrder) => {
-    // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
+    console.log("testtttt");
     const confirmation = await Swal.fire({
-      text: "ท่านต้องการยกเลิกคำสั่งซื้อใช่หรือไม่?",
+      text: "คุณแน่ใจหรือไม่ที่ต้องการยกเลิกคำสั่งซื้อนี้?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
@@ -68,19 +68,24 @@ const PrepareOrder = ({ idUser }) => {
       cancelButtonText: "ยกเลิก"
     });
 
-    // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
       try {
-        const response = await orderAPI.updateOrderCancelled(idOrder, true);
+        setIsLoading(true);
+
+        const response = await customerAPI.updateOrderEnable(idOrder, false);
         console.log(response);
+        setIsLoading(false);
+
         await Swal.fire({
           text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
           icon: "success"
+        }).then(() => {
+          window.location.reload();
         });
-        window.location.reload();
       } catch (error) {
         console.error("Error cancelling order:", error);
-        // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
+        setIsLoading(false);
+
       }
     }
   };

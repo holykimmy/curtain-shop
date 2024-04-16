@@ -226,7 +226,7 @@ const ProductInCart = ({ item, idUser }) => {
         >
           <Link to={`/product-detail/${item.productId}`}> <img className="w-[300px] rounded" src={item.image} alt="product" /></Link>
         </td>
-        <td className="w-[100px] text-sm text-browntop px-2 py-1 border border-gray-300">
+        <td className="w-[100px] whitespace-nowrap text-sm text-browntop px-2 py-1 border border-gray-300">
           <Link to={`/product-detail/${item.productId}`} >{item.name}</Link>
         </td>
         <td className="text-browntop text-sm  px-2 py-1 border border-gray-300">
@@ -235,7 +235,7 @@ const ProductInCart = ({ item, idUser }) => {
         <td className="hidden sm:table-cell text-browntop text-xs text-left px-2 py-1 border border-gray-300 ">
           {item.detail.split("\r\n")[0]}
         </td>
-        <td className="w-[100px] text-browntop  text-sm px-2 py-1 border border-gray-300 ">
+        <td className="w-[100px] whitespace-nowrap text-browntop  text-xs px-2 py-1 border border-gray-300 ">
           {item.type}
         </td>
         <td className=" w-[100px] text-browntop text-sm px-2 py-1 border border-gray-300 ">
@@ -255,14 +255,14 @@ const ProductInCart = ({ item, idUser }) => {
           <div className="flex items-center">
             <input
               onChange={handleChangeWidth}
-              className="form-control sx:w-[57px]  sm:w-[57px] md:w-[75px] lg:w-[75px] xl:w-[75px] mb-2 rounded-lg text-sm mr-2"
+              className="form-control w-[57px]   md:w-[75px] lg:w-[75px] xl:w-[75px] mb-2 rounded-lg text-sm mr-2"
               type="number"
               value={item.width}
             />
            
           <input
             onChange={handleChangeHeight}
-            className="form-control sx:w-[57px]  sm:w-[57px] md:w-[75px] lg:w-[75px] xl:w-[75px] mb-2 rounded-lg text-sm"
+            className="form-control w-[57px]  md:w-[75px] lg:w-[75px] xl:w-[75px] mb-2 rounded-lg text-sm"
             type="number"
             value={item.height}
           /> <span className="w-[50px]">/ ซม.</span>

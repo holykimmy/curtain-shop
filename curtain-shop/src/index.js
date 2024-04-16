@@ -23,7 +23,7 @@ import AccountEditPage  from "./components/user/AccountEditPage";
 
 
 import ProductDetail from "./components/user/ProductDetail";
-import CategoryPage from "./components/user/CategoryPage";
+// import CategoryPage from "./components/user/CategoryPage";
 import CartPage from "./components/user/CartPage";
 import CheckOrder from "./components/user/CheckOrderPage";
 import Recommend from "./components/user/RecommendPage";
@@ -34,7 +34,7 @@ import Achievement from "./components/user/AchievementPage";
 import Payment from "./components/user/PaymentPage";
 import OrderDetailPage from "./components/user/OrderDetailPage";
 
-import CheckOutPage from "./components/user/CheckOutPage";
+// import CheckOutPage from "./components/user/CheckOutPage";
 import AboutOrderPage from "./components/user/AboutOrderPage";
 
 //product
@@ -108,7 +108,7 @@ const router = createBrowserRouter([
   { path: "/edit-address/:id", element: <EditAddressPage /> },
 
   { path: "/product-detail/:productId", element: <ProductDetail /> },
-  { path: "/category", element: <CategoryPage /> },
+  // { path: "/category", element: <CategoryPage /> },
   { path: "/cart", element: <CartPage /> },
   { path: "/check-order/:idOrder", element: <CheckOrder /> },
   { path: "/recommended-curtain", element: <Recommend /> },
@@ -116,7 +116,6 @@ const router = createBrowserRouter([
   { path: "/custom-product", element: <CustomPage /> },
   { path: "/Fabric-Type", element: <FabricType /> },
   { path: "/Achievements", element: <Achievement /> },
-  { path: "/checkout", element: <CheckOutPage /> },
   { path: "/about-order/:selectedButton", element: <AboutOrderPage /> },
   { path: "/payment/:idOrder", element: <Payment /> },
   { path: "/order-detail/:idOrder", element: <OrderDetailPage /> },

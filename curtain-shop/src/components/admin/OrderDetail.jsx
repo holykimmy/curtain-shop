@@ -22,22 +22,45 @@ function OrderDetail() {
   const [idUser, setIdUser] = React.useState("");
   const navigate = useNavigate();
   const [currentOrder, setCurrentOrder] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.5)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
+  useEffect(() => {
+    setIsLoading(true);
+
     const fetchData = () => {
       customerAPI
         .getOrderByIdOrder(idOrder)
         .then((orderData) => {
           setCurrentOrder(orderData);
+          setIsLoading(false);
+
         })
         .catch((err) => {
           console.error("error", err);
+          setIsLoading(false);
+
         });
     };
     fetchData();
 
-    // Return a cleanup function to clear the interval
-    return () => clearInterval();
   }, [idOrder]);
 
   useEffect(() => {
@@ -56,22 +79,17 @@ function OrderDetail() {
       }
 
       if (decodedToken && decodedToken.user) {
-        // Check if user is admin
+       
         if (decodedToken.user.role !== "admin") {
-          // If user is not admin, redirect to login page or show unauthorized message
-          // Redirecting to login page:
-          window.location.href = "/login"; // Change '/login' to your actual login page route
-          // Showing unauthorized message:
-          // Swal.fire("Unauthorized", "You are not authorized to access this page", "error");
+          
+          window.location.href = "/login"; 
         } else {
           setUserData(decodedToken.user);
         }
       }
     } else {
-      // If no token found, redirect to login page or show unauthorized message
-      // Redirecting to login page:
-      window.location.href = "/login"; // Change '/login' to your actual login page route
-      // Showing unauthorized message:
+      
+      window.location.href = "/login"; 
       Swal.fire(
         "Unauthorized",
         "You are not authorized to access this page",
@@ -85,14 +103,20 @@ function OrderDetail() {
   console.log(idUser);
 
   useEffect(() => {
+    setIsLoading(true);
+
     const fetchData = () => {
       customerAPI
         .getCustomerAddressById(idUser)
         .then((addressData) => {
           setAddress(addressData);
+          setIsLoading(false);
+
         })
         .catch((err) => {
           console.error("error", err);
+          setIsLoading(false);
+
         });
     };
     fetchData();
@@ -116,12 +140,16 @@ function OrderDetail() {
     // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
       try {
+        setIsLoading(true);
+
         const response = await orderAPI.updateOrderVerifyPayment(
           idOrder,
           order,
           true
         );
-        console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
+        console.log(response); 
+        setIsLoading(false);
+
         await Swal.fire({
           title: "ยืนยันการชำระเงิน",
           text: "คำสั่งซื้อได้รับการยืนยันแล้ว",
@@ -131,7 +159,8 @@ function OrderDetail() {
         });
       } catch (error) {
         console.error("Error cancelling order:", error);
-        // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
+        setIsLoading(false);
+     
       }
     }
   };
@@ -170,12 +199,14 @@ function OrderDetail() {
     // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
       try {
+        setIsLoading(true);
         const response = await orderAPI.updateOrderApprove(
           idOrder,
           order,
           true
         );
-        console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
+        console.log(response); 
+        setIsLoading(false);
         await Swal.fire({
           title: "ยืนยันคำสั่งซื้อ",
           text: "คำสั่งซื้อได้รับการยืนยันแล้ว",
@@ -185,7 +216,7 @@ function OrderDetail() {
         });
       } catch (error) {
         console.error("Error cancelling order:", error);
-        // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
+        setIsLoading(false);
       }
     }
   };
@@ -201,15 +232,18 @@ function OrderDetail() {
       cancelButtonText: "ยกเลิก"
     });
 
-    // หากผู้ใช้กดปุ่มยืนยัน
+
     if (confirmation.isConfirmed) {
       try {
+        setIsLoading(true);
         const response = await orderAPI.updateOrderPandding(
           idOrder,
           order,
           true
         );
         console.log(response);
+        setIsLoading(false);
+
         await Swal.fire({
           title: "เตรียมสินค้าพร้อมแล้ว",
           text: "คำสั่งซื้อได้รับการยืนยันแล้ว",
@@ -219,7 +253,7 @@ function OrderDetail() {
         });
       } catch (error) {
         console.error("Error cancelling order:", error);
-        // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
+        setIsLoading(false);
       }
     }
   };

@@ -304,8 +304,12 @@ function ReceptQuotationDetail() {
     // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
       try {
+        setIsLoading(true);
+
         const response = await receptAPI.updateToInvoice(id);
         console.log(response);
+        setIsLoading(false);
+
         await Swal.fire({
           text: "ทำเป็นใบแจ้งหนี้เรียบร้อยแล้ว",
           icon: "success"
@@ -314,6 +318,8 @@ function ReceptQuotationDetail() {
         });
       } catch (error) {
         console.error("Error ", error);
+        setIsLoading(false);
+
       }
     }
   };

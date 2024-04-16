@@ -156,10 +156,10 @@ function AccoutPage() {
     // ถ้าผู้ใช้ยืนยันการลบ
     if (confirmation.isConfirmed) {
       try {
-        // ทำการลบที่อยู่โดยส่งคำขอไปยังเซิร์ฟเวอร์
+        setIsLoading(true); 
         const response = await customerAPI.deleteAddress(id);
         console.log(response);
-        // ถ้าการลบสำเร็จ
+        setIsLoading(false); 
         if (response.message === "Address deleted successfully") {
           Swal.fire({
             icon: "success",
@@ -170,6 +170,8 @@ function AccoutPage() {
           fetchData();
         } else {
           console.log("เกิดข้อผิดพลาดในการลบที่อยู่");
+          setIsLoading(false); 
+
         }
       } catch (error) {
         // แสดงข้อความแจ้งเตือนเมื่อเกิดข้อผิดพลาด
@@ -179,6 +181,8 @@ function AccoutPage() {
           text: "ไม่สามารถลบที่อยู่ได้",
         });
         console.error(error);
+        setIsLoading(false); 
+
       }
     }
   };

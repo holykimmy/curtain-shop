@@ -199,18 +199,8 @@ function UpdateProductPage() {
   const submitForm = (e, productId, data, image) => {
     e.preventDefault();
 
-    Swal.fire({
-      customClass: {
-        popup: "bg-transparent",
-      },
-      backdrop: "rgba(255, 255, 255, 0.7)",
-      showConfirmButton: false,
-      didOpen: () => {
-        Swal.showLoading();
-      },
-      allowOutsideClick: false,
-      allowEscapeKey: false,
-    });
+    setIsLoading(true);
+
 
     // Collect form data
     const formData = new FormData();
@@ -244,13 +234,16 @@ function UpdateProductPage() {
     e.preventDefault();
     try {
       const response = await productAPI.updateProduct(productId, formData);
-      Swal.close();
+      setIsLoading(false);
       Swal.fire({
         text: "เพิ่มข้อมูลเรียบร้อย",
         icon: "success",
-      });
-      window.location.reload();
+      }).then(()=>{
+        window.location.reload();
+
+      })
     } catch (err) {
+      setIsLoading(false);
       Swal.fire({
         icon: "error",
         text: err.response.data.error,

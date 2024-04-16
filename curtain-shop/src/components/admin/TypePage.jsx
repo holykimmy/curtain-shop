@@ -42,8 +42,9 @@ function AddTypePage() {
         setIsLoading(false);
   
       } catch (error) {
-        setIsLoading(false);
+       
         console.error("Error fetching all brands:", error);
+        setIsLoading(false);
       }
     };
 
@@ -54,7 +55,6 @@ function AddTypePage() {
 
 
   const handdleDetail = async (id,name) => {
-    // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
     const confirmation = await Swal.fire({
       text: `ท่านต้องการแก้ไข ${name} ใช่หรือไม่`,
       icon: "warning",
@@ -65,7 +65,6 @@ function AddTypePage() {
       cancelButtonText: "ยกเลิก",
     });
 
-    // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
       navigate(`/update-type/${id}`, {});
     }

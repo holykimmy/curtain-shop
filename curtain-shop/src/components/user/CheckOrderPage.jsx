@@ -318,6 +318,8 @@ function CheckOrdeerPage() {
         showConfirmButton: false,
         timer: 1500
       });
+      setIsLoading(false);
+
     }
   };
   const numberWithCommas = (x) => {
@@ -363,10 +365,10 @@ function CheckOrdeerPage() {
                     {order.products.map((item) => (
                       <div
                         key={item._id}
-                        class="flex flex-col shadow-xl  rounded-lg bg-white sm:flex-row"
+                        class="flex flex-col shadow-xl  rounded-lg bg-white sm:flex-row  "
                       >
                         <img
-                          class="m-5 h-auto w-[100px] rounded-md border object-cover object-center"
+                          class="m-5 h-auto  sm:w-[100px] rounded-md border object-cover  "
                           src={item.product.image}
                           alt="product"
                         />

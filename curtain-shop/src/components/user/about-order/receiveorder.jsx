@@ -36,16 +36,16 @@ const ReceiveOrder = ({ idUser }) => {
 
   useEffect(() => {
     const fetchData = () => {
-      setIsLoading(true); 
+      setIsLoading(true);
       customerAPI
         .getOrderByIdSend(idUser)
         .then((orderData) => {
           setUserOrder(orderData);
-          setIsLoading(false); 
+          setIsLoading(false);
         })
         .catch((err) => {
           console.error("error", err);
-          setIsLoading(false); 
+          setIsLoading(false);
         });
     };
     fetchData();
@@ -68,24 +68,28 @@ const ReceiveOrder = ({ idUser }) => {
     // หากผู้ใช้กดปุ่มยืนยัน
     if (confirmation.isConfirmed) {
       try {
+        setIsLoading(true);
+
         const response = await customerAPI.updateOrderComplete(idOrder, true);
-        console.log(response); // แสดงข้อความที่ได้รับจากการอัปเดตสถานะคำสั่งซื้อ
+        console.log(response); 
+        setIsLoading(false);
+
         await Swal.fire({
           title: "ยืนยันคำสั่งซื้อ",
           text: "คำสั่งซื้อสำเร็จสำเร็จแล้ว",
           icon: "success"
+        }).then(() => {
+          window.location.reload();
         });
-        window.location.reload();
       } catch (error) {
         console.error("Error cancelling order:", error);
-        // ทำการจัดการข้อผิดพลาดตามที่ต้องการ
+        setIsLoading(false);
+
       }
     }
   };
 
-  const handlePaymentOrder = async (idOrder) => {
-    navigate(`/payment/${idOrder}`);
-  };
+
 
   const handdleOrderdetail = async (idOrder) => {
     // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
@@ -197,9 +201,9 @@ const ReceiveOrder = ({ idUser }) => {
                   ? "จัดส่งสินค้าเรียบร้อยแล้ว"
                   : "กำลังเตรียมจัดส่ง"}
               </p>
-             
+
               <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
-              {order.postcodeOrder}
+                {order.postcodeOrder}
               </p>
 
               <div className="flex justify-between">
