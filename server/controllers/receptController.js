@@ -241,15 +241,16 @@ exports.getReceptById = (req, res) => {
     });
 };
 
-exports.getReceptByName = (req, res) => {
-  const name = req.query.name;
+
+exports.searchRecept = (req, res) => {
+  const { name } = req.query;
   const regex = new RegExp(name, "i");
-  Recept.find({ fullname: regex })
+  Recept.find({ $or: [{ fullname: regex } ,{subject:regex}] })
     .exec()
     .then((recepts) => {
       res.json(recepts);
     })
     .catch((err) => {
-      res.status(500).jon({ error: err.message });
+      res.status(500).json({ error: err.message });
     });
 };
