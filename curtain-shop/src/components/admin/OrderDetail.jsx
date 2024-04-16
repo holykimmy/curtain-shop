@@ -564,7 +564,7 @@ function OrderDetail() {
                         </div>
                       </div>
                       <div className="flex flex-col w-full justify-center items-center md:justify-start md:items-start">
-                        {!order.approve ? (
+                        {!order.approve && order.enable && !order.cancelled ? (
                           <button
                             className="mt-6 md:mt-3 py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base leading-4 text-gray-800"
                             onClick={() => handleApproveOrder(order._id, order)}
@@ -579,7 +579,7 @@ function OrderDetail() {
                           "ลูกค้ายังไม่ได้ชำระเงิน"
                         ) : (
                           <>
-                            {!order.verifypayment && !order.cancelled ? (
+                            {!order.verifypayment && !order.cancelled  && order.enable ? (
                               <button
                                 disabled={!order.payment}
                                 className="mt-6 md:mt-3 py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base leading-4 text-gray-800"
