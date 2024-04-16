@@ -59,7 +59,6 @@ const PrepareOrder = ({ idUser }) => {
 
   const handleCancelOrder = async (idOrder) => {
     const confirmation = await Swal.fire({
-      title: "ยืนยันการยกเลิกคำสั่งซื้อ",
       text: "คุณแน่ใจหรือไม่ที่ต้องการยกเลิกคำสั่งซื้อนี้?",
       icon: "warning",
       showCancelButton: true,
@@ -109,8 +108,7 @@ const PrepareOrder = ({ idUser }) => {
           true
         );
         await Swal.fire({
-          title: "เตรียมสินค้าพร้อมแล้ว",
-          text: "คำสั่งซื้อได้รับการยืนยันแล้ว",
+          text: "เตรียมสินค้าพร้อมแล้ว",
           icon: "success"
         }).then(() => {
           window.location.reload();

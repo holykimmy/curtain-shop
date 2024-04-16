@@ -94,7 +94,7 @@ function EditAddressPage() {
 
   const handleLogout = () => {
     Swal.fire({
-      title: `คุณต้องการออกจากระบบใช่หรือไม่?`,
+      text: `คุณต้องการออกจากระบบใช่หรือไม่?`,
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",

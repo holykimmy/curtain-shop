@@ -54,7 +54,7 @@ const Confirmed = ({ idUser }) => {
       fetchData();
     
   }, [idUser]);
-  
+
   console.log("testttt");
   console.log("order :", userOrder);
 
@@ -75,7 +75,6 @@ const Confirmed = ({ idUser }) => {
         const response = await customerAPI.updateOrderEnable(idOrder, false);
         console.log(response);
         await Swal.fire({
-          title: "ยกเลิกสำเร็จ",
           text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
           icon: "success"
         });

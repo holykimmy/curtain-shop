@@ -11,7 +11,6 @@ const SwitchButton = ({ visibility, productId }) => {
 
     // แสดง SweetAlert2 สำหรับการยืนยัน
     Swal.fire({
-      title: `ยืนยันการเปลี่ยนแปลงสถานะ`,
       text: `คุณต้องการเปลี่ยนสถานะเป็น ${newVisibility ? 'มีสินค้าในร้านค้า' : 'ไม่มีสินค้าในร้านค้า'} ใช่หรือไม่?`,
       icon: 'question',
       showCancelButton: true,

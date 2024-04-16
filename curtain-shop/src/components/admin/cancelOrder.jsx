@@ -119,7 +119,6 @@ function CancelOrder() {
     }
 
     const confirmation = await Swal.fire({
-      title: "ยกเลิกคำสั่งซื้อ",
       text: `คุณแน่ใจหรือไม่ที่ต้องการยกเลิกด้วยเหตุผล ${cancelReasonAd}?`,
       icon: "warning",
       showCancelButton: true,

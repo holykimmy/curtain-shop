@@ -85,9 +85,7 @@ const ApproveOrder = ({ idUser }) => {
 
 
   const handleApproveOrder = async (idOrder,order) => {
- 
     const confirmation = await Swal.fire({
-      title: "ยืนยันคำสั่งซื้อ",
       text: "คุณต้องการอนุมัติคำสั่งซื้อใช่หรือไม่?",
       icon: "warning",
       showCancelButton: true,
@@ -102,7 +100,6 @@ const ApproveOrder = ({ idUser }) => {
         setIsLoading(true)
         const response = await orderAPI.updateOrderApprove(idOrder,order, true );
         await Swal.fire({
-          title: "ยืนยันคำสั่งซื้อ",
           text: "คำสั่งซื้อได้รับการยืนยันแล้ว",
           icon: "success",
         }).then(() => {

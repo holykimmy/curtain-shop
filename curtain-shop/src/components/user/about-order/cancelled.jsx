@@ -59,7 +59,7 @@ const CancelOrder = ({ idUser }) => {
   const handdleOrderdetail = async (idOrder) => {
     // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
     const confirmation = await Swal.fire({
-      title: "ดูรายละเอียดคำสั่งซื้อ",
+      text: "ดูรายละเอียดคำสั่งซื้อ",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",

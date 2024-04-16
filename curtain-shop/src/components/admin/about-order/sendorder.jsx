@@ -89,7 +89,7 @@ const ReceiveOrder = ({ idUser }) => {
 
   const handdleOrderdetail = async (idOrder) => {
     const confirmation = await Swal.fire({
-      title: "ดูรายละเอียดคำสั่งซื้อ",
+      text: "ดูรายละเอียดคำสั่งซื้อ",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",

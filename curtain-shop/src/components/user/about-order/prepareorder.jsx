@@ -74,7 +74,7 @@ const PrepareOrder = ({ idUser }) => {
         const response = await orderAPI.updateOrderCancelled(idOrder, true);
         console.log(response);
         await Swal.fire({
-          text: "รอการยืนยันจากทางร้านค้า",
+          text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
           icon: "success"
         });
         window.location.reload();

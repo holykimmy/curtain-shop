@@ -58,7 +58,6 @@ const WaitingForPayment = ({ idUser }) => {
 
   const handleCancelOrder = async (idOrder) => {
     const confirmation = await Swal.fire({
-      title: "ยืนยันการยกเลิกคำสั่งซื้อ",
       text: "คุณแน่ใจหรือไม่ที่ต้องการยกเลิกคำสั่งซื้อนี้?",
       icon: "warning",
       showCancelButton: true,
@@ -89,40 +88,12 @@ const WaitingForPayment = ({ idUser }) => {
     }
   };
 
-  const handleVerifyOrder = async (idOrder) => {
-    // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
-    const confirmation = await Swal.fire({
-      title: "ยืนยันการชำระเงิน",
-      text: "ลูกค้าชำระเงินสำเร็จแล้วใช่หรือไม่?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "ใช่",
-      cancelButtonText: "ยกเลิก"
-    });
 
-    // หากผู้ใช้กดปุ่มยืนยัน
-    if (confirmation.isConfirmed) {
-      try {
-        const response = await orderAPI.updateOrderVerifyPayment(idOrder, true);
-        await Swal.fire({
-          title: "ยืนยันการชำระเงิน",
-          text: "คำสั่งซื้อได้รับการยืนยันแล้ว",
-          icon: "success"
-        }).then(() => {
-          window.location.reload();
-        });
-      } catch (error) {
-        console.error("Error cancelling order:", error);
-      }
-    }
-  };
 
   const handdleOrderdetail = async (idOrder) => {
     // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
     const confirmation = await Swal.fire({
-      title: "ดูรายละเอียดคำสั่งซื้อ",
+      text: "ดูรายละเอียดคำสั่งซื้อ",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
