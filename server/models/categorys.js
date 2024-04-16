@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const moment = require("moment");
 
 const categorySchema = mongoose.Schema(
   {
@@ -18,6 +19,15 @@ const categorySchema = mongoose.Schema(
         required: true,
       },
     ],
+    
+    createdAt: {
+      type: String,
+      default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss")
+    },
+    updatedAt: {
+      type: String,
+      default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss")
+    }
   },
   { timestamps: true }
 );

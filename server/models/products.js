@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const moment = require("moment");
 
 const ProdusctSchema = mongoose.Schema(
   {
@@ -51,6 +52,14 @@ const ProdusctSchema = mongoose.Schema(
     visibility: {
       type: Boolean,
       default: true 
+    },
+    createdAt: {
+      type: String,
+      default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss")
+    },
+    updatedAt: {
+      type: String,
+      default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss")
     }
   },
   { timestamps: true }

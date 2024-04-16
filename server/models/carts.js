@@ -20,8 +20,8 @@ const CartSchema = mongoose.Schema(
         count: { type: Number, default: 1 },
         width: { type: Number },
         height: { type: Number },
-        totalPiece : {type:Number},
-        twolayer : { type:String}
+        totalPiece: { type: Number },
+        twolayer: { type: String }
       }
     ],
     orderBy: {
@@ -50,19 +50,17 @@ const CartSchema = mongoose.Schema(
     pandding: { type: Boolean, default: false },
     sendproduct: { type: Boolean, default: false },
     complete: { type: Boolean, default: false },
-    deposit: {type: Boolean, default:false},
+    deposit: { type: Boolean, default: false },
     createdAt: {
+      type: String,
+      default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss")
+    },
+    updatedAt: {
       type: String,
       default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss")
     }
   },
   { timestamps: true }
 );
-CartSchema.pre("save", function (next) {
-  if (!this.createdAt) {
-    this.createdAt = moment().locale("th").format("YYYY-MM-DD HH:mm:ss");
-  }
-  next();
-});
 
 module.exports = mongoose.model("Cart", CartSchema);

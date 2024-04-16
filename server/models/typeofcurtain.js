@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const moment = require("moment");
 
 const TypeofCurtain = mongoose.Schema(
   {
@@ -22,6 +23,14 @@ const TypeofCurtain = mongoose.Schema(
     },
     twolayer: {
         type: String
+    },
+    createdAt: {
+      type: String,
+      default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss")
+    },
+    updatedAt: {
+      type: String,
+      default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss")
     }
   },
   { timestamps: true }

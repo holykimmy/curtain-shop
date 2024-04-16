@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const moment = require("moment");
 
 const addressSchema = mongoose.Schema(
   {
@@ -13,15 +14,17 @@ const addressSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Customers",
     },
+    createdAt: {
+      type: String,
+      default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss")
+    },
+    updatedAt: {
+      type: String,
+      default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss")
+    }
   },
   { timestamps: true }
 );
 
-addressSchema.pre("save", function (next) {
-  if (!this.createdAt) {
-    this.createdAt = moment().locale("th").format("YYYY-MM-DD HH:mm:ss");
-  }
-  next();
-});
 
 module.exports = mongoose.model("Address", addressSchema);

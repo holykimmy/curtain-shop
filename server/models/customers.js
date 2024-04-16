@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const { body, validationResult } = require("express-validator");
 const Joi = require("joi");
 const passwordComplexity = require("joi-password-complexity");
+const moment = require("moment");
+
 const customerSchema = mongoose.Schema(
   {
     f_name: {
@@ -44,6 +46,14 @@ const customerSchema = mongoose.Schema(
 
       default: "user", // กำหนดค่าเริ่มต้นเป็น "user"
     },
+    createdAt: {
+      type: String,
+      default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss")
+    },
+    updatedAt: {
+      type: String,
+      default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss")
+    }
  
   },
   { timestamps: true }

@@ -17,6 +17,7 @@ const Joi = require("joi");
 const fs = require("fs");
 const path = require("path");
 const nodemailer = require("nodemailer");
+const moment = require("moment"); 
 
 exports.register = async (req, res) => {
   const { f_name, l_name, username, email, tell, password } = req.body;
@@ -700,7 +701,8 @@ exports.userCart = async (req, res) => {
         width: item.width,
         height: item.height,
         twolayer: item.twolayer,
-        totalPiece: item.totalPiece
+        confirmed: false ,
+        totalPiece: item.totalPiece,
       })),
 
       orderBy: idUser,
