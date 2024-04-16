@@ -18,6 +18,26 @@ function CheckOrdeerPage() {
   const [userName, setUserName] = React.useState("");
   const [idUser, setIdUser] = React.useState("");
   const [currentOrder, setCurrentOrder] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.7)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
 
   const [user, setUser] = React.useState({
     username: "",
@@ -36,10 +56,12 @@ function CheckOrdeerPage() {
         .then((orderData) => {
           setCurrentOrder(orderData);
           setIsLoading(false);
-          Swal.close();
+         
+
         })
         .catch((err) => {
           console.error("error", err);
+          setIsLoading(false); 
         });
     };
     fetchData();
@@ -49,25 +71,6 @@ function CheckOrdeerPage() {
 
   console.log("check order");
 
-  const [isLoading, setIsLoading] = useState(true);
-
-  if (isLoading) {
-    Swal.fire({
-      html: "<span class='text-gray-600'>Loading...</span>",
-      backdrop: `
-    #ffff
-  
-  `,
-      customClass: {
-        popup: "shadow-2xl border border-gray-300"
-      },
-      showConfirmButton: false,
-      didOpen: () => {
-        Swal.showLoading();
-      }
-    });
-  }
-  console.log(isLoading);
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");
@@ -151,15 +154,17 @@ function CheckOrdeerPage() {
   useEffect(() => {
     setIsLoading(true);
     const fetchData = () => {
+      
       customerAPI
         .getCustomerAddressById(idUser)
         .then((addressData) => {
           setAddress(addressData);
           setIsLoading(false);
-          Swal.close();
+         
         })
         .catch((err) => {
           console.error("error", err);
+          setIsLoading(false); 
         });
     };
     fetchData();
@@ -447,7 +452,7 @@ function CheckOrdeerPage() {
 
             <div class="bg-brown-blog mt-10  px-4 pt-8 lg:mt-0">
               <select
-                className="mb-2 py-3 pl-3  rounded-lg text-xs md:text-sm lg:text-sm xl:text-sm  focus:border-brown-700 focus:outline-none"
+                className="mb-2 py-2 pl-3  rounded-lg text-xs md:text-sm lg:text-sm xl:text-sm  focus:border-brown-700 focus:outline-none"
                 onChange={(e) => handleAddressSelect(e.target.value)}
               >
                 <option className="" value="">
