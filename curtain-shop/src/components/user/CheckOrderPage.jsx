@@ -136,11 +136,10 @@ function CheckOrdeerPage() {
       cancelButtonText: "ไม่ใช่"
     }).then((result) => {
       if (result.isConfirmed) {
-    
         localStorage.removeItem("token");
         setUserName("");
 
-        navigate("/"); 
+        navigate("/");
       }
     });
   };
@@ -202,7 +201,7 @@ function CheckOrdeerPage() {
     const files = event.target.files;
     const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
     const newSelectedFiles = [...selectedFiles]; // คัดลอกรูปภาพที่เลือกไว้ก่อนหน้านี้
-    
+
     // ตรวจสอบจำนวนรูปภาพที่เลือก
     if (newSelectedFiles.length + files.length > 5) {
       // แสดงข้อความแจ้งเตือนถ้าเกิน 5 รูป
@@ -212,7 +211,7 @@ function CheckOrdeerPage() {
       });
       return;
     }
-  
+
     // เพิ่มรูปภาพใหม่เข้าไปในอาร์เรย์
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
@@ -226,11 +225,10 @@ function CheckOrdeerPage() {
         });
       }
     }
-  
+
     // อัปเดตรูปภาพที่เลือก
     setSelectedFiles(newSelectedFiles);
   }
-  
 
   function handleRemoveFile(index) {
     const updatedFiles = [...selectedFiles];
@@ -328,24 +326,22 @@ function CheckOrdeerPage() {
   return (
     <>
       <div className="h-screen w-full bg-gradient-to-r from-5% from-white via-50% via-brown-bg to-90% to-white">
-      {" "}
+        {" "}
         <Navbar
           isLoggedIn={isLoggedIn}
           handleLogout={handleLogout}
           userName={userName}
           idUser={idUser}
         ></Navbar>
-
         <div class="titlea bg-brown-bg py-1 shadow-md ">
           <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-9 xl:h-9 text-b-font"></BsPinFill>
           <h5 className=" inline-block text-base md:text-lg xl:text-lg text-b-font  pl-4 p-2 my-1">
             ยืนยันคำสั่งซื้อ
           </h5>
         </div>
-
         <form encType="multipart/form-data" onSubmit={submitForm}>
-        <div class="grid sm:px-10 lg:grid-cols-2 lg:px-20 xl:px-32">
-          {/* <div class="py-14 px-4 md:px-100 2xl:px-100 2xl:container 2xl:mx-auto"> */}
+          <div class="grid sm:px-10 lg:grid-cols-2 lg:px-20 xl:px-32">
+            {/* <div class="py-14 px-4 md:px-100 2xl:px-100 2xl:container 2xl:mx-auto"> */}
             <div class="px-4 pt-8">
               <p class="text-sm md:text-lg xl:text-lg text-b-font">
                 ข้อมูลคำสั่งซื้อ
@@ -451,12 +447,14 @@ function CheckOrdeerPage() {
 
             <div class="bg-brown-blog mt-10  px-4 pt-8 lg:mt-0">
               <select
-                className="mb-2 p-2 rounded-lg text-xs md:text-sm lg:text-sm xl:text-sm "
+                className="mb-2 py-3 pl-3  rounded-lg text-xs md:text-sm lg:text-sm xl:text-sm  focus:border-brown-700 focus:outline-none"
                 onChange={(e) => handleAddressSelect(e.target.value)}
               >
-                <option className="p-2" value="">โปรดเลือกที่อยู่ที่ต้องการจัดส่ง</option>
+                <option className="" value="">
+                  โปรดเลือกที่อยู่ที่ต้องการจัดส่ง
+                </option>
                 {address.map((address) => (
-                  <option className="p-2" key={address.id} value={address.id}>
+                  <option key={address.id} value={address.id}>
                     {`${address.name}, ${address.houseNo}, ${address.sub_district}, ${address.district}, ${address.province} ${address.postcode}`}
                   </option>
                 ))}
