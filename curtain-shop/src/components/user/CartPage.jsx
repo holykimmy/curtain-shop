@@ -74,6 +74,8 @@ function CartPage() {
 
       } else {
         setUserData(decodedToken.user);
+        setIsLoading(false);
+
       }
 
       if (
@@ -86,7 +88,11 @@ function CartPage() {
       }
     } else {
       setIsLoggedIn(false);
+      setIsLoading(false);
+
     }
+    setIsLoading(false);
+
   }, [idUser]);
 
   console.log(idUser);
