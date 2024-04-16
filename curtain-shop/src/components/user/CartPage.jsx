@@ -46,8 +46,9 @@ function CartPage() {
   }, [isLoading]);
 
   useEffect(() => {
-    const authToken = localStorage.getItem("token");
+    setIsLoading(true);
 
+    const authToken = localStorage.getItem("token");
     if (authToken) {
       // Set up axios default headers
       axios.defaults.headers.common["authtoken"] = authToken;
@@ -69,6 +70,8 @@ function CartPage() {
         });
 
         setIsLoggedIn(true);
+        setIsLoading(false);
+
       } else {
         setUserData(decodedToken.user);
       }
@@ -90,8 +93,6 @@ function CartPage() {
   const cartObject = useSelector((state) => state.cart);
   console.log(cartObject);
   const cart = Object.values(cartObject[idUser] || {});
-
- 
 
   const getTotal = () => {
     return cart.reduce((currenValue, nextValue) => {

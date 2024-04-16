@@ -15,6 +15,24 @@ const ProductInCart = ({ item, idUser }) => {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.7)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
   console.log("testtt");
   console.log(item);
 
@@ -202,21 +220,7 @@ const ProductInCart = ({ item, idUser }) => {
     }
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
-  const handleDetailProduct = (productId, productName) => {
-    Swal.fire({
-      text: `คุณต้องการดูข้อมูลสินค้า ${productName} ใช่หรือไม่?`,
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "ใช่",
-      cancelButtonText: "ไม่ใช่"
-    }).then((result) => {
-      if (result.isConfirmed) {
-        navigate(`/product-detail/${productId}`);
-      }
-    });
-  };
+  
 
   return (
     <tbody>
