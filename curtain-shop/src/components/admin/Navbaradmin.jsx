@@ -27,10 +27,37 @@ function ComplexNavbar() {
 
   const navigate = useNavigate();
   const navListItems = [
+   
     {
-      label: "จัดการสินค้า",
+      label: "หน้าหลัก",
       to: "/dashboard",
     },
+    {
+      label: "สินค้าที่มี",
+      to: "/products-ad",
+    },
+    {
+      label: "เพิ่มสินค้า",
+      to: "/add-product",
+    },
+    {
+      label: "ประเภทการสั่งตัด",
+      to: "/type",
+    },
+    {
+      label: "รายการคำสั่งซื้อ",
+      to: "/orders/approve",
+    },
+
+    {
+      label: "ใบเสร็จ",
+      to: "/receipt",
+    },
+    {
+      label: "ลูกค้า",
+      to: "/customers",
+    },
+    
   ];
 
   const handleLogout = () => {
@@ -139,12 +166,12 @@ function ComplexNavbar() {
           <Typography
             as="a"
             href="/"
-            className="mr-4 ml-2 text-sm sm:text-sm md:text-xl font-Kanit cursor-pointer py-1.5 font-medium"
+            className="mr-4 ml-2 text-base sm:text-sm md:text-xl font-Kanit cursor-pointer py-1.5 font-medium"
           >
             Curtain Shop
           </Typography>
           <div className="absolute top-2/4 left-2/4 hidden -translate-x-2/4 -translate-y-2/4 lg:block">
-            <ul className="mb-4 mt-2 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center">
+            <ul className="mb-4 mt-2 mx-4  flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center">
               {navListItems.map(({ label, to }) => (
                 <Typography
                   key={label}
@@ -152,7 +179,7 @@ function ComplexNavbar() {
                   href={to}
                   variant="small"
                   color="white"
-                  className="font-Kanit text-base"
+                  className="font-Kanit text-sm md:text-base  hover:bg-brown-bg px-2 py-1 hover:rounded-full hover:text-brown-400"
                 >
                   {label}
                 </Typography>
