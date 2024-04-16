@@ -7,9 +7,6 @@ import { FaTrashAlt } from "react-icons/fa";
 import productAPI from "../../services/productAPI";
 import Swal from "sweetalert2";
 import axios from "axios";
-import SwitchButton from "./switchbutton";
-import SwitchBtnConfirm from "./switchbtnconfirm";
-import SwitchBtnSend from "./switchbtnsend";
 import customerAPI from "../../services/customerAPI";
 import orderAPI from "../../services/orderAPI";
 
@@ -29,21 +26,48 @@ function CancelOrder() {
   const navigate = useNavigate();
   const [currentOrder, setCurrentOrder] = useState([]);
   const [cancelReasonAd, setCancelReasonAd] = useState("");
+
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.5)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
+
+
+  useEffect(() => {
+    setIsLoading(true);
+
     const fetchData = () => {
       customerAPI
         .getOrderByIdOrder(idOrder)
         .then((orderData) => {
           setCurrentOrder(orderData);
+          setIsLoading(false);
+
         })
         .catch((err) => {
           console.error("error", err);
+          setIsLoading(false);
+
         });
     };
     fetchData();
 
-    // Return a cleanup function to clear the interval
-    return () => clearInterval();
   }, [idOrder]);
 
   useEffect(() => {
@@ -86,25 +110,29 @@ function CancelOrder() {
     }
   }, []);
 
-  //see address
   const [address, setAddress] = useState([]);
   console.log(idUser);
 
   useEffect(() => {
     const fetchData = () => {
+      setIsLoading(true);
+
       customerAPI
         .getCustomerAddressById(idUser)
         .then((addressData) => {
           setAddress(addressData);
+          setIsLoading(false);
+
         })
         .catch((err) => {
           console.error("error", err);
+          setIsLoading(false);
+
         });
     };
     fetchData();
 
-    // Return a cleanup function to clear the interval
-    return () => clearInterval();
+   
   }, [idUser]);
   console.log("dkjhafkdsj");
   console.log(address);
@@ -132,18 +160,23 @@ function CancelOrder() {
 
     if (confirmation.isConfirmed) {
       try {
+        setIsLoading(true);
         const response = await axios.put(
           `${process.env.REACT_APP_API}/customer/order/cencelled/${idOrder}`,
           { cancelled: true, order, cancelReasonAd }
         );
 
         if (response.status === 200) {
+          setIsLoading(false);
+
           Swal.fire({
             title: "ยกเลิกสำเร็จ",
             text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
             icon: "success"
-          });
-          navigate(`/order-detail-ad/${idOrder}`, {});
+          }).then(()=>{
+            navigate(`/order-detail-ad/${idOrder}`, {});
+          })
+          
         } else {
           Swal.fire({
             title: "ยกเลิกไม่สำเร็จ",

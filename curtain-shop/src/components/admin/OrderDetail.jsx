@@ -7,9 +7,6 @@ import { FaTrashAlt } from "react-icons/fa";
 import productAPI from "../../services/productAPI";
 import Swal from "sweetalert2";
 import axios from "axios";
-import SwitchButton from "./switchbutton";
-import SwitchBtnConfirm from "./switchbtnconfirm";
-import SwitchBtnSend from "./switchbtnsend";
 import customerAPI from "../../services/customerAPI";
 import orderAPI from "../../services/orderAPI";
 

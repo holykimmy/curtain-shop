@@ -11,15 +11,19 @@ import receptAPI from "../../services/receptAPI";
 import Swal from "sweetalert2";
 import { Link, useParams, useLocation } from "react-router-dom";
 import locale from "antd/lib/date-picker/locale/th_TH";
+import typeAPI from "../../services/typeAPI";
+
 const TABLE_HEAD = [
   "ลำดับ",
+  "ประเภท",
+  "ราง",
   "รายการ",
   "เพิ่มเติม",
   "ขนาด",
   "จำนวน",
   "ราคาต่อหน่วย",
   "ความกว้างหน้าผ้า",
-  "รวม",
+  "รวม"
 ];
 const classes = "p-4 border-b border-blue-gray-50 text-gray-500";
 
@@ -36,8 +40,8 @@ function ReceptQuationUpdate() {
       unitprice: 0,
       p_width: 0,
       railprice: 0,
-      total_m: 0,
-    },
+      total_m: 0
+    }
   ]);
 
   // คำนวณ totalPrice
@@ -50,7 +54,7 @@ function ReceptQuationUpdate() {
     fullname: "",
     subject: "",
     address: "",
-    totalPrice: 0,
+    totalPrice: 0
   });
 
   const [mydata, setMydata] = useState({});
@@ -78,6 +82,7 @@ function ReceptQuationUpdate() {
       Swal.close();
     }
   }, [isLoading]);
+
   const inputValue = (name) => (event) => {
     const value = event.target.value;
     console.log(name, "=", value);
@@ -94,7 +99,7 @@ function ReceptQuationUpdate() {
       unitprice: 0,
       p_width: 0,
       railprice: 0,
-      total_m: 0,
+      total_m: 0
     };
     setRows([...rows, newRow]);
   };
@@ -104,6 +109,23 @@ function ReceptQuationUpdate() {
     updatedRows.splice(index, 1);
     setRows(updatedRows);
   };
+  const [types, setTypes] = useState([]);
+
+  useEffect(() => {
+    const fetch = async () => {
+      setIsLoading(true);
+      try {
+        const type = await typeAPI.getAllTypes();
+        setTypes(type);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching all brands:", error);
+        setIsLoading(false);
+      }
+    };
+    fetch();
+  }, []);
+  console.log(types);
 
   useEffect(() => {
     const fetchData = () => {
@@ -143,7 +165,7 @@ function ReceptQuationUpdate() {
         fullname: mydata.fullname || "",
         subject: mydata.subject || "",
         address: mydata.address || "",
-        totalPrice: mydata.totalPrice || 0,
+        totalPrice: mydata.totalPrice || 0
       });
       setRows(mydata.rows || []);
       setDeliveryDate(mydata.deliveryDate ? moment(mydata.deliveryDate) : null);
@@ -152,27 +174,42 @@ function ReceptQuationUpdate() {
   }, [mydata]);
 
   console.log("tesjgfahj");
+  console.table(mydata.rows);
 
   //append
 
-  const handleInputChange = (index, key, value) => {
+  const handleInputChange = (index, name, value) => {
     if (index < rows.length) {
       const updatedRows = [...rows];
-      updatedRows[index][key] = value;
+      updatedRows[index][name] = value;
 
-      updatedRows[index].unitprice =
-        data.find((product) => product.name === value)?.price || 0;
+      if (name === "p_type") {
+        updatedRows[index].type = value.toString();
+      }
 
-      updatedRows[index].p_width =
-        data.find((product) => product.name === value)?.p_width || 0;
+      const selectedProduct = data.find((product) => product.name === value);
+      if (selectedProduct) {
+        updatedRows[index].unitprice = selectedProduct.price || 0;
+        updatedRows[index].p_width = selectedProduct.p_width || 0;
+      }
 
-      updatedRows[index].railprice =
-        data.find((product) => product.name === value)?.railprice || 0;
-      //ตั้งค่า unitprice, p_width, และ railprice ใหม่
+      const selectedType = types.find((atype) => atype.name === value);
+      if (selectedType) {
+        updatedRows[index].price_rail = selectedType.price_rail || 0;
+      }
 
       setRows(updatedRows);
+      calculateTotalPrice(
+        index,
+        updatedRows[index].rail,
+        updatedRows[index].price_rail,
+        updatedRows[index].width,
+        updatedRows[index].height,
+        updatedRows[index].counts
+      );
     }
   };
+
   const handleDetailChange = (index, value) => {
     const updatedRows = [...rows]; // สร้างคัดลอกของ rows
     updatedRows[index].detail = value; // อัปเดตค่า width ใน index ที่กำหนด
@@ -183,12 +220,30 @@ function ReceptQuationUpdate() {
     const updatedRows = [...rows]; // สร้างคัดลอกของ rows
     updatedRows[index].width = value; // อัปเดตค่า width ใน index ที่กำหนด
     setRows(updatedRows); // อัปเดต state ของ rows
+
+    calculateTotalPrice(
+      index,
+      updatedRows[index].rail,
+      updatedRows[index].price_rail,
+      value,
+      updatedRows[index].height,
+      updatedRows[index].counts
+    );
   };
 
   const handleHeightChange = (index, value) => {
     const updatedRows = [...rows]; // สร้างคัดลอกของ rows
     updatedRows[index].height = value; // อัปเดตค่า height ใน index ที่กำหนด
     setRows(updatedRows); // อัปเดต state ของ rows
+
+    calculateTotalPrice(
+      index,
+      updatedRows[index].rail,
+      updatedRows[index].price_rail,
+      updatedRows[index].width,
+      value,
+      updatedRows[index].counts
+    );
   };
 
   const handleCountChange = (index, value) => {
@@ -199,22 +254,51 @@ function ReceptQuationUpdate() {
     // เรียกใช้ฟังก์ชันที่คำนวณราคารวม
     calculateTotalPrice(
       index,
+      updatedRows[index].rail,
+      updatedRows[index].price_rail,
       updatedRows[index].width,
       updatedRows[index].height,
       value
     );
   };
 
-  const calculateTotalPrice = (index, width, height, counts) => {
+  const calculateTotalPrice = (
+    index,
+    rail,
+    price_rail,
+    width,
+    height,
+    counts
+  ) => {
+    console.log(index, rail, price_rail, width, height, counts);
     const selectedProduct = data.find(
       (product) => product.name === rows[index].list
-    ); // หาสินค้าที่เลือก
-    if (selectedProduct) {
-      const priceValue = parseFloat(selectedProduct.price) || 0; // ค่าราคาต่อหน่วย
-      const totalPrice = parseFloat(counts) * priceValue; // คำนวณราคารวม
-      const updatedRows = [...rows]; // สร้างคัดลอกของ rows
-      updatedRows[index].total_m = totalPrice.toFixed(2); // กำหนดค่าราคารวมให้กับ index ที่กำหนด
-      setRows(updatedRows); // อัปเดต state ของ rows
+    );
+    const selectedType = types.find((type) => type.name === rows[index].type);
+
+    if (selectedProduct && selectedType) {
+      // คำนวณจำนวนผ้าทั้งหมด
+      const totalFabric = Math.ceil(width / selectedProduct.p_width) * 2;
+
+      // คำนวณราคาผ้าต่อชิ้น
+      const fabricCostPerPiece =
+        (height * totalFabric * selectedProduct.price) / 100;
+
+      // คำนวณราคารวมของผ้า
+      let totalFabricPrice = fabricCostPerPiece * counts;
+
+      // คำนวณราคาราง
+      let railPrice = 0;
+      if (rail === "รับราง") {
+        railPrice = (selectedType.price_rail * width) / 100;
+      }
+
+      // รวมราคารางและราคาผ้าเข้าด้วยกัน
+      const totalPrice = totalFabricPrice + railPrice;
+
+      const updatedRows = [...rows];
+      updatedRows[index].total_m = totalPrice.toFixed(2);
+      setRows(updatedRows);
     }
   };
 
@@ -235,18 +319,18 @@ function ReceptQuationUpdate() {
     if (!fullname) {
       Swal.fire({
         icon: "error",
-        text: "กรุณากรอก ชื่อ-นามสกุล",
+        text: "กรุณากรอก ชื่อ-นามสกุล"
       });
       return;
     } else if (!subject) {
       Swal.fire({
         icon: "error",
-        text: "กรุณาระบุเรื่องที่จะเสนอ",
+        text: "กรุณาระบุเรื่องที่จะเสนอ"
       });
     } else if (!address) {
       Swal.fire({
         icon: "error",
-        text: "กรุณาระบุที่อยู่",
+        text: "กรุณาระบุที่อยู่"
       });
       return;
     } else if (!deliveryDate) {
@@ -263,21 +347,21 @@ function ReceptQuationUpdate() {
       address,
       rows,
       deliveryDate: deliveryDate ? deliveryDate.format("YYYY-MM-DD") : null,
-      totalPrice: totalPrice.toFixed(2),
+      totalPrice: totalPrice.toFixed(2)
     };
     console.log(formData);
     receptAPI
-      .updateRecept(id,formData)
+      .updateRecept(id, formData)
       .then((response) => {
         Swal.fire({
           text: "save",
-          icon: "success",
+          icon: "success"
         });
       })
       .catch((err) => {
         Swal.fire({
           icon: "error",
-          text: err.response.data.error,
+          text: err.response.data.error
         });
       });
   };
@@ -298,7 +382,9 @@ function ReceptQuationUpdate() {
         </div>
 
         <form onSubmit={handleSubmit} class="mt-8">
-          <label className="ml-7 text-xl text-b-font">เรียนคุณ...</label>
+          <label className="ml-7 text-sm md:text-lg text-b-font">
+            เรียนคุณ...
+          </label>
           <div>
             {" "}
             <input
@@ -312,7 +398,9 @@ function ReceptQuationUpdate() {
           </div>
 
           <div class="h-5"></div>
-          <label className="ml-7 text-xl text-b-font">เรื่อง...</label>
+          <label className="ml-7 text-sm md:text-lg text-b-font">
+            เรื่อง...
+          </label>
           <div>
             {" "}
             <input
@@ -326,7 +414,9 @@ function ReceptQuationUpdate() {
           </div>
           <div className="w-64 ml-5"></div>
           <div class="h-5"></div>
-          <label className="ml-7 text-xl text-b-font">ที่อยู่...</label>
+          <label className="ml-7 text-sm md:text-lg text-b-font">
+            ที่อยู่...
+          </label>
           <div>
             {" "}
             <input
@@ -341,32 +431,26 @@ function ReceptQuationUpdate() {
           <div className="w-64 ml-5"></div>
 
           <div class="h-5"></div>
-          <label className="ml-7 mr-7 text-xl text-b-font">
+          <label className="ml-7 mr-7 text-sm md:text-lg text-b-font">
             วันที่ต้องการส่งมอบ
           </label>
+          <div className="flex ml-5 ">
+            <Space direction="vertical">
+              <DatePicker
+                //   onChange={onChangeDeliveryDate}
+                disabledDate={disabledDate}
+                value={deliveryDate}
+                disabled
+              />
+            </Space>
 
-          <Space direction="vertical">
-            <DatePicker
-              //   onChange={onChangeDeliveryDate}
-              disabledDate={disabledDate}
-              value={deliveryDate}
-              disabled
-            />
-          </Space>
-
-          <Space direction="vertical">
-            <DatePicker
-              onChange={onChangeDeliveryDate}
-              disabledDate={disabledDate}
-            />
-          </Space>
-          {/* <Space direction="vertical">
-            <DatePicker
-              onChange={onChangeDeliveryDate}
-              disabledDate={disabledDate}
-              value={deliveryDate}
-            />
-          </Space> */}
+            <Space direction="vertical">
+              <DatePicker
+                onChange={onChangeDeliveryDate}
+                disabledDate={disabledDate}
+              />
+            </Space>
+          </div>
 
           <div className="w-64 ml-5"></div>
 
@@ -382,7 +466,7 @@ function ReceptQuationUpdate() {
                           <th
                             key={head}
                             scope="col"
-                            class="px-6 py-4 border-b border-blue-gray-100 bg-blue-gray-50 p-4 text-base text-center text-gray-700"
+                            class="px-6 py-4 border-b border-blue-gray-100 bg-blue-gray-50 p-4 text-xs md:text-base text-center text-gray-700"
                           >
                             {head}
                           </th>
@@ -401,7 +485,7 @@ function ReceptQuationUpdate() {
                           </td>
                           <td class={classes}>
                             <select
-                              class="border-gray-300 rounded w-[200px] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                              class="border-gray-300 text-xs md:text-base rounded w-[150px] md:w-[200px] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                               type="text"
                               name="list"
                               value={row.list}
@@ -416,10 +500,33 @@ function ReceptQuationUpdate() {
                               ))}
                             </select>
                           </td>
+
                           <td class={classes}>
-                            <div className="flex w-[250px]">
+                            <select
+                              class="border-gray-300 rounded text-xs md:text-base w-[150px] md:w-[200px] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                              type="text"
+                              name="type"
+                              value={row.p_type}
+                              onChange={(e) =>
+                                handleInputChange(
+                                  index,
+                                  "p_type",
+                                  e.target.value
+                                )
+                              }
+                            >
+                              {types.map((item) => (
+                                <option key={item._id} value={item.name}>
+                                  {item.name}
+                                </option>
+                              ))}
+                            </select>
+                          </td>
+
+                          <td class={classes}>
+                            <div className="flex">
                               <textarea
-                                className="border mx-1 rounded border-gray-300 w-[50px] md:w-full text-left py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                className="border mx-1 rounded text-xs md:text-base  border-gray-300 md:w-[250px] text-left py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 type="text"
                                 id={`detail-${index}`}
                                 name={`detail-${index}`}
@@ -432,9 +539,9 @@ function ReceptQuationUpdate() {
                           </td>
 
                           <td class={classes}>
-                            <div className="flex w-[250px]">
+                            <div className="flex ">
                               <input
-                                className="border mx-1 rounded border-gray-300 w-[50px] md:w-full text-center py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                className="border mx-1 rounded text-xs md:text-base border-gray-300 w-[80px] md:w-[90px] text-center py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 type="number"
                                 id={`width-${index}`}
                                 name={`width-${index}`}
@@ -444,7 +551,7 @@ function ReceptQuationUpdate() {
                                 }
                               />
                               <input
-                                className="border mx-1 rounded border-gray-300 w-[50px] md:w-full text-center py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                className="border mx-1 rounded text-xs md:text-base border-gray-300 w-[80px] md:w-[90px] text-center py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 type="number"
                                 id={`height-${index}`}
                                 name={`height-${index}`}
@@ -458,9 +565,9 @@ function ReceptQuationUpdate() {
                           </td>
 
                           <td class={classes}>
-                            <div className="flex  w-[100px] ">
+                            <div className="flex ">
                               <input
-                                className="border  rounded border-gray-300 w-[100px] md:w-full text-center py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                className="border  text-xs md:text-base rounded border-gray-300 w-[75px]  text-center py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 type="number"
                                 id={`counts-${index}`}
                                 name={`counts-${index}`}
@@ -473,7 +580,7 @@ function ReceptQuationUpdate() {
                           </td>
 
                           <td class={classes}>
-                            <div className="flex flex-row w-[150px] border-gray-300 p-auto m-auto justify-between">
+                            <div className="flex flex-row text-xs md:text-base w-[150px] border-gray-300 p-auto m-auto justify-between">
                               <p className="basis-1/2 rounded w-[75px] py-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                                 {
                                   data.find(
@@ -487,7 +594,7 @@ function ReceptQuationUpdate() {
                             </div>
                           </td>
                           <td class={classes}>
-                            <div class="flex flex-row w-[150px] border-gray-300 p-auto m-auto justify-between">
+                            <div class="flex flex-row w-[150px] text-xs md:text-base border-gray-300 p-auto m-auto justify-between">
                               <p class="basis-1/2 rounded w-[75px] py-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                                 {
                                   data.find(
@@ -502,7 +609,7 @@ function ReceptQuationUpdate() {
                           </td>
 
                           <td class={classes}>
-                            <div class="flex flex-row w-[150px] border-gray-300 p-auto m-auto justify-between">
+                            <div class="flex flex-row w-[150px] text-xs md:text-base border-gray-300 p-auto m-auto justify-between">
                               <p class="basis-1/2 rounded w-[75px] py-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                                 {numberWithCommas(row.total_m)}
                               </p>
@@ -515,7 +622,7 @@ function ReceptQuationUpdate() {
                           <td class={classes}>
                             <button
                               onClick={() => handleDeleteRow(index)}
-                              className="bg-red-400 hover:bg-red-300 p-2 rounded text-white "
+                              className="bg-red-400 hover:bg-red-300 p-2 rounded text-white text-xs md:text-base "
                             >
                               ลบ
                             </button>
@@ -530,7 +637,7 @@ function ReceptQuationUpdate() {
           </div>
           {/* table */}
 
-          <p className="text-gray-700 m-6">
+          <p className="text-gray-700 text-sm md:text-base m-6">
             {" "}
             ราคารวม : {numberWithCommas(totalPrice)} บาท{" "}
           </p>
@@ -548,7 +655,7 @@ function ReceptQuationUpdate() {
 
           <div class="flex items-center justify-center mt-5">
             <button
-              class="w-[80%] md:[20%] bg-b-btn hover:bg-browntop text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              class="w-[80%] md:[20%] mb-5  bg-b-btn hover:bg-browntop text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
             >
               เพิ่มข้อมูล

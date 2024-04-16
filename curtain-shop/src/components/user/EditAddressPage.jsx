@@ -19,19 +19,28 @@ function EditAddressPage() {
   const [userData, setUserData] = useState(null);
   const [userName, setUserName] = React.useState("");
   const [idUser, setIdUser] = React.useState("");
-  // const [addressData, setAddressData] = useState(null);
-  const [addressData, setAddressData] = useState({
-    name: "",
-    tell: "",
-    houseNo: "",
-    sub_district: "",
-    district: "",
-    province: "",
-    postcode: ""
-  });
-  // console.table(_id,idUser);
 
-  // console.log("adddara",addressData);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.7)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
+
 
   const [user, setUser] = React.useState({
     f_name: "",
@@ -122,6 +131,7 @@ function EditAddressPage() {
   });
 
   useEffect(() => {
+    setIsLoading(true); 
     if (window.jQuery && window.jQuery.Thailand) {
       window.jQuery.Thailand({
         $district: window.jQuery("#sub_district"),
@@ -148,27 +158,26 @@ function EditAddressPage() {
           province: data.province[0].name,
           postcode: data.zipcode
         });
+        setIsLoading(false); 
       });
     }
+    setIsLoading(false); 
   }, []);
 
-  const handleChange = (e) => {
-    const { id, value } = e.target;
-    setAddress((prevState) => ({
-      ...prevState,
-      [id]: value
-    }));
-  };
+ 
 
   const [mydata, setMydata] = useState({});
   useEffect(() => {
+    setIsLoading(true); 
     customerAPI
       .getAddressById(id)
       .then((data) => {
         setMydata(data);
+        setIsLoading(false); 
       })
       .catch((err) => {
         console.error("error", err);
+        setIsLoading(false); 
       });
   }, []);
 

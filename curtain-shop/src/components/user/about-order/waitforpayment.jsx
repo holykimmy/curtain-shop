@@ -36,16 +36,16 @@ const WaitForPayment = ({ idUser }) => {
 
   useEffect(() => {
     const fetchData = () => {
-      setIsLoading(true); 
+      setIsLoading(true);
       customerAPI
         .getOrderByIdWaitPayment(idUser)
         .then((orderData) => {
           setUserOrder(orderData);
-          setIsLoading(false); 
+          setIsLoading(false);
         })
         .catch((err) => {
           console.error("error", err);
-          setIsLoading(false); 
+          setIsLoading(false);
         });
     };
     fetchData();
@@ -62,17 +62,16 @@ const WaitForPayment = ({ idUser }) => {
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "ยืนยัน",
-      cancelButtonText: "ยกเลิก",
+      cancelButtonText: "ยกเลิก"
     });
 
     if (confirmation.isConfirmed) {
       try {
         const response = await customerAPI.updateOrderEnable(idOrder, false);
-        console.log(response); 
+        console.log(response);
         await Swal.fire({
-        
           text: "คำสั่งซื้อถูกยกเลิกสำเร็จแล้ว",
-          icon: "success",
+          icon: "success"
         });
         window.location.reload();
       } catch (error) {
@@ -93,7 +92,7 @@ const WaitForPayment = ({ idUser }) => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "ยืนยัน",
-      cancelButtonText: "ยกเลิก",
+      cancelButtonText: "ยกเลิก"
     });
 
     if (confirmation.isConfirmed) {
@@ -161,8 +160,7 @@ const WaitForPayment = ({ idUser }) => {
                         จำนวน : {item.count} หลา
                       </p>
                       <p className="text-sm text-gray-600">
-                        รวม :{" "}
-                        {numberWithCommas(item.totalPiece)} บาท
+                        รวม : {numberWithCommas(item.totalPiece)} บาท
                       </p>
                     </div>
                   </div>
@@ -181,13 +179,13 @@ const WaitForPayment = ({ idUser }) => {
                   {order.sendAddress.postcode}
                 </p>
               )}
-             
-             <p className=" text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1 whitespace-pre-wrap">
-                      การจัดส่ง : {order.deliveryIs.split("\n")[0]}
-                    </p>
-                    <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
-                      ราคารวม : {numberWithCommas(order.totalPrice)} บาท
-                    </p>
+
+              <p className=" text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1 whitespace-pre-wrap">
+                การจัดส่ง : {order.deliveryIs.split("\n")[0]}
+              </p>
+              <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
+                ราคารวม : {numberWithCommas(order.totalPrice)} บาท
+              </p>
 
               <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
                 สถานะ:{" "}
@@ -217,10 +215,11 @@ const WaitForPayment = ({ idUser }) => {
                     ดูรายละเอียดคำสั่งซื้อ{" "}
                   </button>
                 </div>
+
                 <div className="flex justify-end ">
                   {!order.payment ? (
                     <button
-                      className="bg-blue-400 mt-3 mx-2 py-2 px-2 rounded-lg shadow-xl hover:bg-blue-200 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-sm md:text-sm lg:text-base xl:text-base  text-white"
+                      className="bg-blue-400 mt-3 mx-2 py-2 px-3 rounded-lg shadow-xl hover:bg-blue-200 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-sm md:text-sm lg:text-base xl:text-base  text-white"
                       disabled={!order.approve}
                       onClick={() => handlePaymentOrder(order._id)}
                     >

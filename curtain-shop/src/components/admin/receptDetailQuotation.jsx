@@ -9,7 +9,7 @@ import moment from "moment";
 import productAPI from "../../services/productAPI";
 import receptAPI from "../../services/receptAPI";
 import Swal from "sweetalert2";
-import { Link, useParams, useLocation,useNavigate } from "react-router-dom";
+import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 // import PDFQuotation from "./PDFQuotation"; // Import PDFDocument component
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -54,7 +54,6 @@ function ReceptQuotationDetail() {
       Swal.close();
     }
   }, [isLoading]);
-
 
   useEffect(() => {
     setIsLoading(true);
@@ -310,9 +309,9 @@ function ReceptQuotationDetail() {
         await Swal.fire({
           text: "ทำเป็นใบแจ้งหนี้เรียบร้อยแล้ว",
           icon: "success"
-        }).then(()=>{
-          navigate(`/invoice-detail/${id}`)
-        })
+        }).then(() => {
+          navigate(`/invoice-detail/${id}`);
+        });
       } catch (error) {
         console.error("Error ", error);
       }

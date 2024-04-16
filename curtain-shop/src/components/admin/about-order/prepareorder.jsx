@@ -273,14 +273,14 @@ const PrepareOrder = ({ idUser }) => {
                       </div>
                       <div className="flex justify-end ">
                         <button
-                          className="bg-green-400 mt-3 mx-2 py-2 px-auto w-[150px] rounded-full shadow-xl hover:bg-green-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
+                          className="bg-green-400 mt-3 mx-2 py-2 px-4 rounded-lg shadow-xl hover:bg-green-200 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-sm md:text-sm lg:text-base xl:text-base  text-white"
                           onClick={() => handlePanddingOrder(order._id, order)}
                         >
-                          สินค้าเสร็จแล้ว
+                          สำเร็จ
                         </button>
 
                         <button
-                          className="bg-red-300 mt-3  mx-2 py-2 px-auto w-[120px] rounded-full shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
+                          className="bg-red-300 mt-3  mx-2 py-2 px-2 rounded-lg shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-sm md:text-sm lg:text-base xl:text-base  text-white"
                           onClick={() => handleCancelOrder(order._id)}
                         >
                           ยกเลิกคำสั่งซื้อ
@@ -403,14 +403,14 @@ const PrepareOrder = ({ idUser }) => {
                 </div>
                 <div className="flex justify-end ">
                   <button
-                    className="bg-green-400 mt-3 mx-2 py-2 px-auto w-[150px] rounded-full shadow-xl hover:bg-green-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
+                    className="bg-green-400 mt-3 mx-2 py-2 px-4 rounded-lg shadow-xl hover:bg-green-200 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-sm md:text-sm lg:text-base xl:text-base  text-white"
                     onClick={() => handlePanddingOrder(order._id, order)}
                   >
-                    สินค้าเสร็จแล้ว
+                    สำเร็จ
                   </button>
 
                   <button
-                    className="bg-red-300 mt-3  mx-2 py-2 px-auto w-[120px] rounded-full shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
+                    className="bg-red-300 mt-3  mx-2 py-2 px-2 rounded-lg shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-sm md:text-sm lg:text-base xl:text-base  text-white"
                     onClick={() => handleCancelOrder(order._id)}
                   >
                     ยกเลิกคำสั่งซื้อ

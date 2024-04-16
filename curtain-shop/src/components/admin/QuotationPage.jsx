@@ -150,21 +150,21 @@ function QuatationPage() {
       const updatedRows = [...rows];
       updatedRows[index][name] = value;
 
-      if (name === 'p_type') {
+      if (name === "p_type") {
         updatedRows[index].type = value.toString();
       }
-  
+
       const selectedProduct = data.find((product) => product.name === value);
       if (selectedProduct) {
         updatedRows[index].unitprice = selectedProduct.price || 0;
         updatedRows[index].p_width = selectedProduct.p_width || 0;
       }
 
-      const selectedType = types.find((atype)=> atype.name === value);
+      const selectedType = types.find((atype) => atype.name === value);
       if (selectedType) {
         updatedRows[index].price_rail = selectedType.price_rail || 0;
       }
-  
+
       setRows(updatedRows);
       calculateTotalPrice(
         index,
@@ -176,8 +176,6 @@ function QuatationPage() {
       );
     }
   };
-  
-
 
   const handleUpdateChangeRail = (index, value) => {
     const updatedRows = [...rows];
@@ -189,8 +187,7 @@ function QuatationPage() {
       updatedRows[index].price_rail,
       updatedRows[index].width,
       updatedRows[index].height,
-      updatedRows[index].counts,
-      
+      updatedRows[index].counts
     );
   };
 
@@ -198,11 +195,9 @@ function QuatationPage() {
     const updatedRows = [...rows]; // สร้างคัดลอกของ rows
     updatedRows[index].detail = value; // อัปเดตค่า width ใน index ที่กำหนด
     setRows(updatedRows); // อัปเดต state ของ rows
-   
   };
 
   const handleWidthChange = (index, value) => {
-    
     const updatedRows = [...rows]; // สร้างคัดลอกของ rows
     updatedRows[index].width = value; // อัปเดตค่า width ใน index ที่กำหนด
     setRows(updatedRows); // อัปเดต state ของ rows
@@ -229,7 +224,6 @@ function QuatationPage() {
       updatedRows[index].width,
       value,
       updatedRows[index].counts
-      
     );
   };
 
@@ -262,8 +256,6 @@ function QuatationPage() {
       (product) => product.name === rows[index].list
     );
     const selectedType = types.find((type) => type.name === rows[index].type);
-    
-
 
     if (selectedProduct && selectedType) {
       // คำนวณจำนวนผ้าทั้งหมด
@@ -290,10 +282,6 @@ function QuatationPage() {
       setRows(updatedRows);
     }
   };
-
-
-
-
 
   //date
   const [deliveryDate, setDeliveryDate] = useState(null);
@@ -332,7 +320,22 @@ function QuatationPage() {
     } else if (!rows) {
       Swal.fire({ icon: "error", text: "กรุณากรอกข้อมูลที่ต้องการบันทึก" });
       return;
-    } else if (!rows.every(row => row.list && row.type && row.rail && row.detail && row.counts && row.width && row.height && row.unitprice && row.p_width && row.price_rail && row.total_m)) {
+    } else if (
+      !rows.every(
+        (row) =>
+          row.list &&
+          row.type &&
+          row.rail &&
+          row.detail &&
+          row.counts &&
+          row.width &&
+          row.height &&
+          row.unitprice &&
+          row.p_width &&
+          row.price_rail &&
+          row.total_m
+      )
+    ) {
       Swal.fire({ icon: "error", text: "กรุณากรอกข้อมูลที่ต้องการบันทึก" });
       return;
     }
@@ -378,7 +381,9 @@ function QuatationPage() {
         </div>
 
         <form onSubmit={handleSubmit} class="mt-8">
-          <label className="ml-7 text-xl text-b-font">เรียนคุณ...</label>
+          <label className="ml-7 text-sm md:text-lg text-b-font">
+            เรียนคุณ...
+          </label>
           <div>
             {" "}
             <input
@@ -392,7 +397,9 @@ function QuatationPage() {
           </div>
 
           <div class="h-5"></div>
-          <label className="ml-7 text-xl text-b-font">เรื่อง...</label>
+          <label className="ml-7 text-sm md:text-lg text-b-font">
+            เรื่อง...
+          </label>
           <div>
             {" "}
             <input
@@ -406,7 +413,9 @@ function QuatationPage() {
           </div>
           <div className="w-64 ml-5"></div>
           <div class="h-5"></div>
-          <label className="ml-7 text-xl text-b-font">ที่อยู่...</label>
+          <label className="ml-7 text-sm md:text-lg text-b-font">
+            ที่อยู่...
+          </label>
           <div>
             {" "}
             <input
@@ -421,7 +430,7 @@ function QuatationPage() {
           <div className="w-64 ml-5"></div>
 
           <div class="h-5"></div>
-          <label className="ml-7 mr-7 text-xl text-b-font">
+          <label className="ml-7 mr-7 text-sm md:text-lg text-b-font">
             วันที่ต้องการส่งมอบ
           </label>
 
@@ -446,7 +455,7 @@ function QuatationPage() {
                           <th
                             key={head}
                             scope="col"
-                            class="px-6 py-4 border-b border-blue-gray-100 bg-blue-gray-50 p-4 text-base text-center text-gray-700"
+                            class="px-6 py-4 border-b border-blue-gray-100 bg-blue-gray-50 p-4 text-xs md:text-base text-center text-gray-700"
                           >
                             {head}
                           </th>
@@ -465,7 +474,7 @@ function QuatationPage() {
                           </td>
                           <td class={classes}>
                             <select
-                              class="border-gray-300 rounded w-[200px] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                              class="border-gray-300 text-xs md:text-base rounded w-[150px] md:w-[200px] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                               type="text"
                               name="list"
                               value={row.list}
@@ -483,12 +492,16 @@ function QuatationPage() {
                           </td>
                           <td class={classes}>
                             <select
-                              class="border-gray-300 rounded w-[200px] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                              class="border-gray-300 rounded text-xs md:text-base w-[150px] md:w-[200px] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                               type="text"
-                              name="type"
-                              value={row.type}
+                              name="p_type"
+                              value={row.p_type}
                               onChange={(e) =>
-                                handleInputChange(index, "p_type", e.target.value)
+                                handleInputChange(
+                                  index,
+                                  "p_type",
+                                  e.target.value
+                                )
                               }
                             >
                               <option value="">เลือกประเภทที่การตัด</option>
@@ -502,13 +515,13 @@ function QuatationPage() {
 
                           <td class={classes}>
                             <select
-                              class="border-gray-300 rounded w-[200px] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                              class="border-gray-300 rounded text-xs md:text-base py-2 px-3 pr-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                               value={rows.rail}
                               onChange={(e) =>
                                 handleUpdateChangeRail(index, e.target.value)
                               }
                             >
-                              <option value="">เลือกว่าจะรับรางหรือไม่</option>
+                              <option value="">รับรางหรือไม่</option>
                               {["รับราง", "ไม่รับราง"].map((rail) => (
                                 <option key={rail} value={rail}>
                                   {rail}
@@ -517,14 +530,13 @@ function QuatationPage() {
                             </select>
                           </td>
                           <td class={classes}>
-                            <div className="flex w-[250px]">
+                            <div className="flex">
                               <textarea
-                                className="border mx-1 rounded border-gray-300 md:w-full text-left py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                className="border mx-1 rounded text-xs md:text-base  border-gray-300 md:w-[250px] text-left py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 type="text"
                                 id={`detail-${index}`}
                                 name={`detail-${index}`}
                                 value={row.detail}
-                              
                                 onChange={(e) =>
                                   handleDetailChange(index, e.target.value)
                                 }
@@ -533,20 +545,19 @@ function QuatationPage() {
                           </td>
 
                           <td class={classes}>
-                            <div className="flex w-[250px]">
+                            <div className="flex">
                               <input
-                                className="border mx-1 rounded border-gray-300 w-[50px] md:w-full text-center py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                className="border mx-1 rounded text-xs md:text-base border-gray-300 w-[80px] md:w-[90px] text-center py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 type="number"
                                 id={`width-${index}`}
                                 name={`width-${index}`}
                                 value={row.width}
                                 onChange={(e) =>
-                                  
                                   handleWidthChange(index, e.target.value)
                                 }
                               />
                               <input
-                                className="border mx-1 rounded border-gray-300 w-[50px] md:w-full text-center py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                className="border mx-1 text-xs md:text-base rounded border-gray-300 w-[80px] md:w-[90px] text-center py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 type="number"
                                 id={`height-${index}`}
                                 name={`height-${index}`}
@@ -560,9 +571,9 @@ function QuatationPage() {
                           </td>
 
                           <td class={classes}>
-                            <div className="flex  w-[100px] ">
+                            <div className="flex ">
                               <input
-                                className="border  rounded border-gray-300 w-[100px] md:w-full text-center py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                className="border  text-xs md:text-base rounded border-gray-300 w-[75px]  text-center py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 type="number"
                                 id={`counts-${index}`}
                                 name={`counts-${index}`}
@@ -575,7 +586,7 @@ function QuatationPage() {
                           </td>
 
                           <td class={classes}>
-                            <div className="flex flex-row w-[150px] border-gray-300 p-auto m-auto justify-between">
+                            <div className="flex flex-row text-xs md:text-base w-[150px] border-gray-300 p-auto m-auto justify-between">
                               <p className="basis-1/2 rounded w-[75px] py-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                                 {
                                   data.find(
@@ -583,13 +594,13 @@ function QuatationPage() {
                                   )?.price
                                 }
                               </p>
-                              <span className="basis-1/2 text-gray-500 items-center m-auto">
+                              <span className="basis-1/2 text-xs md:text-base text-gray-500 items-center m-auto">
                                 บาท
                               </span>
                             </div>
                           </td>
                           <td class={classes}>
-                            <div class="flex flex-row w-[150px] border-gray-300 p-auto m-auto justify-between">
+                            <div class="flex flex-row w-[150px] text-xs md:text-base border-gray-300 p-auto m-auto justify-between">
                               <p class="basis-1/2 rounded w-[75px] py-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                                 {
                                   data.find(
@@ -604,7 +615,7 @@ function QuatationPage() {
                           </td>
 
                           <td class={classes}>
-                            <div class="flex flex-row w-[150px] border-gray-300 p-auto m-auto justify-between">
+                            <div class="flex flex-row w-[150px] text-xs md:text-base border-gray-300 p-auto m-auto justify-between">
                               <p class="basis-1/2 rounded w-[75px] py-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                                 {numberWithCommas(row.total_m)}
                               </p>
@@ -617,7 +628,7 @@ function QuatationPage() {
                           <td class={classes}>
                             <button
                               onClick={() => handleDeleteRow(index)}
-                              className="bg-red-400 hover:bg-red-300 p-2 rounded text-white "
+                              className="bg-red-400 hover:bg-red-300 p-2 rounded text-white text-xs md:text-base "
                             >
                               ลบ
                             </button>
@@ -632,7 +643,7 @@ function QuatationPage() {
           </div>
           {/* table */}
 
-          <p className="text-gray-700 m-6">
+          <p className="text-gray-700 text-sm md:text-base m-6">
             {" "}
             ราคารวม : {numberWithCommas(totalPrice)} บาท{" "}
           </p>
@@ -650,7 +661,7 @@ function QuatationPage() {
 
           <div class="flex items-center justify-center mt-5">
             <button
-              class="w-[80%] md:[20%] bg-b-btn hover:bg-browntop text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              class="w-[80%] md:[20%]  bg-b-btn hover:bg-browntop text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
             >
               เพิ่มข้อมูล

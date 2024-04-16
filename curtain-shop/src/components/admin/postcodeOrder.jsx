@@ -20,21 +20,44 @@ function PostOrder() {
   const navigate = useNavigate();
   const [currentOrder, setCurrentOrder] = useState([]);
   const [postcodeOrder, setPostcodeOrder] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.5)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
+
+
   useEffect(() => {
     const fetchData = () => {
+      setIsLoading(true);
       customerAPI
         .getOrderByIdOrder(idOrder)
         .then((orderData) => {
           setCurrentOrder(orderData);
+          setIsLoading(false);
         })
         .catch((err) => {
           console.error("error", err);
+          setIsLoading(false);
         });
     };
     fetchData();
 
-    // Return a cleanup function to clear the interval
-    return () => clearInterval();
   }, [idOrder]);
 
   useEffect(() => {
@@ -82,19 +105,19 @@ function PostOrder() {
 
   useEffect(() => {
     const fetchData = () => {
+      setIsLoading(true);
       customerAPI
         .getCustomerAddressById(idUser)
         .then((addressData) => {
           setAddress(addressData);
+          setIsLoading(false);
         })
         .catch((err) => {
           console.error("error", err);
+          setIsLoading(false);
         });
     };
     fetchData();
-
-    // Return a cleanup function to clear the interval
-    return () => clearInterval();
   }, [idUser]);
 
 
@@ -123,19 +146,24 @@ function PostOrder() {
     if (confirmation.isConfirmed) {
       try {
         console.log("testttt");
+        setIsLoading(true);
+
         const response = await axios.put(
           `${process.env.REACT_APP_API}/customer/order/send/${idOrder}`,
           { sendproduct : true ,order, postcodeOrder }
         );
-        
-
         if (response.status === 200) {
+          setIsLoading(false);
           Swal.fire({
             text: "ยืนยันการจัดส่งสินค้าสำเร็จ",
             icon: "success"
-          });
-          navigate(`/order-detail-ad/${idOrder}`, {});
+          }).then(()=>{
+            navigate(`/order-detail-ad/${idOrder}`, {});
+          })
+          
         } else {
+          setIsLoading(false);
+
           Swal.fire({
             title: "จัดส่งไม่สำเร็จ",
             text: "เกิดข้อผิดพลาดบางประการ",

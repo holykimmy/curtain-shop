@@ -119,19 +119,19 @@ function AccoutPage() {
   };
 
   const [address, setAddress] = useState([]);
-
+  const fetchData = async () => {
+    setIsLoading(true); 
+    try {
+      const addressData = await customerAPI.getCustomerAddressById(idUser);
+      setAddress(addressData);
+      setIsLoading(false); 
+    } catch (err) {
+      console.error("erro", err);
+      setIsLoading(false); 
+    }
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true); 
-      try {
-        const addressData = await customerAPI.getCustomerAddressById(idUser);
-        setAddress(addressData);
-        setIsLoading(false); 
-      } catch (err) {
-        console.error("erro", err);
-        setIsLoading(false); 
-      }
-    };
+    
     fetchData();
   }, [idUser]);
   console.log(address);
@@ -167,6 +167,7 @@ function AccoutPage() {
             timer: 1500,
             showConfirmButton: false,
           });
+          fetchData();
         } else {
           console.log("เกิดข้อผิดพลาดในการลบที่อยู่");
         }

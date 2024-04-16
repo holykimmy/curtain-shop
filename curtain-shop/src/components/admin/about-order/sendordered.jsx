@@ -35,7 +35,7 @@ const ReceiveOrder = ({ idUser }) => {
 
   useEffect(() => {
     const fetchData = () => {
-      setIsLoading(true)
+      setIsLoading(true);
 
       orderAPI
         .getOrderSend()
@@ -44,41 +44,33 @@ const ReceiveOrder = ({ idUser }) => {
             (order) => order.sendproduct === true
           );
           setUserOrder(sendTrueOrders);
-          setIsLoading(false)
-
+          setIsLoading(false);
         })
         .catch((err) => {
           console.error("error", err);
-          setIsLoading(false)
-
+          setIsLoading(false);
         });
     };
     fetchData();
-
   }, [idUser]);
 
   console.log(userOrder);
 
-
   const handleSearch = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
-
       const searchData = await orderAPI.searchOrderSend(searchTerm);
       const sendTrueOrders = searchData.filter(
         (order) => order.sendproduct === true
       );
-      setSearchResults(sendTrueOrders); 
-      setIsLoading(false)
-
+      setSearchResults(sendTrueOrders);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching search results:", error);
-      setIsLoading(false)
-
+      setIsLoading(false);
     }
   };
-
 
   const handdleOrderdetail = async (idOrder) => {
     const confirmation = await Swal.fire({
@@ -184,16 +176,12 @@ const ReceiveOrder = ({ idUser }) => {
                               จำนวน : {item.count} หลา
                             </p>
                             <p className="text-sm text-gray-600">
-                              รวม :{" "}
-                              {numberWithCommas(
-                                item.totalPiece
-                              )}{" "}
-                              บาท
+                              รวม : {numberWithCommas(item.totalPiece)} บาท
                             </p>
                           </div>
                         </div>
                         {index !== order.products.length - 1 && (
-                          <hr className="w-full mt-10 mb-2 border-gray-300" />
+                          <hr className="w-full mt-4 mb-2 border-gray-300" />
                         )}
                       </div>
                     ))}
@@ -208,21 +196,31 @@ const ReceiveOrder = ({ idUser }) => {
                         {order.sendAddress.postcode}
                       </p>
                     )}
-                   
-              <p className=" text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1 whitespace-pre-wrap">
-                การจัดส่ง : {order.deliveryIs.split("\n")[0]}
-              </p>
-              <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
-                ราคารวม : {numberWithCommas(order.totalPrice)} บาท
-              </p>
+
+                    <p className=" text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1 whitespace-pre-wrap">
+                      การจัดส่ง : {order.deliveryIs.split("\n")[0]}
+                    </p>
+                    <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
+                      ราคารวม : {numberWithCommas(order.totalPrice)} บาท
+                    </p>
 
                     {order.approve ? (
                       <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-1">
-                        สถานะการชำระเงิน :{" "}
-                        {order.payment ? "ชำระเงินเรียบร้อย" : "รอการชำระเงิน"}
+                        สถานะ :{" "}
+                        {order.sendproduct
+                          ? "จัดส่งสินค้าเรียบร้อยแล้ว"
+                          : "รอการจัดส่ง"}
                       </p>
                     ) : (
                       ""
+                    )}
+
+                    {order.sendproduct ? (
+                      <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-1">
+                        เลขพัสดุ : {order.postcodeOrder}
+                      </p>
+                    ) : (
+                      " "
                     )}
 
                     <div className="flex justify-between">
@@ -235,14 +233,6 @@ const ReceiveOrder = ({ idUser }) => {
                           {" "}
                           ดูรายละเอียดคำสั่งซื้อ{" "}
                         </button>
-                      </div>
-                      <div className="flex justify-end ">
-                        {/* <button
-                          className="bg-green-400 mt-3 mx-2 py-2 px-auto w-[170px] rounded-full shadow-xl hover:bg-green-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
-                          onClick={() => handleSendOrder(order._id)}
-                        >
-                          ส่งสินค้าเรียบร้อยแล้ว
-                        </button> */}
                       </div>
                     </div>
                   </div>
@@ -312,8 +302,7 @@ const ReceiveOrder = ({ idUser }) => {
                         จำนวน : {item.count} หลา
                       </p>
                       <p className="text-sm text-gray-600">
-                        รวม :{" "}
-                        {numberWithCommas(item.totalPiece)} บาท
+                        รวม : {numberWithCommas(item.totalPiece)} บาท
                       </p>
                     </div>
                   </div>
@@ -332,8 +321,8 @@ const ReceiveOrder = ({ idUser }) => {
                   {order.sendAddress.postcode}
                 </p>
               )}
-           
-           <p className=" text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1 whitespace-pre-wrap">
+
+              <p className=" text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1 whitespace-pre-wrap">
                 การจัดส่ง : {order.deliveryIs.split("\n")[0]}
               </p>
               <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
@@ -353,7 +342,7 @@ const ReceiveOrder = ({ idUser }) => {
 
               {order.sendproduct ? (
                 <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-1">
-                  เลขพัสดุ :  {order.postcodeOrder}
+                  เลขพัสดุ : {order.postcodeOrder}
                 </p>
               ) : (
                 " "
@@ -369,14 +358,6 @@ const ReceiveOrder = ({ idUser }) => {
                     {" "}
                     ดูรายละเอียดคำสั่งซื้อ{" "}
                   </button>
-                </div>
-                <div className="flex justify-end ">
-                  {/* <button
-                    className="bg-green-400 mt-3 mx-2 py-2 px-auto w-[180px] rounded-full shadow-xl hover:bg-green-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
-                    onClick={() => handleSendOrder(order._id)}
-                  >
-                    ส่งสินค้าเรียบร้อยแล้ว
-                  </button> */}
                 </div>
               </div>
             </div>
