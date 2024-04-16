@@ -246,25 +246,6 @@ function PaymentPage() {
     const formData = new FormData();
     formData.append("slipmoney", file);
 
-    // ส่งข้อมูลไปยังเซิร์ฟเวอร์ โดยใช้ Fetch API
-    fetch("/upload", {
-      method: "POST",
-      body: formData
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("อัปโหลดสำเร็จ", data);
-        // ดำเนินการต่อไปตามที่คุณต้องการ
-      })
-      .catch((error) => {
-        console.error("เกิดข้อผิดพลาดขณะอัปโหลด", error);
-        // จัดการข้อผิดพลาดตามที่คุณต้องการ
-      });
   }
 
   const numberWithCommas = (x) => {
