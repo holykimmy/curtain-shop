@@ -53,7 +53,7 @@ function PaymentPage() {
 
   useEffect(() => {
     const fetchData = () => {
-      setIsLoading(true)
+      setIsLoading(true);
       customerAPI
         .getOrderByIdOrder(idOrder)
         .then((orderData) => {
@@ -74,12 +74,10 @@ function PaymentPage() {
     fetchData();
   }, [idOrder, depositOrder, totalDeposit]);
 
-
   console.log("testtt", depositOrder);
 
   console.log("order : ", currentOrder);
   console.log("check order toto dis", totalDeposit);
-
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");
@@ -159,23 +157,23 @@ function PaymentPage() {
   console.log(idUser);
 
   useEffect(() => {
+    setIsLoading(true);
+
     const fetchData = () => {
       customerAPI
         .getCustomerAddressById(idUser)
         .then((addressData) => {
           setAddress(addressData);
+          setIsLoading(false);
         })
         .catch((err) => {
           console.error("error", err);
+          setIsLoading(false);
         });
     };
     fetchData();
-
-    
   }, [idUser]);
   console.log(address);
-
-  const [sendAddress, setSendAddress] = useState("");
 
   const handlePayment = async (idOrder) => {
     try {
@@ -191,6 +189,7 @@ function PaymentPage() {
       }
 
       formData.append("slipmoney", fileInput.files[0]);
+      setIsLoading(true);
 
       const response = await axios.put(
         `${process.env.REACT_APP_API}/customer/order/payment/${idOrder}`,
@@ -203,14 +202,16 @@ function PaymentPage() {
       );
       if (response.status === 200) {
         // แสดง Swal แจ้งเตือน
+        setIsLoading(false);
         Swal.fire({
           icon: "success",
           title: "การชำระเงินเรียบร้อย",
           text: "ขอบคุณสำหรับการชำระเงิน"
+        }).then(() => {
+          navigate(`/order-detail/${idOrder}`);
         });
-        navigate(`/order-detail/${idOrder}`, {});
       } else {
-        // กรณีที่มีข้อผิดพลาด
+        setIsLoading(false);
         Swal.fire({
           icon: "error",
           title: "เกิดข้อผิดพลาด",
@@ -225,6 +226,8 @@ function PaymentPage() {
         title: "เกิดข้อผิดพลาด",
         text: "มีข้อผิดพลาดในการชำระเงิน"
       });
+      setIsLoading(false);
+
     }
   };
 
@@ -269,8 +272,6 @@ function PaymentPage() {
   };
 
   function handleDepositPayment(deposit) {
-    
-
     let message;
 
     if (deposit) {
@@ -293,12 +294,10 @@ function PaymentPage() {
         customerAPI
           .updateOrderDepositPayment(idOrder, deposit)
           .then((response) => {
-            
             Swal.fire({
               icon: "success"
             });
             setDepositOrder(deposit);
-           
           })
           .catch((error) => {
             Swal.fire({
