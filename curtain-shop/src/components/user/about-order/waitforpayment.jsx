@@ -10,19 +10,42 @@ const WaitForPayment = ({ idUser }) => {
   const navigate = useNavigate();
 
   const [userOrder, setUserOrder] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.7)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
 
   console.log("idUser", idUser);
   console.log("djkhfgajk;h");
 
   useEffect(() => {
     const fetchData = () => {
+      setIsLoading(true); 
       customerAPI
         .getOrderByIdWaitPayment(idUser)
         .then((orderData) => {
           setUserOrder(orderData);
+          setIsLoading(false); 
         })
         .catch((err) => {
           console.error("error", err);
+          setIsLoading(false); 
         });
     };
     fetchData();

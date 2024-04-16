@@ -177,9 +177,9 @@ function Orders() {
         </p>
       </div>
 
-      <div className="flex justify-center flex-nowrap overflow-x-auto">
+      <div className="flex justify-start md:justify-center flex-nowrap overflow-x-auto">
         <button
-          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
+          className={`whitespace-nowrap bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
             selectedButton === "approve" ? "bg-gray-300" : ""
           }`}
           onClick={() => navigate("/orders/approve")}
@@ -195,7 +195,7 @@ function Orders() {
           ) : null}
         </button>
         <button
-          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
+          className={`whitespace-nowrap bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
             selectedButton === "waitPayment" ? "bg-gray-300" : ""
           }`}
           onClick={() => navigate("/orders/waitPayment")}
@@ -212,7 +212,7 @@ function Orders() {
         </button>
 
         <button
-          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
+          className={`whitespace-nowrap bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
             selectedButton === "checkPayment" ? "bg-gray-300" : ""
           }`}
           onClick={() => navigate("/orders/checkPayment")}
@@ -231,7 +231,7 @@ function Orders() {
         </button>
 
         <button
-          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
+          className={`whitespace-nowrap bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
             selectedButton === "prepareDelivery" ? "bg-gray-300" : ""
           }`}
           onClick={() => navigate("/orders/prepareDelivery")}
@@ -247,7 +247,7 @@ function Orders() {
           ) : null}
         </button>
         <button
-          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
+          className={`whitespace-nowrap bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
             selectedButton === "sendOrder" ? "bg-gray-300" : ""
           }`}
           onClick={() => navigate("/orders/sendOrder")}
@@ -263,7 +263,7 @@ function Orders() {
           ) : null}
         </button>
         <button
-          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
+          className={`whitespace-nowrap bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
             selectedButton === "sendOrdered" ? "bg-gray-300" : ""
           }`}
           onClick={() => navigate("/orders/sendOrdered")}
@@ -279,7 +279,7 @@ function Orders() {
           ) : null}
         </button>
         <button
-          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
+          className={`whitespace-nowrap bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
             selectedButton === "completed" ? "bg-gray-300" : ""
           }`}
           onClick={() => navigate("/orders/completed")}
@@ -294,7 +294,7 @@ function Orders() {
           ) : null}
         </button>
         <button
-          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
+          className={`whitespace-nowrap bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
             selectedButton === "cancelled" ? "bg-gray-300" : ""
           }`}
           onClick={() => navigate("/orders/cancelled")}

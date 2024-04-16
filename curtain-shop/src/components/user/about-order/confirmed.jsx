@@ -10,25 +10,51 @@ const Confirmed = ({ idUser }) => {
   const navigate = useNavigate();
 
   const [userOrder, setUserOrder] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.7)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
 
   console.log("idUser", idUser);
   console.log("djkhfgajk;h");
 
   useEffect(() => {
+    
     const fetchData = async () => {
+      setIsLoading(true);
+
       try {
         const orderData = await customerAPI.getOrderById(idUser);
         const confirmOrders = orderData.filter((order) => !order.confirmed);
         setUserOrder(confirmOrders);
+        setIsLoading(false);
+
       } catch (error) {
         console.error("error", error);
+        setIsLoading(false);
       }
     };
-
-    if (idUser) {
+    
       fetchData();
-    }
+    
   }, [idUser]);
+  
   console.log("testttt");
   console.log("order :", userOrder);
 

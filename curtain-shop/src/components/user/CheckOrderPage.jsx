@@ -451,12 +451,12 @@ function CheckOrdeerPage() {
 
             <div class="bg-brown-blog mt-10  px-4 pt-8 lg:mt-0">
               <select
-                className="mb-2 rounded-lg text-xs md:text-sm lg:text-sm xl:text-sm"
+                className="mb-2 rounded-lg text-xs md:text-sm lg:text-sm xl:text-sm "
                 onChange={(e) => handleAddressSelect(e.target.value)}
               >
-                <option value="">โปรดเลือกที่อยู่ที่ต้องการจัดส่ง</option>
+                <option className="p-2" value="">โปรดเลือกที่อยู่ที่ต้องการจัดส่ง</option>
                 {address.map((address) => (
-                  <option key={address.id} value={address.id}>
+                  <option className="p-2" key={address.id} value={address.id}>
                     {`${address.name}, ${address.houseNo}, ${address.sub_district}, ${address.district}, ${address.province} ${address.postcode}`}
                   </option>
                 ))}

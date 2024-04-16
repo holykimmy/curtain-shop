@@ -32,7 +32,7 @@ function AboutOrderPage() {
   const [orderComplete, setOrderComplete] = useState([]);
   const [orderCancelled, setOrderCancelled] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
- 
+
   useEffect(() => {
     if (isLoading) {
       Swal.fire({
@@ -52,16 +52,20 @@ function AboutOrderPage() {
     }
   }, [isLoading]);
 
-
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-
+      let allDataFetched = false;
+  
       try {
         const allUnConfirmed = await customerAPI.getOrderById(idUser);
-        const confirmedOrders = allUnConfirmed.filter((order) => order.confirmed === false );
+        const confirmedOrders = allUnConfirmed.filter(
+          (order) => order.confirmed === false
+        );
         setOrderConfirmed(confirmedOrders);
-        const waitPaymentData = await customerAPI.getOrderByIdWaitPayment(idUser);
+        const waitPaymentData = await customerAPI.getOrderByIdWaitPayment(
+          idUser
+        );
         setOrderWaitPayment(waitPaymentData);
         const prepareData = await customerAPI.getOrderByIdPrepare(idUser);
         setOrderPrepare(prepareData);
@@ -70,21 +74,27 @@ function AboutOrderPage() {
         const completeData = await customerAPI.getOrderByIdComplete(idUser);
         setOrderComplete(completeData);
         const allOrderData = await customerAPI.getOrderById(idUser);
-        const cancelOrders = allOrderData.filter((order) => order.enable === false || order.cancelled === true);
+        const cancelOrders = allOrderData.filter(
+          (order) => order.enable === false || order.cancelled === true
+        );
         setOrderCancelled(cancelOrders);
-        
+  
+        allDataFetched = true;
       } catch (error) {
-        setIsLoading(false);
         console.error("Error fetching data:", error);
-      } 
-      setIsLoading(false);
+      }
+  
+      if (allDataFetched) {
+        setIsLoading(false); 
+      }
     };
-    
+  
     fetchData();
   }, [idUser]);
   
+
   console.log(orderRecive);
-  console.table(orderCancelled)
+  console.table(orderCancelled);
 
   const [user, setUser] = React.useState({
     username: "",
@@ -218,27 +228,23 @@ function AboutOrderPage() {
           การซื้อของฉัน
         </h5>
       </div>
-      <div className="flex justify-center flex-nowrap overflow-x-auto">
-
-      <button
-          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
+      <div className="flex justify-start md:justify-center flex-nowrap overflow-x-auto">
+        <button
+          className={`whitespace-nowrap bg-gray-100  w-[300px] sm:w-[180px] md:w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
             selectedButton === "confirmed" ? "bg-gray-300" : ""
           }`}
           onClick={() => navigate("/about-order/confirmed")}
         >
           คำสั่งซื้อ
           {orderConfirmed.length > 0 ? (
-            <div className="relative ml-2 inline-block">
-              <RiNotification3Fill className=" h-8 w-8 text-red-300 filter drop-shadow-md" />
-              <span className="absolute top-1 right-[1px] mr-1 mt-1 text-white  text-xs px-2">
-                {orderConfirmed.length > 99 ? "99+" : orderConfirmed.length}
-              </span>
-            </div>
+            <span className=" ml-2">
+              ({orderConfirmed.length > 99 ? "99+" : orderConfirmed.length})
+            </span>
           ) : null}
         </button>
 
         <button
-          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
+          className={`whitespace-nowrap bg-gray-100 w-[300px] sm:w-[180px] md:w-[200px]  shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
             selectedButton === "waitPayment" ? "bg-gray-300" : ""
           }`}
           onClick={() => navigate("/about-order/waitPayment")}
@@ -254,7 +260,7 @@ function AboutOrderPage() {
           ) : null}
         </button>
         <button
-          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
+          className={`whitespace-nowrap bg-gray-100 md:w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
             selectedButton === "prepareDelivery" ? "bg-gray-400" : ""
           }`}
           onClick={() => navigate("/about-order/prepareDelivery")}
@@ -270,7 +276,7 @@ function AboutOrderPage() {
           ) : null}
         </button>
         <button
-          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
+          className={`whitespace-nowrap bg-gray-100 md:w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
             selectedButton === "receiveorder" ? "bg-gray-400" : ""
           }`}
           onClick={() => navigate("/about-order/receiveorder")}
@@ -286,38 +292,31 @@ function AboutOrderPage() {
           ) : null}
         </button>
         <button
-          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
+          className={`whitespace-nowrap bg-gray-100 md:w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
             selectedButton === "completed" ? "bg-gray-400" : ""
           }`}
           onClick={() => navigate("/about-order/completed")}
         >
           สำเร็จ
           {orderComplete.length > 0 ? (
-            <div className="relative ml-2 inline-block">
-              <RiNotification3Fill className=" h-8 w-8 text-red-300 filter drop-shadow-md" />
-              <span className="absolute top-1 right-[1px] mr-1 mt-1 text-white  text-xs px-2">
-                {orderComplete.length > 99 ? "99+" : orderComplete.length}
-              </span>
-            </div>
+            <span className="ml-2">
+              ({orderComplete.length > 99 ? "99+" : orderComplete.length})
+            </span>
           ) : null}
         </button>
         <button
-          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
+          className={`whitespace-nowrap bg-gray-100 md:w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
             selectedButton === "cancelled" ? "bg-gray-400" : ""
           }`}
           onClick={() => navigate("/about-order/cancelled")}
         >
           ยกเลิกแล้ว
           {orderCancelled.length > 0 ? (
-            <div className="relative ml-2 inline-block">
-              <RiNotification3Fill className=" h-8 w-8 text-red-300 filter drop-shadow-md" />
-              <span className="absolute top-1 right-[1px] mr-1 mt-1 text-white  text-xs px-2">
-                {orderCancelled.length > 99 ? "99+" : orderCancelled.length}
-              </span>
-            </div>
+            <span className="ml-2">
+              ({orderCancelled.length > 99 ? "99+" : orderCancelled.length})
+            </span>
           ) : null}
         </button>
-        
       </div>
       <div className="">{renderContent()}</div>
     </>
