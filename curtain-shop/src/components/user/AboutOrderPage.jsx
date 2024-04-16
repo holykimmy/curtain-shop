@@ -6,6 +6,7 @@ import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import axios from "axios";
 import Footer from "../Footer";
+import ConfirmedOrder from "./about-order/confirmed";
 import WaitForPayment from "./about-order/waitforpayment";
 import PrepareOrder from "./about-order/prepareorder";
 import RecieveOrder from "./about-order/receiveorder";
@@ -24,6 +25,7 @@ function AboutOrderPage() {
   const [userName, setUserName] = React.useState("");
   const [idUser, setIdUser] = React.useState("");
 
+  const [orderConfirmed, setOrderConfirmed] = useState([]);
   const [orderWaitPayment, setOrderWaitPayment] = useState([]);
   const [orderPrepare, setOrderPrepare] = useState([]);
   const [orderRecive, setOrderRecive] = useState([]);
@@ -56,6 +58,9 @@ function AboutOrderPage() {
       setIsLoading(true);
 
       try {
+        const allUnConfirmed = await customerAPI.getOrderById(idUser);
+        const confirmedOrders = allUnConfirmed.filter((order) => order.confirmed === false );
+        setOrderConfirmed(confirmedOrders);
         const waitPaymentData = await customerAPI.getOrderByIdWaitPayment(idUser);
         setOrderWaitPayment(waitPaymentData);
         const prepareData = await customerAPI.getOrderByIdPrepare(idUser);
@@ -94,6 +99,8 @@ function AboutOrderPage() {
 
   const renderContent = () => {
     switch (selectedButton) {
+      case "confirmed":
+        return <ConfirmedOrder idUser={idUser} />;
       case "waitPayment":
         return <WaitForPayment idUser={idUser} />;
       case "prepareDelivery":
@@ -212,6 +219,24 @@ function AboutOrderPage() {
         </h5>
       </div>
       <div className="flex justify-center flex-nowrap overflow-x-auto">
+
+      <button
+          className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
+            selectedButton === "confirmed" ? "bg-gray-300" : ""
+          }`}
+          onClick={() => navigate("/about-order/confirmed")}
+        >
+          คำสั่งซื้อ
+          {orderConfirmed.length > 0 ? (
+            <div className="relative ml-2 inline-block">
+              <RiNotification3Fill className=" h-8 w-8 text-red-300 filter drop-shadow-md" />
+              <span className="absolute top-1 right-[1px] mr-1 mt-1 text-white  text-xs px-2">
+                {orderConfirmed.length > 99 ? "99+" : orderConfirmed.length}
+              </span>
+            </div>
+          ) : null}
+        </button>
+
         <button
           className={`bg-gray-100 w-[200px] shadow-md hover:bg-gray-400 hover:text-white hover:shadow-2xl text-center text-xs sm:text-xs md:text-sm text-brown-600 my-4 p-2 flex items-center justify-center ${
             selectedButton === "waitPayment" ? "bg-gray-300" : ""
