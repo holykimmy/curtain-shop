@@ -57,7 +57,6 @@ function CheckOrdeerPage() {
           setCurrentOrder(orderData);
           setIsLoading(false);
          
-
         })
         .catch((err) => {
           console.error("error", err);
@@ -154,7 +153,6 @@ function CheckOrdeerPage() {
   useEffect(() => {
     setIsLoading(true);
     const fetchData = () => {
-      
       customerAPI
         .getCustomerAddressById(idUser)
         .then((addressData) => {
@@ -169,8 +167,6 @@ function CheckOrdeerPage() {
     };
     fetchData();
 
-    // Return a cleanup function to clear the interval
-    return () => clearInterval();
   }, [idUser]);
 
   console.log("dkjhafkdsj");
@@ -289,7 +285,7 @@ function CheckOrdeerPage() {
       });
 
       // formData.append("windowimg", files);
-
+      setIsLoading(true);
       const response = await axios.put(
         `${process.env.REACT_APP_API}/customer/cart-to-order/${idOrder}`,
         formData,
@@ -305,13 +301,13 @@ function CheckOrdeerPage() {
         }
       );
       console.log(response.data);
-
       Swal.fire({
         icon: "success",
         title: "บันทึกข้อมูลเรียบร้อย",
         showConfirmButton: false,
         timer: 1500
       }).then(() => {
+        setIsLoading(false);
         navigate(`/payment/${idOrder}`);
       });
     } catch (err) {
