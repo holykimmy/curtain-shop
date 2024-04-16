@@ -36,7 +36,7 @@ mongoose
 app.use(express.json());
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://cms-curtain-shop.vercel.app", "https://curtain-shop.vercel.app" ,"https://curtain-shop-mu.vercel.app","https://charoenkit-curtain.vercel.app" ], // กำหนดโดเมนที่อนุญาตให้เข้าถึง
+    origin: ["http://localhost:3000", "https://cms-curtain-shop.vercel.app", "https://curtain-shop.vercel.app" ,"https://curtain-shop-mu.vercel.app","https://charoenkit-curtain.vercel.app","https://charoenkitcurtain.vercel.app" ], // กำหนดโดเมนที่อนุญาตให้เข้าถึง
     methods: ["GET", "POST", "PUT", "DELETE"], // กำหนดเมทอดที่อนุญาต
     allowedHeaders: ["Content-Type", "Authorization", "authtoken"],
     credentials: true, // อนุญาตให้ส่งคุกกี้ (cookies) ไปพร้อมกับคำขอ
@@ -47,7 +47,7 @@ app.use(
 
 
 app.use((req, res, next) => {
-  const allowedOrigins = ['http://localhost:3000', 'https://cms-curtain-shop.vercel.app', 'https://curtain-shop.vercel.app' ,'https://curtain-shop-mu.vercel.app','https://charoenkit-curtain.vercel.app'];
+  const allowedOrigins = ['http://localhost:3000', 'https://cms-curtain-shop.vercel.app', 'https://curtain-shop.vercel.app' ,'https://curtain-shop-mu.vercel.app','https://charoenkit-curtain.vercel.app','https://charoenkitcurtain.vercel.app'];
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);

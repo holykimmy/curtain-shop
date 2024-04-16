@@ -67,17 +67,30 @@ exports.register = async (req, res) => {
       `
     };
 
-    transporter.sendMail(mailOptions, (error, info) => {
+    transporter.sendMail(mailOptions, async (error, info) => {
+      console.log("info : ",info ,"error : ", error);
       if (error) {
         console.error("Error sending email:", error);
+        if (error.code === "EAUTH" || error.code === "EENVELOPE") {
+          return res.status(400).json({ error: "อีเมลไม่ถูกต้อง" });
+        } else {
+          // ถ้ามีข้อผิดพลาดในการส่งอีเมล ไม่ต้องทำการบันทึกผู้ใช้
+          return res.status(500).json({ error: "เกิดข้อผิดพลาดในการส่งอีเมล" });
+        }
       } else {
         console.log("Email sent:", info.response);
+        // บันทึกผู้ใช้เฉพาะเมื่อส่งอีเมลสำเร็จ
+        try {
+          await new User({ ...req.body, password: hashedPassword }).save();
+          res.status(201).json({ message: "สมัครสมาชิกสำเร็จ" });
+        } catch (saveError) {
+          console.error("Error saving user:", saveError);
+          res.status(500).json({ error: "Internal Server Error" });
+        }
       }
     });
+    
 
-    //save
-    await new User({ ...req.body, password: hashedPassword }).save();
-    res.status(201).json({ message: "สมัครรสมาชิกสำเร็จ" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -92,7 +105,6 @@ const validatelogin = (data) => {
   return schema.validate(data);
 };
 
-
 exports.updateEnable = async (req, res) => {
   const idUser = req.params.id;
   const { enable } = req.body;
@@ -104,14 +116,14 @@ exports.updateEnable = async (req, res) => {
       { new: true }
     );
     if (!updatedCustomer) {
-      return res.status(404).json({ error: 'Customer not found' });
+      return res.status(404).json({ error: "Customer not found" });
     }
     res.json(updatedCustomer);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
 
 exports.updateRole = async (req, res) => {
   const idUser = req.params.id;
@@ -123,14 +135,14 @@ exports.updateRole = async (req, res) => {
       { new: true }
     );
     if (!updatedCustomer) {
-      return res.status(404).json({ error: 'Customer not found' });
+      return res.status(404).json({ error: "Customer not found" });
     }
     res.json(updatedCustomer);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
 
 exports.findUserByEmail = async (req, res) => {
   const { email } = req.body;
@@ -251,7 +263,7 @@ exports.loginUser = async (req, res) => {
     }
     //หา user
     const userFound = await User.findOne({
-     $or: [{ email: user }, { tell: user }]
+      $or: [{ email: user }, { tell: user }]
     });
 
     //ไม่เจอ
@@ -261,7 +273,9 @@ exports.loginUser = async (req, res) => {
 
     //ตรวจสอบว่าบัญชีถูกระงับหรือไม่
     if (!userFound.enable) {
-      return res.status(401).json({ error: "บัญชีของคุณถูกระงับ กรุณติดต่อเรา" });
+      return res
+        .status(401)
+        .json({ error: "บัญชีของคุณถูกระงับ กรุณติดต่อเรา" });
     }
 
     const validPassword = await bcrypt.compare(password, userFound.password);
@@ -312,16 +326,15 @@ exports.getAllCustomers = (req, res) => {
     });
 };
 
-
 exports.getCustomers = (req, res) => {
   const { name } = req.query;
   console.log("testt sresfjf");
-  
+
   // ตรวจสอบว่ามีค่า name และไม่ว่างเปล่า
   if (!name || name.trim() === "") {
     return res.status(400).json({ error: "Name parameter is required" });
   }
-  
+
   const regex = new RegExp(name, "i");
 
   User.find({ $or: [{ f_name: regex }, { l_name: regex }] })
@@ -334,10 +347,6 @@ exports.getCustomers = (req, res) => {
       res.status(500).json({ error: err.message });
     });
 };
-
-
-
-
 
 exports.getCustomerById = (req, res) => {
   const customerId = req.params.id;
@@ -374,9 +383,6 @@ exports.getCustomerAddressById = (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
     });
 };
-
-
-
 
 exports.getAddress = (req, res) => {
   console.log("-------getAddress-------");
@@ -876,7 +882,7 @@ exports.getOrderByIdPrepare = async (req, res) => {
       payment: true,
       verifypayment: true,
       sendproduct: false,
-      cancelled:false,
+      cancelled: false,
       complete: false
     })
       .populate([
@@ -1201,7 +1207,7 @@ exports.getOrderPrepare = async (req, res) => {
       verifypayment: true,
       pandding: false,
       sendproduct: false,
-      cancelled:false,
+      cancelled: false,
       complete: false
     })
       .populate([
@@ -1415,7 +1421,7 @@ exports.searchOrderPrepare = async (req, res) => {
       verifypayment: true,
       pandding: false,
       sendproduct: false,
-      cancelled:false,
+      cancelled: false,
       complete: false
     })
       .populate([
