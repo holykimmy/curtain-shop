@@ -17,7 +17,7 @@ const Joi = require("joi");
 const fs = require("fs");
 const path = require("path");
 const nodemailer = require("nodemailer");
-const moment = require("moment"); 
+const moment = require("moment");
 
 exports.register = async (req, res) => {
   const { f_name, l_name, username, email, tell, password } = req.body;
@@ -69,7 +69,7 @@ exports.register = async (req, res) => {
     };
 
     transporter.sendMail(mailOptions, async (error, info) => {
-      console.log("info : ",info ,"error : ", error);
+      console.log("info : ", info, "error : ", error);
       if (error) {
         console.error("Error sending email:", error);
         if (error.code === "EAUTH" || error.code === "EENVELOPE") {
@@ -90,8 +90,6 @@ exports.register = async (req, res) => {
         }
       }
     });
-    
-
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -701,8 +699,8 @@ exports.userCart = async (req, res) => {
         width: item.width,
         height: item.height,
         twolayer: item.twolayer,
-        confirmed: false ,
-        totalPiece: item.totalPiece,
+        confirmed: false,
+        totalPiece: item.totalPiece
       })),
 
       orderBy: idUser,
@@ -1625,12 +1623,10 @@ exports.updateOrderApprove = async (req, res) => {
       from: "charoenkit.curtain@gmail.com",
       to: `${user.email} `,
       subject: "สินค้าของคุณได้รับการยืนยันแล้ว",
-      text: `เรียนคุณ${user.f_name} ${user.l_name}
-      Order : ${idOrder} ได้รับการยืนยันแล้ว 
-      กรุณาชำระเงินภายใน 48 ซม. หากท่านไม่ชำระเงินภายในระยะเวลาที่กำหนด 
-      คำสั่งซื้อของคุณจะถูกยกเลิกโดยอัตโนมัติ
+      text: `ถึง ลูกค้าร้าน เจริญกิจผ้าม่าน ขณะนี้ออเดอร์ของคุณ หมายเลขออเดอร์ : ${idOrder}
+      ได้รับการยืนยันสินค้าจากทางร้านแล้ว กรุณาชำระเงินของออเดอร์คุณได้แล้วได้ที่ ดูคำสั่งซื้อ -> รอการชำระ รบกวนลูกค้าชำระเงินภายใน 48 ชั่วโมง หากไม่ชำระภายใน 48 ชั่วโมง ออเดอร์สินค้าของคุณจะถูกยกเลิกโดยอัตโนมัติ ขอบคุณค่ะ
 
-      https://cms-curtain-shop.vercel.app/payment/${idOrder}
+      https://charoenkitcurtain.vercel.app/about-order/waitPayment
 
       `
     };
@@ -1672,12 +1668,12 @@ exports.updateOrderVerifyPayment = async (req, res) => {
     const mailOptions = {
       from: "charoenkit.curtain@gmail.com",
       to: `${user.email} `,
-      subject: "ยืนยันการชำระเงินของคุณแล้ว",
-      text: `เรียนคุณ${user.f_name} ${user.l_name}
-      Order : ${idOrder} ได้รับการยืนยันการชำระเงินเรียบร้อยแล้ว
-      ทางร้านกำลังดำเนินการตัดผ้าม่านให้คุณอยู่
-      
-      https://cms-curtain-shop.vercel.app/order-detail/${idOrder}
+      subject: "ตรวจสอบการจ่ายเงินเสร็จ",
+      text: `
+      ออเดอร์สินค้าหมายเลข : ${idOrder} ได้รับตรวจสอบการชำระเงินเรียบร้อยแล้ว ทางร้านกำลังดำเนินการตัดสินค้าของคุณ ระยะเวลาการตัดสินค้าประมาณ 1-3 สัปดาห์ขึ้นอยู่กับการสั่งตัดของคุณ 
+      ทางร้านจึงแจ้งให้ทราบก่อน ขอบคุณค่ะ
+
+      https://charoenkitcurtain.vercel.app/about-order/prepareDelivery
 
       `
     };
@@ -1734,12 +1730,12 @@ exports.updateOrderPandding = async (req, res) => {
     const mailOptions = {
       from: "charoenkit.curtain@gmail.com",
       to: `${user.email} `,
-      subject: "สินค้าของคุณได้เสร็จรีบร้อยแล้ว",
+      subject: "ทางร้านเตรียมสินค้าเสร็จแล้ว",
       text: `เรียนคุณ${user.f_name} ${user.l_name}
       Order : ${idOrder} 
       ทางร้านได้เตรียมสินค้าเสร็จเรียบร้อยแล้ว
 
-      https://cms-curtain-shop.vercel.app/order-detail/${idOrder}
+      https://charoenkitcurtain.vercel.app/about-order/prepareDelivery
       `
     };
 
@@ -1814,10 +1810,11 @@ exports.updateOrderSend = async (req, res) => {
       to: `${user.email} `,
       subject: "คำสั่งซื้อของคุณได้รับการจัดส่งเรียบร้อยแล้ว",
       text: `เรียนคุณ${user.f_name} ${user.l_name}
-      Order : ${idOrder} ทางร้านได้จัดส่งสินค้าให้คุณเรียบร้อยแล้ว
-      เลขพัสดุของคุณคือ ${postcodeOrder}
+      ออเดอร์สินค้าหมายเลข : ${idOrder} ทางร้านได้จัดส่งสินค้าของคุณแล้ว เลขพัสดุของคุณ : ${postcodeOrder} หากลูกค้าได้รับสินค้าแล้ว รบกวนลูกค้ากดยืนยันการรับสินค้าที่ 
+      ดูคำสั่งซื้อ -> สำเร็จ ให้กับทางร้านด้วยนะคะ ขอขอบคุณที่เลือกไว้ใจสั่งตัดสินค้ากับร้านของเราและหวังว่าผ้าม่านที่สั่งตัดมาจะทำให้ลูกค้าพึ่งพอใจเป็นอย่างมาก หากคุณลูกค้าอยากสั่งตัดผ้าม่านอีก 
+      เจริญกิจผ้าม่าน ยินดีรับให้บริการคุณลูกค้าอย่างเต็มที่อีกครั้งค่ะ ขอบคุณค่ะ
 
-      https://cms-curtain-shop.vercel.app/order-detail/${idOrder}
+      https://charoenkitcurtain.vercel.app/about-order/receiveorder
       `
     };
 
@@ -1866,10 +1863,10 @@ exports.updateOrderCancelled = async (req, res) => {
       from: "charoenkit.curtain@gmail.com",
       to: `${user.email} `,
       subject: "คำสั่งซื้อของคุณถูกยกเลิกแล้ว",
-      text: `เรียนคุณ${user.f_name} ${user.l_name}
-      Order : ${idOrder} ของคุณได้ถูกยกเลิกแล้วเนื้องจาก ${cancelReasonAd}
-
-      https://cms-curtain-shop.vercel.app/order-detail/${idOrder}
+      text: `เรียนคุณ${user.f_name} ${user.l_name} ลูกค้า ร้านเจริญกิจผ้าม่าน
+      ขณะนี้ทางร้านขอเราขออนุญาติยกเลิกออเดอร์หมายเลข : ${idOrder} ของคุณ เนื่องจากสินค้าผ้าของออเดอร์คุณ ${cancelReasonAd} 
+      ทางร้านจึงแจ้งมาให้ทราบและขออภัยคุณลูกค้าในข้อผิดพลาดจากทางร้านเป็นอย่างสูง ขอบคุณค่ะ
+      https://charoenkitcurtain.vercel.app/about-order/cancelled  
       `
     };
 
