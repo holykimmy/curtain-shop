@@ -451,7 +451,7 @@ function CheckOrdeerPage() {
 
             <div class="bg-brown-blog mt-10  px-4 pt-8 lg:mt-0">
               <select
-                className="mb-2 rounded-lg text-xs md:text-sm lg:text-sm xl:text-sm "
+                className="mb-2 p-2 rounded-lg text-xs md:text-sm lg:text-sm xl:text-sm "
                 onChange={(e) => handleAddressSelect(e.target.value)}
               >
                 <option className="p-2" value="">โปรดเลือกที่อยู่ที่ต้องการจัดส่ง</option>
