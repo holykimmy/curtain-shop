@@ -222,13 +222,12 @@ const ProductInCart = ({ item, idUser }) => {
     <tbody>
       <tr className="text-center ">
         <td
-          className=" hidden sm:table-cell  text-browntop px-2 py-1 border  border-gray-300   "
-          onClick={() => handleDetailProduct(item.productId, item.name)}
+          className=" hidden sm:table-cell  text-browntop px-2 py-1 border  border-gray-300"   
         >
-          <img className="w-[300px] rounded" src={item.image} alt="product" />
+          <Link to={`/product-detail/${item.productId}`}> <img className="w-[300px] rounded" src={item.image} alt="product" /></Link>
         </td>
         <td className="w-[100px] text-sm text-browntop px-2 py-1 border border-gray-300">
-          {item.name}
+          <Link to={`/product-detail/${item.productId}`} >{item.name}</Link>
         </td>
         <td className="text-browntop text-sm  px-2 py-1 border border-gray-300">
           {item.brand}
@@ -244,7 +243,7 @@ const ProductInCart = ({ item, idUser }) => {
         </td>
         <td className=" text-browntop text-sm px-2 py-1 border border-gray-300 ">
           <select
-            className="mb-2 rounded-lg text-sm w-[110px]"
+            className="form-control mb-2 py-2 pl-3 rounded-lg text-sm w-[110px]"
             value={item.rail}
             onChange={handleRailChange}
           >

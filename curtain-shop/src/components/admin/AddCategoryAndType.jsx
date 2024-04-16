@@ -11,22 +11,46 @@ function AddCategoryPage() {
   });
   const [data, setData] = useState([]);
   const [brand, setBrand] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
-  const fetchData = async () => {
-    try {
-      const brands = await categoryAPI.getAllBrands();
-      setData(brands);
-    } catch (error) {
-      console.error(error);
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent",
+        },
+        backdrop: "rgba(255, 255, 255, 0.5)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false, // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
     }
-  };
+  }, [isLoading]);
+
+
+  
 
   const { p_types } = state;
 
   useEffect(() => {
+
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const brands = await categoryAPI.getAllBrands();
+        setData(brands);
+        setIsLoading(false);
+      } catch (error) {
+        console.error(error);
+        setIsLoading(false);
+      }
+    };
     fetchData();
-    const intervalId = setInterval(fetchData, 5000); //refresh
-    return () => clearInterval(intervalId);
   }, []);
 
   const handleCheckboxChange = (event) => {
@@ -69,14 +93,6 @@ function AddCategoryPage() {
     if (name === "brand") {
       setBrand(value);
     }
-    // else if (name === "p_type") {
-    //   // แก้ไขเพื่อรองรับการเลือกหลายตัวเลือก
-    //   const selectedOptions = Array.from(
-    //     event.target.selectedOptions,
-    //     (option) => option.value
-    //   );
-    //   setState({ ...state, [name]: selectedOptions });
-    // }
   };
 
   return (
@@ -96,9 +112,7 @@ function AddCategoryPage() {
             value={brand}
             onChange={inputValue("brand")}
           >
-            {/* {data.map((item) => (
-              <option key={item.brand} value>{item.brand}</option>
-            ))} */}
+           
             <option value="brand">เลือกแบรนด์สินค้า</option>
             {data.map((brand) => (
               <option key={brand.slug}>{brand.brand}</option>

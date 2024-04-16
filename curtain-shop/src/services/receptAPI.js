@@ -82,6 +82,17 @@ const receptAPI = {
     })
   },
 
+  searchRecept: async (search) => {
+    return axios
+    .get(`${process.env.REACT_APP_API}/recept/find-recept?name=${search}`)
+    .then((response) => response.data
+    )
+    .catch((error)=>{
+      console.error(error);
+      throw error;
+    })
+  },
+
   deleteRecept: async (id) => {
     try {
       const response = await axios.delete(

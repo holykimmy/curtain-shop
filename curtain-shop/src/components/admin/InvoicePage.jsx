@@ -57,6 +57,27 @@ function QuatationPage() {
   const [allOptions, setAllOptions] = useState([]);
   const [filteredOptions, setFilteredOptions] = useState([]);
   const { fullname, subject, address, count, product } = state;
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.5)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
+
 
   const inputValue = (name) => (event) => {
     const value = event.target.value;
@@ -94,13 +115,16 @@ function QuatationPage() {
 
   useEffect(() => {
     const fetchData = () => {
+      setIsLoading(true);
       productAPI
         .getAllProducts()
         .then((products) => {
           setData(products);
+          setIsLoading(false);
         })
         .catch((err) => {
           console.error("error", err);
+          setIsLoading(false);
         });
     };
     fetchData();

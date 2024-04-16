@@ -9,7 +9,7 @@ import moment from "moment";
 import productAPI from "../../services/productAPI";
 import receptAPI from "../../services/receptAPI";
 import Swal from "sweetalert2";
-import { Link, useParams, useLocation } from "react-router-dom";
+import { Link, useParams, useLocation,useNavigate} from "react-router-dom";
 // import PDFQuotation from "./PDFQuotation"; // Import PDFDocument component
 import jsPDF from "jspdf";
 
@@ -31,20 +31,43 @@ const TABLE_HEAD = [
 
 function ReceptInvoiceDetail() {
   const { id } = useParams();
-
+  const navigate = useNavigate();
   const [data, setData] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.5)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
   console.log("id quatation", id);
 
   useEffect(() => {
+    setIsLoading(true);
     receptAPI
       .getReceptById(id)
       .then((data) => {
         setData(data);
+        setIsLoading(false);
       })
       .catch((err) => {
         console.error("error", err);
+        setIsLoading(false);
       });
-  }, []);
+  }, [id]);
 
   console.log(data);
 
@@ -190,8 +213,10 @@ function ReceptInvoiceDetail() {
         await Swal.fire({
           text: "ทำเป็นใบเสนอเรียบร้อยแล้ว",
           icon: "success",
-        });
-        window.location.reload();
+        }).then(()=>{
+          navigate(`/quotation-detail/${id}`)
+        })
+        
       } catch (error) {
         console.error("Error ", error);
       }
@@ -291,7 +316,7 @@ function ReceptInvoiceDetail() {
           onClick={() => generatePDF(data, data.rows)}
           className="bg-brown-300 mt-3 mx-2 py-1 px-auto w-[180px] rounded-full shadow-xl hover:bg-brown-200 text-center md:mt-3 md:mb-3 md:inline-blocktext-sm sm:text-xs md:text-xs lg:text-base xl:text-base  text-white"
         >
-          พิมพ์ใบเสนอราคา
+          พิมพ์ใบแจ้งหนี้
         </button>{" "}
         <button
           onClick={() => handleSwitchtoQuotation(data._id, data.fullname)}

@@ -9,7 +9,7 @@ import moment from "moment";
 import productAPI from "../../services/productAPI";
 import receptAPI from "../../services/receptAPI";
 import Swal from "sweetalert2";
-import { Link, useParams, useLocation } from "react-router-dom";
+import { Link, useParams, useLocation,useNavigate } from "react-router-dom";
 // import PDFQuotation from "./PDFQuotation"; // Import PDFDocument component
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -31,19 +31,44 @@ const TABLE_HEAD = [
 
 function ReceptQuotationDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [data, setData] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.5)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
+
+
+  useEffect(() => {
+    setIsLoading(true);
     receptAPI
       .getReceptById(id)
       .then((data) => {
         setData(data);
+        setIsLoading(false);
       })
       .catch((err) => {
         console.error("error", err);
+        setIsLoading(false);
       });
-  }, []);
+  }, [id]);
 
   const generatePDF = (data, rows) => {
     if (!data || !rows) {
@@ -285,8 +310,9 @@ function ReceptQuotationDetail() {
         await Swal.fire({
           text: "ทำเป็นใบแจ้งหนี้เรียบร้อยแล้ว",
           icon: "success"
-        });
-        window.location.reload();
+        }).then(()=>{
+          navigate(`/invoice-detail/${id}`)
+        })
       } catch (error) {
         console.error("Error ", error);
       }

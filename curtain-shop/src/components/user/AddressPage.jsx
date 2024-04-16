@@ -181,6 +181,8 @@ function AddressPage() {
           icon: "success",
           title: "บันทึกที่อยู่สำเร็จ",
           text: "ข้อมูลที่อยู่ถูกบันทึกเรียบร้อยแล้ว"
+        }).then(()=>{
+          navigate("/account")
         });
       } else {
         // Show error message

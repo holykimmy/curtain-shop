@@ -11,16 +11,40 @@ function HistoryQuotation() {
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.5)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
+
   const navigate = useNavigate();
   useEffect(() => {
+    setIsLoading(true);
     const fetchData = () => {
       receptAPI
         .getAllQuotation()
         .then((data) => {
           setData(data);
+          setIsLoading(false);
         })
         .catch((err) => {
           console.error("error", err);
+          setIsLoading(false);
         });
     };
     fetchData();
@@ -29,11 +53,18 @@ function HistoryQuotation() {
 
   const handleSearch = async () => {
     try {
-      const searchData = await productAPI.getSearch(searchTerm);
-      setSearchResults(searchData); // เซตค่า searchResults ที่ได้จากการค้นหาเข้า state
+      setIsLoading(true);
+      const searchData = await receptAPI.searchRecept(searchTerm);
+      const quotationData = searchData.filter(
+        (item) => item.quotation === true
+      );
+
+      setSearchResults(quotationData);
+
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching search results:", error);
-      // แสดงข้อความผิดพลาดหรือจัดการข้อผิดพลาดตามที่ต้องการ
+      setIsLoading(false);
     }
   };
 
@@ -46,7 +77,7 @@ function HistoryQuotation() {
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "ยืนยัน",
-      cancelButtonText: "ยกเลิก",
+      cancelButtonText: "ยกเลิก"
     });
 
     // หากผู้ใช้กดปุ่มยืนยัน
@@ -63,7 +94,7 @@ function HistoryQuotation() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "ใช่",
-      cancelButtonText: "ไม่ใช่",
+      cancelButtonText: "ไม่ใช่"
     }).then((result) => {
       if (result.isConfirmed) {
         navigate(`/quotation-update/${id}`);
@@ -80,7 +111,7 @@ function HistoryQuotation() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "ใช่",
-      cancelButtonText: "ไม่ใช่",
+      cancelButtonText: "ไม่ใช่"
     }).then((result) => {
       if (result.isConfirmed) {
         // ทำการลบสินค้าโดยใช้ ID ของสินค้า
@@ -88,12 +119,11 @@ function HistoryQuotation() {
           .deleteRecept(id)
           .then((response) => {
             console.log("Product deleted successfully");
-          
           })
           .catch((error) => {
             console.error("Error deleting product:", error);
           });
-          window.location.reload();
+        window.location.reload();
       } else {
         // ผู้ใช้เลือกยกเลิกการลบสินค้า
         console.log("Cancelled delete operation");
@@ -138,8 +168,67 @@ function HistoryQuotation() {
           </button>
         </label>
         {searchResults.length > 0
-          ? searchResults.map((product) => (
-              <div key={product._id} className="flex justify-center"></div>
+          ? searchResults.map((customer) => (
+              <>
+                <div key={customer._id} className="flex justify-center">
+                  <div className="flex justify-between w-[97%] sm:w-[97%] md:w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
+                    <div className="pl-5 w-[60%]">
+                      <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                        เรียนคุณ : {customer.fullname}{" "}
+                      </p>
+                      <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                        เรื่อง : {customer.subject}
+                      </p>
+                      <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                        ที่อยู่ : {customer.address}
+                      </p>
+
+                      <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                        วันที่ : {customer.createdAt}
+                      </p>
+                      <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                        วันที่ส่งมอบ : {customer.deliveryDate}
+                      </p>
+
+                      <p className="mt-2 text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                        รายการทั้งหมด : {customer.rows.length}
+                      </p>
+
+                      <p className="mt-2 text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                        ราคารวม : {numberWithCommas(customer.totalPrice)} บาท
+                      </p>
+                      <button
+                        onClick={() => handdleOrderdetail(customer._id)}
+                        className=" hover:text-brown-500 mx-2 py-2 px-auto  hover:text-shadow-xl text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-2 mr-4"
+                      >
+                        {" "}
+                        ดูรายละเอียดคำสั่งซื้อ{" "}
+                      </button>
+                    </div>
+                    <div>
+                      <div>
+                        <button
+                          onClick={() =>
+                            handleEditProduct(customer._id, customer.fullname)
+                          }
+                          className=" bg-blue-200 py-2 px-auto w-[80px] rounded-full shadow-xl hover:bg-blue-400 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-xs md:text-md lg:text-md xl:text-md  text-white "
+                        >
+                          แก้ไขข้อมูล
+                        </button>
+                      </div>
+                      <button
+                        onClick={() =>
+                          handleDeleteProduct(customer._id, customer.fullname)
+                        }
+                        className="bg-red-300 mt-3 py-2 px-auto w-[80px] rounded-full shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-xs md:text-md lg:text-md xl:text-md text-white"
+                      >
+                        ลบข้อมูล
+                      </button>
+                    </div>
+                  </div>
+                </div>{" "}
+                <hr className="w-full mt-4 mb-2 border-gray-300" />
+              </>
             ))
           : searchTerm && (
               <>
@@ -147,7 +236,6 @@ function HistoryQuotation() {
                 <hr className="w-full mt-4 mb-2 border-gray-300" />
               </>
             )}
-
         {data.map((customer) => (
           <div key={customer._id} className="flex justify-center">
             <div className="flex justify-between w-[97%] sm:w-[97%] md:w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
@@ -169,14 +257,14 @@ function HistoryQuotation() {
                   วันที่ส่งมอบ : {customer.deliveryDate}
                 </p>
 
-
                 <p className="mt-2 text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
                   รายการทั้งหมด : {customer.rows.length}
                 </p>
 
                 <p className="mt-2 text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
                   ราคารวม : {numberWithCommas(customer.totalPrice)} บาท
-                </p><button
+                </p>
+                <button
                   onClick={() => handdleOrderdetail(customer._id)}
                   className=" hover:text-brown-500 mx-2 py-2 px-auto  hover:text-shadow-xl text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-2 mr-4"
                 >
@@ -185,13 +273,22 @@ function HistoryQuotation() {
                 </button>
               </div>
               <div>
-                
                 <div>
-                  <button  onClick={() => handleEditProduct(customer._id, customer.fullname)} className=" bg-blue-200 py-2 px-auto w-[80px] rounded-full shadow-xl hover:bg-blue-400 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-xs md:text-md lg:text-md xl:text-md  text-white ">
+                  <button
+                    onClick={() =>
+                      handleEditProduct(customer._id, customer.fullname)
+                    }
+                    className=" bg-blue-200 py-2 px-auto w-[80px] rounded-full shadow-xl hover:bg-blue-400 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-xs md:text-md lg:text-md xl:text-md  text-white "
+                  >
                     แก้ไขข้อมูล
                   </button>
                 </div>
-                <button onClick={() => handleDeleteProduct(customer._id, customer.fullname)} className="bg-red-300 mt-3 py-2 px-auto w-[80px] rounded-full shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-xs md:text-md lg:text-md xl:text-md text-white">
+                <button
+                  onClick={() =>
+                    handleDeleteProduct(customer._id, customer.fullname)
+                  }
+                  className="bg-red-300 mt-3 py-2 px-auto w-[80px] rounded-full shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-xs md:text-md lg:text-md xl:text-md text-white"
+                >
                   ลบข้อมูล
                 </button>
               </div>

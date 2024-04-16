@@ -60,16 +60,39 @@ function QuatationPage() {
 
   const [data, setData] = useState([]);
   const { fullname, subject, address, count, product } = state;
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.5)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
 
   const [types, setTypes] = useState([]);
 
   useEffect(() => {
     const fetch = async () => {
+      setIsLoading(true);
       try {
         const type = await typeAPI.getAllTypes();
         setTypes(type);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching all brands:", error);
+        setIsLoading(false);
       }
     };
     fetch();
@@ -179,6 +202,7 @@ function QuatationPage() {
   };
 
   const handleWidthChange = (index, value) => {
+    
     const updatedRows = [...rows]; // สร้างคัดลอกของ rows
     updatedRows[index].width = value; // อัปเดตค่า width ใน index ที่กำหนด
     setRows(updatedRows); // อัปเดต state ของ rows
@@ -517,6 +541,7 @@ function QuatationPage() {
                                 name={`width-${index}`}
                                 value={row.width}
                                 onChange={(e) =>
+                                  
                                   handleWidthChange(index, e.target.value)
                                 }
                               />

@@ -19,7 +19,7 @@ const TABLE_HEAD = [
   "จำนวน",
   "ราคาต่อหน่วย",
   "ความกว้างหน้าผ้า",
-  "รวม",
+  "รวม"
 ];
 const classes = "p-4 border-b border-blue-gray-50 text-gray-500";
 
@@ -36,8 +36,8 @@ function ReceptInvoiceUpdate() {
       unitprice: 0,
       p_width: 0,
       railprice: 0,
-      total_m: 0,
-    },
+      total_m: 0
+    }
   ]);
 
   // คำนวณ totalPrice
@@ -50,7 +50,7 @@ function ReceptInvoiceUpdate() {
     fullname: "",
     subject: "",
     address: "",
-    totalPrice: 0,
+    totalPrice: 0
   });
 
   const [mydata, setMydata] = useState({});
@@ -58,7 +58,26 @@ function ReceptInvoiceUpdate() {
   const [allOptions, setAllOptions] = useState([]);
   const [filteredOptions, setFilteredOptions] = useState([]);
   const { fullname, subject, address, count, product } = state;
+  const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.5)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
   const inputValue = (name) => (event) => {
     const value = event.target.value;
     console.log(name, "=", value);
@@ -75,7 +94,7 @@ function ReceptInvoiceUpdate() {
       unitprice: 0,
       p_width: 0,
       railprice: 0,
-      total_m: 0,
+      total_m: 0
     };
     setRows([...rows, newRow]);
   };
@@ -88,39 +107,48 @@ function ReceptInvoiceUpdate() {
 
   useEffect(() => {
     const fetchData = () => {
+      setIsLoading(true);
       productAPI
         .getAllProducts()
         .then((products) => {
           setData(products);
+          setIsLoading(false);
         })
         .catch((err) => {
           console.error("error", err);
+          setIsLoading(false);
         });
     };
     fetchData();
   }, []);
 
   useEffect(() => {
+    setIsLoading(true);
     receptAPI
       .getReceptById(id)
       .then((data) => {
         setMydata(data);
+        setIsLoading(false);
       })
       .catch((err) => {
         console.error("error", err);
+        setIsLoading(false);
       });
-  }, []);
+  }, [id]);
+
 
   useEffect(() => {
+    setIsLoading(true);
     if (mydata) {
       setState({
         fullname: mydata.fullname || "",
         subject: mydata.subject || "",
         address: mydata.address || "",
-        totalPrice: mydata.totalPrice || 0,
+        totalPrice: mydata.totalPrice || 0
       });
       setRows(mydata.rows || []);
       setDeliveryDate(mydata.deliveryDate ? moment(mydata.deliveryDate) : null);
+      setIsLoading(false);
     }
   }, [mydata]);
 
@@ -208,18 +236,18 @@ function ReceptInvoiceUpdate() {
     if (!fullname) {
       Swal.fire({
         icon: "error",
-        text: "กรุณากรอก ชื่อ-นามสกุล",
+        text: "กรุณากรอก ชื่อ-นามสกุล"
       });
       return;
     } else if (!subject) {
       Swal.fire({
         icon: "error",
-        text: "กรุณาระบุเรื่องที่จะแจ้ง",
+        text: "กรุณาระบุเรื่องที่จะแจ้ง"
       });
     } else if (!address) {
       Swal.fire({
         icon: "error",
-        text: "กรุณาระบุที่อยู่",
+        text: "กรุณาระบุที่อยู่"
       });
       return;
     } else if (!deliveryDate) {
@@ -236,21 +264,21 @@ function ReceptInvoiceUpdate() {
       address,
       rows,
       deliveryDate: deliveryDate ? deliveryDate.format("YYYY-MM-DD") : null,
-      totalPrice: totalPrice.toFixed(2),
+      totalPrice: totalPrice.toFixed(2)
     };
     console.log(formData);
     receptAPI
-      .updateRecept(id,formData)
+      .updateRecept(id, formData)
       .then((response) => {
         Swal.fire({
           text: "save",
-          icon: "success",
+          icon: "success"
         });
       })
       .catch((err) => {
         Swal.fire({
           icon: "error",
-          text: err.response.data.error,
+          text: err.response.data.error
         });
       });
   };

@@ -26,6 +26,7 @@ function ServicePage() {
   const [userData, setUserData] = useState(null);
   const [userName, setUserName] = React.useState("");
   const [idUser, setIdUser] = React.useState("");
+  
   useEffect(() => {
     const authToken = localStorage.getItem("token");
 

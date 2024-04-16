@@ -57,6 +57,7 @@ function UpdateProductPage() {
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         const res = await axios.get(
           `${process.env.REACT_APP_API}/product/${productId}`
@@ -85,6 +86,7 @@ function UpdateProductPage() {
         console.log("Product Data:", data);
       } catch (error) {
         console.error(error);
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -92,14 +94,15 @@ function UpdateProductPage() {
 
   useEffect(() => {
     const fetchBrands = async () => {
+      setIsLoading(true);
       try {
-        setIsLoading(true);
         const brandOptions = await categoryAPI.getAllBrands();
         console.log("brandoption", brandOptions);
         setBrandOptions(brandOptions);
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching all brands:", error);
+        setIsLoading(false);
       }
     };
 
@@ -121,6 +124,7 @@ function UpdateProductPage() {
       })
       .catch((error) => {
         console.error("Error fetching p_type options:", error);
+        setIsLoading(false);
       });
   };
 
@@ -135,14 +139,13 @@ function UpdateProductPage() {
       setData((prevState) => ({
         ...prevState,
         brand: selectedBrand.brand,
-        // slug: selectedBrand.slug,
-        // brand: selectedBrand ? selectedBrand.brand : "", // Use selected brand's name if available, otherwise set to empty string
         p_type: "", // Reset p_type when brand changes
       }));
       console.log("selectslug", selectedBrand.slug);
       fetchPTypeOptions(selectedBrandSlug);
     }
   };
+
   const inputValue = (name) => (event) => {
     const value = event.target.value;
     console.log(name, "=", value);
@@ -383,7 +386,7 @@ function UpdateProductPage() {
 
           <div class="input-group  shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2">
             <textarea
-              class="appearance-none border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="appearance-none h-[250px] border-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="p_detail"
               value={data.detail}
               onChange={inputValue("detail")}

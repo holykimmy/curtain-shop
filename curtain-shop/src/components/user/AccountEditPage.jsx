@@ -15,7 +15,26 @@ function EditAccoutPage() {
   const [userData, setUserData] = useState(null);
   const [userName, setUserName] = React.useState("");
   const [idUser, setIdUser] = React.useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.7)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
   const [user, setUser] = React.useState({
     username: "",
     f_name: "",
@@ -104,11 +123,14 @@ function EditAccoutPage() {
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true); 
       try {
         const data = await customerAPI.getCustomerById(idUser);
         setData(data);
+        setIsLoading(false); 
       } catch (err) {
         console.error("erro", err);
+        setIsLoading(false); 
       }
     };
     fetchData();
