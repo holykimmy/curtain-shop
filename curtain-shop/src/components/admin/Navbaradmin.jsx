@@ -179,7 +179,7 @@ function ComplexNavbar() {
                   href={to}
                   variant="small"
                   color="white"
-                  className="font-Kanit text-sm md:text-base  hover:bg-brown-bg px-2 py-1 hover:rounded-full hover:text-brown-400"
+                  className="font-Kanit text-xs md:text-sm  hover:bg-brown-bg px-2 py-1 hover:rounded-full hover:text-brown-400"
                 >
                   {label}
                 </Typography>
