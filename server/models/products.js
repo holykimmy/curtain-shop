@@ -1,5 +1,14 @@
 const mongoose = require("mongoose");
-const moment = require("moment");
+const dayjs = require("dayjs");
+const localizedFormat = require("dayjs/plugin/localizedFormat");
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
+const thLocale = require('dayjs/locale/th');
+
+dayjs.extend(localizedFormat);
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.locale(thLocale);
 
 const ProdusctSchema = mongoose.Schema(
   {
@@ -55,19 +64,14 @@ const ProdusctSchema = mongoose.Schema(
     },
     createdAt: {
       type: String,
-      default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss")
+      default: dayjs().tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss')
     },
     updatedAt: {
       type: String,
-      default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss")
+      default: dayjs().tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss')
     }
   },
   { timestamps: true }
 );
-ProdusctSchema.pre('save', function(next) {
-  if (!this.createdAt) {
-    this.createdAt = moment().locale('th').format('YYYY-MM-DD HH:mm:ss');
-  }
-  next();
-});
+
 module.exports = mongoose.model("Products", ProdusctSchema);

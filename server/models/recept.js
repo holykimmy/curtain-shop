@@ -1,10 +1,20 @@
 const mongoose = require("mongoose");
-const moment = require("moment");
+const dayjs = require("dayjs");
+const localizedFormat = require("dayjs/plugin/localizedFormat");
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
+const thLocale = require('dayjs/locale/th');
+
+dayjs.extend(localizedFormat);
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.locale(thLocale);
 
 const ReceptSchema = new mongoose.Schema(
   {
     fullname: String,
     subject: String,
+    detail:String,
     address: String,
     rows: [
       {
@@ -23,7 +33,7 @@ const ReceptSchema = new mongoose.Schema(
     ],
     deliveryDate: {
       type: String,
-      default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss")
+      default: dayjs().locale("th").format("YYYY-MM-DD")
     },
 
     totalPrice: Number,
@@ -37,17 +47,11 @@ const ReceptSchema = new mongoose.Schema(
     },
     createdAt: {
       type: String,
-      default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss")
+      default: dayjs().locale("th").format("YYYY-MM-DD")
     }
   },
   { timestamps: true }
 );
 
-ReceptSchema.pre("save", function (next) {
-  if (!this.createdAt) {
-    this.createdAt = moment().locale("th").format("YYYY-MM-DD HH:mm:ss");
-  }
-  next();
-});
 
 module.exports = mongoose.model("Recepts", ReceptSchema);

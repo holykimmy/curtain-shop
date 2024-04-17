@@ -6,7 +6,16 @@ const { v4: uuidv4 } = require("uuid");
 const { S3 } = require("@aws-sdk/client-s3");
 const AWS = require('aws-sdk'); 
 const multerS3 = require('multer-s3');
-const moment = require("moment");
+const dayjs = require("dayjs");
+const localizedFormat = require("dayjs/plugin/localizedFormat");
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
+const thLocale = require('dayjs/locale/th');
+
+dayjs.extend(localizedFormat);
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.locale(thLocale);
 
 // // Configure AWS SDK
 const s3 = new S3 ({
@@ -28,7 +37,7 @@ const uploadSlip = multer({ storage: multerS3 ({
     cb(null,{fieldName: file.fieldName});
   },
   key : function(req,file,cb){
-    const currentDate = moment().format("YYYY-MM-DD-HH-mm-ss"); // วันที่ปัจจุบัน
+    const currentDate = dayjs().format("YYYY-MM-DD-HH-mm-ss"); // วันที่ปัจจุบัน
     const originalFileName = path.parse(file.originalname).name; // ดึงชื่อไฟล์เดิม (ไม่รวมนามสกุล)
     const extension = path.extname(file.originalname); // ดึงนามสกุลของไฟล์
 

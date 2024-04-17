@@ -6,7 +6,16 @@ const { v4: uuidv4 } = require("uuid");
 const { S3 } = require("@aws-sdk/client-s3");
 const AWS = require("aws-sdk");
 const multerS3 = require("multer-s3");
-const moment = require("moment");
+const dayjs = require("dayjs");
+const localizedFormat = require("dayjs/plugin/localizedFormat");
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
+const thLocale = require('dayjs/locale/th');
+
+dayjs.extend(localizedFormat);
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.locale(thLocale);
 const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
@@ -38,7 +47,7 @@ const storage = new CloudinaryStorage({
       fileSize: 1024 * 1024 * 5 // ขนาดไฟล์ไม่เกิน 5 MB
     },
     key: (req, file, cb) => {
-      const currentDate = moment().format("YYYY-MM-DD-HH-mm-ss"); // วันที่ปัจจุบัน
+      const currentDate = dayjs().format("YYYY-MM-DD-HH-mm-ss"); // วันที่ปัจจุบัน
       const originalFileName = path.parse(file.originalname).name; // ดึงชื่อไฟล์เดิม (ไม่รวมนามสกุล)
       const extension = path.extname(file.originalname); // ดึงนามสกุลของไฟล์
   

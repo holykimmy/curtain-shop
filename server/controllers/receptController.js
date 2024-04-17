@@ -8,59 +8,19 @@ const path = require("path");
 const slugifyMultilingual = (text) =>
   slugify(text, { lower: true, locale: "th" });
 
+
 exports.createQuotation = (req, res) => {
-    const data = req.body;
-    console.log(data);
-  
-    Recept.findOne({
-      fullname: data.fullname,
-      subject: data.subject,
-      address: data.address,
-      deliveryDate: data.deliveryDate,
-      quotation: true,
-    })
-      .exec()
-      .then((existingRecept) => {
-        if (existingRecept) {
-          return res.status(400).json({ error: "ข้อมูลที่ต้องการบันทึกมีอยู่แล้ว" });
-        } else {
-          // แปลง counts และ total_m เป็นตัวเลข
-          data.rows.forEach((row) => {
-            row.counts = parseInt(row.counts);
-            row.total_m = parseFloat(row.total_m);
-          });
-  
-          return Recept.create({
-            fullname: data.fullname,
-            subject: data.subject,
-            address: data.address,
-            rows: data.rows,
-            deliveryDate: data.deliveryDate,
-            totalPrice: parseFloat(data.totalPrice), // แปลง totalPrice เป็นตัวเลข
-            quotation: true,
-          });
-        }
-      })
-      .then((createdRecept) => {
-        res.json(createdRecept);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).json({ error: "เกิดข้อผิดพลาดบนเซิร์ฟเวอร์" });
-      });
-  };
-  
-
-
-  exports.createQuotation2 = (req, res) => {
   const data = req.body;
   console.log(data);
+  console.log(data.detail);
+
   Recept.findOne({
     fullname: data.fullname,
     subject: data.subject,
+    detail:data.detail,
     address: data.address,
     deliveryDate: data.deliveryDate,
-    quotation: true,
+    quotation: true
   })
     .exec()
     .then((existingRecept) => {
@@ -69,37 +29,46 @@ exports.createQuotation = (req, res) => {
           .status(400)
           .json({ error: "ข้อมูลที่ต้องการบันทึกมีอยู่แล้ว" });
       } else {
+        // แปลง counts และ total_m เป็นตัวเลข
+        data.rows.forEach((row) => {
+          row.counts = parseInt(row.counts);
+          row.total_m = parseFloat(row.total_m);
+        });
+
         return Recept.create({
           fullname: data.fullname,
           subject: data.subject,
+          detail:data.detail,
           address: data.address,
           rows: data.rows,
           deliveryDate: data.deliveryDate,
-          totalPrice: data.totalPrice,
-          quotation: true,
+          totalPrice: parseFloat(data.totalPrice), // แปลง totalPrice เป็นตัวเลข
+          quotation: true
         });
       }
     })
-    .then((data) => {
-      res.json(data);
+    .then((createdRecept) => {
+      res.json(createdRecept);
     })
     .catch((err) => {
-      console.log(err);
-      res.status(500).json({ error: "server error" });
+      console.error(err);
+      res.status(500).json({ error: "เกิดข้อผิดพลาดบนเซิร์ฟเวอร์" });
     });
 };
+
 
 exports.createInvoice = (req, res) => {
   const data = req.body;
   console.log(data);
+  
 
   Recept.findOne({
     fullname: data.fullname,
     subject: data.subject,
+    detail:data.detail,
     address: data.address,
     deliveryDate: data.deliveryDate,
-
-    invoice: true,
+    invoice: true
   })
     .exec()
     .then((existingRecept) => {
@@ -111,12 +80,12 @@ exports.createInvoice = (req, res) => {
         return Recept.create({
           fullname: data.fullname,
           subject: data.subject,
+          detail:data.detail,
           address: data.address,
           rows: data.rows,
           deliveryDate: data.deliveryDate,
           totalPrice: data.totalPrice,
-
-          invoice: true,
+          invoice: true
         });
       }
     })
@@ -132,7 +101,8 @@ exports.createInvoice = (req, res) => {
 exports.updateRecept = (req, res) => {
   const { id } = req.params;
   const newData = req.body;
-
+  console.log(newData);
+  
   Recept.findByIdAndUpdate(id, newData, { new: true })
     .exec()
     .then((updatedRecept) => {
@@ -184,7 +154,6 @@ exports.updateToQuotation = (req, res) => {
       res.status(500).json({ error: "server error" });
     });
 };
-
 
 exports.deleteRecept = (req, res) => {
   const { id } = req.params;
@@ -241,11 +210,10 @@ exports.getReceptById = (req, res) => {
     });
 };
 
-
 exports.searchRecept = (req, res) => {
   const { name } = req.query;
   const regex = new RegExp(name, "i");
-  Recept.find({ $or: [{ fullname: regex } ,{subject:regex}] })
+  Recept.find({ $or: [{ fullname: regex }, { subject: regex }] })
     .exec()
     .then((recepts) => {
       res.json(recepts);

@@ -4,7 +4,6 @@ const path = require("path");
 const slugify = require("slugify");
 // const AWS = require('aws-sdk');
 const { v4: uuidv4 } = require("uuid");
-const moment = require("moment");
 
 
 // Multer storage configuration for show images

@@ -17,7 +17,7 @@ const Joi = require("joi");
 const fs = require("fs");
 const path = require("path");
 const nodemailer = require("nodemailer");
-const moment = require("moment");
+
 
 exports.register = async (req, res) => {
   const { f_name, l_name, username, email, tell, password } = req.body;
@@ -682,7 +682,6 @@ exports.userCart = async (req, res) => {
         .status(400)
         .send({ error: "กรุณาส่ง cart และ idUser ให้ถูกต้อง" });
     }
-
     let user = await User.findById(idUser);
 
     if (!user) {
@@ -1090,7 +1089,9 @@ exports.getOrderApprove = async (req, res) => {
       verifypayment: false,
       pandding: false,
       sendproduct: false,
-      complete: false
+      complete: false,
+     
+      cancelled:false
     })
       .populate([
         {
@@ -1129,7 +1130,9 @@ exports.getOrderPayment = async (req, res) => {
       verifypayment: false,
       pandding: false,
       sendproduct: false,
-      complete: false
+      complete: false,
+     
+      cancelled:false
     })
       .populate([
         {
@@ -1168,7 +1171,9 @@ exports.getOrdertoVeriflyPayment = async (req, res) => {
       verifypayment: false,
       pandding: false,
       sendproduct: false,
-      complete: false
+      complete: false,
+    
+      cancelled:false
     })
       .populate([
         {
@@ -1322,7 +1327,9 @@ exports.searchOrderApprove = async (req, res) => {
       verifypayment: false,
       pandding: false,
       sendproduct: false,
-      complete: false
+      complete: false,
+     
+      cancelled:false
     })
       .populate([
         {
@@ -1371,7 +1378,9 @@ exports.searchOrderPayment = async (req, res) => {
       verifypayment: false,
       pandding: false,
       sendproduct: false,
-      complete: false
+      complete: false,
+     
+      cancelled:false
     })
       .populate([
         {
@@ -1524,6 +1533,9 @@ exports.searchOrderComplete = async (req, res) => {
       verifypayment: true,
       pandding: true,
       sendproduct: true
+      ,
+     
+      cancelled:false
     })
       .populate([
         {

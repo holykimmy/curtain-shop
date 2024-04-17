@@ -4,7 +4,16 @@ const jwt = require("jsonwebtoken");
 const { body, validationResult } = require("express-validator");
 const Joi = require("joi");
 const passwordComplexity = require("joi-password-complexity");
-const moment = require("moment");
+const dayjs = require("dayjs");
+const localizedFormat = require("dayjs/plugin/localizedFormat");
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
+const thLocale = require('dayjs/locale/th');
+
+dayjs.extend(localizedFormat);
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.locale(thLocale);
 
 const customerSchema = mongoose.Schema(
   {
@@ -48,23 +57,17 @@ const customerSchema = mongoose.Schema(
     },
     createdAt: {
       type: String,
-      default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss")
+      default: dayjs().tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss')
     },
     updatedAt: {
       type: String,
-      default: moment().locale("th").format("YYYY-MM-DD HH:mm:ss")
+      default: dayjs().tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss')
     }
  
   },
   { timestamps: true }
 );
 
-customerSchema.pre('save', function(next) {
-  if (!this.createdAt) {
-    this.createdAt = moment().locale('th').format('YYYY-MM-DD HH:mm:ss');
-  }
-  next();
-});
 // Hashing password before saving
 
 const User = mongoose.model("Customers", customerSchema);
