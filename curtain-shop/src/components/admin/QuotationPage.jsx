@@ -583,6 +583,7 @@ function QuatationPage() {
                                 type="number"
                                 id={`width-${index}`}
                                 name={`width-${index}`}
+                                min="100"
                                 value={row.width}
                                 onChange={(e) =>
                                   handleWidthChange(index, e.target.value)
@@ -594,6 +595,7 @@ function QuatationPage() {
                                 id={`height-${index}`}
                                 name={`height-${index}`}
                                 value={row.height}
+                                min="150"
                                 onChange={(e) =>
                                   handleHeightChange(index, e.target.value)
                                 }
@@ -610,6 +612,7 @@ function QuatationPage() {
                                 id={`counts-${index}`}
                                 name={`counts-${index}`}
                                 value={row.counts}
+                                min="1"
                                 onChange={(e) =>
                                   handleCountChange(index, e.target.value)
                                 }

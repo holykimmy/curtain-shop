@@ -577,6 +577,7 @@ function ReceptQuationUpdate() {
                                 id={`width-${index}`}
                                 name={`width-${index}`}
                                 value={row.width}
+                                min="100"
                                 onChange={(e) =>
                                   handleWidthChange(index, e.target.value)
                                 }
@@ -586,6 +587,7 @@ function ReceptQuationUpdate() {
                                 type="number"
                                 id={`height-${index}`}
                                 name={`height-${index}`}
+                                min="150"
                                 value={row.height}
                                 onChange={(e) =>
                                   handleHeightChange(index, e.target.value)
@@ -602,6 +604,7 @@ function ReceptQuationUpdate() {
                                 type="number"
                                 id={`counts-${index}`}
                                 name={`counts-${index}`}
+                                min="1"
                                 value={row.counts}
                                 onChange={(e) =>
                                   handleCountChange(index, e.target.value)
