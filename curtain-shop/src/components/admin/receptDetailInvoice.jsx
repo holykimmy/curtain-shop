@@ -9,12 +9,11 @@ import { DatePicker, Space } from "antd";
 import productAPI from "../../services/productAPI";
 import receptAPI from "../../services/receptAPI";
 import Swal from "sweetalert2";
-import { Link, useParams, useLocation,useNavigate} from "react-router-dom";
+import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 // import PDFQuotation from "./PDFQuotation"; // Import PDFDocument component
 import jsPDF from "jspdf";
 
 import "jspdf-autotable";
-
 
 import { font } from "../../font/THSarabun.js";
 
@@ -38,7 +37,7 @@ const TABLE_HEAD = [
   "ความกว้างหน้าผ้า",
   "ราคา/หลา",
   "จำนวน",
-  "รวม",
+  "รวม"
 ];
 
 function ReceptInvoiceDetail() {
@@ -95,13 +94,13 @@ function ReceptInvoiceDetail() {
     // doc.addFont("THSarabun.ttf", "THSarabun", "normal");
     // doc.setFont("THSarabun");
 
-    const thaiDateAt = dayjs(data.createdAt).locale('th').format('LL');
+    const thaiDateAt = dayjs(data.createdAt).locale("th").format("LL");
 
     const thaiFont = "THSarabun";
     doc.addFileToVFS("THSarabun.ttf", font);
     doc.addFont("THSarabun.ttf", thaiFont, "normal");
     doc.setFont(thaiFont);
-   
+
     // ข้อมูลลูกค้า
     doc.setFontSize(16);
     doc.text("นางเบ็ญจา ฤทธี", 15, 15);
@@ -113,8 +112,7 @@ function ReceptInvoiceDetail() {
     doc.setFontSize(14);
     doc.text(`เรียน ${data.fullname}`, 15, 46);
     doc.text(`       ${data.detail} \n\nที่อยู่ ${data.address}`, 15, 54);
-    // doc.text(`ที่อยู่ ${data.address}`, 15, 62); 
-    
+    // doc.text(`ที่อยู่ ${data.address}`, 15, 62);
 
     // คำนวณความกว้างของข้อความ "ร้านเจริญกิจผ้าม่าน"
     const textWidth4 = doc.getTextWidth("ใบแจ้งหนี้");
@@ -186,7 +184,7 @@ function ReceptInvoiceDetail() {
     doc.setFontSize(12);
     // ราคารวม
     const totalPriceY = doc.autoTable.previous.finalY + 10;
-   
+
     doc.setFontSize(14);
     doc.text(
       `รวมเป็นเงิน ${numberWithCommas(data.totalPrice || 0)} บาท`,
@@ -195,7 +193,7 @@ function ReceptInvoiceDetail() {
         doc.getTextWidth(
           `ราคารวม: ${numberWithCommas(data.totalPrice || 0)} บาท`
         ),
-      totalPriceY-3,
+      totalPriceY - 3,
       {
         align: "right"
       }
@@ -208,8 +206,7 @@ function ReceptInvoiceDetail() {
   const numberWithCommas = (x) => {
     const formattedNumber = parseFloat(x).toFixed(2);
     return formattedNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-};
-
+  };
 
   const handleSwitchtoQuotation = async (id, fullname) => {
     // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
@@ -220,7 +217,7 @@ function ReceptInvoiceDetail() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "ใช่",
-      cancelButtonText: "ยกเลิก",
+      cancelButtonText: "ยกเลิก"
     });
 
     // หากผู้ใช้กดปุ่มยืนยัน
@@ -234,16 +231,13 @@ function ReceptInvoiceDetail() {
 
         await Swal.fire({
           text: "ทำเป็นใบเสนอเรียบร้อยแล้ว",
-          icon: "success",
-        }).then(()=>{
-
-          navigate(`/quotation-detail/${id}`)
-        })
-        
+          icon: "success"
+        }).then(() => {
+          navigate(`/quotation-detail/${id}`);
+        });
       } catch (error) {
         console.error("Error ", error);
         setIsLoading(false);
-
       }
     }
   };
@@ -297,7 +291,10 @@ function ReceptInvoiceDetail() {
                 <tbody>
                   {data.rows &&
                     data.rows.map((row, index) => (
-                      <tr key={index} className="border-b dark:border-neutral-500">
+                      <tr
+                        key={index}
+                        className="border-b dark:border-neutral-500"
+                      >
                         <td className="p-2 border text-center border-blue-gray-50 text-gray-700">
                           <p class="text-gray-700 text-center">{index + 1}</p>
                         </td>
@@ -319,7 +316,7 @@ function ReceptInvoiceDetail() {
                           {row.counts}
                         </td>
                         <td className="p-2 border text-center border-blue-gray-50 text-gray-700">
-                          {numberWithCommas(row.unitprice)}
+                          {numberWithCommas(row.unitprice )}
                         </td>
                         <td className="p-2 border text-center border-blue-gray-50 text-gray-700">
                           {row.p_width}

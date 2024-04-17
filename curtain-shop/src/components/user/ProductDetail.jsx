@@ -216,6 +216,11 @@ function ContactPage() {
     navigate(`/custom-product/${productId}`);
   };
 
+  const numberWithCommas = (x) => {
+    const formattedNumber = parseFloat(x).toFixed(2);
+    return formattedNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
   return (
     <>
       <div className="">
@@ -265,7 +270,7 @@ function ContactPage() {
                     ความกว้างของหน้าผ้า : {data.p_width} ซม.
                   </p>
                   <p className="mt-4 text-xs sm:text-sm md:text-base lg:text-base xl:text-base text-brown-400">
-                    ราคาสินค้า : {data.price} บาท/หลา
+                    ราคาสินค้า : {numberWithCommas(data.price)} บาท/หลา
                   </p>
 
                   <Link

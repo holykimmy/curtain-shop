@@ -406,11 +406,11 @@ function CheckOrdeerPage() {
                           </p>
                           <p class="text-sm md:text-base xl:text-base text-gray-800">
                             {" "}
-                            ขนาด : {numberWithCommas(item.width)} x{" "}
-                            {numberWithCommas(item.height)} เซนติเมตร{" "}
+                            ขนาด : {item.width} x{" "}
+                            {item.height} เซนติเมตร{" "}
                           </p>
                           <p class="text-sm md:text-base xl:text-base text-gray-800">
-                            จำนวน : {numberWithCommas(item.count)} หลา{" "}
+                            จำนวน : {item.count} หลา{" "}
                           </p>
                           <p class="text-sm md:text-base xl:text-base text-gray-800">
                             รวม : {numberWithCommas(item.totalPiece)} บาท{" "}

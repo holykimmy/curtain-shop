@@ -199,6 +199,11 @@ function AddProductPage() {
       });
   };
 
+   const numberWithCommas = (x) => {
+    const formattedNumber = parseFloat(x).toFixed(2);
+    return formattedNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
   return (
     <>
       <Navbaradmin></Navbaradmin>

@@ -270,6 +270,11 @@ function CancelOrder() {
                                   ความกว้างหน้าผ้า : {item.product.p_width} ซม.
                                 </span>
                               </p>
+                              <p className="text-sm leading-none text-gray-800">
+                                <span className="text-gray-600">
+                                  ราคาต่อหลา : {numberWithCommas(item.product.price)} ซม.
+                                </span>
+                              </p>
                             </div>
                           </div>
                           <div className="flex justify-between space-x-8 items-start w-full">

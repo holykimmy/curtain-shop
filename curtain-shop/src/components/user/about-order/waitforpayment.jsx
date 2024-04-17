@@ -160,7 +160,7 @@ const WaitForPayment = ({ idUser }) => {
                         การสั่งตัดผ้าม่าน : {item.type}
                       </p>
                       <p className="text-sm text-gray-600">
-                        ราคา/หลา : {item.product.price} บาท
+                        ราคา/หลา : {numberWithCommas(item.product.price)} บาท
                       </p>
                       <p className="text-sm text-gray-600">
                         ขนาด : {item.width} x {item.height} เซนติเมตร

@@ -407,7 +407,7 @@ function ReceptQuotationDetail() {
                         </td>
 
                         <td className="p-2 border text-center border-blue-gray-50 text-gray-700">
-                          {row.unitprice} บาท
+                          {numberWithCommas(row.unitprice)} บาท
                         </td>
                         <td className="p-2 border text-center border-blue-gray-50 text-gray-700">
                           {row.p_width} ซม.

@@ -84,7 +84,6 @@ const Confirmed = ({ idUser }) => {
       } catch (error) {
         console.error("Error cancelling order:", error);
         setIsLoading(false);
-
       }
     }
   };
@@ -93,13 +92,10 @@ const Confirmed = ({ idUser }) => {
     navigate(`/check-order/${idOrder}`, {});
   };
 
- 
-
   const numberWithCommas = (x) => {
     const formattedNumber = parseFloat(x).toFixed(2);
     return formattedNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-};
-
+  };
 
   return (
     <>
@@ -148,7 +144,7 @@ const Confirmed = ({ idUser }) => {
                         การสั่งตัดผ้าม่าน : {item.type}
                       </p>
                       <p className="text-sm text-gray-600">
-                        ราคา/หลา : {item.product.price} บาท
+                        ราคา/หลา : {numberWithCommas(item.product.price)} บาท
                       </p>
                       <p className="text-sm text-gray-600">
                         ขนาด : {item.width} x {item.height} เซนติเมตร

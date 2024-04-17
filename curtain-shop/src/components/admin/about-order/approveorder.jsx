@@ -107,7 +107,6 @@ const ApproveOrder = ({ idUser }) => {
       } catch (error) {
         console.error("Error cancelling order:", error);
         setIsLoading(false);
-
       }
     }
   };
@@ -132,8 +131,7 @@ const ApproveOrder = ({ idUser }) => {
   const numberWithCommas = (x) => {
     const formattedNumber = parseFloat(x).toFixed(2);
     return formattedNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-};
-
+  };
 
   return (
     <>
@@ -209,7 +207,7 @@ const ApproveOrder = ({ idUser }) => {
                               การสั่งตัดผ้าม่าน : {item.type}
                             </p>
                             <p className="text-sm text-gray-600">
-                              ราคา/หลา : {item.product.price} บาท
+                              ราคา/หลา : {numberWithCommas(item.product.price)} บาท
                             </p>
                             <p className="text-sm text-gray-600">
                               ขนาด : {item.width} x {item.height} เซนติเมตร
@@ -349,7 +347,7 @@ const ApproveOrder = ({ idUser }) => {
                         การสั่งตัดผ้าม่าน : {item.type}
                       </p>
                       <p className="text-sm text-gray-600">
-                        ราคา/หลา : {item.product.price} บาท
+                        ราคา/หลา : {numberWithCommas(item.product.price)} บาท
                       </p>
                       <p className="text-sm text-gray-600">
                         ขนาด : {item.width} x {item.height} เซนติเมตร

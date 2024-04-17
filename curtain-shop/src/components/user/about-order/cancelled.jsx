@@ -36,7 +36,7 @@ const CancelOrder = ({ idUser }) => {
 
   useEffect(() => {
     const fetchData = () => {
-      setIsLoading(true); 
+      setIsLoading(true);
       customerAPI
         .getOrderById(idUser)
         .then((orderData) => {
@@ -44,11 +44,11 @@ const CancelOrder = ({ idUser }) => {
             (order) => order.enable === false || order.cancelled === true
           );
           setUserOrder(cancelOrders);
-          setIsLoading(false); 
+          setIsLoading(false);
         })
         .catch((err) => {
           console.error("error", err);
-          setIsLoading(false); 
+          setIsLoading(false);
         });
     };
     fetchData();
@@ -77,8 +77,7 @@ const CancelOrder = ({ idUser }) => {
   const numberWithCommas = (x) => {
     const formattedNumber = parseFloat(x).toFixed(2);
     return formattedNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-};
-
+  };
 
   return (
     <>
@@ -127,7 +126,7 @@ const CancelOrder = ({ idUser }) => {
                         การสั่งตัดผ้าม่าน : {item.type}
                       </p>
                       <p className="text-sm text-gray-600">
-                        ราคา/หลา : {item.product.price} บาท
+                        ราคา/หลา : {numberWithCommas(item.product.price)} บาท
                       </p>
                       <p className="text-sm text-gray-600">
                         ขนาด : {item.width} x {item.height} เซนติเมตร
@@ -163,10 +162,7 @@ const CancelOrder = ({ idUser }) => {
                 ราคารวม : {numberWithCommas(order.totalPrice)} บาท
               </p>
               <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
-                สถานะ:{" "}
-                {!order.enable
-                  ? "คุณได้ยกเลิกสินค้าแล้ว"
-                  : null}
+                สถานะ: {!order.enable ? "คุณได้ยกเลิกสินค้าแล้ว" : null}
               </p>
 
               <div className="flex justify-between">

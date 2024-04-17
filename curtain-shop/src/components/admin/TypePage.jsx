@@ -70,8 +70,12 @@ function AddTypePage() {
     }
   };
 
-  const numberWithCommas = (x) => {
+  const numberWithComma = (x) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+  const numberWithCommas = (x) => {
+    const formattedNumber = parseFloat(x).toFixed(2);
+    return formattedNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
   const submitForm = (e) => {
@@ -164,7 +168,7 @@ function AddTypePage() {
                      ทำ{item.twolayer}
                   </td>
                   <td className="p-2 pr-5 border text-right border-blue-gray-50 text-gray-700">
-                    {item.price_rail} บาท{" "}
+                    {numberWithCommas(item.price_rail)} บาท{" "}
                   </td>
                   <td className="p-2 border text-center flex justify-center items-center border-blue-gray-50 text-gray-700">
                     <img

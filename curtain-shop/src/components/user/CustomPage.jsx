@@ -626,6 +626,11 @@ function CustomPage() {
   }, [firstdata]);
   // console.log(product);
 
+  const numberWithCommas = (x) => {
+    const formattedNumber = parseFloat(x).toFixed(2);
+    return formattedNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
   return (
     <>
       <Navbar
@@ -706,7 +711,7 @@ function CustomPage() {
               ความกว้างของหน้าผ้า : {data.p_width} เซนติเมตร
             </p>
             <p className="mt-4 text-sm md:text-base lg:text-base xl:text-base text-brown-400">
-              ราคาสินค้า : {data.price} บาท/หลา
+              ราคาสินค้า : {numberWithCommas(data.price)} บาท/หลา
             </p>
           </div>
         </div>
@@ -772,7 +777,7 @@ function CustomPage() {
       <div className="justify-center items-center test-center">
         {" "}
         <p className="mt-4 mb-4 text-base text-center text-brown-400">
-          ราคาสินค้าต่อหลา : {data.price} บาท
+          ราคาสินค้าต่อหลา : {numberWithCommas(data.price)} บาท
         </p>
       </div>
       <p className="mt-4 text-center text-base text-brown-400">

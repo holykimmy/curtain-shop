@@ -180,6 +180,11 @@ function Products() {
     });
   };
 
+  const numberWithCommas = (x) => {
+    const formattedNumber = parseFloat(x).toFixed(2);
+    return formattedNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
   return (
     <>
       <Navbaradmin />
@@ -243,7 +248,7 @@ function Products() {
               </div>
 
               <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                ราคา : {product.price} บาท
+                ราคา : {numberWithCommas(product.price)} บาท
               </p>
               <div className="mt-5"></div>
               <SwitchButton
@@ -314,7 +319,7 @@ function Products() {
               </div>
 
               <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                ราคา : {product.price} บาท
+                ราคา : {numberWithCommas(product.price)} บาท
               </p>
               <div className="mt-5"></div>
               <SwitchButton
@@ -383,7 +388,7 @@ function Products() {
               </div>
 
               <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                ราคา : {product.price} บาท
+                ราคา : {numberWithCommas(product.price)} บาท
               </p>
               <div className="mt-5"></div>
               <SwitchButton
@@ -451,7 +456,7 @@ function Products() {
               </div>
 
               <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                ราคา : {product.price} บาท
+                ราคา : {numberWithCommas(product.price)} บาท
               </p>
               <div className="mt-5"></div>
               <SwitchButton
@@ -520,7 +525,7 @@ function Products() {
               </div>
 
               <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                ราคา : {product.price} บาท
+                ราคา : {numberWithCommas(product.price)} บาท
               </p>
               <div className="mt-5"></div>
               <SwitchButton
@@ -588,7 +593,7 @@ function Products() {
               </div>
 
               <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                ราคา : {product.price} บาท
+                ราคา : {numberWithCommas(product.price)} บาท
               </p>
               <div className="mt-5"></div>
               <SwitchButton
@@ -656,7 +661,7 @@ function Products() {
               </div>
 
               <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                ราคา : {product.price} บาท
+                ราคา : {numberWithCommas(product.price)} บาท
               </p>
               <div className="mt-5"></div>
               <SwitchButton
@@ -724,7 +729,7 @@ function Products() {
               </div>
 
               <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                ราคา : {product.price} บาท
+                ราคา : {numberWithCommas(product.price)} บาท
               </p>
               <div className="mt-5"></div>
               <SwitchButton
@@ -792,7 +797,7 @@ function Products() {
               </div>
 
               <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                ราคา : {product.price} บาท
+                ราคา : {numberWithCommas(product.price)} บาท
               </p>
               <div className="mt-5"></div>
               <SwitchButton

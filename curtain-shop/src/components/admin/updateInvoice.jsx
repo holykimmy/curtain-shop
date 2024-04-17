@@ -617,9 +617,9 @@ function ReceptInvoiceUpdate() {
                             <div className="flex flex-row text-xs md:text-base w-[150px] border-gray-300 p-auto m-auto justify-between">
                               <p className="basis-1/2 rounded w-[75px] py-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                                 {
-                                  data.find(
+                                  numberWithCommas(data.find(
                                     (product) => product.name === row.list
-                                  )?.price
+                                  )?.price)
                                 }
                               </p>
                               <span className="basis-1/2 text-gray-500 items-center m-auto">
