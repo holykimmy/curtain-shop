@@ -5,14 +5,22 @@ import "../../App.css";
 import CreatableSelect from "react-select/creatable";
 import type { DatePickerProps } from "antd";
 import { DatePicker, Space } from "antd";
-import moment from "moment";
 import productAPI from "../../services/productAPI";
 import receptAPI from "../../services/receptAPI";
 import Swal from "sweetalert2";
 import { Link, useParams, useLocation } from "react-router-dom";
 import locale from "antd/lib/date-picker/locale/th_TH";
 import typeAPI from "../../services/typeAPI";
-  
+const dayjs = require("dayjs");
+const localizedFormat = require("dayjs/plugin/localizedFormat");
+const utc = require("dayjs/plugin/utc");
+const timezone = require("dayjs/plugin/timezone");
+const thLocale = require("dayjs/locale/th");
+dayjs.locale("th");
+dayjs.extend(localizedFormat);
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.locale(thLocale);
 const TABLE_HEAD = [
   "ลำดับ",
   "ประเภท",
@@ -53,6 +61,7 @@ function ReceptInvoiceUpdate() {
   const [state, setState] = useState({
     fullname: "",
     subject: "",
+    detail:"",
     address: "",
     totalPrice: 0
   });
@@ -61,7 +70,7 @@ function ReceptInvoiceUpdate() {
   const [data, setData] = useState([]);
   const [allOptions, setAllOptions] = useState([]);
   const [filteredOptions, setFilteredOptions] = useState([]);
-  const { fullname, subject, address, count, product } = state;
+  const { fullname, subject, address, count, product ,detail } = state;
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -164,11 +173,12 @@ function ReceptInvoiceUpdate() {
       setState({
         fullname: mydata.fullname || "",
         subject: mydata.subject || "",
+        detail: mydata.detail || "" ,
         address: mydata.address || "",
         totalPrice: mydata.totalPrice || 0
       });
       setRows(mydata.rows || []);
-      setDeliveryDate(mydata.deliveryDate ? moment(mydata.deliveryDate) : null);
+      setDeliveryDate(mydata.deliveryDate ? dayjs(mydata.deliveryDate) : null);
       setIsLoading(false);
     }
   }, [mydata]);
@@ -311,7 +321,7 @@ function ReceptInvoiceUpdate() {
   };
 
   function disabledDate(current) {
-    return current && current < moment().endOf("day");
+    return current && current < dayjs().endOf("day");
   }
 
   const handleSubmit = async (event) => {
@@ -325,7 +335,12 @@ function ReceptInvoiceUpdate() {
     } else if (!subject) {
       Swal.fire({
         icon: "error",
-        text: "กรุณาระบุเรื่องที่จะเสนอ"
+        text: "กรุณาระบุเรื่อง"
+      });
+    }  else if (!detail) {
+      Swal.fire({
+        icon: "error",
+        text: "กรุณาระบุรายละเอียด"
       });
     } else if (!address) {
       Swal.fire({
@@ -344,6 +359,7 @@ function ReceptInvoiceUpdate() {
     const formData = {
       fullname,
       subject,
+      detail,
       address,
       rows,
       deliveryDate: deliveryDate ? deliveryDate.format("YYYY-MM-DD") : null,
@@ -367,8 +383,10 @@ function ReceptInvoiceUpdate() {
   };
 
   const numberWithCommas = (x) => {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
+    const formattedNumber = parseFloat(x).toFixed(2);
+    return formattedNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
 
   return (
     <>
@@ -382,13 +400,13 @@ function ReceptInvoiceUpdate() {
         </div>
 
         <form onSubmit={handleSubmit} class="mt-8">
-          <label className="ml-7 text-sm md:text-lg text-b-font">
+        <label className="ml-7 text-sm md:text-lg text-b-font">
             เรียนคุณ...
           </label>
           <div>
             {" "}
             <input
-              class="appearance-none ml-5 w-64 border-gray-300 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="appearance-none mx-5 w-full md:w-[80%] border-gray-300 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="fullname"
               type="text"
               value={fullname}
@@ -404,12 +422,27 @@ function ReceptInvoiceUpdate() {
           <div>
             {" "}
             <input
-              class="appearance-none ml-5 w-64 border-gray-300 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="appearance-none mx-5 w-full md:w-[80%] border-gray-300 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="subject"
               type="text"
               value={subject}
               onChange={inputValue("subject")}
               placeholder="ex. การสั่งตัดผ้าม่าน"
+            />
+          </div>
+          <div class="h-5"></div>
+          <label className="ml-7 text-sm md:text-lg text-b-font">
+            รายละเอียด...
+          </label>
+          <div>
+            {" "}
+            <textarea
+              class="appearance-none mx-5 w-full md:w-[80%] border-gray-300 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="detail"
+              type="text"
+              value={detail}
+              onChange={inputValue("detail")}
+              placeholder="ex. การสั่งตัดผ้าม่าน ...."
             />
           </div>
           <div className="w-64 ml-5"></div>
@@ -420,8 +453,8 @@ function ReceptInvoiceUpdate() {
           <div>
             {" "}
             <input
-              class="appearance-none ml-5 w-64 border-gray-300 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="subject"
+              class="appearance-none mx-5 w-full md:w-[80%] border-gray-300 rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="address"
               type="text"
               value={address}
               onChange={inputValue("address")}
@@ -440,6 +473,7 @@ function ReceptInvoiceUpdate() {
                 //   onChange={onChangeDeliveryDate}
                 disabledDate={disabledDate}
                 value={deliveryDate}
+             
                 disabled
               />
             </Space>

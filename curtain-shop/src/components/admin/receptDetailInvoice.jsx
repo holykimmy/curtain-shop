@@ -5,7 +5,7 @@ import "../../App.css";
 import CreatableSelect from "react-select/creatable";
 import type { DatePickerProps } from "antd";
 import { DatePicker, Space } from "antd";
-import moment from "moment";
+
 import productAPI from "../../services/productAPI";
 import receptAPI from "../../services/receptAPI";
 import Swal from "sweetalert2";
@@ -15,7 +15,19 @@ import jsPDF from "jspdf";
 
 import "jspdf-autotable";
 
+
 import { font } from "../../font/THSarabun.js";
+
+const dayjs = require("dayjs");
+const localizedFormat = require("dayjs/plugin/localizedFormat");
+const utc = require("dayjs/plugin/utc");
+const timezone = require("dayjs/plugin/timezone");
+const thLocale = require("dayjs/locale/th");
+dayjs.locale("th");
+dayjs.extend(localizedFormat);
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.locale(thLocale);
 
 const TABLE_HEAD = [
   "ลำดับ",
@@ -83,6 +95,8 @@ function ReceptInvoiceDetail() {
     // doc.addFont("THSarabun.ttf", "THSarabun", "normal");
     // doc.setFont("THSarabun");
 
+    const thaiDateAt = dayjs(data.createdAt).locale('th').format('LL');
+
     const thaiFont = "THSarabun";
     doc.addFileToVFS("THSarabun.ttf", font);
     doc.addFont("THSarabun.ttf", thaiFont, "normal");
@@ -97,8 +111,10 @@ function ReceptInvoiceDetail() {
     doc.text("โทร. 0879700514", 15, 31);
 
     doc.setFontSize(14);
-    doc.text(`เรียน: ${data.fullname}`, 15, 46);
-    doc.text(`ที่อยู่: ${data.address}`, 15, 54); 
+    doc.text(`เรียน ${data.fullname}`, 15, 46);
+    doc.text(`       ${data.detail} \n\nที่อยู่ ${data.address}`, 15, 54);
+    // doc.text(`ที่อยู่ ${data.address}`, 15, 62); 
+    
 
     // คำนวณความกว้างของข้อความ "ร้านเจริญกิจผ้าม่าน"
     const textWidth4 = doc.getTextWidth("ใบแจ้งหนี้");
@@ -120,12 +136,12 @@ function ReceptInvoiceDetail() {
     });
     doc.setFontSize(14);
 
-    doc.text(`วันที่: ${data.createdAt}`, xCoordinateRight, 24, {
+    doc.text(`วันที่ ${thaiDateAt}`, xCoordinateRight, 24, {
       align: "right"
     });
 
     // Table
-    let startY = 60;
+    let startY = 90;
     // Specify Thai font for autoTable
     const tableConfig = {
       startY,
@@ -137,8 +153,8 @@ function ReceptInvoiceDetail() {
         row.detail,
         `${row.width} x ${row.height} ซม.`,
         `${row.p_width} ซม.`,
-        `${row.unitprice} บาท`,
-        `${row.counts} `,
+        `${numberWithCommas(row.unitprice)} บาท`,
+        `${row.counts} ชุด`,
         `${numberWithCommas(row.total_m || 0)} บาท`
       ]),
 
@@ -190,8 +206,10 @@ function ReceptInvoiceDetail() {
   };
 
   const numberWithCommas = (x) => {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
+    const formattedNumber = parseFloat(x).toFixed(2);
+    return formattedNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
 
   const handleSwitchtoQuotation = async (id, fullname) => {
     // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
@@ -239,19 +257,22 @@ function ReceptInvoiceDetail() {
           ใบแจ้งหนี้
         </h5>
       </div>
-      <p className="text-base text-gray-700 mt-[40px] ml-[10px]">
+      <p className="text-base text-gray-700 mt-[40px] ml-[10px] mx-5">
         เรียนคุณ : {data.fullname}
       </p>
-      <p className="text-base text-gray-700 mt-[10px] ml-[10px]">
+      <p className="text-base text-gray-700 mt-[10px] ml-[10px] mx-5">
         เรื่อง : {data.subject}
       </p>
-      <p className="text-base text-gray-700 mt-[10px] ml-[10px]">
+      <p className="text-base text-gray-700 mt-[10px] ml-[10px] whitespace-pre-wrap mx-5">
+        รายละเอียด : {data.detail}
+      </p>
+      <p className="text-base text-gray-700 mt-[10px] ml-[10px] mx-5">
         ที่อยู่ : {data.address}
       </p>
-      <p className="text-base text-gray-700 mt-[10px] ml-[10px]">
+      <p className="text-base text-gray-700 mt-[10px] ml-[10px] mx-5 ">
         วันที่ : {data.createdAt}
       </p>
-      <p className="text-base text-gray-700 mt-[10px] ml-[10px]">
+      <p className="text-base text-gray-700 mt-[10px] ml-[10px] mx-5">
         วันที่ส่งมอบ : {data.deliveryDate}
       </p>
       <div class="flex flex-col overflow-x-auto">
@@ -298,7 +319,7 @@ function ReceptInvoiceDetail() {
                           {row.counts}
                         </td>
                         <td className="p-2 border text-center border-blue-gray-50 text-gray-700">
-                          {row.unitprice}
+                          {numberWithCommas(row.unitprice)}
                         </td>
                         <td className="p-2 border text-center border-blue-gray-50 text-gray-700">
                           {row.p_width}

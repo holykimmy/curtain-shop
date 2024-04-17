@@ -51,47 +51,185 @@ function AboutOrderPage() {
       Swal.close();
     }
   }, [isLoading]);
+  console.table(orderConfirmed);
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true);
-      let allDataFetched = false;
-  
       try {
+        setIsLoading(true);
+
         const allUnConfirmed = await customerAPI.getOrderById(idUser);
         const confirmedOrders = allUnConfirmed.filter(
           (order) => order.confirmed === false
         );
         setOrderConfirmed(confirmedOrders);
+
+        // const waitPaymentData = await customerAPI.getOrderByIdWaitPayment(
+        //   idUser
+        // );
+        // setOrderWaitPayment(waitPaymentData);
+        // const prepareData = await customerAPI.getOrderByIdPrepare(idUser);
+        // setOrderPrepare(prepareData);
+        // const sendData = await customerAPI.getOrderByIdSend(idUser);
+        // setOrderRecive(sendData);
+        // const completeData = await customerAPI.getOrderByIdComplete(idUser);
+        // setOrderComplete(completeData);
+
+        // const allOrderData = await customerAPI.getOrderById(idUser);
+        // console.log(allOrderData);
+        // const cancelOrders = allOrderData.filter(
+        //   (order) => order.enable === false || order.cancelled === true
+        // );
+        // setOrderCancelled(cancelOrders);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [idUser]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+
+        
         const waitPaymentData = await customerAPI.getOrderByIdWaitPayment(
           idUser
         );
         setOrderWaitPayment(waitPaymentData);
+        // const prepareData = await customerAPI.getOrderByIdPrepare(idUser);
+        // setOrderPrepare(prepareData);
+        // const sendData = await customerAPI.getOrderByIdSend(idUser);
+        // setOrderRecive(sendData);
+        // const completeData = await customerAPI.getOrderByIdComplete(idUser);
+        // setOrderComplete(completeData);
+
+        // const allOrderData = await customerAPI.getOrderById(idUser);
+        // console.log(allOrderData);
+        // const cancelOrders = allOrderData.filter(
+        //   (order) => order.enable === false || order.cancelled === true
+        // );
+        // setOrderCancelled(cancelOrders);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [idUser]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+
+        
         const prepareData = await customerAPI.getOrderByIdPrepare(idUser);
         setOrderPrepare(prepareData);
+        // const sendData = await customerAPI.getOrderByIdSend(idUser);
+        // setOrderRecive(sendData);
+        // const completeData = await customerAPI.getOrderByIdComplete(idUser);
+        // setOrderComplete(completeData);
+
+        // const allOrderData = await customerAPI.getOrderById(idUser);
+        // console.log(allOrderData);
+        // const cancelOrders = allOrderData.filter(
+        //   (order) => order.enable === false || order.cancelled === true
+        // );
+        // setOrderCancelled(cancelOrders);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [idUser]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+
+        
+        
         const sendData = await customerAPI.getOrderByIdSend(idUser);
         setOrderRecive(sendData);
+        // const completeData = await customerAPI.getOrderByIdComplete(idUser);
+        // setOrderComplete(completeData);
+
+        // const allOrderData = await customerAPI.getOrderById(idUser);
+        // console.log(allOrderData);
+        // const cancelOrders = allOrderData.filter(
+        //   (order) => order.enable === false || order.cancelled === true
+        // );
+        // setOrderCancelled(cancelOrders);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [idUser]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+
+        
+        
         const completeData = await customerAPI.getOrderByIdComplete(idUser);
         setOrderComplete(completeData);
+
+        // const allOrderData = await customerAPI.getOrderById(idUser);
+        // console.log(allOrderData);
+        // const cancelOrders = allOrderData.filter(
+        //   (order) => order.enable === false || order.cancelled === true
+        // );
+        // setOrderCancelled(cancelOrders);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [idUser]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+
+        
+        
+
         const allOrderData = await customerAPI.getOrderById(idUser);
+        console.log(allOrderData);
         const cancelOrders = allOrderData.filter(
           (order) => order.enable === false || order.cancelled === true
         );
         setOrderCancelled(cancelOrders);
-  
-        allDataFetched = true;
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
-      }
-  
-      if (allDataFetched) {
-        setIsLoading(false); 
+        setIsLoading(false);
       }
     };
-  
+
     fetchData();
   }, [idUser]);
-  
 
   console.log(orderRecive);
   console.table(orderCancelled);

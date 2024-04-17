@@ -11,28 +11,11 @@ const ProductInCart = ({ item, idUser }) => {
   const [updatedItem, setUpdatedItem] = useState(item);
   const [cart, setCart] = useState([]);
   const [] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (isLoading) {
-      Swal.fire({
-        customClass: {
-          popup: "bg-transparent"
-        },
-        backdrop: "rgba(255, 255, 255, 0.7)",
-        showConfirmButton: false,
-        didOpen: () => {
-          Swal.showLoading();
-        },
-        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
-        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
-      });
-    } else {
-      Swal.close();
-    }
-  }, [isLoading]);
+
+
   console.log("testtt");
   console.log(item);
 
@@ -218,8 +201,11 @@ const ProductInCart = ({ item, idUser }) => {
       // เพิ่มการตรวจสอบค่า null หรือ undefined
       return ""; // หรือค่าที่คุณต้องการให้ส่งออก
     }
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    const formattedNumber = parseFloat(x).toFixed(2);
+    return formattedNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
+
+  
   
 
   return (

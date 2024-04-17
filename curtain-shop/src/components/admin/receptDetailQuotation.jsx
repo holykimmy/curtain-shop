@@ -10,12 +10,20 @@ import productAPI from "../../services/productAPI";
 import receptAPI from "../../services/receptAPI";
 import Swal from "sweetalert2";
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
-// import PDFQuotation from "./PDFQuotation"; // Import PDFDocument component
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-
 // ดาวน์โหลดฟอนต์ภาษาไทย หรือใช้ฟอนต์ที่มีอยู่ในโปรเจคของคุณ
 import { font } from "../../font/THSarabun.js";
+const dayjs = require("dayjs");
+const localizedFormat = require("dayjs/plugin/localizedFormat");
+const utc = require("dayjs/plugin/utc");
+const timezone = require("dayjs/plugin/timezone");
+const thLocale = require("dayjs/locale/th");
+dayjs.locale("th");
+dayjs.extend(localizedFormat);
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.locale(thLocale);
 
 const TABLE_HEAD = [
   "ลำดับ",
@@ -74,6 +82,11 @@ function ReceptQuotationDetail() {
       console.error("Data or rows are undefined");
       return;
     }
+    
+    
+    console.log(data.createdAt);
+    const thaiDateAt = dayjs(data.createdAt).format('D MMMM YYYY');
+    const thaiDateSend = dayjs(data.deliveryDate).format('D MMMM YYYY');
 
     const doc = new jsPDF();
 
@@ -128,10 +141,9 @@ function ReceptQuotationDetail() {
     // ข้อมูลลูกค้า
     doc.setFontSize(14);
     doc.text(`เรียน: ${data.fullname}`, 15, 38);
-    doc.text(`เรื่อง: ${data.subject}`, 15, 46);
-    doc.text(`ที่อยู่: ${data.address}`, 15, 54);
+    doc.text(`       ${data.detail} \n\nที่อยู่ ${data.address}`, 15, 46);
     // doc.text(`วันที่: ${data.createdAt}`, 50, 38);
-    doc.text(`วันที่: ${data.createdAt}`, 100, 38);
+    doc.text(`วันที่ ${thaiDateAt}`, 100, 38);
 
     // คำนวณความกว้างของข้อความ "ร้านเจริญกิจผ้าม่าน"
     const textWidth4 = doc.getTextWidth("ร้านเจริญกิจผ้าม่าน");
@@ -158,7 +170,7 @@ function ReceptQuotationDetail() {
     });
 
     // Table
-    let startY = 60;
+    let startY = 90 ;
     // Specify Thai font for autoTable
     const tableConfig = {
       startY,
@@ -259,7 +271,7 @@ function ReceptQuotationDetail() {
       { align: "center" }
     );
     doc.text(
-      `วันที่ ${data.deliveryDate}`,
+      `วันที่ ${thaiDateSend}`,
       secondBoxX + boxWidth / 2,
       startY2 + 20,
       { align: "center" }
@@ -286,8 +298,10 @@ function ReceptQuotationDetail() {
   };
 
   const numberWithCommas = (x) => {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
+    const formattedNumber = parseFloat(x).toFixed(2);
+    return formattedNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
 
   const handleSwitchtoInvoice = async (id, fullname) => {
     // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
@@ -333,19 +347,22 @@ function ReceptQuotationDetail() {
           ใบเสนอราคา
         </h5>
       </div>
-      <p className="text-base text-gray-700 mt-[40px] ml-[10px]">
+      <p className="text-base text-gray-700 mt-[40px] ml-[10px] mx-5">
         เรียนคุณ : {data.fullname}
       </p>
-      <p className="text-base text-gray-700 mt-[10px] ml-[10px]">
+      <p className="text-base text-gray-700 mt-[10px] ml-[10px] mx-5">
         เรื่อง : {data.subject}
       </p>
-      <p className="text-base text-gray-700 mt-[10px] ml-[10px]">
+      <p className="text-base text-gray-700 mt-[10px] ml-[10px] whitespace-pre-wrap mx-5">
+        รายละเอียด : {data.detail}
+      </p>
+      <p className="text-base text-gray-700 mt-[10px] ml-[10px] mx-5">
         ที่อยู่ : {data.address}
       </p>
-      <p className="text-base text-gray-700 mt-[10px] ml-[10px]">
+      <p className="text-base text-gray-700 mt-[10px] ml-[10px] mx-5 ">
         วันที่ : {data.createdAt}
       </p>
-      <p className="text-base text-gray-700 mt-[10px] ml-[10px]">
+      <p className="text-base text-gray-700 mt-[10px] ml-[10px] mx-5">
         วันที่ส่งมอบ : {data.deliveryDate}
       </p>
       <div class="flex flex-col overflow-x-auto">

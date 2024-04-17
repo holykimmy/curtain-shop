@@ -11,7 +11,6 @@ import ProductInCart from "./ProductIncart";
 function CartPage() {
   const dispatch = useDispatch();
 
-  const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
@@ -26,27 +25,8 @@ function CartPage() {
   });
 
   
-  useEffect(() => {
-    if (isLoading) {
-      Swal.fire({
-        customClass: {
-          popup: "bg-transparent"
-        },
-        backdrop: "rgba(255, 255, 255, 0.7)",
-        showConfirmButton: false,
-        didOpen: () => {
-          Swal.showLoading();
-        },
-        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
-        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
-      });
-    } else {
-      Swal.close();
-    }
-  }, [isLoading]);
 
   useEffect(() => {
-    setIsLoading(true);
 
     const authToken = localStorage.getItem("token");
     if (authToken) {
@@ -70,11 +50,11 @@ function CartPage() {
         });
 
         setIsLoggedIn(true);
-        setIsLoading(false);
+        
 
       } else {
         setUserData(decodedToken.user);
-        setIsLoading(false);
+        
 
       }
 
@@ -88,11 +68,9 @@ function CartPage() {
       }
     } else {
       setIsLoggedIn(false);
-      setIsLoading(false);
-
+     
     }
-    setIsLoading(false);
-
+    
   }, [idUser]);
 
   console.log(idUser);
@@ -142,7 +120,7 @@ function CartPage() {
     console.log(idUser);
     console.log(cart);
     try {
-      setIsLoading(true);
+     
       const response = await axios.post(
         `${process.env.REACT_APP_API}/customer/cart`,
         { idUser, cart }
@@ -150,7 +128,7 @@ function CartPage() {
 
       if (response.status === 200) {
         console.log("บันทึกสำเร็จ!");
-        setIsLoading(false);
+        
 
         Swal.fire({
           icon: "success",
@@ -165,12 +143,12 @@ function CartPage() {
         });
       } else {
         console.log("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
-        setIsLoading(false);
+       
 
       }
     } catch (error) {
       console.error("เกิดข้อผิดพลาดในการเรียกใช้ API:", error);
-      setIsLoading(false);
+      
 
     }
   };
@@ -229,8 +207,12 @@ function CartPage() {
       // เพิ่มการตรวจสอบค่า null หรือ undefined
       return ""; // หรือค่าที่คุณต้องการให้ส่งออก
     }
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    const formattedNumber = parseFloat(x).toFixed(2);
+    return formattedNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
+
+
+
 
   return (
     <>
