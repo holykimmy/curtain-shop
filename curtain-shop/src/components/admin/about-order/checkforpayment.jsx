@@ -111,7 +111,7 @@ const WaitingForPayment = ({ idUser }) => {
 
         const response = await orderAPI.updateOrderVerifyPayment(idOrder,order, true);
         await Swal.fire({
-          text: "คำสั่งซื้อได้รับการยืนยันแล้ว",
+          text: "ยืนยันการชำระเงินสำเร็จ",
           icon: "success",
         }).then(()=>{
           setIsLoading(false);

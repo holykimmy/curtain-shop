@@ -308,7 +308,7 @@ function OrderDetail() {
                 ) : null}
                 {order.cancelled ? (
                   <p className="text-xs sm:text-xs md:text-base lg:text-md xl:text-md font-medium leading-6 text-red-600">
-                    ยกเลิกสินค้าโดยแอดมินเนื้องจาก {order.cancelReasonAd}
+                    ยกเลิกสินค้าโดยแอดมินเนื่องจาก {order.cancelReasonAd}
                   </p>
                 ) : (
                   " "

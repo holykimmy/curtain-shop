@@ -115,7 +115,6 @@ const PrepareOrder = ({ idUser }) => {
           text: "เตรียมสินค้าพร้อมแล้ว",
           icon: "success"
         }).then(() => {
-
           window.location.reload();
         });
       } catch (error) {
@@ -421,6 +420,7 @@ const PrepareOrder = ({ idUser }) => {
                     ยกเลิกคำสั่งซื้อ
                   </button>
                 </div>
+                
               </div>
             </div>
           </div>

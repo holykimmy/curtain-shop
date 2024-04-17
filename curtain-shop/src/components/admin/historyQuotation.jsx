@@ -71,7 +71,7 @@ function HistoryQuotation() {
   const handdleOrderdetail = async (id) => {
     // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
     const confirmation = await Swal.fire({
-      title: "ดูรายละเอียดคำสั่งซื้อ",
+      text: "ดูรายละเอียดใบเสร็จ",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
@@ -172,7 +172,7 @@ function HistoryQuotation() {
               <>
                 <div key={customer._id} className="flex justify-center">
                   <div className="flex justify-between w-[97%] sm:w-[97%] md:w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
-                    <div className="pl-5 w-[60%]">
+                    <div className="pl-5 w-full">
                       <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
                         เรียนคุณ : {customer.fullname}{" "}
                       </p>
@@ -197,36 +197,44 @@ function HistoryQuotation() {
                       <p className="mt-2 text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
                         ราคารวม : {numberWithCommas(customer.totalPrice)} บาท
                       </p>
-                      <button
-                        onClick={() => handdleOrderdetail(customer._id)}
-                        className=" hover:text-brown-500 mx-2 py-2 px-auto  hover:text-shadow-xl text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-2 mr-4"
-                      >
-                        {" "}
-                        ดูรายละเอียดคำสั่งซื้อ{" "}
-                      </button>
-                    </div>
-                    <div>
-                      <div>
-                        <button
-                          onClick={() =>
-                            handleEditProduct(customer._id, customer.fullname)
-                          }
-                          className=" bg-blue-200 py-2 px-auto w-[80px] rounded-full shadow-xl hover:bg-blue-400 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-xs md:text-md lg:text-md xl:text-md  text-white "
-                        >
-                          แก้ไขข้อมูล
-                        </button>
+
+                      <div className="flex justify-between">
+                        <div className="flex justify-start ">
+                          {" "}
+                          <button
+                            onClick={() => handdleOrderdetail(customer._id)}
+                            className=" hover:text-brown-500 mx-2 py-2 px-auto  hover:text-shadow-xl text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-2 mr-4"
+                          >
+                            {" "}
+                            ดูรายละเอียด{" "}
+                          </button>
+                        </div>
+                        <div className="flex justify-end ">
+                          <button
+                            onClick={() =>
+                              handleEditProduct(customer._id, customer.fullname)
+                            }
+                            className="bg-green-400 mt-3 mx-2 py-2 px-4 rounded-lg shadow-xl hover:bg-green-200 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-sm md:text-sm lg:text-base xl:text-base  text-white"
+                          >
+                            แก้ไขข้อมูล
+                          </button>
+
+                          <button
+                            onClick={() =>
+                              handleDeleteProduct(
+                                customer._id,
+                                customer.fullname
+                              )
+                            }
+                            className="bg-red-300 mt-3  mx-2 py-2 px-2 rounded-lg shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-sm md:text-sm lg:text-base xl:text-base  text-white"
+                          >
+                            ลบข้อมูล
+                          </button>
+                        </div>
                       </div>
-                      <button
-                        onClick={() =>
-                          handleDeleteProduct(customer._id, customer.fullname)
-                        }
-                        className="bg-red-300 mt-3 py-2 px-auto w-[80px] rounded-full shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-xs md:text-md lg:text-md xl:text-md text-white"
-                      >
-                        ลบข้อมูล
-                      </button>
                     </div>
                   </div>
-                </div>{" "}
+                </div>
                 <hr className="w-full mt-4 mb-2 border-gray-300" />
               </>
             ))
@@ -239,7 +247,7 @@ function HistoryQuotation() {
         {data.map((customer) => (
           <div key={customer._id} className="flex justify-center">
             <div className="flex justify-between w-[97%] sm:w-[97%] md:w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
-              <div className="pl-5 w-[60%]">
+              <div className="pl-5 w-full">
                 <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
                   เรียนคุณ : {customer.fullname}{" "}
                 </p>
@@ -264,33 +272,38 @@ function HistoryQuotation() {
                 <p className="mt-2 text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
                   ราคารวม : {numberWithCommas(customer.totalPrice)} บาท
                 </p>
-                <button
-                  onClick={() => handdleOrderdetail(customer._id)}
-                  className=" hover:text-brown-500 mx-2 py-2 px-auto  hover:text-shadow-xl text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-2 mr-4"
-                >
-                  {" "}
-                  ดูรายละเอียดคำสั่งซื้อ{" "}
-                </button>
-              </div>
-              <div>
-                <div>
-                  <button
-                    onClick={() =>
-                      handleEditProduct(customer._id, customer.fullname)
-                    }
-                    className=" bg-blue-200 py-2 px-auto w-[80px] rounded-full shadow-xl hover:bg-blue-400 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-xs md:text-md lg:text-md xl:text-md  text-white "
-                  >
-                    แก้ไขข้อมูล
-                  </button>
+
+                <div className="flex justify-between">
+                  <div className="flex justify-start ">
+                    {" "}
+                    <button
+                      onClick={() => handdleOrderdetail(customer._id)}
+                      className=" hover:text-brown-500 mx-2 py-2 px-auto  hover:text-shadow-xl text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-2 mr-4"
+                    >
+                      {" "}
+                      ดูรายละเอียด{" "}
+                    </button>
+                  </div>
+                  <div className="flex justify-end ">
+                    <button
+                      onClick={() =>
+                        handleEditProduct(customer._id, customer.fullname)
+                      }
+                      className="bg-green-400 mt-3 mx-2 py-2 px-4 rounded-lg shadow-xl hover:bg-green-200 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-sm md:text-sm lg:text-base xl:text-base  text-white"
+                    >
+                      แก้ไขข้อมูล
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        handleDeleteProduct(customer._id, customer.fullname)
+                      }
+                      className="bg-red-300 mt-3  mx-2 py-2 px-2 rounded-lg shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-sm md:text-sm lg:text-base xl:text-base  text-white"
+                    >
+                      ลบข้อมูล
+                    </button>
+                  </div>
                 </div>
-                <button
-                  onClick={() =>
-                    handleDeleteProduct(customer._id, customer.fullname)
-                  }
-                  className="bg-red-300 mt-3 py-2 px-auto w-[80px] rounded-full shadow-xl hover:bg-red-400 text-center md:mt-3 md:mb-3 md:inline-block text-xs sm:text-xs md:text-md lg:text-md xl:text-md text-white"
-                >
-                  ลบข้อมูล
-                </button>
               </div>
             </div>
           </div>
