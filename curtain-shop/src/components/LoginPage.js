@@ -1,11 +1,9 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import ReactDOM from "react-dom/client";
 import axios from "axios";
-import Swal from "sweetalert2";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { IoMdEyeOff } from "react-icons/io";
 // import "./login.css";
+
 function LoginPage() {
   const [formData, setFormData] = useState({
     user: "",
@@ -40,6 +38,7 @@ function LoginPage() {
           password: formData.password
         }
       );
+
       // ตรวจสอบว่าการเข้าสู่ระบบสำเร็จหรือไม่
       if (response.data.Status === "Success") {
         console.log(response.data.role);

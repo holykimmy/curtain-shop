@@ -20,10 +20,16 @@ function CustomPage() {
   const [userData, setUserData] = useState(null);
   const [userName, setUserName] = React.useState("");
   const [idUser, setIdUser] = React.useState("");
-  const [isLoading, setIsLoading] = useState(true);
 
+  const [user, setUser] = React.useState({
+    f_name: "",
+    l_name: "",
+    email: "",
+    tell: "",
+    address: ""
+  });
+ 
   const { productId } = useParams();
-
   const [data, setData] = useState({
     productId: productId,
     brand: "",
@@ -34,36 +40,7 @@ function CustomPage() {
     price: "",
     image: ""
   });
-
-  // const [data, setData] = useState({});
-
-  const [user, setUser] = React.useState({
-    f_name: "",
-    l_name: "",
-    email: "",
-    tell: "",
-    address: ""
-  });
-  // const [user, setUser] = React.useState({})
-
-  useEffect(() => {
-    if (isLoading) {
-      Swal.fire({
-        customClass: {
-          popup: "bg-transparent"
-        },
-        backdrop: "rgba(255, 255, 255, 0.5)",
-        showConfirmButton: false,
-        didOpen: () => {
-          Swal.showLoading();
-        },
-        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
-        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
-      });
-    } else {
-      Swal.close();
-    }
-  }, [isLoading]);
+ 
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");
@@ -112,9 +89,7 @@ function CustomPage() {
 
     localStorage.removeItem("token");
     setUserName(""); // Clear user name or any other relevant state
-
-    // Redirect to login page or perform any other action
-    navigate("/"); // Redirect to login page
+    navigate("/"); // Redirect 
   };
 
   const handleLogout = () => {
@@ -128,15 +103,14 @@ function CustomPage() {
       cancelButtonText: "ไม่ใช่"
     }).then((result) => {
       if (result.isConfirmed) {
-        // ยืนยันออกจากระบบ
         localStorage.removeItem("token");
         setUserName("");
-
-        // ใช้ useNavigate เพื่อนำผู้ใช้กลับไปยังหน้าหลัก
-        navigate("/"); // ลิงก์ไปยังหน้าหลัก
+       
+        navigate("/"); 
       }
     });
   };
+
 
   // Function to convert hex color to RGB
   const hexToRgb = (hexColor) => {
@@ -155,6 +129,26 @@ function CustomPage() {
         }
       : null;
   };
+
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.5)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
 
   const [types, setTypes] = useState([]);
   useEffect(() => {
@@ -184,8 +178,6 @@ function CustomPage() {
           `${process.env.REACT_APP_API}/product/${productId}`
         );
         const productData = res.data;
-        // console.log("Product Data:", productData); // ให้ดูค่า productData ที่ได้รับมา
-        //ถ้าเจอ
         if (productData) {
           setData({
             ...data,

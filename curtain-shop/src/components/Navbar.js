@@ -22,9 +22,7 @@ import {
   Bars2Icon,
 } from "@heroicons/react/24/outline";
 import { CiUser } from "react-icons/ci";
-import { useState, useEffect } from "react";
-import axios from "axios";
-import Swal from "sweetalert2";
+import { useEffect } from "react";
 import { GiShoppingCart } from "react-icons/gi";
 
 // profile menu component
@@ -255,6 +253,27 @@ const navListItems = [
   },
 ];
 
+function NavList() {
+  return (
+    <ul className="mb-4 mt-2 flex flex-col  lg:mb-0 lg:mt-0 lg:flex-row lg:items-center">
+      <NavListMenu />
+      {navListItems.map(({ label, to }, key) => (
+        <Typography
+          key={label}
+          as="a"
+          href={to}
+          color="white"
+          className="font-Kanit text-xs md:text-sm lg:text-sm"
+        >
+          <MenuItem className="flex items-center gap-2 lg:rounded-full">
+            {label}
+          </MenuItem>
+        </Typography>
+      ))}
+      <NavListMenuAbout />
+    </ul>
+  );
+}
 // nav list menu about
 const navListMenuItemsAbout = [
   {
@@ -327,28 +346,9 @@ function NavListMenuAbout() {
   );
 }
 
-function NavList() {
-  return (
-    <ul className="mb-4 mt-2 flex flex-col  lg:mb-0 lg:mt-0 lg:flex-row lg:items-center">
-      <NavListMenu />
-      {navListItems.map(({ label, to }, key) => (
-        <Typography
-          key={label}
-          as="a"
-          href={to}
-          color="white"
-          className="font-Kanit text-xs md:text-sm lg:text-sm"
-        >
-          <MenuItem className="flex items-center gap-2 lg:rounded-full">
-            {label}
-          </MenuItem>
-        </Typography>
-      ))}
-      <NavListMenuAbout />
-    </ul>
-  );
-}
 
+
+  // const navigate = useNavigate();
 function ComplexNavbar({ isLoggedIn, idUser, userName, handleLogout }) {
   const [isNavOpen, setIsNavOpen] = React.useState(false);
   const toggleIsNavOpen = () => setIsNavOpen((cur) => !cur);
@@ -363,13 +363,9 @@ function ComplexNavbar({ isLoggedIn, idUser, userName, handleLogout }) {
   
 
   useEffect(() => {
-    // Check isLoggedIn and userName changes
-    // console.log("isLoggedIn:", isLoggedIn);
-    // console.log("userName:", userName);
-    // console.log("idUser nav:", idUser);
+    
   }, [isLoggedIn, userName, idUser]);
 
-  const navigate = useNavigate();
 
 
   return (
