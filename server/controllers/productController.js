@@ -7,12 +7,12 @@ const fs = require("fs");
 const AWS = require("aws-sdk");
 const { S3 } = require("@aws-sdk/client-s3");
 const path = require("path");
+
 const slugifyMultilingual = (text) =>
   slugify(text, { lower: true, locale: "th" });
 
 exports.create = (req, res) => {
   const data = req.body;
-  console.log("data add ", data);
 
   if (!req.file) {
     return res.status(400).json({ error: "กรุณาเลือกรูปสินค้า" });
@@ -20,9 +20,7 @@ exports.create = (req, res) => {
   data.file = req.file.location;
   console.log("location :", data.file);
   console.log("key : ", req.file.key);
-  // console.log(data.);
 
-  // Check if empty
   if (!data.brand) {
     return res.status(400).json({ error: "กรุณาเลือกแบรนด์สินค้า" });
   } else if (!data.p_type) {
@@ -47,8 +45,6 @@ exports.create = (req, res) => {
     )}-${Date.now()}`
   );
 
-  // Move the uploaded image to the asset folder
-  //connect
   Products.findOne({
     brand: data.brand,
     p_type: data.p_type,
@@ -59,11 +55,8 @@ exports.create = (req, res) => {
     .exec()
     .then((existingProduct) => {
       if (existingProduct) {
-        // ถ้าข้อมูลมีอยู่แล้ว
         res.status(400).json({ error: "ข้อมูลที่ต้องการบันทึกมีอยู่แล้ว" });
       } else {
-        // ถ้าข้อมูลยังไม่มีอยู่
-        // ทำการสร้างข้อมูลใหม่
         return Products.create({
           brand: data.brand,
           p_type: data.p_type,

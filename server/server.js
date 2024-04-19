@@ -3,7 +3,6 @@ const morgan = require("morgan");
 const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
-// const request = require('request');
 const axios = require("axios");
 
 // import route
@@ -14,7 +13,6 @@ const AdminRoute = require("./routes/admin");
 const AuthRoute = require("./routes/auth");
 const ReceptRoute = require("./routes/recept");
 const TypeRoute = require("./routes/typeofcurtain");
-
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -36,18 +34,15 @@ mongoose
 app.use(express.json());
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://cms-curtain-shop.vercel.app", "https://curtain-shop.vercel.app" ,"https://curtain-shop-mu.vercel.app","https://charoenkit-curtain.vercel.app","https://charoenkitcurtain.vercel.app" ], // กำหนดโดเมนที่อนุญาตให้เข้าถึง
-    methods: ["GET", "POST", "PUT", "DELETE"], // กำหนดเมทอดที่อนุญาต
+    origin: ["http://localhost:3000","https://curtain-shop.vercel.app" ,"https://charoenkitcurtain.vercel.app" ],
+    methods: ["GET", "POST", "PUT", "DELETE"], 
     allowedHeaders: ["Content-Type", "Authorization", "authtoken"],
-    credentials: true, // อนุญาตให้ส่งคุกกี้ (cookies) ไปพร้อมกับคำขอ
+    credentials: true, 
   })
 );
 
-
-
-
 app.use((req, res, next) => {
-  const allowedOrigins = ['http://localhost:3000', 'https://cms-curtain-shop.vercel.app', 'https://curtain-shop.vercel.app' ,'https://curtain-shop-mu.vercel.app','https://charoenkit-curtain.vercel.app','https://charoenkitcurtain.vercel.app'];
+  const allowedOrigins = ['http://localhost:3000', 'https://curtain-shop.vercel.app','https://charoenkitcurtain.vercel.app'];
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
@@ -59,7 +54,6 @@ app.use((req, res, next) => {
 app.use(cookieParser());
 app.use(morgan("dev"));
 
-
 // Routes
 app.use("/api/customer", CustomerRoute);
 app.use("/api/product", ProductRoute);
@@ -67,20 +61,12 @@ app.use("/api/category", CategoryRoute);
 app.use("/api/dashboard", AdminRoute);
 app.use("/api/recept", ReceptRoute);
 app.use("/api/type-cut", TypeRoute);
-
 app.use("/api", AuthRoute);
-// Error handling middleware
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send("Something broke!");
 });
-
-// // Proxy middleware to forward requests to the actual API server
-// app.use("/api", (req, res) => {
-//   // Forward the request to the actual API server
-//   const targetUrl = "http://localhost:5500" + req.originalUrl;
-//   req.pipe(request(targetUrl)).pipe(res);
-// });
 
 // Middleware to forward requests to the actual API server
 app.use("/api", async (req, res) => {

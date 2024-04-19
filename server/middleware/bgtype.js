@@ -30,7 +30,7 @@ const storage = new CloudinaryStorage({
     params: {
       folder: "charoenkit", // กำหนดโฟลเดอร์ที่จะบันทึกภาพ
       allowed_formats: ["jpg", "png"], // กำหนดนามสกุลไฟล์ที่อนุญาต
-      transformation: [{ width: 500, height: 500, crop: "limit" }] // กำหนดการแปลงรูป
+      transformation: [{ width: 500, height: 500, crop: "limit" }] 
     }
   });
   
@@ -47,9 +47,9 @@ const storage = new CloudinaryStorage({
       fileSize: 1024 * 1024 * 5 // ขนาดไฟล์ไม่เกิน 5 MB
     },
     key: (req, file, cb) => {
-      const currentDate = dayjs().format("YYYY-MM-DD-HH-mm-ss"); // วันที่ปัจจุบัน
-      const originalFileName = path.parse(file.originalname).name; // ดึงชื่อไฟล์เดิม (ไม่รวมนามสกุล)
-      const extension = path.extname(file.originalname); // ดึงนามสกุลของไฟล์
+      const currentDate = dayjs().format("YYYY-MM-DD-HH-mm-ss"); 
+      const originalFileName = path.parse(file.originalname).name; 
+      const extension = path.extname(file.originalname); 
   
       const newFilename = `typeof/${originalFileName}-${currentDate}${extension}`;
       cb(null, newFilename);

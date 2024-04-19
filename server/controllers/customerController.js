@@ -1,7 +1,6 @@
 //connected database
 const mongoose = require("mongoose");
 const slugify = require("slugify");
-// const Blogs = require("../models/blogs");
 const slugifyMultilingual = (text) =>
   slugify(text, { lower: true, locale: "th" });
 const { User, validate } = require("../models/customers");
@@ -17,7 +16,7 @@ const Joi = require("joi");
 const fs = require("fs");
 const path = require("path");
 const nodemailer = require("nodemailer");
-
+const moment = require("moment");
 
 exports.register = async (req, res) => {
   const { f_name, l_name, username, email, tell, password } = req.body;
@@ -1636,7 +1635,8 @@ exports.updateOrderApprove = async (req, res) => {
       to: `${user.email} `,
       subject: "สินค้าของคุณได้รับการยืนยันแล้ว",
       text: `ถึง ลูกค้าร้าน เจริญกิจผ้าม่าน ขณะนี้ออเดอร์ของคุณ หมายเลขออเดอร์ : ${idOrder}
-      ได้รับการยืนยันสินค้าจากทางร้านแล้ว กรุณาชำระเงินของออเดอร์คุณได้แล้วได้ที่ ดูคำสั่งซื้อ -> รอการชำระ รบกวนลูกค้าชำระเงินภายใน 48 ชั่วโมง หากไม่ชำระภายใน 48 ชั่วโมง ออเดอร์สินค้าของคุณจะถูกยกเลิกโดยอัตโนมัติ ขอบคุณค่ะ
+      ได้รับการยืนยันสินค้าจากทางร้านแล้ว กรุณาชำระเงินของออเดอร์คุณได้แล้วได้ที่ ดูคำสั่งซื้อ -> รอการชำระ รบกวนลูกค้าชำระเงินภายใน 48 ชั่วโมง 
+      หากไม่ชำระภายใน 48 ชั่วโมง ออเดอร์สินค้าของคุณจะถูกยกเลิกโดยอัตโนมัติ ขอบคุณค่ะ
 
       https://charoenkitcurtain.vercel.app/about-order/waitPayment
 
