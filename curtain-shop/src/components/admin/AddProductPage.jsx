@@ -88,13 +88,10 @@ function AddProductPage() {
     );
     console.log("selectedbrand", selectedBrandSlug.brand);
     if (selectedBrand) {
-      // ตรวจสอบว่า selectedBrand ไม่เป็น undefined
       setState((prevState) => ({
         ...prevState,
         brand: selectedBrand.brand,
-        // slug: selectedBrand.slug,
-        // brand: selectedBrand ? selectedBrand.brand : "", // Use selected brand's name if available, otherwise set to empty string
-        p_type: "" // Reset p_type when brand changes
+        p_type: "" 
       }));
       console.log("selectslug", selectedBrand.slug);
       fetchPTypeOptions(selectedBrandSlug);
@@ -116,25 +113,21 @@ function AddProductPage() {
 
   const handlePriceChange = (e) => {
     const inputNumber = e.target.value;
-    // ตรวจสอบว่า inputNumber เป็นตัวเลขและมีค่ามากกว่าหรือเท่ากับ 0 หรือไม่
     if (!isNaN(inputNumber) && Number(inputNumber) >= 0) {
       setPrice(inputNumber);
     }
   };
   const handlePwidtchChange = (e) => {
     const inputNumber = e.target.value;
-    // ตรวจสอบว่า inputNumber เป็นตัวเลขและมีค่ามากกว่าหรือเท่ากับ 0 หรือไม่
     if (!isNaN(inputNumber) && Number(inputNumber) >= 0) {
       setP_width(inputNumber);
     }
   };
 
-  // Function to handle file selection and preview
   const handleFileSelection = (e) => {
     const image = e.target.files[0];
     setImage(image); // อัปเดตค่าไฟล์ใหม่
 
-    // แสดงตัวอย่างรูปภาพ
     const previewURL = URL.createObjectURL(image);
     setImagePreview(previewURL);
   };

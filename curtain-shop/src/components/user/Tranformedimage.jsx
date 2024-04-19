@@ -1,11 +1,8 @@
 import React, { useEffect } from "react";
 import { Image, Transformation } from "cloudinary-react";
-import Swal from "sweetalert2";
 
 
 const TransformedImage = ({ rgb, selectedCurtain }) => {
-
-
 
   return (
     <Image className="w-[800px]" publicID={selectedCurtain.main}>

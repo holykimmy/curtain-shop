@@ -106,6 +106,7 @@ function QuatationPage() {
     fetch();
   }, []);
   console.log(types);
+  
 
   const inputValue = (name) => (event) => {
     const value = event.target.value;
@@ -281,7 +282,6 @@ function QuatationPage() {
       if (rail === "รับราง") {
         railPrice = (selectedType.price_rail * width) / 100;
       }
-
       // รวมราคารางและราคาผ้าเข้าด้วยกัน
       const totalPrice = totalFabricPrice + railPrice;
 

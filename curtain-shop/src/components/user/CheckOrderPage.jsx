@@ -201,7 +201,7 @@ function CheckOrdeerPage() {
   function handleFileSelect(event) {
     const files = event.target.files;
     const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
-    const newSelectedFiles = [...selectedFiles]; // คัดลอกรูปภาพที่เลือกไว้ก่อนหน้านี้
+    const newSelectedFiles = [...selectedFiles]; 
 
     // ตรวจสอบจำนวนรูปภาพที่เลือก
     if (newSelectedFiles.length + files.length > 5) {

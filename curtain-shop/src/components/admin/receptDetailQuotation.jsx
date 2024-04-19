@@ -12,7 +12,6 @@ import Swal from "sweetalert2";
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-// ดาวน์โหลดฟอนต์ภาษาไทย หรือใช้ฟอนต์ที่มีอยู่ในโปรเจคของคุณ
 import { font } from "../../font/THSarabun.js";
 const dayjs = require("dayjs");
 const localizedFormat = require("dayjs/plugin/localizedFormat");
@@ -83,40 +82,27 @@ function ReceptQuotationDetail() {
       return;
     }
     
-    
-    console.log(data.createdAt);
     const thaiDateAt = dayjs(data.createdAt).format('D MMMM YYYY');
     const thaiDateSend = dayjs(data.deliveryDate).format('D MMMM YYYY');
 
     const doc = new jsPDF();
-
-    // doc.addFileToVFS("THSarabun.ttf", font);
-    // doc.addFont("THSarabun.ttf", "THSarabun", "normal");
-    // doc.setFont("THSarabun");
 
     const thaiFont = "THSarabun";
     doc.addFileToVFS("THSarabun.ttf", font);
     doc.addFont("THSarabun.ttf", thaiFont, "normal");
 
     doc.setFont(thaiFont);
-    // คำนวณความกว้างของข้อความ "ใบเสนอราคา"
     const textWidth1 = doc.getTextWidth("ใบเสนอราคา");
-    // คำนวณความกว้างของข้อความ "Quotation"
     const textWidth2 = doc.getTextWidth("Quotation");
 
-    // คำนวณความกว้างของข้อความทั้งหมด
     const totalTextWidth = Math.max(textWidth1, textWidth2);
 
-    // คำนวณค่า x เพื่อจัดให้อยู่ตรงกับด้านซ้าย
     const xCoordinate = 20;
 
-    // คำนวณค่า y เพื่อย้ายกล่องขึ้นไปด้านบน
     const yCoordinate = 15;
 
-    // กำหนดตัวอักษรให้เป็นตัวหนาสำหรับ "ใบเสนอราคา"
-    // เขียนข้อความ "ใบเสนอราคา" พร้อมพื้นหลังสีเทาและ padding
     doc.setFillColor(220);
-    doc.rect(xCoordinate, 25 - yCoordinate, totalTextWidth + 20, 20, "F"); // ปรับความสูงเป็น 20 และเพิ่ม padding 10 ทั้งสองข้าง
+    doc.rect(xCoordinate, 25 - yCoordinate, totalTextWidth + 20, 20, "F"); 
     doc.setTextColor(0);
 
     doc.text(
@@ -126,9 +112,8 @@ function ReceptQuotationDetail() {
       {
         align: "center"
       }
-    ); // ปรับ xCoordinate และ yCoordinate เพื่อให้ข้อความอยู่ตรงกลาง
+    ); 
 
-    // กำหนดตัวอักษรให้เป็นปกติสำหรับ "Quotation"
     doc.text(
       "Quotation",
       xCoordinate + (totalTextWidth + 20) / 2,
@@ -136,29 +121,23 @@ function ReceptQuotationDetail() {
       {
         align: "center"
       }
-    ); // ปรับ xCoordinate และ yCoordinate เพื่อให้ข้อความอยู่ตรงกลาง
+    ); 
 
     // ข้อมูลลูกค้า
     doc.setFontSize(14);
     doc.text(`เรียน: ${data.fullname}`, 15, 38);
     doc.text(`       ${data.detail} \n\nที่อยู่ ${data.address}`, 15, 46);
-    // doc.text(`วันที่: ${data.createdAt}`, 50, 38);
     doc.text(`วันที่ ${thaiDateAt}`, 100, 38);
 
-    // คำนวณความกว้างของข้อความ "ร้านเจริญกิจผ้าม่าน"
     const textWidth4 = doc.getTextWidth("ร้านเจริญกิจผ้าม่าน");
-    // คำนวณความกว้างของข้อความ "2/562 ม.18 ซ.ธนะศรี ต.คูคต อ.ลำลูกกา"
     const textWidth5 = doc.getTextWidth("2/562 ม.18 ซ.ธนะศรี ต.คูคต อ.ลำลูกกา");
-    // คำนวณความกว้างของข้อความ "จ.ปทุมธานี 12130 โทร. 0879700514"
     const textWidth6 = doc.getTextWidth("จ.ปทุมธานี 12130 โทร. 0879700514");
 
-    // คำนวณค่า x-coordinate ใหม่โดยใช้ความกว้างของหน้ากระดาษ
     const xCoordinateRight =
       doc.internal.pageSize.width -
       Math.max(textWidth4, textWidth5, textWidth6) +
       38;
 
-    // แสดงข้อความ "ร้านเจริญกิจผ้าม่าน" และข้อความอื่นๆ โดยกำหนดตำแหน่ง x-coordinate ใหม่
     doc.text("ร้านเจริญกิจผ้าม่าน", xCoordinateRight, 18, {
       align: "right"
     });
@@ -171,7 +150,6 @@ function ReceptQuotationDetail() {
 
     // Table
     let startY = 90 ;
-    // Specify Thai font for autoTable
     const tableConfig = {
       startY,
       head: [TABLE_HEAD],
@@ -188,22 +166,20 @@ function ReceptQuotationDetail() {
       ]),
 
       headStyles: {
-        fillColor: [217, 217, 217], // กำหนดสีเทาในรูปแบบ RGB
+        fillColor: [217, 217, 217], 
         textColor: [10, 10, 16]
       },
 
       styles: {
-        fontSize: 14, // กำหนดขนาดฟอนต์ใหญ่ขึ้นเป็น 14
-        font: thaiFont // ใช้ Thai font
+        fontSize: 14, 
+        font: thaiFont 
       },
 
       didDrawCell: (data) => {
-        // Adjust text style for Thai font
         doc.setFontSize(14);
         doc.setTextColor(0, 0, 0);
       }
     };
-    // Check if Thai font is available
     if (typeof doc.getFontList === "function") {
       const fontList = doc.getFontList();
       if (fontList && fontList[thaiFont]) {
@@ -213,7 +189,6 @@ function ReceptQuotationDetail() {
     doc.autoTable(tableConfig);
 
     doc.setFontSize(12);
-    // ราคารวม
     const totalPriceY = doc.autoTable.previous.finalY + 10;
     doc.text(
       "**ทางร้านเจริญกิจหวังเป็นอย่างยิ่งว่าคงจะได้รับการพิจารณา",

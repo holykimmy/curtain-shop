@@ -10,7 +10,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import _ from "lodash";
 
 function CustomPage() {
@@ -28,7 +28,7 @@ function CustomPage() {
     tell: "",
     address: ""
   });
- 
+
   const { productId } = useParams();
   const [data, setData] = useState({
     productId: productId,
@@ -40,7 +40,6 @@ function CustomPage() {
     price: "",
     image: ""
   });
- 
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");
@@ -89,7 +88,7 @@ function CustomPage() {
 
     localStorage.removeItem("token");
     setUserName(""); // Clear user name or any other relevant state
-    navigate("/"); // Redirect 
+    navigate("/"); // Redirect
   };
 
   const handleLogout = () => {
@@ -105,12 +104,11 @@ function CustomPage() {
       if (result.isConfirmed) {
         localStorage.removeItem("token");
         setUserName("");
-       
-        navigate("/"); 
+
+        navigate("/");
       }
     });
   };
-
 
   // Function to convert hex color to RGB
   const hexToRgb = (hexColor) => {
@@ -211,8 +209,6 @@ function CustomPage() {
   const [typeById, setTypeById] = useState("");
   const [selectedTwolayer, setSelectedTwolayer] = useState("");
 
-  console.log("typedi", typeById, pricerail);
-
   const handleCustom = (productId, productName) => {
     navigate(`/custom-product/${productId}`);
   };
@@ -234,6 +230,7 @@ function CustomPage() {
     setPricerail(price_rail);
     setBgType(bgimage);
   };
+  console.log("typedi", typeById, pricerail);
   console.log("handch", pricerail);
   console.log("bgtype", bgType);
   //add to cart
@@ -260,7 +257,6 @@ function CustomPage() {
 
     // ตรวจสอบค่า localStorage.getItem('cart')
     const cartFromStorage = localStorage.getItem("cart");
-    // console.log("localStorage.getItem('cart'):", cartFromStorage);
 
     try {
       if (cartFromStorage) {
@@ -273,7 +269,6 @@ function CustomPage() {
 
     console.log("data.id", data.id);
 
-    console.log("------------data--------");
     if (cart[idUser]) {
       cart[idUser].forEach((item) => {
         console.table(
@@ -286,15 +281,6 @@ function CustomPage() {
         );
       });
     }
-    console.log("------------end--------");
-    // console.table(
-    //   data.id,
-    //   selectedType,
-    //   selectedRail,
-    //   selectedTwolayer,
-    //   width,
-    //   height
-    // );
 
     if (!cart[idUser]) {
       cart[idUser] = [];
@@ -310,107 +296,40 @@ function CustomPage() {
         item.twolayer === selectedTwolayer
     );
 
-    console.log("existingProductIndex:", existingProductIndex);
-
     function generateCartId() {
-      return Math.floor(Math.random() * 1000000); // สร้างเลขสุ่ม 6 หลักเป็น cartId
+      return Math.floor(Math.random() * 1000000); // สร้างเลขสุ่ม
     }
-    console.log(data);
+
     if (existingProductIndex !== -1) {
       // เพิ่มค่า count ของสินค้านี้
       cart[idUser][existingProductIndex].count++;
       const numberOfPieces = Math.ceil(width / data.p_width);
-      console.log(
-        "numberOfPieces",
-        width,
-        "/",
-        data.p_width,
-        " = ",
-        numberOfPieces
-      );
-
       // คำนวณผ้าทั้งหมด
       const totalFabric = numberOfPieces * 2;
-      console.log("totalFabric", numberOfPieces, "* 2 = ", totalFabric);
 
       // คำนวณค่าผ้าต่อชิ้น
       const fabricCostPerPiece = (height * totalFabric * data.price) / 100;
-      console.log(
-        "fabricCostPerPiece",
-        "[",
-        height,
-        "*",
-        totalFabric,
-        "*",
-        data.price,
-        "]/100",
-        " = ",
-        fabricCostPerPiece
-      );
 
       let priceofrail = 0;
       console.log(selectedRail);
       if (selectedRail === "รับราง") {
         priceofrail = (pricerail * width) / 100;
-        console.log(
-          "price rail [",
-          pricerail,
-          "*",
-          width,
-          " ]/100 = ",
-          priceofrail
-        );
       }
-      console.log("price rail", priceofrail);
       const TotalPiece = fabricCostPerPiece + priceofrail;
 
       cart[idUser][existingProductIndex].totalPiece = TotalPiece;
     } else {
       const numberOfPieces = Math.ceil(width / data.p_width);
-      console.log(
-        "numberOfPieces",
-        width,
-        "/",
-        data.p_width,
-        " = ",
-        numberOfPieces
-      );
-
       // คำนวณผ้าทั้งหมด
       const totalFabric = numberOfPieces * 2;
-      console.log("totalFabric", numberOfPieces, "* 2 = ", totalFabric);
-
       // คำนวณค่าผ้าต่อชิ้น
       const fabricCostPerPiece = (height * totalFabric * data.price) / 100;
-      console.log(
-        "fabricCostPerPiece",
-        "[",
-        height,
-        "*",
-        totalFabric,
-        "*",
-        data.price,
-        "]/100",
-        " = ",
-        fabricCostPerPiece
-      );
-
       let priceofrail = 0;
       console.log(selectedRail);
       if (selectedRail === "รับราง") {
         priceofrail = (pricerail * width) / 100;
-        console.log(
-          "price rail [",
-          pricerail,
-          "*",
-          width,
-          " ]/100 = ",
-          priceofrail
-        );
       }
-      console.log("price rail", priceofrail);
       const TotalPiece = fabricCostPerPiece + priceofrail;
-
       const productData = {
         productId: data.id,
         brand: data.brand,
@@ -431,7 +350,6 @@ function CustomPage() {
         totalPiece: TotalPiece,
         count: 1
       };
-
       cart[idUser].push(productData);
     }
 
@@ -648,7 +566,10 @@ function CustomPage() {
                   alt="product"
                 />
                 <div className="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25  rounded-t-lg "></div>
-                <div className="absolute shadow-md rounded-r-lg bottom-0 left-0 bg-white/30 px-4 py-2 text-white text-sm hover:bg-white hover:text-browntop transition duration-500 ease-in-out">
+                <div
+                  className="absolute shadow-md rounded-r-lg bottom-0 left-0 bg-white/30 px-4 py-2 text-white text-sm
+                 hover:bg-white hover:text-browntop transition duration-500 ease-in-out"
+                >
                   {product.name}
                 </div>
               </div>
@@ -692,7 +613,8 @@ function CustomPage() {
             </p>
             <div
               style={{ backgroundColor: data.color }}
-              className="text-center flex items-center text-xs sm:text-sm lg:text-base xl:text-base h-7 w-[60%] text-white rounded-full shadow-xl "
+              className="text-center flex items-center text-xs sm:text-sm lg:text-base xl:text-base h-7 w-[60%] 
+              text-white rounded-full shadow-xl "
             >
               <p className="mx-auto">{data.color}</p>
             </div>

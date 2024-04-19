@@ -46,16 +46,16 @@ function LoginPage() {
         let intended = location.state; //redirec to path
         if (intended) {
           localStorage.setItem("token", response.data.token);
-          axios.defaults.headers.common["authtoken"] = response.data.token; // Set token as a default header
+          axios.defaults.headers.common["authtoken"] = response.data.token; 
           navigate("../" + intended);
         } else {
           if (response.data.role === "admin") {
             localStorage.setItem("token", response.data.token);
-            axios.defaults.headers.common["authtoken"] = response.data.token; // Set token as a default header
+            axios.defaults.headers.common["authtoken"] = response.data.token; 
             navigate("/dashboard");
           } else {
             localStorage.setItem("token", response.data.token);
-            axios.defaults.headers.common["authtoken"] = response.data.token; // Set token as a default header
+            axios.defaults.headers.common["authtoken"] = response.data.token; 
             navigate("/");
           }
         }

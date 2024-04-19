@@ -27,7 +27,6 @@ function CartPage() {
   
 
   useEffect(() => {
-
     const authToken = localStorage.getItem("token");
     if (authToken) {
       // Set up axios default headers
@@ -48,14 +47,10 @@ function CartPage() {
           tell: decodedToken.user.tell,
           address: decodedToken.user.address
         });
-
         setIsLoggedIn(true);
-        
 
       } else {
         setUserData(decodedToken.user);
-        
-
       }
 
       if (
@@ -68,7 +63,6 @@ function CartPage() {
       }
     } else {
       setIsLoggedIn(false);
-     
     }
     
   }, [idUser]);
