@@ -165,7 +165,7 @@ exports.findUserByEmail = async (req, res) => {
         
         แก้ไขรหัสผ่านได้ที่ลิงค์นี้
 
-        http://localhost:3000/reset-password/${user._id}`
+        https://charoenkitcurtain.vercel.app/reset-password/${user._id}`
       };
 
       transporter.sendMail(mailOptions, (error, info) => {
