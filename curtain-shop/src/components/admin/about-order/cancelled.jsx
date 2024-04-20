@@ -74,7 +74,7 @@ const CancelOrder = ({ idUser }) => {
   };
 
   const handdleOrderdetail = async (idOrder) => {
-    // แสดงข้อความยืนยันจากผู้ใช้ก่อนที่จะทำการยกเลิกคำสั่งซื้อ
+    // แสดงข้อความยืนยันผู้ใช้ก่อนที่จะทำยกเลิกคำสั่งซื้อ
     const confirmation = await Swal.fire({
       text: "ดูรายละเอียดคำสั่งซื้อ",
       icon: "warning",
@@ -190,19 +190,8 @@ const CancelOrder = ({ idUser }) => {
                     ))}
                     {/* </div> */}
 
-                    {order.sendAddress && (
-                      <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-10">
-                        ที่อยู่ที่ต้องจัดส่ง : {order.sendAddress.name}{" "}
-                        {order.sendAddress.tell} {order.sendAddress.sub_dristri}{" "}
-                        {order.sendAddress.district}{" "}
-                        {order.sendAddress.province}{" "}
-                        {order.sendAddress.postcode}
-                      </p>
-                    )}
+  
 
-                    <p className=" text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1 whitespace-pre-wrap">
-                      การจัดส่ง : {order.deliveryIs.split("\n")[0]}
-                    </p>
                     <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
                       ราคารวม : {numberWithCommas(order.totalPrice)} บาท
                     </p>
@@ -308,18 +297,10 @@ const CancelOrder = ({ idUser }) => {
               ))}
               {/* </div> */}
 
-              {order.sendAddress && (
-                <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-10">
-                  ที่อยู่ที่ต้องจัดส่ง : {order.sendAddress.name}{" "}
-                  {order.sendAddress.tell} {order.sendAddress.sub_dristri}{" "}
-                  {order.sendAddress.district} {order.sendAddress.province}{" "}
-                  {order.sendAddress.postcode}
-                </p>
-              )}
+          
+              
 
-              <p className=" text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1 whitespace-pre-wrap">
-                การจัดส่ง : {order.deliveryIs.split("\n")[0]}
-              </p>
+              
               <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
                 ราคารวม : {numberWithCommas(order.totalPrice)} บาท
               </p>

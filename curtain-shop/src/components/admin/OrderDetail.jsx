@@ -42,6 +42,7 @@ function OrderDetail() {
       Swal.close();
     }
   }, [isLoading]);
+
   useEffect(() => {
     setIsLoading(true);
 
@@ -51,16 +52,13 @@ function OrderDetail() {
         .then((orderData) => {
           setCurrentOrder(orderData);
           setIsLoading(false);
-
         })
         .catch((err) => {
           console.error("error", err);
           setIsLoading(false);
-
         });
     };
     fetchData();
-
   }, [idOrder]);
 
   useEffect(() => {
@@ -79,17 +77,14 @@ function OrderDetail() {
       }
 
       if (decodedToken && decodedToken.user) {
-       
         if (decodedToken.user.role !== "admin") {
-          
-          window.location.href = "/login"; 
+          window.location.href = "/login";
         } else {
           setUserData(decodedToken.user);
         }
       }
     } else {
-      
-      window.location.href = "/login"; 
+      window.location.href = "/login";
       Swal.fire(
         "Unauthorized",
         "You are not authorized to access this page",
@@ -111,12 +106,10 @@ function OrderDetail() {
         .then((addressData) => {
           setAddress(addressData);
           setIsLoading(false);
-
         })
         .catch((err) => {
           console.error("error", err);
           setIsLoading(false);
-
         });
     };
     fetchData();
@@ -147,7 +140,7 @@ function OrderDetail() {
           order,
           true
         );
-        console.log(response); 
+        console.log(response);
         setIsLoading(false);
 
         await Swal.fire({
@@ -160,7 +153,6 @@ function OrderDetail() {
       } catch (error) {
         console.error("Error cancelling order:", error);
         setIsLoading(false);
-     
       }
     }
   };
@@ -205,7 +197,7 @@ function OrderDetail() {
           order,
           true
         );
-        console.log(response); 
+        console.log(response);
         setIsLoading(false);
         await Swal.fire({
           title: "ยืนยันคำสั่งซื้อ",
@@ -231,7 +223,6 @@ function OrderDetail() {
       confirmButtonText: "ใช่",
       cancelButtonText: "ยกเลิก"
     });
-
 
     if (confirmation.isConfirmed) {
       try {
@@ -277,8 +268,7 @@ function OrderDetail() {
   const numberWithCommas = (x) => {
     const formattedNumber = parseFloat(x).toFixed(2);
     return formattedNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-};
-
+  };
 
   return (
     <>
@@ -461,17 +451,17 @@ function OrderDetail() {
                                 </>
                               ) : (
                                 <>
-                                <p className="text-base  text-gray-800">
-                                  ชำระราคาเต็ม
-                                </p>
-                                <p className="text-sm  text-gray-800">
-                                  จำนวนที่ต้องชำระ 
-                                  <span className="text-base font-bold">
-                                    {numberWithCommas(order.totalPrice)}
-                                  </span>{" "}
-                                  บาท
-                                </p>
-                              </>
+                                  <p className="text-base  text-gray-800">
+                                    ชำระราคาเต็ม
+                                  </p>
+                                  <p className="text-sm  text-gray-800">
+                                    จำนวนที่ต้องชำระ
+                                    <span className="text-base font-bold">
+                                      {numberWithCommas(order.totalPrice)}
+                                    </span>{" "}
+                                    บาท
+                                  </p>
+                                </>
                               )}
 
                               <div className="pb-4 md:pb-8 w-full md:w-60">
@@ -556,13 +546,20 @@ function OrderDetail() {
                             ที่อยู่ที่ต้องการจัดส่ง
                           </p>
 
-                          <p className="w-48 lg:w-full xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">
-                            {order.sendAddress.name} {order.sendAddress.houseNo}{" "}
-                            {order.sendAddress.sub_district}{" "}
-                            {order.sendAddress.district}{" "}
-                            {order.sendAddress.province}{" "}
-                            {order.sendAddress.postcode}
-                          </p>
+                          {order.sendAddress ? (
+                            <>
+                              <p className="w-48 lg:w-full xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">
+                                {order.sendAddress.name}{" "}
+                                {order.sendAddress.houseNo}{" "}
+                                {order.sendAddress.sub_district}{" "}
+                                {order.sendAddress.district}{" "}
+                                {order.sendAddress.province}{" "}
+                                {order.sendAddress.postcode}
+                              </p>
+                            </>
+                          ) : (
+                            <p className="text-gray-600">ไม่พบที่อยู่</p>
+                          )}
                         </div>
                       </div>
                       <div className="flex flex-col w-full justify-center items-center md:justify-start md:items-start">
@@ -581,11 +578,15 @@ function OrderDetail() {
                           "ลูกค้ายังไม่ได้ชำระเงิน"
                         ) : (
                           <>
-                            {!order.verifypayment && !order.cancelled  && order.enable ? (
+                            {!order.verifypayment &&
+                            !order.cancelled &&
+                            order.enable ? (
                               <button
                                 disabled={!order.payment}
                                 className="mt-6 md:mt-3 py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base leading-4 text-gray-800"
-                                onClick={() => handleVerifyOrder(order._id,order)}
+                                onClick={() =>
+                                  handleVerifyOrder(order._id, order)
+                                }
                               >
                                 ยืนยันการชำระเงินของลูกค้า
                               </button>
@@ -596,7 +597,9 @@ function OrderDetail() {
                         {order.verifypayment && !order.pandding ? (
                           <button
                             className="mt-6 md:mt-3 py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base leading-4 text-gray-800"
-                            onClick={() => handlePanddingOrder(order._id,order)}
+                            onClick={() =>
+                              handlePanddingOrder(order._id, order)
+                            }
                           >
                             เตรียมสินค้าเสร็จแล้ว
                           </button>
@@ -605,7 +608,7 @@ function OrderDetail() {
                         {order.pandding && !order.sendproduct ? (
                           <button
                             className="mt-6 md:mt-3 py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base leading-4 text-gray-800"
-                            onClick={() => handleSendOrder(order._id,order)}
+                            onClick={() => handleSendOrder(order._id, order)}
                           >
                             จัดส่งสินค้าเรียบร้อยแล้ว
                           </button>

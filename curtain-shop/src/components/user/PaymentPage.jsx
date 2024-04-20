@@ -77,15 +77,7 @@ function PaymentPage() {
   console.log("testtt", depositOrder);
 
   console.log("order : ", currentOrder);
-  // localStorage.setItem('currentOrder', JSON.stringify(currentOrder));
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   const currentOrderFromStorage = localStorage.getItem('currentOrder');
-  //   if (currentOrderFromStorage) {
-  //     setCurrentOrder(JSON.parse(currentOrderFromStorage));
-  //     setIsLoading(false); // ตั้งค่า isLoading เป็น false เพราะข้อมูลถูกโหลดเรียบร้อยแล้ว
-  //   }
-  // }, []);
+
   console.log("check order toto dis", totalDeposit);
 
   useEffect(() => {
