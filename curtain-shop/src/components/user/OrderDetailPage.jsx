@@ -59,6 +59,8 @@ function OrderDetailPage() {
         .then((orderData) => {
           setCurrentOrder(orderData);
           setIsLoading(false);
+          console.log(currentOrder);
+
         })
         .catch((err) => {
           console.error("error", err);
@@ -67,12 +69,10 @@ function OrderDetailPage() {
     };
     fetchData();
 
-   
   }, [idOrder]);
+  console.log("currenor af set ",currentOrder);
 
-  console.log(currentOrder);
 
-  console.log("check order");
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");
@@ -174,7 +174,7 @@ function OrderDetailPage() {
 
     fetchData(); 
   }, [idUser]);
-  console.log("dkjhafkdsj");
+  console.log("address : ");
   console.log(address);
 
 
