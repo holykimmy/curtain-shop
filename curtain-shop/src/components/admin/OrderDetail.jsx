@@ -52,6 +52,7 @@ function OrderDetail() {
         .then((orderData) => {
           setCurrentOrder(orderData);
           setIsLoading(false);
+          console.log("currentOrder", orderData);
         })
         .catch((err) => {
           console.error("error", err);
@@ -60,6 +61,8 @@ function OrderDetail() {
     };
     fetchData();
   }, [idOrder]);
+  console.log("currentOrder");
+  console.table(currentOrder);
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");

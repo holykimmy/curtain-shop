@@ -29,6 +29,7 @@ function PaymentPage() {
     tell: "",
     address: ""
   });
+  console.log("currentOrder");
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -65,6 +66,8 @@ function PaymentPage() {
             setTotalDisposit(orderData[0].totalPrice);
           }
           setIsLoading(false);
+          console.log("currentOrder", orderData);
+
         })
         .catch((err) => {
           console.error("error", err);
@@ -73,6 +76,10 @@ function PaymentPage() {
     };
     fetchData();
   }, [idOrder, depositOrder, totalDeposit]);
+  console.log("currentOrder");
+
+  console.table(currentOrder);
+
 
   console.log("testtt", depositOrder);
 
