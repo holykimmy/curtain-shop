@@ -58,13 +58,7 @@ function EditAccoutPage() {
   const resetPassword = (emailf) => {
     console.log("test");
     console.log(emailf);
-    if (!emailf) {
-      Swal.fire({
-        icon: "error",
-        text: "กรุณากรอก email"
-      });
-      return; // ออกจากฟังก์ชันไปทันที
-    }
+
     Swal.fire({
       text: "คุณต้องการเปลี่ยนรหัสผ่านใช่หรือไม่?",
       icon: "question",
@@ -123,14 +117,14 @@ function EditAccoutPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true); 
+      setIsLoading(true);
       try {
         const data = await customerAPI.getCustomerById(idUser);
         setData(data);
-        setIsLoading(false); 
+        setIsLoading(false);
       } catch (err) {
         console.error("erro", err);
-        setIsLoading(false); 
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -192,9 +186,8 @@ function EditAccoutPage() {
       email,
       tell
     });
-    setIsLoading(true); 
-    setIsLoading(false); 
-
+    setIsLoading(true);
+    setIsLoading(false);
 
     // ตรวจสอบรูปแบบของอีเมลและหมายเลขโทรศัพท์
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -215,8 +208,6 @@ function EditAccoutPage() {
       return;
     }
 
-    
-
     Swal.fire({
       title: "ยืนยันการแก้ไขข้อมูล",
       icon: "question",
@@ -227,7 +218,7 @@ function EditAccoutPage() {
       cancelButtonText: "ยกเลิก"
     }).then((result) => {
       if (result.isConfirmed) {
-        setIsLoading(true); 
+        setIsLoading(true);
         axios
           .put(`${process.env.REACT_APP_API}/customer/edit-profile/${idUser}`, {
             f_name,
@@ -236,7 +227,7 @@ function EditAccoutPage() {
             tell
           })
           .then((response) => {
-            setIsLoading(false); 
+            setIsLoading(false);
             Swal.fire({
               text: "แก้ไขข้อมูลเรียบร้อยแล้ว",
               icon: "success",
@@ -248,7 +239,7 @@ function EditAccoutPage() {
             });
           })
           .catch((err) => {
-            setIsLoading(false); 
+            setIsLoading(false);
 
             Swal.fire({
               icon: "error",
@@ -279,6 +270,14 @@ function EditAccoutPage() {
           <h5 className="inline-block text-base  text-b-font ml-2 mt-2 md:mt-5 md:ml-3 md:pl-4  ">
             username : {data.username}
           </h5>
+        </div>
+        <div class="flex mt-2 ml-3 pl-4 ">
+          <button
+            class=" text-base text-stone-500 py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            onClick={() => resetPassword(data.email)}
+          >
+            เปลี่ยนรหัสผ่าน
+          </button>
         </div>
         <form onSubmit={submitForm}>
           <div className="flex items-center justify-between px-3 md:justify-start mt-5 md:pl-4 ">
@@ -335,14 +334,6 @@ function EditAccoutPage() {
             />
           </div>
 
-          <div class="flex mt-2 ml-3 pl-4 ">
-            <button
-              class=" text-base text-stone-500 py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              onClick={() => resetPassword(data.email)}
-            >
-              เปลี่ยนรหัสผ่าน
-            </button>
-          </div>
           <div className="flex items-center justify-center mt-8">
             <button
               className="w-[50%] text-center bg-brown-300 hover:bg-browntop hover:shadow-md text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
