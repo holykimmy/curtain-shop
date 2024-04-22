@@ -77,7 +77,7 @@ function Customers() {
           for="search-bar"
         >
           <input
-            id="search-bar"
+            id="search-bar-user"
             placeholder="ค้นหาข้อมูล"
             className="px-6 py-2 w-full rounded-md flex-1 outline-none bg-white"
             value={searchTerm}

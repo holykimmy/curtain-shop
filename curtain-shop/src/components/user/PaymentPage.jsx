@@ -498,7 +498,7 @@ function PaymentPage() {
                               className="py-2 px-4 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-md"
                               onClick={() => handleDepositPayment(false)}
                             >
-                              จ่ายเต็มราคาเลย
+                              จ่ายเต็มราคา
                             </button>
                           </div>
 
