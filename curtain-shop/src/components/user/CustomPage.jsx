@@ -28,7 +28,7 @@ function CustomPage() {
     tell: "",
     address: ""
   });
- 
+
   const { productId } = useParams();
   const [data, setData] = useState({
     productId: productId,
@@ -40,7 +40,6 @@ function CustomPage() {
     price: "",
     image: ""
   });
- 
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");
@@ -89,7 +88,7 @@ function CustomPage() {
 
     localStorage.removeItem("token");
     setUserName(""); // Clear user name or any other relevant state
-    navigate("/"); // Redirect 
+    navigate("/"); // Redirect
   };
 
   const handleLogout = () => {
@@ -105,12 +104,11 @@ function CustomPage() {
       if (result.isConfirmed) {
         localStorage.removeItem("token");
         setUserName("");
-       
-        navigate("/"); 
+
+        navigate("/");
       }
     });
   };
-
 
   // Function to convert hex color to RGB
   const hexToRgb = (hexColor) => {
@@ -833,9 +831,16 @@ function CustomPage() {
               </label>
             </div>
           ))}
-           <p className="text-left text-gray-700 text-sm mt-4 pl-5">
-            ** ทางร้านมีบริการรับตัดม่านหลุสย์
+          <p className="text-left text-gray-700 text-sm mt-4 pl-5">
+            ** หากไม่ได้เลือกม่าน2ชั้นทางร้านขอสงวนสิทธ์ทำเป็นม่านชั้นเดียว
           </p>
+          <Link
+            className="text-left text-blue-700 text-base mt-4 pl-10 hover:drop-shadow"
+            to="/product/sheer"
+          >
+            {" "}
+            ดูม่าน2ชั้น{" "}
+          </Link>
         </div>
       ) : (
         <div className="ml-10">
@@ -847,28 +852,29 @@ function CustomPage() {
       )}
 
       <div className="ml-10">
-      <p className=" text-base mx-7 my-4 text-brown-400">ต้องการรับรางหรือไม่</p>{" "}
-      {["รับราง", "ไม่รับราง"].map((rail) => (
-        <div
-          key={rail}
-          className=" ml-10 flex-row text-left  text-browntop text-base mt-2  mb-2 "
-        >
-          <input
-            className="ml-5 text-base"
-            type="radio"
-            id={rail}
-            name="selectedRail"
-            value={rail}
-            checked={selectedRail === rail}
-            onChange={handleRadioChangeRail}
-          />
-          <label className="ml-2" htmlFor={rail}>
-            {rail}
-          </label>
-        </div>
-      ))}
+        <p className=" text-base mx-7 my-4 text-brown-400">
+          ต้องการรับรางหรือไม่
+        </p>{" "}
+        {["รับราง", "ไม่รับราง"].map((rail) => (
+          <div
+            key={rail}
+            className=" ml-10 flex-row text-left  text-browntop text-base mt-2  mb-2 "
+          >
+            <input
+              className="ml-5 text-base"
+              type="radio"
+              id={rail}
+              name="selectedRail"
+              value={rail}
+              checked={selectedRail === rail}
+              onChange={handleRadioChangeRail}
+            />
+            <label className="ml-2" htmlFor={rail}>
+              {rail}
+            </label>
+          </div>
+        ))}
       </div>
-
 
       <div className="flex justify-center">
         {isLoggedIn ? (
