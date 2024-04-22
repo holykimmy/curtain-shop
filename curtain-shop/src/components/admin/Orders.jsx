@@ -45,63 +45,117 @@ function Orders() {
     }
   }, [isLoading]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        const orderDataApprove = await orderAPI.getOrderApprove();
-        setOrderApprove(orderDataApprove);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       setIsLoading(true);
+  //       const orderDataApprove = await orderAPI.getOrderApprove();
+  //       setOrderApprove(orderDataApprove);
   
-        const orderDataPayment = await orderAPI.getOrderPayment();
+  //       const orderDataPayment = await orderAPI.getOrderPayment();
+  //       const paymentFalseOrders = orderDataPayment.filter(
+  //         (order) => order.payment === false
+  //       );
+  //       setOrderWaitPayment(paymentFalseOrders);
+  
+  //       const paymentTrueOrders = orderDataPayment.filter(
+  //         (order) => order.payment === true
+  //       );
+  //       setOrderVerifyPayment(paymentTrueOrders);
+  
+  //       const orderDataPrepare = await orderAPI.getOrderPrepare();
+  //       setOrderPrepare(orderDataPrepare);
+  
+  //       const orderDataSend = await orderAPI.getOrderSend();
+  //       const sendFalseOrders = orderDataSend.filter(
+  //         (order) => order.sendproduct === false
+  //       );
+  //       setOrderSend(sendFalseOrders);
+  
+  //       const sendTrueOrders = orderDataSend.filter(
+  //         (order) => order.sendproduct === true
+  //       );
+  //       setOrderSended(sendTrueOrders);
+  
+  //       const orderDataComplete = await orderAPI.getOrderComplete();
+  //       const completeTrueOrders = orderDataComplete.filter(
+  //         (order) => order.complete === true
+  //       );
+  //       setOrderComplete(completeTrueOrders);
+  
+  //       const orderDataAll = await orderAPI.getOrderAll();
+  //       const cancelledOrders = orderDataAll.filter(
+  //         (order) => order.enable === false || order.cancelled === true
+  //       );
+  //       setOrderCancelled(cancelledOrders);
+  //       setIsLoading(false);
+
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //       setIsLoading(false);
+
+  //     } 
+  //   };
+
+  //   setIsLoading(false);
+  //   fetchData();
+
+ 
+  // }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    orderAPI.getOrderApprove()
+      .then((orderDataApprove) => {
+        setOrderApprove(orderDataApprove);
+        return orderAPI.getOrderPayment();
+      })
+      .then((orderDataPayment) => {
         const paymentFalseOrders = orderDataPayment.filter(
           (order) => order.payment === false
         );
         setOrderWaitPayment(paymentFalseOrders);
-  
         const paymentTrueOrders = orderDataPayment.filter(
           (order) => order.payment === true
         );
         setOrderVerifyPayment(paymentTrueOrders);
-  
-        const orderDataPrepare = await orderAPI.getOrderPrepare();
+        return orderAPI.getOrderPrepare();
+      })
+      .then((orderDataPrepare) => {
         setOrderPrepare(orderDataPrepare);
-  
-        const orderDataSend = await orderAPI.getOrderSend();
+        return orderAPI.getOrderSend();
+      })
+      .then((orderDataSend) => {
         const sendFalseOrders = orderDataSend.filter(
           (order) => order.sendproduct === false
         );
         setOrderSend(sendFalseOrders);
-  
         const sendTrueOrders = orderDataSend.filter(
           (order) => order.sendproduct === true
         );
         setOrderSended(sendTrueOrders);
-  
-        const orderDataComplete = await orderAPI.getOrderComplete();
+        return orderAPI.getOrderComplete();
+      })
+      .then((orderDataComplete) => {
         const completeTrueOrders = orderDataComplete.filter(
           (order) => order.complete === true
         );
         setOrderComplete(completeTrueOrders);
-  
-        const orderDataAll = await orderAPI.getOrderAll();
+        return orderAPI.getOrderAll();
+      })
+      .then((orderDataAll) => {
         const cancelledOrders = orderDataAll.filter(
           (order) => order.enable === false || order.cancelled === true
         );
         setOrderCancelled(cancelledOrders);
         setIsLoading(false);
-
-      } catch (error) {
+      })
+      .catch((error) => {
         console.error("Error fetching data:", error);
         setIsLoading(false);
-
-      } 
-    };
-
-    setIsLoading(false);
-    fetchData();
-
- 
+      });
   }, []);
+  
   
  
   const [userName, setUserName] = React.useState("");
