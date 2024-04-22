@@ -180,7 +180,7 @@ function ComplexNavbar() {
                   variant="small"
                   color="white"
                   // className="font-Kanit text-xs md:text-sm hover:drop-shadow-2xl hover:bg-white px-2 py-1 hover:rounded-full hover:text-violet-900"
-                  className="font-Kanit text-xs md:text-sm  hover:bg-brown-bg px-2 py-1 hover:rounded-full hover:text-brown-400"
+                  className="font-Kanit text-xs md:text-sm bg-browntop hover:bg-brown-bg px-2 py-1 hover:rounded-full hover:shadow-xl hover:text-brown-400"
                 >
                   {label}
                 </Typography>
