@@ -162,7 +162,7 @@ function ComplexNavbar() {
   return (
     <>
     {/* bg-violet-800 */}
-      <Navbar className="fixed top-0 z-10 shadow-md h-max max-w-full border-none rounded-none px-4 bg-browntop lg:px-8 py-2 ">
+      <Navbar className="fixed top-0 z-10 shadow-md h-max max-w-full border-none rounded-none px-4  lg:px-8 py-2 bg-browntop">
         <div className="relative mx-auto flex items-center text-white">
           <Typography
             as="a"
