@@ -742,7 +742,7 @@ function CustomPage() {
           ))}
 
           <p className="text-center text-gray-700 text-sm mt-4 pl-5">
-            ** ทางร้านมีบริการรับตัดม่านหลุดย์
+            ** ทางร้านมีบริการรับตัดม่านหลุสย์
           </p>
         </div>
 
@@ -810,14 +810,15 @@ function CustomPage() {
         <p className="  mt-14 text-sm ml-5 text-brown-400"> เซนติเมตร</p>
       </div>
       {typeById === "ได้" ? (
-        <>
+        <div className="ml-10">
           <p className="text-base mx-7 my-4 text-brown-400">
             ต้องการทำเป็นม่าน2ชั้นหรือไม่
           </p>{" "}
           {["ทำ", "ไม่ทำ"].map((twolayer) => (
+            
             <div
               key={twolayer}
-              className=" flex-row text-left  text-browntop text-lg mt-2  mb-2"
+              className=" ml-10 flex-row text-left  text-browntop text-lg mt-2  mb-2"
             >
               <input
                 className="ml-5 text-base"
@@ -833,20 +834,25 @@ function CustomPage() {
               </label>
             </div>
           ))}
-        </>
+           <p className="text-left text-gray-700 text-sm mt-4 pl-5">
+            ** ทางร้านมีบริการรับตัดม่านหลุสย์
+          </p>
+        </div>
       ) : (
-        <>
+        <div className="ml-10">
           {" "}
           <p className="text-base mx-4 my-4 text-brown-400">
             ไม่สามารถทำม่าน2ชั้นได้
           </p>
-        </>
+        </div>
       )}
-      <p className="text-base mx-7 my-4 text-brown-400">ต้องการรับรางหรือไม่</p>{" "}
+
+      <div className="ml-10">
+      <p className=" text-base mx-7 my-4 text-brown-400">ต้องการรับรางหรือไม่</p>{" "}
       {["รับราง", "ไม่รับราง"].map((rail) => (
         <div
           key={rail}
-          className=" flex-row text-left  text-browntop text-base mt-2  mb-2"
+          className=" ml-10 flex-row text-left  text-browntop text-base mt-2  mb-2 "
         >
           <input
             className="ml-5 text-base"
@@ -862,6 +868,9 @@ function CustomPage() {
           </label>
         </div>
       ))}
+      </div>
+
+
       <div className="flex justify-center">
         {isLoggedIn ? (
           <button
