@@ -45,109 +45,108 @@ function Orders() {
     }
   }, [isLoading]);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       setIsLoading(true);
-  //       const orderDataApprove = await orderAPI.getOrderApprove();
-  //       setOrderApprove(orderDataApprove);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const orderDataApprove = await orderAPI.getOrderApprove();
+        setOrderApprove(orderDataApprove);
   
-  //       const orderDataPayment = await orderAPI.getOrderPayment();
-  //       const paymentFalseOrders = orderDataPayment.filter(
-  //         (order) => order.payment === false
-  //       );
-  //       setOrderWaitPayment(paymentFalseOrders);
+        const orderDataPayment = await orderAPI.getOrderPayment();
+        const paymentFalseOrders = orderDataPayment.filter(
+          (order) => order.payment === false
+        );
+        setOrderWaitPayment(paymentFalseOrders);
   
-  //       const paymentTrueOrders = orderDataPayment.filter(
-  //         (order) => order.payment === true
-  //       );
-  //       setOrderVerifyPayment(paymentTrueOrders);
+        const paymentTrueOrders = orderDataPayment.filter(
+          (order) => order.payment === true
+        );
+        setOrderVerifyPayment(paymentTrueOrders);
   
-  //       const orderDataPrepare = await orderAPI.getOrderPrepare();
-  //       setOrderPrepare(orderDataPrepare);
+        const orderDataPrepare = await orderAPI.getOrderPrepare();
+        setOrderPrepare(orderDataPrepare);
   
-  //       const orderDataSend = await orderAPI.getOrderSend();
-  //       const sendFalseOrders = orderDataSend.filter(
-  //         (order) => order.sendproduct === false
-  //       );
-  //       setOrderSend(sendFalseOrders);
+        const orderDataSend = await orderAPI.getOrderSend();
+        const sendFalseOrders = orderDataSend.filter(
+          (order) => order.sendproduct === false
+        );
+        setOrderSend(sendFalseOrders);
   
-  //       const sendTrueOrders = orderDataSend.filter(
-  //         (order) => order.sendproduct === true
-  //       );
-  //       setOrderSended(sendTrueOrders);
+        const sendTrueOrders = orderDataSend.filter(
+          (order) => order.sendproduct === true
+        );
+        setOrderSended(sendTrueOrders);
   
-  //       const orderDataComplete = await orderAPI.getOrderComplete();
-  //       const completeTrueOrders = orderDataComplete.filter(
-  //         (order) => order.complete === true
-  //       );
-  //       setOrderComplete(completeTrueOrders);
+        const orderDataComplete = await orderAPI.getOrderComplete();
+        const completeTrueOrders = orderDataComplete.filter(
+          (order) => order.complete === true
+        );
+        setOrderComplete(completeTrueOrders);
   
-  //       const orderDataAll = await orderAPI.getOrderAll();
-  //       const cancelledOrders = orderDataAll.filter(
-  //         (order) => order.enable === false || order.cancelled === true
-  //       );
-  //       setOrderCancelled(cancelledOrders);
-  //       setIsLoading(false);
+        const orderDataAll = await orderAPI.getOrderAll();
+        const cancelledOrders = orderDataAll.filter(
+          (order) => order.enable === false || order.cancelled === true
+        );
+        setOrderCancelled(cancelledOrders);
+        setIsLoading(false);
 
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //       setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setIsLoading(false);
 
-  //     } 
-  //   };
+      } 
+    };
 
-  //   setIsLoading(false);
-  //   fetchData();
+    setIsLoading(false);
+    fetchData();
 
  
-  // }, []);
-
-  useEffect(() => {
-    setIsLoading(true);
-  
-    Promise.all([
-      orderAPI.getOrderApprove(),
-      orderAPI.getOrderPayment(),
-      orderAPI.getOrderPrepare(),
-      orderAPI.getOrderSend(),
-      orderAPI.getOrderComplete(),
-      orderAPI.getOrderAll()
-    ])
-    .then(([orderDataApprove, orderDataPayment, orderDataPrepare, orderDataSend, orderDataComplete, orderDataAll]) => {
-      setOrderApprove(orderDataApprove);
-      const paymentFalseOrders = orderDataPayment.filter(
-        (order) => order.payment === false
-      );
-      setOrderWaitPayment(paymentFalseOrders);
-      const paymentTrueOrders = orderDataPayment.filter(
-        (order) => order.payment === true
-      );
-      setOrderVerifyPayment(paymentTrueOrders);
-      setOrderPrepare(orderDataPrepare);
-      const sendFalseOrders = orderDataSend.filter(
-        (order) => order.sendproduct === false
-      );
-      setOrderSend(sendFalseOrders);
-      const sendTrueOrders = orderDataSend.filter(
-        (order) => order.sendproduct === true
-      );
-      setOrderSended(sendTrueOrders);
-      const completeTrueOrders = orderDataComplete.filter(
-        (order) => order.complete === true
-      );
-      setOrderComplete(completeTrueOrders);
-      const cancelledOrders = orderDataAll.filter(
-        (order) => order.enable === false || order.cancelled === true
-      );
-      setOrderCancelled(cancelledOrders);
-      setIsLoading(false);
-    })
-    .catch((error) => {
-      console.error("Error fetching data:", error);
-      setIsLoading(false);
-    });
   }, []);
+
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   Promise.all([
+  //     orderAPI.getOrderApprove(),
+  //     orderAPI.getOrderPayment(),
+  //     orderAPI.getOrderPrepare(),
+  //     orderAPI.getOrderSend(),
+  //     orderAPI.getOrderComplete(),
+  //     orderAPI.getOrderAll()
+  //   ])
+  //   .then(([orderDataApprove, orderDataPayment, orderDataPrepare, orderDataSend, orderDataComplete, orderDataAll]) => {
+  //     setOrderApprove(orderDataApprove);
+  //     const paymentFalseOrders = orderDataPayment.filter(
+  //       (order) => order.payment === false
+  //     );
+  //     setOrderWaitPayment(paymentFalseOrders);
+  //     const paymentTrueOrders = orderDataPayment.filter(
+  //       (order) => order.payment === true
+  //     );
+  //     setOrderVerifyPayment(paymentTrueOrders);
+  //     setOrderPrepare(orderDataPrepare);
+  //     const sendFalseOrders = orderDataSend.filter(
+  //       (order) => order.sendproduct === false
+  //     );
+  //     setOrderSend(sendFalseOrders);
+  //     const sendTrueOrders = orderDataSend.filter(
+  //       (order) => order.sendproduct === true
+  //     );
+  //     setOrderSended(sendTrueOrders);
+  //     const completeTrueOrders = orderDataComplete.filter(
+  //       (order) => order.complete === true
+  //     );
+  //     setOrderComplete(completeTrueOrders);
+  //     const cancelledOrders = orderDataAll.filter(
+  //       (order) => order.enable === false || order.cancelled === true
+  //     );
+  //     setOrderCancelled(cancelledOrders);
+  //     setIsLoading(false);
+  //   })
+  //   .catch((error) => {
+  //     console.error("Error fetching data:", error);
+  //     setIsLoading(false);
+  //   });
+  // }, []);
   
   
   
