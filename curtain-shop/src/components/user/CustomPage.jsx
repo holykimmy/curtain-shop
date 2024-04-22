@@ -815,7 +815,6 @@ function CustomPage() {
             ต้องการทำเป็นม่าน2ชั้นหรือไม่
           </p>{" "}
           {["ทำ", "ไม่ทำ"].map((twolayer) => (
-            
             <div
               key={twolayer}
               className=" ml-10 flex-row text-left  text-browntop text-lg mt-2  mb-2"

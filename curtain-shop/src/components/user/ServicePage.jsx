@@ -127,9 +127,8 @@ function ServicePage() {
             alt="about"
           />
 
-          <h1 className="flex text-sm md:text-base xl:text-lg text-b-font items-center mx-auto text-center">
-            ร้านของเรามีบริการลงพื้นที่ถึงหน้างานของลูกค้า
-            ไม่ว่าจะเป็นการให้คำปรึกษา
+          <h1 className="flex text-sm md:text-base xl:text-lg text-b-font items-center mx-auto text-center p-2 md:p-10">
+          ร้านค้าของเรามีบริการลงพื้นที่วัดขนาดหน้าต่างถึงบ้านของคุณและสามารถให้คำปรึกษาเกี่ยวกับผ้าม่านและประเภทผ้าม่านที่เหมาะกับพื้นที่ในบ้านคุณได้ หากมั่นใจว่าคุณต้องการสั่งตัดสินค้ากับทางเรา บริการลงพื้นที่วัดหน้าต่างหน้างานจะให้บริการแค่เฉพาะที่อยู่ที่อยู่ใน *** กรุงเทพมหานคร *** เท่านั้น โดยค่าบริการการวัดขึ้นอยู่กับระยะทางที่อยู่ของคุณ          
           </h1>
         </div>
 
@@ -139,9 +138,8 @@ function ServicePage() {
           </p>
         </div>
         <div className="flex bg-brown-blog shadow-md">
-          <h1 className="flex text-sm md:text-base xl:text-lg text-b-font items-center mx-auto text-center">
-            ร้านของเรามีบริการลงพื้นที่ถึงหน้างานของลูกค้า
-            ไม่ว่าจะเป็นการให้คำปรึกษา
+          <h1 className="flex text-sm md:text-base xl:text-lg text-b-font items-center mx-auto text-center p-2 md:p-10">
+          ร้านมีบริการติดตั้งผ้าม่านที่สั่งตัดถึงบ้านของคุณ โดยใช้ช่างที่มืออาชีพ มีประสบการณ์อย่างยาวนานในการติดตั้ง ทางเราดูแลอุปกรณ์ที่ลูกค้าทำการสั่งอย่างดีเยี่ยมก่อนติดตั้ง รับรองว่าสินค้าที่คุณจะได้รับจากเราจะมีมาตรฐานที่ดีทั้งด้านสินค้าและการติดตั้งอย่างแน่นอน
           </h1>
           <img
             className="flex shadow-2xl w-[200px] md:w-[400px] h-auto"
@@ -161,9 +159,8 @@ function ServicePage() {
             alt="about"
           />
 
-          <h1 className="flex text-sm md:text-base xl:text-lg text-b-font items-center mx-auto text-center">
-            ร้านของเรามีบริการลงพื้นที่ถึงหน้างานของลูกค้า
-            ไม่ว่าจะเป็นการให้คำปรึกษา
+          <h1 className="flex text-sm md:text-base xl:text-lg text-b-font items-center mx-auto text-center p-2 md:p-10">
+          ทางร้านของเราถึงจะเป็นร้านสั่งตัดผ้าม่าน แต่ร้านของเรายังครอบคลุมไปถึงการติดตั้งวอลเปเปอร์ได้เช่นกัน โดยทางเรารับบริการติดตั้งวอลเปเปอร์ที่คุณมีแล้วอยู่แล้วหรือจะส่งวอลเปเปอร์ที่คุณอยากได้มาให้เรา เราสามารถหาสินค้าที่วอลเปเปอร์ที่คุณต้องการเพื่อทำการติดตั้งให้คุณได้เช่นกัน
           </h1>
         </div>
         <Footer></Footer>
