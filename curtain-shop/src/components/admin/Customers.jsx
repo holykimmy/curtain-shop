@@ -51,24 +51,6 @@ function Customers() {
   }, []);
   console.log(data);
 
-  const [address, setAddress] = useState([]);
-  const fetchData = async () => {
-    setIsLoading(true);
-    try {
-      const addressData = await customerAPI.getCustomerAddressById();
-      setAddress(addressData);
-      setIsLoading(false);
-    } catch (err) {
-      console.error("erro", err);
-      setIsLoading(false);
-    }
-  };
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  console.log(address);
-
   const handleSearch = async () => {
     setIsLoading(true);
     try {
