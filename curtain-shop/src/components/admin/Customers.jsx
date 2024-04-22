@@ -35,8 +35,8 @@ function Customers() {
   }, [isLoading]);
 
   useEffect(() => {
-    setIsLoading(true);
     const fetchData = () => {
+      setIsLoading(true);
       CustomerAPI.getAllCustomer()
         .then((orderData) => {
           setData(orderData);
