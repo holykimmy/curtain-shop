@@ -692,7 +692,7 @@ function ReceptInvoiceUpdate() {
               class="w-[80%] md:[20%] mb-5  bg-b-btn hover:bg-browntop text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
             >
-              เพิ่มข้อมูล
+              แก้ไขข้อมูล
             </button>
           </div>
         </form>

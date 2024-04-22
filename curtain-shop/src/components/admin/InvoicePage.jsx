@@ -696,7 +696,7 @@ function QuatationPage() {
               class="w-[80%] md:[20%] bg-b-btn hover:bg-browntop text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
             >
-              เพิ่มข้อมูล
+              บันทึกข้อมูล
             </button>
           </div>
         </form>
