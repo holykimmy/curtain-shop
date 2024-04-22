@@ -237,8 +237,8 @@ function EditAddressPage() {
               icon: "success",
               text: "ข้อมูลที่อยู่ถูกบันทึกเรียบร้อยแล้ว"
             }).then(()=>{
-              navigate("/accout")
-            
+              navigate("/account")
+
             })
           }
         });
