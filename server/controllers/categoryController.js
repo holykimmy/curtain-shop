@@ -68,6 +68,45 @@ exports.createBrand = (req, res) => {
     });
 };
 
+exports.updateBrand = (req, res) => {
+  const { id } = req.params; 
+  const { brand } = req.body;
+
+  console.log(id,brand);
+  let slug = slugifyMultilingual(brand);
+  if (!slug) slug = uuidv4();
+
+  switch (true) {
+    case !brand:
+      return res.status(400).json({ error: "Please provide a brand name" });
+  }
+
+  Categorys.findOne({ brand }) // ใช้ findOne เพื่อค้นหาแบรนด์ที่มีชื่อตรงกัน
+    .then((existingBrand) => {
+      if (existingBrand && existingBrand._id.toString() !== id) {
+        // หากมีแบรนด์ที่มีชื่อเหมือนแล้วแต่ไม่ใช่แบรนด์ที่ต้องการอัปเดต ให้ส่งข้อความแจ้งเตือนว่า "This brand already exists"
+        return res.status(400).json({ error: "แบรนด์นี้มีอยู่แล้ว" });
+      } else {
+        // ถ้าไม่มีแบรนด์ที่มีชื่อเหมือนในฐานข้อมูลหรือเป็นแบรนด์ที่ต้องการอัปเดตเอง
+        // ให้อัปเดตข้อมูลแบรนด์
+        Categorys.findByIdAndUpdate(id, { brand, slug }, { new: true })
+          .then((category) => {
+            if (!category) {
+              return res.status(404).json({ error: "ไม่พบข้อมูล" });
+            }
+            res.json(category);
+          })
+          .catch((err) => {
+            res.status(400).json({ error: "เกิดข้อผิดพลาดในการ update" });
+          });
+      }
+    })
+    .catch((err) => {
+      res.status(400).json({ error: "server error" });
+    });
+};
+
+
 exports.createType = (req,res) => {
   const {brand , p_type  } = req.body ;
   let slug = slugifyMultilingual(brand);

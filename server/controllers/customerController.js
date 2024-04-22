@@ -997,6 +997,7 @@ exports.getOrderByIdComplete = async (req, res) => {
   }
 };
 
+
 exports.getOrderByIdOrder = async (req, res) => {
   try {
     const idOrder = req.params.id;
