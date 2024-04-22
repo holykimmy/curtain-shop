@@ -208,7 +208,7 @@ const PrepareOrder = ({ idUser }) => {
 
               <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
                 สถานะ :{" "}
-                {!order.sendproduct && !order.pandding ? "รอการจัดส่ง" : "ส่งสินค้าเรียบร้อยแล้ว"}
+                {!order.sendproduct && !order.pandding ?  null : "กำลังรอการจัดส่ง"}
               </p>
 
               <div className="flex justify-between">
