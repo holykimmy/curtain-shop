@@ -732,9 +732,9 @@ exports.userUpdateADCart = async (req, res) => {
     console.log("File keys:", fileKeys);
     console.log("Recieved data:", sendAddress, deliveryIs, confirmed);
 
-    if (!req.files) {
-      return res.status(400).send("No files were uploaded.");
-    }
+    // if (!req.files) {
+    //   return res.status(400).send("No files were uploaded.");
+    // }
     if (!sendAddress || !deliveryIs || !confirmed) {
       return res.status(400).send({
         error: "กรุณาส่งค่า sendAddress, deliveryIs, และ confirmed ให้ถูกต้อง"
