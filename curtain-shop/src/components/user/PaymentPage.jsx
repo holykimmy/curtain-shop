@@ -403,16 +403,22 @@ function PaymentPage() {
                   <p className="text-base leading-4 text-gray-800  px-4 py-6 space-y-4 md:space-y-6 xl:space-y-8">
                     รูปหน้าหน้าต่าง
                   </p>
-                  <div className="flex flex-row justify-around items-start w-full space-y-4 md:space-y-6 xl:space-y-8">
-                    {order.windowimg.map((url, index) => (
-                      <img
-                        key={index}
-                        className="w-[150px]  m-4 drop-shadow-md "
-                        src={`${process.env.REACT_APP_AWS}${url}`}
-                        alt="product"
-                      />
-                    ))}
-                  </div>
+                  <div className="flex flex-wrap justify-center md:justify-center bg-gray-50 pb-4 items-start w-full space-y-4 md:space-y-6 xl:space-y-8">
+                      {order.windowimg.length > 0 ? (
+                        order.windowimg.map((url, index) => (
+                          <img
+                            key={index}
+                            className="w-[150px] md:w-[200px] m-4 filter drop-shadow-xl"
+                            src={`${process.env.REACT_APP_AWS}${url}`}
+                            alt="product"
+                          />
+                        ))
+                      ) : (
+                        <p className="text-red-500 text-base">
+                          ไม่ได้แนบรูปภาพ
+                        </p>
+                      )}
+                    </div>
 
                   <div className="flex justify-center md:flex-row flex-col items-stretch w-full space-y-4 md:space-y-0 md:space-x-6 xl:space-x-8">
                     <div className="flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 space-y-6   ">

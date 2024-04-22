@@ -271,13 +271,13 @@ function CheckOrdeerPage() {
     console.table(files);
     try {
       const formData = new FormData();
-      if (!files || files.length === 0) {
-        Swal.fire({
-          icon: "error",
-          text: "กรุณาเลือกแนบรูปหน้าต่างของคุณ"
-        });
-        return;
-      }
+      // if (!files || files.length === 0) {
+      //   Swal.fire({
+      //     icon: "error",
+      //     text: "กรุณาเลือกแนบรูปหน้าต่างของคุณ"
+      //   });
+      //   return;
+      // }
 
       // เพิ่มทุกไฟล์ลงใน FormData
       files.forEach((file) => {
