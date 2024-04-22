@@ -15,6 +15,7 @@ import _ from "lodash";
 
 function CustomPage() {
   //login
+ 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
@@ -895,8 +896,9 @@ function CustomPage() {
             เพิ่มลงลงตระกร้าสินค้า
           </button>
         ) : (
+
           <Link
-            to={{ pathname: "/login", state: `custom-product/${productId}` }}
+          to="/login" state={`custom-product/${productId}`} 
           >
             <button className="my-4 text-white hover:shadow-2xl bg-red-400 rounded-xl p-2 w-[150px]">
               {" "}
