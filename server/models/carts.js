@@ -6,9 +6,9 @@ const Joi = require("joi");
 const passwordComplexity = require("joi-password-complexity");
 const dayjs = require("dayjs");
 const localizedFormat = require("dayjs/plugin/localizedFormat");
-const utc = require('dayjs/plugin/utc');
-const timezone = require('dayjs/plugin/timezone');
-const thLocale = require('dayjs/locale/th');
+const utc = require("dayjs/plugin/utc");
+const timezone = require("dayjs/plugin/timezone");
+const thLocale = require("dayjs/locale/th");
 
 dayjs.extend(localizedFormat);
 dayjs.extend(utc);
@@ -20,9 +20,39 @@ const CartSchema = mongoose.Schema(
     products: [
       {
         product: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Products",
-          required: true
+          brand: {
+            type: String,
+            required: true
+          },
+          p_type: {
+            type: String
+          },
+          name: {
+            type: String
+          },
+          color: {
+            type: String
+          },
+          detail: {
+            type: String
+          },
+          p_width: {
+            type: Number
+          },
+          price: {
+            type: Number
+          },
+          image: {
+            type: String,
+            default: "noimage.jpg"
+          },
+          imageKey: {
+            type: String
+          },
+          createdAt: {
+            type: String,
+            default: dayjs().tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss")
+          }
         },
         type: { type: String },
         rail: { type: String },
@@ -38,8 +68,19 @@ const CartSchema = mongoose.Schema(
       ref: "Customers"
     },
     sendAddress: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Address"
+      name: String,
+      tell: String,
+      houseNo: String,
+      sub_district: String,
+      district: String,
+      province: String,
+      postcode: String,
+
+      createdAt: {
+        type: String,
+        default: dayjs().tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss")
+      }
+    
     },
     detail: { type: String },
     enable: { type: Boolean, default: true },
@@ -62,15 +103,14 @@ const CartSchema = mongoose.Schema(
     deposit: { type: Boolean, default: false },
     createdAt: {
       type: String,
-      default: dayjs().tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss')
+      default: dayjs().tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss")
     },
     updatedAt: {
       type: String,
-      default: dayjs().tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss')
+      default: dayjs().tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss")
     }
   },
   { timestamps: true }
 );
-
 
 module.exports = mongoose.model("Cart", CartSchema);

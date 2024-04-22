@@ -18,7 +18,6 @@ const fs = require("fs");
 const path = require("path");
 const nodemailer = require("nodemailer");
 
-
 exports.register = async (req, res) => {
   const { f_name, l_name, username, email, tell, password } = req.body;
   try {
@@ -313,17 +312,56 @@ exports.loginUser = async (req, res) => {
   }
 };
 
-exports.getAllCustomers = (req, res) => {
+exports.getAllCustomers23 = (req, res) => {
   User.find({})
     .exec()
-    .then((customer) => {
-      res.json(customer);
+    .then(async (customers) => {
+      const customersWithCartAndAddress = [];
+      for (const customer of customers) {
+        const customerId = customer._id;
+        try {
+          const cart = await Cart.find({ orderBy: customerId }).exec();
+          const address = await Address.find({ idUser: customerId }).exec();
+          customersWithCartAndAddress.push({
+            customer,
+            address
+          });
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ error: error.message });
+          return;
+        }
+      }
+      res.json(customersWithCartAndAddress);
     })
     .catch((err) => {
-      console.log(error);
+      console.error(err);
       res.status(500).json({ error: err.message });
     });
 };
+
+
+exports.getAllCustomers = async (req, res) => {
+  try {
+    const customers = await User.find({}).exec();
+    const customersWithCartAndAddress = [];
+    for (const customer of customers) {
+      const customerId = customer._id;
+      const cart = await Cart.find({ orderBy: customerId }).exec();
+      const address = await Address.find({ idUser: customerId }).exec();
+      customersWithCartAndAddress.push({
+        customer,
+        cart,
+        address
+      });
+    }
+    res.json(customersWithCartAndAddress);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 
 exports.getCustomers = (req, res) => {
   const { name } = req.query;
@@ -688,26 +726,42 @@ exports.userCart = async (req, res) => {
       return res.status(404).send({ error: "ไม่พบผู้ใช้" });
     }
 
-    const newCart = await Cart({
-      //loop procut
-      products: cart.map((item) => ({
-        product: item.productId,
-        type: item.type,
-        rail: item.rail,
-        count: item.count,
-        width: item.width,
-        height: item.height,
-        twolayer: item.twolayer,
-        confirmed: false,
-        totalPiece: item.totalPiece
-      })),
+    const cartProducts = await Promise.all(
+      cart.map(async (item) => {
+        const product = await Products.findById(item.productId);
+        return {
+          product: {
+            productId: item.productId,
+            brand: product.brand,
+            p_type: product.p_type,
+            name: product.name,
+            color: product.color,
+            detail: product.detail,
+            p_width: product.p_width,
+            price: product.price,
+            image: product.image
+          },
+          type: item.type,
+          rail: item.rail,
+          count: item.count,
+          width: item.width,
+          height: item.height,
+          twolayer: item.twolayer,
+          totalPiece: item.totalPiece
+        };
+      })
+    );
 
+    const totalPrice = cart.reduce(
+      (total, item) => total + item.totalPiece * item.count,
+      0
+    );
+
+    const newCart = await Cart.create({
+      products: cartProducts,
       orderBy: idUser,
-      totalPrice: cart.reduce(
-        (total, item) => total + item.totalPiece * item.count,
-        0
-      )
-    }).save();
+      totalPrice: totalPrice
+    });
 
     res.json(newCart);
   } catch (err) {
@@ -772,17 +826,8 @@ exports.getOrderById = async (req, res) => {
     let cart = await Cart.find({ orderBy: idUser })
       .populate([
         {
-          path: "products.product",
-          select: "productId brand p_type name p_width price color image detail"
-        },
-        {
           path: "orderBy",
           select: "_id f_name l_name username email tell createdAt updatedAt"
-        },
-        {
-          path: "sendAddress",
-          select:
-            "id name tell houseNo sub_district district province postcode idUser"
         }
       ])
       .exec();
@@ -812,17 +857,8 @@ exports.getOrderByIdWaitPayment = async (req, res) => {
     })
       .populate([
         {
-          path: "products.product",
-          select: "productId brand p_type name p_width price color image detail"
-        },
-        {
           path: "orderBy",
           select: "_id f_name l_name username email tell createdAt updatedAt"
-        },
-        {
-          path: "sendAddress",
-          select:
-            "id name tell houseNo sub_district district province postcode idUser"
         }
       ])
       .exec();
@@ -886,17 +922,8 @@ exports.getOrderByIdPrepare = async (req, res) => {
     })
       .populate([
         {
-          path: "products.product",
-          select: "productId brand p_type name p_width price color image detail"
-        },
-        {
           path: "orderBy",
           select: "_id f_name l_name username email tell createdAt updatedAt"
-        },
-        {
-          path: "sendAddress",
-          select:
-            "id name tell houseNo sub_district district province postcode idUser"
         }
       ])
       .exec();
@@ -932,18 +959,8 @@ exports.getOrderByIdSend = async (req, res) => {
     })
       .populate([
         {
-          path: "products.product",
-          select:
-            "productId brand  p_type name p_width price color image detail"
-        },
-        {
           path: "orderBy",
           select: "_id f_name l_name username email tell createdAt updatedAt"
-        },
-        {
-          path: "sendAddress",
-          select:
-            "id name tell houseNo sub_district district province postcode idUser"
         }
       ])
       .exec();
@@ -974,18 +991,8 @@ exports.getOrderByIdComplete = async (req, res) => {
     })
       .populate([
         {
-          path: "products.product",
-          select:
-            "productId brand  p_type name p_width price color image detail"
-        },
-        {
           path: "orderBy",
           select: "_id f_name l_name username email tell createdAt updatedAt"
-        },
-        {
-          path: "sendAddress",
-          select:
-            "id name tell houseNo sub_district district province postcode idUser"
         }
       ])
       .exec();
@@ -997,7 +1004,6 @@ exports.getOrderByIdComplete = async (req, res) => {
   }
 };
 
-
 exports.getOrderByIdOrder = async (req, res) => {
   try {
     const idOrder = req.params.id;
@@ -1007,17 +1013,8 @@ exports.getOrderByIdOrder = async (req, res) => {
     let cart = await Cart.find({ _id: idOrder })
       .populate([
         {
-          path: "products.product",
-          select: "productId brand p_type name p_width price color image detail"
-        },
-        {
           path: "orderBy",
           select: "_id f_name l_name username email tell createdAt updatedAt"
-        },
-        {
-          path: "sendAddress",
-          select:
-            "id name tell houseNo sub_district district province postcode idUser"
         }
       ])
       .exec();
@@ -1055,17 +1052,8 @@ exports.getOrderAll = async (req, res) => {
     let cart = await Cart.find({})
       .populate([
         {
-          path: "products.product",
-          select: "productId brand p_type name p_width price color image detail"
-        },
-        {
           path: "orderBy",
           select: "_id f_name l_name username email tell createdAt updatedAt"
-        },
-        {
-          path: "sendAddress",
-          select:
-            "id name tell houseNo sub_district district province postcode idUser"
         }
       ])
       .exec();
@@ -1091,23 +1079,13 @@ exports.getOrderApprove = async (req, res) => {
       pandding: false,
       sendproduct: false,
       complete: false,
-     
-      cancelled:false
+
+      cancelled: false
     })
       .populate([
         {
-          path: "products.product",
-          select:
-            "productId brand  p_type name p_width price color image detail"
-        },
-        {
           path: "orderBy",
           select: "_id f_name l_name username email tell createdAt updatedAt"
-        },
-        {
-          path: "sendAddress",
-          select:
-            "id name tell houseNo sub_district district province postcode idUser"
         }
       ])
       .exec();
@@ -1132,22 +1110,13 @@ exports.getOrderPayment = async (req, res) => {
       pandding: false,
       sendproduct: false,
       complete: false,
-     
-      cancelled:false
+
+      cancelled: false
     })
       .populate([
         {
-          path: "products.product",
-          select: "productId brand p_type name p_width price color image detail"
-        },
-        {
           path: "orderBy",
           select: "_id f_name l_name username email tell createdAt updatedAt"
-        },
-        {
-          path: "sendAddress",
-          select:
-            "id name tell houseNo sub_district district province postcode idUser"
         }
       ])
       .exec();
@@ -1173,22 +1142,13 @@ exports.getOrdertoVeriflyPayment = async (req, res) => {
       pandding: false,
       sendproduct: false,
       complete: false,
-    
-      cancelled:false
+
+      cancelled: false
     })
       .populate([
         {
-          path: "products.product",
-          select: "productId brand p_type name p_width price color image detail"
-        },
-        {
           path: "orderBy",
           select: "_id f_name l_name username email tell createdAt updatedAt"
-        },
-        {
-          path: "sendAddress",
-          select:
-            "id name tell houseNo sub_district district province postcode idUser"
         }
       ])
       .exec();
@@ -1218,17 +1178,8 @@ exports.getOrderPrepare = async (req, res) => {
     })
       .populate([
         {
-          path: "products.product",
-          select: "productId brand p_type name p_width price color image detail"
-        },
-        {
           path: "orderBy",
           select: "_id f_name l_name username email tell createdAt updatedAt"
-        },
-        {
-          path: "sendAddress",
-          select:
-            "id name tell houseNo sub_district district province postcode idUser"
         }
       ])
       .exec();
@@ -1255,17 +1206,8 @@ exports.getOrderSend = async (req, res) => {
     })
       .populate([
         {
-          path: "products.product",
-          select: "productId brand p_type name p_width price color image detail"
-        },
-        {
           path: "orderBy",
           select: "_id f_name l_name username email tell createdAt updatedAt"
-        },
-        {
-          path: "sendAddress",
-          select:
-            "id name tell houseNo sub_district district province postcode idUser"
         }
       ])
       .exec();
@@ -1292,17 +1234,8 @@ exports.getOrderComplete = async (req, res) => {
     })
       .populate([
         {
-          path: "products.product",
-          select: "productId brand p_type name p_width price color image detail"
-        },
-        {
           path: "orderBy",
           select: "_id f_name l_name username email tell createdAt updatedAt"
-        },
-        {
-          path: "sendAddress",
-          select:
-            "id name tell houseNo sub_district district province postcode idUser"
         }
       ])
       .exec();
@@ -1329,22 +1262,13 @@ exports.searchOrderApprove = async (req, res) => {
       pandding: false,
       sendproduct: false,
       complete: false,
-     
-      cancelled:false
+
+      cancelled: false
     })
       .populate([
         {
-          path: "products.product",
-          select: "productId brand p_type name p_width price color image detail"
-        },
-        {
           path: "orderBy",
           select: "_id f_name l_name username email tell createdAt updatedAt"
-        },
-        {
-          path: "sendAddress",
-          select:
-            "id name tell houseNo sub_district district province postcode idUser"
         }
       ])
       .exec();
@@ -1380,22 +1304,13 @@ exports.searchOrderPayment = async (req, res) => {
       pandding: false,
       sendproduct: false,
       complete: false,
-     
-      cancelled:false
+
+      cancelled: false
     })
       .populate([
         {
-          path: "products.product",
-          select: "productId brand p_type name p_width price color image detail"
-        },
-        {
           path: "orderBy",
           select: "_id f_name l_name username email tell createdAt updatedAt"
-        },
-        {
-          path: "sendAddress",
-          select:
-            "id name tell houseNo sub_district district province postcode idUser"
         }
       ])
       .exec();
@@ -1436,17 +1351,8 @@ exports.searchOrderPrepare = async (req, res) => {
     })
       .populate([
         {
-          path: "products.product",
-          select: "productId brand p_type name p_width price color image detail"
-        },
-        {
           path: "orderBy",
           select: "_id f_name l_name username email tell createdAt updatedAt"
-        },
-        {
-          path: "sendAddress",
-          select:
-            "id name tell houseNo sub_district district province postcode idUser"
         }
       ])
       .exec();
@@ -1487,17 +1393,8 @@ exports.searchOrderSend = async (req, res) => {
     })
       .populate([
         {
-          path: "products.product",
-          select: "productId brand p_type name p_width price color image detail"
-        },
-        {
           path: "orderBy",
           select: "_id f_name l_name username email tell createdAt updatedAt"
-        },
-        {
-          path: "sendAddress",
-          select:
-            "id name tell houseNo sub_district district province postcode idUser"
         }
       ])
       .exec();
@@ -1533,24 +1430,13 @@ exports.searchOrderComplete = async (req, res) => {
       payment: true,
       verifypayment: true,
       pandding: true,
-      sendproduct: true
-      ,
-     
-      cancelled:false
+      sendproduct: true,
+      cancelled: false
     })
       .populate([
         {
-          path: "products.product",
-          select: "productId brand p_type name p_width price color image detail"
-        },
-        {
           path: "orderBy",
           select: "_id f_name l_name username email tell createdAt updatedAt"
-        },
-        {
-          path: "sendAddress",
-          select:
-            "id name tell houseNo sub_district district province postcode idUser"
         }
       ])
       .exec();
@@ -1582,17 +1468,8 @@ exports.searchOrderAll = async (req, res) => {
     let cart = await Cart.find({})
       .populate([
         {
-          path: "products.product",
-          select: "productId brand p_type name p_width price color image detail"
-        },
-        {
           path: "orderBy",
           select: "_id f_name l_name username email tell createdAt updatedAt"
-        },
-        {
-          path: "sendAddress",
-          select:
-            "id name tell houseNo sub_district district province postcode idUser"
         }
       ])
       .exec();
@@ -1877,7 +1754,7 @@ exports.updateOrderCancelled = async (req, res) => {
       to: `${user.email} `,
       subject: "คำสั่งซื้อของคุณถูกยกเลิกแล้ว",
       text: `เรียนคุณ${user.f_name} ${user.l_name} ลูกค้า ร้านเจริญกิจผ้าม่าน
-      ขณะนี้ทางร้านขอเราขออนุญาติยกเลิกออเดอร์หมายเลข : ${idOrder} ของคุณ เนื่องจากสินค้าผ้าของออเดอร์คุณ ${cancelReasonAd} 
+      ขณะนี้ทางร้านขอเราขออนุญาติยกเลิกออเดอร์หมายเลข : ${idOrder} ของคุณ เนื่องจากคำสั่งซื้อคุณ ${cancelReasonAd} 
       ทางร้านจึงแจ้งมาให้ทราบและขออภัยคุณลูกค้าในข้อผิดพลาดจากทางร้านเป็นอย่างสูง ขอบคุณค่ะ
       https://charoenkitcurtain.vercel.app/about-order/cancelled  
       `
