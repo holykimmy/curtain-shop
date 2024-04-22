@@ -232,7 +232,7 @@ function OrderDetailPage() {
         <div class="titlea  py-1 shadow-md">
           <BsPinFill className=" inline-block ml-7 text-shadow w-6 h-6 md:w-8 md:h-8 xl:w-9 xl:h-9 text-b-font"></BsPinFill>
           <h5 className=" inline-block text-md md:text-xl xl:text-xl text-b-font  pl-4 p-2 my-1">
-            การชำระสินค้า
+            รายละเอียดคำสั่งซื้อ
           </h5>
         </div>
 
