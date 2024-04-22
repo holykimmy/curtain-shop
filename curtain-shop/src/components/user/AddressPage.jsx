@@ -135,13 +135,7 @@ function AddressPage() {
     }
   }, []);
 
-  // const handleChange = (e) => {
-  //   const { id, value } = e.target;
-  //   setAddress((prevState) => ({
-  //     ...prevState,
-  //     [id]: value,
-  //   }));
-  // };
+ 
 
   const inputValue = (name) => (event) => {
     const value = event.target.value;

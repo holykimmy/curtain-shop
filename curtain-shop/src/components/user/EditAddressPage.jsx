@@ -180,6 +180,7 @@ function EditAddressPage() {
         setIsLoading(false); 
       });
   }, []);
+  
 
   console.log(mydata);
 
@@ -210,10 +211,10 @@ function EditAddressPage() {
         name: address.name,
         tell: address.tell,
         houseNo: address.houseNo,
-        sub_district: address.sub_district,
-        district: address.district,
-        province: address.province,
-        postcode: address.postcode
+        sub_district: document.getElementById("sub_district").value,
+        district: document.getElementById("district").value,
+        province: document.getElementById("province").value,
+        postcode: document.getElementById("postcode").value
       };
 
       const response = await customerAPI.updateAddress(id, updatedAddress);
@@ -234,9 +235,11 @@ function EditAddressPage() {
             // แสดงข้อความสำเร็จ
             Swal.fire({
               icon: "success",
-
               text: "ข้อมูลที่อยู่ถูกบันทึกเรียบร้อยแล้ว"
-            });
+            }).then(()=>{
+              navigate("/accout")
+            
+            })
           }
         });
       } else {
