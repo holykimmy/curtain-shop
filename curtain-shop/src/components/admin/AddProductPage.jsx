@@ -357,7 +357,7 @@ function AddProductPage() {
               placeholder="ราคาสินค้า"
             />
             <span className=" w-[10%] text-center text-gray-500 ml-2 m-auto p-auto ">
-              บาท
+              บาท/หลา
             </span>
           </div>
           <div class="flex items-center justify-center">

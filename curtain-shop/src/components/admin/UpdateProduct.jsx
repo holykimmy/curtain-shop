@@ -240,7 +240,6 @@ function UpdateProductPage() {
         icon: "success",
       }).then(()=>{
         window.location.reload();
-
       })
     } catch (err) {
       setIsLoading(false);
@@ -417,7 +416,7 @@ function UpdateProductPage() {
               placeholder="ราคาสินค้า"
             />
             <span className=" w-[10%] text-center text-gray-500 ml-2 m-auto p-auto ">
-              บาท
+              บาท/หลา
             </span>
           </div>
           <div class="flex items-center justify-center">
@@ -432,7 +431,7 @@ function UpdateProductPage() {
         </form>
       </div>
       <Link
-        to="/dashboard"
+        to="/products-ad"
         type="button"
         class="fixed bottom-0 flex justify-center ml-2 mb-2 w-1/2 px-5 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white border rounded-lg gap-x-2 sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700"
       >
