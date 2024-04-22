@@ -56,20 +56,17 @@ function CheckOrdeerPage() {
         .then((orderData) => {
           setCurrentOrder(orderData);
           setIsLoading(false);
-         
         })
         .catch((err) => {
           console.error("error", err);
-          setIsLoading(false); 
+          setIsLoading(false);
         });
     };
     fetchData();
   }, [idOrder]);
-
-  console.log(currentOrder);
-
   console.log("check order");
 
+  console.log(currentOrder);
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");
@@ -158,15 +155,13 @@ function CheckOrdeerPage() {
         .then((addressData) => {
           setAddress(addressData);
           setIsLoading(false);
-         
         })
         .catch((err) => {
           console.error("error", err);
-          setIsLoading(false); 
+          setIsLoading(false);
         });
     };
     fetchData();
-
   }, [idUser]);
 
   console.log("dkjhafkdsj");
@@ -174,9 +169,9 @@ function CheckOrdeerPage() {
 
   const [sendAddress, setSendAddress] = useState("");
 
-  const handleAddressSelect = (selectedId) => {
-    setSendAddress(selectedId);
-    console.log("Selected Address ID:", selectedId);
+  const handleAddressSelect = (selectedAddress) => {
+    setSendAddress(selectedAddress);
+    console.log("Selected Address :", selectedAddress);
   };
 
   const deliveryOptions = [
@@ -319,13 +314,12 @@ function CheckOrdeerPage() {
         timer: 1500
       });
       setIsLoading(false);
-
     }
   };
   const numberWithCommas = (x) => {
     const formattedNumber = parseFloat(x).toFixed(2);
     return formattedNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-};
+  };
   // console.table(selectedFiles);
   return (
     <>
@@ -406,8 +400,7 @@ function CheckOrdeerPage() {
                           </p>
                           <p class="text-sm md:text-base xl:text-base text-gray-800">
                             {" "}
-                            ขนาด : {item.width} x{" "}
-                            {item.height} เซนติเมตร{" "}
+                            ขนาด : {item.width} x {item.height} เซนติเมตร{" "}
                           </p>
                           <p class="text-sm md:text-base xl:text-base text-gray-800">
                             จำนวน : {item.count} หลา{" "}
@@ -450,9 +443,27 @@ function CheckOrdeerPage() {
             </div>
 
             <div class="bg-brown-blog mt-10  px-4 pt-8 lg:mt-0">
-              <select
+              {/* <select
                 className="mb-2 py-2 pl-3  rounded-lg text-xs md:text-sm lg:text-sm xl:text-sm  focus:border-brown-700 focus:outline-none"
                 onChange={(e) => handleAddressSelect(e.target.value)}
+              >
+                <option className="" value="">
+                  โปรดเลือกที่อยู่ที่ต้องการจัดส่ง
+                </option>
+                {address.map((address) => (
+                  <option key={address.id} value={address.id}>
+                    {`${address.name}, ${address.houseNo}, ${address.sub_district}, ${address.district}, ${address.province} ${address.postcode}`}
+                  </option>
+                ))}
+              </select> */}
+
+              <select
+                className="mb-2 py-2 pl-3  rounded-lg text-xs md:text-sm lg:text-sm xl:text-sm  focus:border-brown-700 focus:outline-none"
+                onChange={(e) =>
+                  handleAddressSelect(
+                    address.find((address) => address.id === e.target.value)
+                  )
+                }
               >
                 <option className="" value="">
                   โปรดเลือกที่อยู่ที่ต้องการจัดส่ง

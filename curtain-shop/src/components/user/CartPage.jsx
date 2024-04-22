@@ -25,7 +25,6 @@ function CartPage() {
   });
 
   
-
   useEffect(() => {
 
     const authToken = localStorage.getItem("token");

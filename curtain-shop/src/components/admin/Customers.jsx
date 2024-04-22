@@ -7,6 +7,7 @@ import SwitchButton from "./switchbutton";
 import CustomerAPI from "../../services/customerAPI";
 import Swal from "sweetalert2";
 import SwitchEnable from "./switchEnable";
+import customerAPI from "../../services/customerAPI";
 
 function Customers() {
   const [data, setData] = useState([]);
@@ -48,6 +49,25 @@ function Customers() {
     };
     fetchData();
   }, []);
+  console.log(data);
+
+  const [address, setAddress] = useState([]);
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const addressData = await customerAPI.getCustomerAddressById();
+      setAddress(addressData);
+      setIsLoading(false);
+    } catch (err) {
+      console.error("erro", err);
+      setIsLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  console.log(address);
 
   const handleSearch = async () => {
     setIsLoading(true);
@@ -97,58 +117,62 @@ function Customers() {
         {searchResults.length > 0
           ? searchResults.map((customer) => (
               <>
-              <div key={customer._id} className="flex justify-center">
-            <div className="flex  flex-col justify-between w-[97%] sm:w-[97%] md:w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
-              <div className="pl-5 w-[60%]">
-                <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                  ชื่อ - นามสกุล : {customer.f_name}{" "}
-                  <span className="ml-2"> {customer.l_name} </span>
-                </p>
-                <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                  อีเมลล์ : {customer.email}
-                </p>
-                <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                  เบอร์โทรศัพท์ : {customer.tell}
-                </p>
-            
-                {customer.address && customer.address.length > 0 && (
-                  <>
-                    {customer.address.map((address, index) => (
-                      <div key={index} className="mt-4">
-                        <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                          ที่อยู่ {index + 1} :{" "}
-                        </p>
-                        <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                          บ้านเลขที่ : {address.houseNo}
-                        </p>
-                        <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                          แขวง/ตำบล : {address.sub_district}
-                        </p>
-                        <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                          เขต/อำเภอ : {address.district}
-                        </p>
-                        <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                          จังหวัด : {address.province}
-                        </p>
-                        <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                          รหัสไปรษณีย์ : {address.postcode}
-                        </p>
-                      </div>
-                    ))}
-                  </>
-                )}
-              </div>
-              <div className="flex items-center ml-7 mt-5 ">
-                
-                <SwitchEnable
-                  enable={customer.enable}
-                  idUser={customer._id}
-                />
-                
-              
-              </div>
-            </div>
-          </div>
+                <div key={customer._id} className="flex justify-center">
+                  <div className="flex  flex-col justify-between w-[97%] sm:w-[97%] md:w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
+                    <div className="pl-5 w-[60%]">
+                      <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                        ชื่อ - นามสกุล : {customer.customer.f_name}{" "}
+                        <span className="ml-2">
+                          {" "}
+                          {customer.customer.l_name}{" "}
+                        </span>
+                      </p>
+                      <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                        อีเมลล์ : {customer.customer.email}
+                      </p>
+                      <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                        เบอร์โทรศัพท์ : {customer.customer.tell}
+                      </p>
+
+                      <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                        คำสั่งซื้อ : {customer.cart.length}
+                      </p>
+
+                      {customer.address && customer.address.length > 0 && (
+                        <>
+                          {customer.address.map((address, index) => (
+                            <div key={index} className="mt-4">
+                              <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                                ที่อยู่ {index + 1}{" "}
+                              </p>
+                              <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                                บ้านเลขที่ : {address.houseNo}
+                              </p>
+                              <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                                แขวง/ตำบล : {address.sub_district}
+                              </p>
+                              <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                                เขต/อำเภอ : {address.district}
+                              </p>
+                              <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                                จังหวัด : {address.province}
+                              </p>
+                              <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                                รหัสไปรษณีย์ : {address.postcode}
+                              </p>
+                            </div>
+                          ))}
+                        </>
+                      )}
+                    </div>
+                    <div className="flex items-center ml-7 mt-5 ">
+                      <SwitchEnable
+                        enable={customer.customer.enable}
+                        idUser={customer.customer._id}
+                      />
+                    </div>
+                  </div>
+                </div>
                 <hr className="w-full mt-4 mb-2 border-gray-300" />
               </>
             ))
@@ -163,22 +187,25 @@ function Customers() {
             <div className="flex  flex-col justify-between w-[97%] sm:w-[97%] md:w-[85%] h-auto  bg-white shadow-md border rounded mt-2 mb-4  p-3">
               <div className="pl-5 w-[60%]">
                 <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                  ชื่อ - นามสกุล : {customer.f_name}{" "}
-                  <span className="ml-2"> {customer.l_name} </span>
+                  ชื่อ - นามสกุล : {customer.customer.f_name}{" "}
+                  <span className="ml-2"> {customer.customer.l_name} </span>
                 </p>
                 <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                  อีเมลล์ : {customer.email}
+                  อีเมลล์ : {customer.customer.email}
                 </p>
                 <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                  เบอร์โทรศัพท์ : {customer.tell}
+                  เบอร์โทรศัพท์ : {customer.customer.tell}
                 </p>
-            
+                <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
+                  คำสั่งซื้อ : {customer.cart.length} รายการ
+                </p>
+
                 {customer.address && customer.address.length > 0 && (
                   <>
                     {customer.address.map((address, index) => (
                       <div key={index} className="mt-4">
                         <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
-                          ที่อยู่ {index + 1} :{" "}
+                          ที่อยู่ {index + 1}{" "}
                         </p>
                         <p className="text-sm sm:text-sm md:text-md lg:text-md xl-text-lg text-brown-400">
                           บ้านเลขที่ : {address.houseNo}
@@ -201,13 +228,10 @@ function Customers() {
                 )}
               </div>
               <div className="flex items-center ml-7 mt-5 ">
-                
                 <SwitchEnable
-                  enable={customer.enable}
-                  idUser={customer._id}
+                  enable={customer.customer.enable}
+                  idUser={customer.customer._id}
                 />
-                
-              
               </div>
             </div>
           </div>
