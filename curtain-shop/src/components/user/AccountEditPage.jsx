@@ -280,7 +280,7 @@ function EditAccoutPage() {
           </button>
         </div>
         <form onSubmit={submitForm}>
-          <div className="flex items-center justify-between px-3 md:justify-start mt-5 md:pl-4 ">
+          <div className="flex items-center justify-between px-3 md:w-[520px]  mt-5 md:pl-4 ">
             <div className=" inline-block text-base  text-b-font   md:ml-3   ">
               {" "}
               ชื่อ :{" "}
@@ -293,7 +293,7 @@ function EditAccoutPage() {
               onChange={inputValue("f_name")}
             />
           </div>
-          <div className="flex items-center justify-between px-3 md:justify-start mt-5 md:pl-4 ">
+          <div className="flex items-center justify-between px-3 md:w-[520px] mt-5 md:pl-4 ">
             <div className=" inline-block text-base  text-b-font   md:ml-3   ">
               {" "}
               นามสกุล :{" "}
@@ -307,7 +307,7 @@ function EditAccoutPage() {
             />
           </div>
 
-          <div className="flex items-center justify-between px-3 md:justify-start mt-5 md:pl-4 ">
+          <div className="flex items-center justify-between px-3 md:w-[520px]  mt-5 md:pl-4 ">
             <div className=" inline-block text-base  text-b-font   md:ml-3   ">
               {" "}
               email :{" "}
@@ -320,7 +320,7 @@ function EditAccoutPage() {
               onChange={inputValue("email")}
             />
           </div>
-          <div className="flex items-center justify-between px-3 md:justify-start mt-5 md:pl-4 ">
+          <div className="flex items-center justify-between px-3 md:w-[520px]  mt-5 md:pl-4 ">
             <div className=" inline-block text-base  text-b-font   md:ml-3   ">
               {" "}
               เบอร์โทร :{" "}
