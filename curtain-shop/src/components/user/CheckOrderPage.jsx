@@ -553,6 +553,9 @@ function CheckOrdeerPage() {
                   <p className="text-md mt-5 mb-2 leading-6 text-gray-800">
                     แนปรูปภาพหน้าต่างของคุณ
                   </p>
+                  <p className="text-sm mt-5 mb-2 leading-6 text-gray-800">
+                        **หากลูกค้าแนปรูปมาจะเป็นประโยชน์แก่ลูกค้าและความสะดวกของทางร้าน
+                  </p>
                   <div className="flex items-center shadow-md space-x-6 bg-white p-3 rounded-md">
                     {/* <form id="uploadForm" encType="multipart/form-data"> */}
                     <label id="uploadForm" className="block">
