@@ -102,8 +102,8 @@ function ComplexNavbar() {
       const decodedToken = jwtDecode(authToken); // Decode the token
 
       if (decodedToken && decodedToken.user) {
-        const { f_name, l_name } = decodedToken.user;
-        setUserName(`${f_name} ${l_name}`);
+        const { f_name } = decodedToken.user;
+        setUserName(`${f_name}`);
       }
       if (
         decodedToken &&

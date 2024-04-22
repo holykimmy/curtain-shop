@@ -202,7 +202,7 @@ function Orders() {
           onClick={() => navigate("/orders/waitPayment")}
         >
           รอชำระเงิน
-          {orderApprove.length > 0 ? (
+          {orderWaitPayment.length > 0 ? (
             <div className="relative ml-2 inline-block">
               <RiNotification3Fill className=" h-8 w-8 text-red-300 filter drop-shadow-md" />
               <span className="absolute top-1 right-[1px] mr-1 mt-1 text-white  text-xs px-2">

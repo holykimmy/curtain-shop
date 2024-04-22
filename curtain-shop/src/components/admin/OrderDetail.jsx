@@ -469,7 +469,7 @@ function OrderDetail() {
 
                               <div className="pb-4 md:pb-8 w-full md:w-60">
                                 <img
-                                  className="w-[350px] h-[350px]"
+                                  className="w-[350px] h-auto object-contain"
                                   src={`${process.env.REACT_APP_AWS}${order.slipmoney}`}
                                   alt="product"
                                 />
