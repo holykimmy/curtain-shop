@@ -6,7 +6,16 @@ const { S3 } = require("@aws-sdk/client-s3");
 const AWS = require('aws-sdk'); 
 const multerS3 = require('multer-s3');
 const { v4: uuidv4 } = require("uuid");
+const dayjs = require("dayjs");
+const localizedFormat = require("dayjs/plugin/localizedFormat");
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
+const thLocale = require('dayjs/locale/th');
 
+dayjs.extend(localizedFormat);
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.locale(thLocale);
 
 
 // // Configure AWS SDK

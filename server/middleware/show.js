@@ -5,7 +5,16 @@ const slugify = require("slugify");
 // const AWS = require('aws-sdk');
 const { v4: uuidv4 } = require("uuid");
 
+const dayjs = require("dayjs");
+const localizedFormat = require("dayjs/plugin/localizedFormat");
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
+const thLocale = require('dayjs/locale/th');
 
+dayjs.extend(localizedFormat);
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.locale(thLocale);
 // Multer storage configuration for show images
 const storageShow = multer.diskStorage({
     destination: function (req, file, callback) {
