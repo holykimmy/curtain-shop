@@ -340,8 +340,7 @@ exports.getAllCustomers23 = (req, res) => {
     });
 };
 
-
-exports.getAllCustomers = async (req, res) => {
+exports.getAllCustomersasyn = async (req, res) => {
   try {
     const customers = await User.find({}).exec();
     const customersWithCartAndAddress = [];
@@ -362,6 +361,37 @@ exports.getAllCustomers = async (req, res) => {
   }
 };
 
+exports.getAllCustomers = (req, res) => {
+  User.find({})
+    .exec()
+    .then((customers) => {
+      const promises = customers.map((customer) => {
+        const customerId = customer._id;
+        return Cart.find({ orderBy: customerId })
+          .exec()
+          .then((cart) => {
+            return Address.find({ idUser: customerId })
+              .exec()
+              .then((address) => {
+                return {
+                  customer,
+                  cart,
+                  address
+                };
+              });
+          });
+      });
+
+      return Promise.all(promises);
+    })
+    .then((customersWithCartAndAddress) => {
+      res.json(customersWithCartAndAddress);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ error: error.message });
+    });
+};
 
 exports.getCustomers = (req, res) => {
   const { name } = req.query;
@@ -375,9 +405,30 @@ exports.getCustomers = (req, res) => {
   const regex = new RegExp(name, "i");
 
   User.find({ $or: [{ f_name: regex }, { l_name: regex }] })
+
     .exec()
     .then((customers) => {
-      res.json(customers);
+      const promises = customers.map((customer) => {
+        const customerId = customer._id;
+        return Cart.find({ orderBy: customerId })
+          .exec()
+          .then((cart) => {
+            return Address.find({ idUser: customerId })
+              .exec()
+              .then((address) => {
+                return {
+                  customer,
+                  cart,
+                  address
+                };
+              });
+          });
+      });
+
+      return Promise.all(promises);
+    })
+    .then((customersWithCartAndAddress) => {
+      res.json(customersWithCartAndAddress);
     })
     .catch((err) => {
       console.error(err);
