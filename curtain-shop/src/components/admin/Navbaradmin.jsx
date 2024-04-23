@@ -162,7 +162,7 @@ function ComplexNavbar() {
   return (
     <>
     {/* bg-violet-800 */}
-      <Navbar className="fixed top-0 z-10 shadow-md h-max max-w-full border-none rounded-none px-4  lg:px-8 py-2 bg-browntop">
+      <Navbar className="fixed top-0 z-10 shadow-md h-max max-w-full border-none rounded-none px-4  lg:px-8 py-2 bg-violet-800  ">
         <div className="relative mx-auto flex items-center text-white">
           <Typography
             as="a"
@@ -180,8 +180,8 @@ function ComplexNavbar() {
                   href={to}
                   variant="small"
                   color="white"
-                  // className="font-Kanit text-xs md:text-sm hover:drop-shadow-2xl hover:bg-white px-2 py-1 hover:rounded-full hover:text-violet-900"
-                  className="font-Kanit text-xs md:text-sm hover:bg-brown-bg px-2 py-1 hover:rounded-full hover:shadow-xl hover:text-brown-400"
+                  className="font-Kanit text-xs md:text-sm hover:drop-shadow-2xl hover:bg-white px-2 py-1 hover:rounded-full hover:text-violet-900"
+                  // className="font-Kanit text-xs md:text-sm hover:bg-brown-bg px-2 py-1 hover:rounded-full hover:shadow-xl hover:text-brown-400"
                 >
                   {label}
                 </Typography>
