@@ -790,8 +790,9 @@ exports.userCart = async (req, res) => {
             detail: product.detail,
             p_width: product.p_width,
             price: product.price,
-            image: product.image
+            image: product.image,
           },
+          detailwd: item.detailwd,
           type: item.type,
           rail: item.rail,
           count: item.count,

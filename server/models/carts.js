@@ -54,6 +54,7 @@ const CartSchema = mongoose.Schema(
             default: dayjs().tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss")
           }
         },
+        detailwd: { type: String },
         type: { type: String },
         rail: { type: String },
         count: { type: Number, default: 1 },
@@ -82,7 +83,6 @@ const CartSchema = mongoose.Schema(
       }
     
     },
-    detail: { type: String },
     enable: { type: Boolean, default: true },
     deliveryIs: { type: String },
     totalPrice: { type: Number },
