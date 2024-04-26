@@ -14,8 +14,6 @@ const ProductInCart = ({ item, idUser }) => {
 
   const navigate = useNavigate();
 
-
-
   console.log("testtt");
   console.log(item);
 
@@ -205,32 +203,34 @@ const ProductInCart = ({ item, idUser }) => {
     return formattedNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
-  
-  
-
   return (
     <tbody>
       <tr className="text-center ">
-        <td
-          className=" hidden sm:table-cell  text-browntop px-2 py-1 border  border-gray-300"   
-        >
-          <Link to={`/product-detail/${item.productId}`}> <img className="w-[300px] rounded" src={item.image} alt="product" /></Link>
+        <td className=" w-[300px] text-browntop md:px-2 md:py-1 border  border-gray-300">
+          <Link to={`/product-detail/${item.productId}`}>
+            {" "}
+            <img className=" w-[300px] h-full rounded" src={item.image} alt="product" />
+          </Link>
         </td>
         <td className="w-[100px] whitespace-nowrap text-sm text-browntop px-2 py-1 border border-gray-300">
-          <Link to={`/product-detail/${item.productId}`} >{item.name}</Link>
+          <Link to={`/product-detail/${item.productId}`}>{item.name}</Link>
         </td>
         <td className="text-browntop text-sm  px-2 py-1 border border-gray-300">
           {item.brand}
         </td>
-        <td className="hidden sm:table-cell text-browntop text-xs text-left px-2 py-1 border border-gray-300 ">
+        <td className=" w-[250px] md:w-[440px] text-browntop text-xs text-left px-2 py-1 border border-gray-300 ">
           {item.detail.split("\r\n")[0]}
+          <p className="w-[250px] md:w-[440px] font-bold text-brown-400">{item.twolayer === "ทำ" ? "ม่าน 2 ชั้น" : "ม่านชั้นเดียว"}</p>
+          <p className="w-[250px] md:w-[440px] font-bold text-brown-400">ม่านที่สั่งตัด : {item.type}</p>
+          <p className="w-[250px] md:w-[440px] font-bold text-brown-400">เพิ่มเติม : {item.detailwd}</p>
+
         </td>
-        <td className="w-[100px] whitespace-nowrap text-browntop  text-xs px-2 py-1 border border-gray-300 ">
+        {/* <td className="w-[100px] whitespace-nowrap text-browntop  text-xs px-2 py-1 border border-gray-300 ">
           {item.type}
         </td>
         <td className=" w-[100px] text-browntop text-sm px-2 py-1 border border-gray-300 ">
-          {item.twolayer}
-        </td>
+        {item.twolayer}
+        </td> */}
         <td className=" text-browntop text-sm px-2 py-1 border border-gray-300 ">
           <select
             className="form-control mb-2 py-2 pl-3 rounded-lg text-sm w-[110px]"
@@ -249,30 +249,32 @@ const ProductInCart = ({ item, idUser }) => {
               type="number"
               value={item.width}
             />
-           
-          <input
-            onChange={handleChangeHeight}
-            className="form-control w-[57px]  md:w-[75px] lg:w-[75px] xl:w-[75px] mb-2 rounded-lg text-sm"
-            type="number"
-            value={item.height}
-          /> <span className="w-[50px]">/ ซม.</span>
+            <input
+              onChange={handleChangeHeight}
+              className="form-control w-[57px]  md:w-[75px] lg:w-[75px] xl:w-[75px] mb-2 rounded-lg text-sm"
+              type="number"
+              value={item.height}
+            />{" "}
+            <span className="w-[50px]">/ ซม.</span>
           </div>
         </td>
 
         <td className="w-[150px] text-browntop  text-sm px-2 py-1 border border-gray-300 ">
-        <div className="flex items-center">
-          <input
-            onChange={handleChangeCount}
-            className="form-control w-[50px] mb-2 rounded-lg text-sm"
-            type="number"
-            value={item.count}
-          />{" "}
-          <span className="w-[50px]">ชุด</span>
+          <div className="flex items-center">
+            <input
+              onChange={handleChangeCount}
+              className="form-control w-[50px] mb-2 rounded-lg text-sm"
+              type="number"
+              value={item.count}
+            />{" "}
+            <span className="w-[50px]">ชุด</span>
           </div>
         </td>
         <td className="text-browntop text-sm px-2 py-1 border border-gray-300 ">
-        <div className="flex items-center">
-          {numberWithCommas(getTotalPiece(item))}  <span className="w-[50px]">บาท</span> </div>
+          <div className="flex items-center">
+            {numberWithCommas(getTotalPiece(item))}{" "}
+            <span className="w-[50px]">บาท</span>{" "}
+          </div>
         </td>
 
         <td className="px-2 py-1 border border-gray-300 ...">

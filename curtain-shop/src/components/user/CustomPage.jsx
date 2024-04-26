@@ -241,6 +241,8 @@ function CustomPage() {
   const dispatch = useDispatch();
   const [width, setWidth] = useState("");
   const [height, setHeight] = useState("");
+  const [detailwd, setDetailwd] = useState("");
+
 
   console.log("--------", idUser);
 
@@ -251,6 +253,7 @@ function CustomPage() {
     selectedTwolayer,
     pricerail,
     typeById,
+    detailwd,
     width,
     height,
     ...data
@@ -270,8 +273,8 @@ function CustomPage() {
       localStorage.removeItem("cart");
     }
 
-    console.log("data.id", data.id);
-
+    console.log("data.id", data.id)
+    console.log("detailwd :", detailwd);
     console.log("------------data--------");
     if (cart[idUser]) {
       cart[idUser].forEach((item) => {
@@ -281,7 +284,8 @@ function CustomPage() {
           item.rail,
           item.twolayer,
           item.width,
-          item.height
+          item.height,
+          item.detalwd
         );
       });
     }
@@ -306,7 +310,8 @@ function CustomPage() {
         item.width === width &&
         item.height === height &&
         item.rail === selectedRail &&
-        item.twolayer === selectedTwolayer
+        item.twolayer === selectedTwolayer&&
+        item.detailwd === detailwd
     );
 
     console.log("existingProductIndex:", existingProductIndex);
@@ -418,6 +423,7 @@ function CustomPage() {
         color: data.color,
         detail: data.detail,
         width: width,
+        detailwd: detailwd,
         p_width: data.p_width,
         height: height,
         price: data.price,
@@ -460,6 +466,7 @@ function CustomPage() {
     selectedType,
     selectedTwolayer,
     pricerail,
+    detailwd,
     width,
     height,
     ...data
@@ -524,8 +531,17 @@ function CustomPage() {
       });
       return;
     }
+    if (!detailwd){
+      Swal.fire({
+        icon: "warning",
+        title:"กรุณาเลือกว่าจะรับหรือไม่รับ",
+        showConfirmButton: false,
+        timer: 1500
+      })
+    }
 
     console.log("idUSer=====", idUser);
+    console.log("detailwd : ",detailwd);
     // ตรวจสอบว่าผู้ใช้เข้าสู่ระบบหรือไม่
     if (!isLoggedIn) {
       navigate("/login");
@@ -537,6 +553,7 @@ function CustomPage() {
         selectedTwolayer,
         typeById,
         pricerail,
+        detailwd,
         width,
         height,
         ...data
@@ -808,6 +825,17 @@ function CustomPage() {
         </div>
         <p className="  mt-14 text-sm ml-5 text-brown-400"> เซนติเมตร</p>
       </div>
+      <div className="flex justify-center">
+          <p className="mt-4  inline-block text-sm ml-5 text-brown-400">รายละเอียดเพิ่มเติม</p>
+          <input
+            class="appearance-none  rounded w-[190px] py-2 px-3 ml-2 my-2  text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            value={detailwd}
+            type="text"
+            required
+            placeholder=" ex. ผ้าม่านติดห้องนั่งเล่น"
+            onChange={(e) => setDetailwd(e.target.value)}
+          />
+        </div>
       {typeById === "ได้" ? (
         <div className="ml-10">
           <p className="text-base mx-7 my-4 text-brown-400">
@@ -888,6 +916,7 @@ function CustomPage() {
                 selectedType,
                 selectedTwolayer,
                 pricerail,
+                detailwd,
                 selectedRail
               })
             }

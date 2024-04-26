@@ -159,7 +159,7 @@ function CartPage() {
         <table className="min-w-full text-left text-sm font-light">
           <thead className="border-b font-medium dark:border-neutral-500">
             <tr className="border-b dark:border-neutral-500">
-              <th className="hidden sm:table-cell  text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ">
+              <th className="  text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ">
                 รูปภาพ
               </th>
               <th className="text-xs font-normal text-browntop px-2 py-1 border  border-gray-300 ">
@@ -168,15 +168,15 @@ function CartPage() {
               <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ">
                 ยี่ห้อสินค้า
               </th>
-              <th className="hidden sm:table-cell text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ">
-                รายละเอียด
+              <th className=" text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ">
+                รายละเอียดสินค้า
               </th>
-              <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ">
+              {/* <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ">
                 ประเภท
               </th>
               <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ">
                 ม่าน2ชั้น
-              </th>
+              </th> */}
               <th className="text-xs font-normal text-browntop px-2 py-1 border border-gray-300 ">
                 ราง
               </th>
