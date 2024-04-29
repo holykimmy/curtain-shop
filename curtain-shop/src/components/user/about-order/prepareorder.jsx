@@ -141,7 +141,7 @@ const PrepareOrder = ({ idUser }) => {
                   key={item._id}
                   className="flex flex-wrap justify-center pt-4 px-5 "
                 >
-                  <div className="flex justify-between w-full bg-white flex-row sm:flex-col md:flex-row lg:flex-row  mt-1  ">
+                   <div className="flex justify-between w-full bg-white flex-row sm:flex-col md:flex-row lg:flex-row  mt-1  ">
                     <div className="flex flex-col mt-4">
                       <div className="flex flex-col ">
                         <span className="text-sm text-gray-600">
@@ -156,16 +156,27 @@ const PrepareOrder = ({ idUser }) => {
                         <p className="text-sm text-gray-600">
                           ความกว้างของหน้าผ้า : {item.product.p_width} ซม.
                         </p>
+                        <p className="text-sm text-gray-600">
+                        ราคา/หลา : {numberWithCommas(item.product.price)} บาท
+                      </p>
+
                       </div>
                     </div>
 
                     <div className="flex flex-col ">
                       <p className="text-sm text-gray-600">
-                        การสั่งตัดผ้าม่าน : {item.type}
+                        {item.twolayer === "ทำ"
+                          ? "ม่าน 2 ชั้น"
+                          : "ม่านชั้นเดียว"}
                       </p>
+
                       <p className="text-sm text-gray-600">
-                        ราคา/หลา : {numberWithCommas(item.product.price)} บาท
-                      </p>
+                          ม่านที่สั่งตัด : {item.type}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          เพิ่มเติม : {item.detailwd}
+                        </p>
+                     
                       <p className="text-sm text-gray-600">
                         ขนาด : {item.width} x {item.height} เซนติเมตร
                       </p>

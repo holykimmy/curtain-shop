@@ -130,11 +130,32 @@ function QuatationPage() {
     setRows([...rows, newRow]);
   };
 
-  const handleDeleteRow = (index) => {
+  const handleDeleteRowOld = (index) => {
     const updatedRows = [...rows];
     updatedRows.splice(index, 1);
     setRows(updatedRows);
   };
+
+  const handleDeleteRow = (index) => {
+    // ใช้ Swal.fire เพื่อแสดงข้อความยืนยันการลบ
+    Swal.fire({
+      text: "คุณแน่ใจที่จะลบแถวนี้?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "ยืนยัน",
+      cancelButtonText: "ยกเลิก",
+    }).then((result) => {
+      // ถ้าผู้ใช้กด "ยืนยัน" ให้ดำเนินการลบแถว
+      if (result.isConfirmed) {
+        const updatedRows = [...rows];
+        updatedRows.splice(index, 1);
+        setRows(updatedRows);
+      }
+    });
+  };
+  
 
   useEffect(() => {
     const fetchData = () => {

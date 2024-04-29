@@ -176,6 +176,7 @@ function Products() {
       } else {
         // ผู้ใช้เลือกยกเลิกการลบสินค้า
         console.log("Cancelled delete operation");
+        setIsLoading(false);
       }
     });
   };

@@ -19,8 +19,7 @@ import AccountPage from "./components/user/AccountPage";
 import AddressPage from "./components/user/AddressPage";
 import EditAddressPage from "./components/user/EditAddressPage";
 
-import AccountEditPage  from "./components/user/AccountEditPage";
-
+import AccountEditPage from "./components/user/AccountEditPage";
 
 import ProductDetail from "./components/user/ProductDetail";
 // import CategoryPage from "./components/user/CategoryPage";
@@ -59,17 +58,15 @@ import UpdateInvoicePage from "./components/admin/updateInvoice";
 import ReceptDetailQuotation from "./components/admin/receptDetailQuotation";
 import ReceptDetailInvoice from "./components/admin/receptDetailInvoice";
 
-
-
 import InvoicePage from "./components/admin/InvoicePage";
 import AddProductPage from "./components/admin/AddProductPage";
+import AddShowImgPage from "./components/admin/AddShowImgPage";
+import ShowimgPage from "./components/admin/ShowsPage";
 import AddBrandPage from "./components/admin/AddBrandPage";
 import AddTypePage from "./components/admin/AddTypePage";
 import TypePage from "./components/admin/TypePage";
 import UpdateTypePage from "./components/admin/updateTypePage";
 import UpdateTypeBgPage from "./components/admin/updateTypeBgPage";
-
-
 
 import CategoryProduct from "./components/admin/AddCategoryAndType";
 import Customers from "./components/admin/Customers";
@@ -77,8 +74,6 @@ import Orders from "./components/admin/Orders";
 import OrderDetail from "./components/admin/OrderDetail";
 import CancelOrder from "./components/admin/cancelOrder";
 import PostOrder from "./components/admin/postcodeOrder";
-
-
 
 import Products from "./components/admin/Products";
 import UpdateProduct from "./components/admin/UpdateProduct";
@@ -120,7 +115,6 @@ const router = createBrowserRouter([
   { path: "/payment/:idOrder", element: <Payment /> },
   { path: "/order-detail/:idOrder", element: <OrderDetailPage /> },
 
-
   { path: "/custom-product/:productId", element: <CustomPage /> },
   //product
   { path: "/product/polyester", element: <Polyester /> },
@@ -140,21 +134,19 @@ const router = createBrowserRouter([
   { path: "/invoice", element: <InvoicePage /> },
   { path: "/quotation/all", element: <HistoryQuotationPage /> },
   { path: "/invoice/all", element: <HistoryInvoicePage /> },
-  { path: "/quotation-detail/:id", element: <ReceptDetailQuotation />},
-  { path: "/invoice-detail/:id", element: <ReceptDetailInvoice />},
-  { path: "/quotation-update/:id", element: <UpdateQuotationPage />},
-  { path: "/invoice-update/:id", element: <UpdateInvoicePage />},
+  { path: "/quotation-detail/:id", element: <ReceptDetailQuotation /> },
+  { path: "/invoice-detail/:id", element: <ReceptDetailInvoice /> },
+  { path: "/quotation-update/:id", element: <UpdateQuotationPage /> },
+  { path: "/invoice-update/:id", element: <UpdateInvoicePage /> },
   { path: "/update-type/:id", element: <UpdateTypePage /> },
   { path: "/update-typebg/:id", element: <UpdateTypeBgPage /> },
 
-
-
-
   { path: "/add-product", element: <AddProductPage /> },
+  { path: "/add-showimg", element: <AddShowImgPage /> },
+  { path: "/showimg", element: <ShowimgPage /> },
   { path: "/add-brand", element: <AddBrandPage /> },
   { path: "/add-type", element: <AddTypePage /> },
   { path: "/type", element: <TypePage /> },
-
 
   { path: "/add-category", element: <CategoryProduct /> },
   { path: "/customers", element: <Customers /> },
@@ -164,7 +156,7 @@ const router = createBrowserRouter([
   { path: "/order-post/:idOrder", element: <PostOrder /> },
 
   { path: "/products-ad", element: <Products /> },
-  { path: "/update-product/:productId", element: <UpdateProduct /> },
+  { path: "/update-product/:productId", element: <UpdateProduct /> }
 ]);
 
 const store = createStore(rootReducer, composeWithDevTools());

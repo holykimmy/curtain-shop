@@ -1,5 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../Navbar";
+import Swal from "sweetalert2";
+import { Link, useNavigate } from "react-router-dom";
+import showAPI from "../../services/showAPI";
 import { BsPinFill } from "react-icons/bs";
 import w1 from "../img/work/w1.jpg";
 import w2 from "../img/work/w2.jpg";
@@ -45,8 +48,46 @@ import w42 from "../img/work/w42.jpg";
 import w43 from "../img/work/w43.jpg";
 import Footer from "../Footer";
 
-
 function ServicePage() {
+  const [data, setData] = useState([]);
+  const [brand, setBrand] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isLoading) {
+      Swal.fire({
+        customClass: {
+          popup: "bg-transparent"
+        },
+        backdrop: "rgba(255, 255, 255, 0.5)",
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
+        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+      });
+    } else {
+      Swal.close();
+    }
+  }, [isLoading]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const data = await showAPI.getAllImage();
+        setData(data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error(error);
+        setIsLoading(false);
+      }
+    };
+    fetchData(); // fetchData
+  }, []);
+
   return (
     <>
       {" "}
@@ -63,145 +104,33 @@ function ServicePage() {
           <p class="p-5 xl:text-4xl text-b-font text-lg"></p>
         </div>
 
-        <div class = "Achievement">
-          <div class = "photo-gallery  lg:grid-cols-2 lg:px-20 xl:px-32">
-
-            <div class = "column">
-              <div class = "photo">
-                <img src = {w1} alt = "" />
+        <div class="Achievement">
+          <div className="photo-gallery lg:grid-cols-3 lg:px-20 xl:px-32">
+            {[...Array(3)].map((_, columnIndex) => (
+              <div key={columnIndex} className="column">
+                {data
+                  .slice(
+                    columnIndex * Math.ceil(data.length / 3),
+                    (columnIndex + 1) * Math.ceil(data.length / 3)
+                  )
+                  .map((item, index) => (
+                    <div key={item._id} className="photo">
+                      <div className="relative rounded-t-lg ">
+                        <img
+                          className="w-auto h-full object-cover rounded-t-lg bg-contain bg-center"
+                          src={`${process.env.REACT_APP_AWS}${item.image}`}
+                          alt="type"
+                        />
+                        <div className="absolute shadow-md rounded-r-lg rounded-l-lg bottom-0 left-0 bg-white/30 px-4 py-2 text-white text-sm hover:bg-white hover:text-browntop transition duration-500 ease-in-out">
+                          {item.name}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
               </div>
-              <div class = "photo">
-                <img src = {w2} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w3} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w4} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w5} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w6} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w7} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w8} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w9} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w10} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w11} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w12} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w13} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w14} alt = "" />
-              </div>
-            </div>
-
-            <div class = "column">
-              <div class = "photo">
-                <img src = {w23} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w16} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w17} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w18} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w20} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w21} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w22} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w15} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w24} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w25} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w26} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w27} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w28} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w29} alt = "" />
-              </div>
-            </div>
-
-            <div class = "column">
-              <div class = "photo">
-                <img src = {w30} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w31} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w32} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w33} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w34} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w35} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w36} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w37} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w38} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w39} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w40} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w41} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w42} alt = "" />
-              </div>
-              <div class = "photo">
-                <img src = {w43} alt = "" />
-              </div>
-            </div>
-            
+            ))}
           </div>
+      
         </div>
 
         <div className="flex justify-center items-center ">
@@ -209,7 +138,6 @@ function ServicePage() {
         </div>
         <Footer></Footer>
       </div>
-      
     </>
   );
 }

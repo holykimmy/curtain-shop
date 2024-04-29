@@ -170,7 +170,7 @@ const ProductInCart = ({ item, idUser }) => {
     updateCart(updatedItem);
   };
 
-  const handleRemove = () => {
+  const handleRemoveOld = () => {
     let cart = {};
     if (localStorage.getItem("cart")) {
       cart = JSON.parse(localStorage.getItem("cart"));
@@ -193,6 +193,51 @@ const ProductInCart = ({ item, idUser }) => {
       });
     }
   };
+  const handleRemove = () => {
+    // ใช้ swal เพื่อแสดงข้อความยืนยันการลบ
+    Swal.fire({
+      text: `คุณต้องการลบสินค้าใช่หรือไม่?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่",
+      cancelButtonText: "ไม่ใช่"
+    }).then((result) => {
+      // ถ้าผู้ใช้กด "ยืนยัน" ให้ดำเนินการลบ
+      if (result.isConfirmed) {
+        let cart = {};
+        if (localStorage.getItem("cart")) {
+          cart = JSON.parse(localStorage.getItem("cart"));
+        }
+
+        // Check if the cart exists for the current user
+        if (cart[idUser]) {
+          // Filter out the product to remove from the cart
+          cart[idUser] = cart[idUser].filter(
+            (product) => product.cartId !== item.cartId
+          );
+
+          // Save updated cart to localStorage
+          localStorage.setItem("cart", JSON.stringify(cart));
+
+          // Update Redux store
+          dispatch({
+            type: "ADD_TO_CART",
+            payload: cart
+          });
+
+          // แจ้งเตือนว่าลบสินค้าเรียบร้อยแล้ว
+          Swal.fire({
+            icon: "success"
+          });
+        }
+      } else {
+        // ถ้าผู้ใช้กด "ยกเลิก" ไม่ต้องดำเนินการใดๆ
+        Swal.fire({ icon: "error" });
+      }
+    });
+  };
 
   const numberWithCommas = (x) => {
     if (x == null) {
@@ -209,7 +254,11 @@ const ProductInCart = ({ item, idUser }) => {
         <td className=" w-[300px] text-browntop md:px-2 md:py-1 border  border-gray-300">
           <Link to={`/product-detail/${item.productId}`}>
             {" "}
-            <img className=" w-[300px] h-full rounded" src={item.image} alt="product" />
+            <img
+              className=" w-[300px] h-full rounded"
+              src={item.image}
+              alt="product"
+            />
           </Link>
         </td>
         <td className="w-[100px] whitespace-nowrap text-sm text-browntop px-2 py-1 border border-gray-300">
@@ -220,10 +269,15 @@ const ProductInCart = ({ item, idUser }) => {
         </td>
         <td className=" w-[250px] md:w-[440px] text-browntop text-xs text-left px-2 py-1 border border-gray-300 ">
           {item.detail.split("\r\n")[0]}
-          <p className="w-[250px] md:w-[440px] font-bold text-brown-400">{item.twolayer === "ทำ" ? "ม่าน 2 ชั้น" : "ม่านชั้นเดียว"}</p>
-          <p className="w-[250px] md:w-[440px] font-bold text-brown-400">ม่านที่สั่งตัด : {item.type}</p>
-          <p className="w-[250px] md:w-[440px] font-bold text-brown-400">เพิ่มเติม : {item.detailwd}</p>
-
+          <p className="w-[250px] md:w-[440px] font-bold text-brown-400">
+            {item.twolayer === "ทำ" ? "ม่าน 2 ชั้น" : "ม่านชั้นเดียว"}
+          </p>
+          <p className="w-[250px] md:w-[440px] font-bold text-brown-400">
+            ม่านที่สั่งตัด : {item.type}
+          </p>
+          <p className="w-[250px] md:w-[440px] font-bold text-brown-400">
+            เพิ่มเติม : {item.detailwd}
+          </p>
         </td>
         {/* <td className="w-[100px] whitespace-nowrap text-browntop  text-xs px-2 py-1 border border-gray-300 ">
           {item.type}

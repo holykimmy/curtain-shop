@@ -143,51 +143,62 @@ const CancelOrder = ({ idUser }) => {
                     </p>
 
                     {order.products.map((item, index) => (
-                      <div
-                        key={item._id}
-                        className="flex flex-wrap justify-center pt-4 px-5 "
-                      >
-                        <div className="flex justify-between w-full bg-white flex-row sm:flex-col md:flex-row lg:flex-row  mt-1  ">
-                          <div className="flex flex-col mt-4">
-                            <div className="flex flex-col ">
-                              <span className="text-sm text-gray-600">
-                                ชื่อสินค้า : {item.product.name}
-                              </span>
-                              <span className="text-sm text-gray-600">
-                                ยี่ห้อ : {item.product.brand}
-                              </span>
-                              <span className="text-sm text-gray-600">
-                                รหัสสี : {item.product.color}
-                              </span>
-                              <p className="text-sm text-gray-600">
-                                ความกว้างของหน้าผ้า : {item.product.p_width} ซม.
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="flex flex-col ">
-                            <p className="text-sm text-gray-600">
-                              การสั่งตัดผ้าม่าน : {item.type}
-                            </p>
-                            <p className="text-sm text-gray-600">
-                              ราคา/หลา : {numberWithCommas(item.product.price)} บาท
-                            </p>
-                            <p className="text-sm text-gray-600">
-                              ขนาด : {item.width} x {item.height} เซนติเมตร
-                            </p>
-                            <p className="text-sm text-gray-600">
-                              จำนวน : {item.count} หลา
-                            </p>
-                            <p className="text-sm text-gray-600">
-                              รวม : {numberWithCommas(item.totalPiece)} บาท
-                            </p>
-                          </div>
-                        </div>
-                        {index !== order.products.length - 1 && (
-                          <hr className="w-full mt-4 mb-2 border-gray-300" />
-                        )}
+                <div
+                  key={item._id}
+                  className="flex flex-wrap justify-center pt-4 px-5 "
+                >
+                  <div className="flex justify-between w-full bg-white flex-row sm:flex-col md:flex-row lg:flex-row  mt-1  ">
+                    <div className="flex flex-col mt-4">
+                      <div className="flex flex-col ">
+                        <span className="text-sm text-gray-600">
+                          ชื่อสินค้า : {item.product.name}
+                        </span>
+                        <span className="text-sm text-gray-600">
+                          ยี่ห้อ : {item.product.brand}
+                        </span>
+                        <span className="text-sm text-gray-600">
+                          รหัสสี : {item.product.color}
+                        </span>
+                        <p className="text-sm text-gray-600">
+                          ความกว้างของหน้าผ้า : {item.product.p_width} ซม.
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          ราคา/หลา : {numberWithCommas(item.product.price)} บาท
+                        </p>
                       </div>
-                    ))}
+                    </div>
+
+                    <div className="flex flex-col ">
+                      <p className="text-sm text-gray-600">
+                        {item.twolayer === "ทำ"
+                          ? "ม่าน 2 ชั้น"
+                          : "ม่านชั้นเดียว"}
+                      </p>
+
+                      <p className="text-sm text-gray-600">
+                        ม่านที่สั่งตัด : {item.type}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        เพิ่มเติม : {item.detailwd}
+                      </p>
+
+                      <p className="text-sm text-gray-600">
+                        ขนาด : {item.width} x {item.height} เซนติเมตร
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        จำนวน : {item.count} หลา
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        รวม : {numberWithCommas(item.totalPiece)} บาท
+                      </p>
+                    </div>
+                  </div>
+
+                  {index !== order.products.length - 1 && (
+                    <hr className="w-full mt-4 mb-2 border-gray-300" />
+                  )}
+                </div>
+              ))}
                     {/* </div> */}
 
   
@@ -269,16 +280,26 @@ const CancelOrder = ({ idUser }) => {
                         <p className="text-sm text-gray-600">
                           ความกว้างของหน้าผ้า : {item.product.p_width} ซม.
                         </p>
+                        <p className="text-sm text-gray-600">
+                          ราคา/หลา : {numberWithCommas(item.product.price)} บาท
+                        </p>
                       </div>
                     </div>
 
                     <div className="flex flex-col ">
                       <p className="text-sm text-gray-600">
-                        การสั่งตัดผ้าม่าน : {item.type}
+                        {item.twolayer === "ทำ"
+                          ? "ม่าน 2 ชั้น"
+                          : "ม่านชั้นเดียว"}
+                      </p>
+
+                      <p className="text-sm text-gray-600">
+                        ม่านที่สั่งตัด : {item.type}
                       </p>
                       <p className="text-sm text-gray-600">
-                        ราคา/หลา : {numberWithCommas(item.product.price)} บาท
+                        เพิ่มเติม : {item.detailwd}
                       </p>
+
                       <p className="text-sm text-gray-600">
                         ขนาด : {item.width} x {item.height} เซนติเมตร
                       </p>
@@ -290,6 +311,7 @@ const CancelOrder = ({ idUser }) => {
                       </p>
                     </div>
                   </div>
+
                   {index !== order.products.length - 1 && (
                     <hr className="w-full mt-4 mb-2 border-gray-300" />
                   )}

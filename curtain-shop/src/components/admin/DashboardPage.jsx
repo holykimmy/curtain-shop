@@ -74,12 +74,23 @@ function MenuPage() {
           </Link>
           
           <Link to="/add-product">
+            <button class="flex bg-blue-200 my-5 mx-auto p-1 pl-2 items-center shadow-md hover:shadow-xl h-[85px] md:h-[100px] w-[90%] md:w-[65%] rounded-[72px] justify-center">
+              <div className="flex-[15%] rounded-[72px] border-4 border-blue-200 border-r-white">
+                <BsPlusLg className=" inline-block shadow-lg p-2 w-auto h-[70px] bg-blue-400 rounded-full  text-white "></BsPlusLg>
+              </div>
+              <h5 className="flex-[85%] inline-block text-center text-xl pr-4  text-neutral-600 font-bold ">
+                เพิ่มข้อมูล
+              </h5>
+            </button>
+          </Link>
+
+          <Link to="/showimg">
             <button class="flex bg-green-200 my-5 mx-auto p-1 pl-2 items-center shadow-md hover:shadow-xl h-[85px] md:h-[100px] w-[90%] md:w-[65%] rounded-[72px] justify-center">
               <div className="flex-[15%] rounded-[72px] border-4 border-green-200 border-r-white">
                 <BsPlusLg className=" inline-block shadow-lg p-2 w-auto h-[70px] bg-green-400 rounded-full  text-white "></BsPlusLg>
               </div>
               <h5 className="flex-[85%] inline-block text-center text-xl pr-4  text-neutral-600 font-bold ">
-                เพิ่มข้อมูล
+                ผลงานของร้าน
               </h5>
             </button>
           </Link>

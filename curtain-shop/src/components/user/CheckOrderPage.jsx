@@ -394,9 +394,18 @@ function CheckOrdeerPage() {
                           </p>
                           <p class="text-sm md:text-base xl:text-base text-gray-800">
                             {" "}
+                            {item.twolayer === "ทำ" ? "ม่าน 2 ชั้น" : "ม่านชั้นเดียว"}
+
+                          </p>
+                          <p class="text-sm md:text-base xl:text-base text-gray-800">
+                            {" "}
+                            เพิ่มเติม : {item.detailwd}
+                          </p>
+                          <p class="text-sm md:text-base xl:text-base text-gray-800">
+                            {" "}
                             ราคา/หลา : {numberWithCommas(
                               item.product.price
-                            )}{" "}
+                            )}{" "} บาท
                           </p>
                           <p class="text-sm md:text-base xl:text-base text-gray-800">
                             {" "}

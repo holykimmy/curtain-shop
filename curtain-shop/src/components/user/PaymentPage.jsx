@@ -342,7 +342,7 @@ function PaymentPage() {
                       >
                         <div className="pb-4 md:pb-8 w-full md:w-60">
                           <img
-                            className="w-full hidden md:block"
+                            className="w-[200px] h-[270px] drop-shadow-xl"
                             src={item.product.image}
                             alt="product"
                           />
@@ -365,7 +365,7 @@ function PaymentPage() {
                               </p>
                               <p className="text-sm leading-none text-gray-800">
                                 <span className="text-gray-600">
-                                  ขนาด : {item.width} x {item.height} ซม.
+                                  ขนาด : {item.width} x {item.height}ซม.
                                 </span>
                               </p>
 
@@ -379,14 +379,28 @@ function PaymentPage() {
                                   ความกว้างหน้าผ้า : {item.product.p_width} ซม.
                                 </span>
                               </p>
+                              <p className="text-sm leading-none text-gray-800">
+                                <span className="text-gray-600">
+                                  ราคาต่อหลา : {numberWithCommas(item.product.price)} บาท
+                                </span>
+                              </p>
                             </div>
                           </div>
                           <div className="flex justify-between space-x-8 items-start w-full">
                             <div className="flex-col">
                               {" "}
                               <p className="text-xs sm:text-xs md:text-sm xl:text-sm  leading-6">
+                                {item.twolayer === "ทำ"
+                                  ? "ม่าน 2 ชั้น"
+                                  : "ม่านชั้นเดียว"}
+                              </p>{" "}
+                              <p className="text-xs sm:text-xs md:text-sm xl:text-sm  leading-6">
                                 ผ้าม่านที่สั่งตัด : {item.type}
                               </p>{" "}
+                              <p className="text-xs sm:text-xs md:text-sm xl:text-sm  leading-6">
+                                เพิ่มเติม : {item.detailwd}
+                              </p>{" "}
+                        
                               <p className="text-base sm:text-sm md:text-sm   leading-6">
                                 จำนวน : {item.count} ชุด
                               </p>

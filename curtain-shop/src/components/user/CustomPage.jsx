@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { CloudinaryContext } from "cloudinary-react";
+import { CloudinaryContext, Image } from "cloudinary-react";
 import Navbar from "../Navbar";
 import { BsPinFill } from "react-icons/bs";
 import productAPI from "../../services/productAPI";
@@ -15,7 +15,7 @@ import _ from "lodash";
 
 function CustomPage() {
   //login
- 
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
@@ -166,7 +166,7 @@ function CustomPage() {
     fetch();
   }, []);
   console.log("testtt");
-  // console.table(types);
+  console.log(types);
 
   //product
   useEffect(() => {
@@ -243,7 +243,6 @@ function CustomPage() {
   const [height, setHeight] = useState("");
   const [detailwd, setDetailwd] = useState("");
 
-
   console.log("--------", idUser);
 
   const addToCartForLoggedInUser = ({
@@ -273,7 +272,7 @@ function CustomPage() {
       localStorage.removeItem("cart");
     }
 
-    console.log("data.id", data.id)
+    console.log("data.id", data.id);
     console.log("detailwd :", detailwd);
     console.log("------------data--------");
     if (cart[idUser]) {
@@ -310,7 +309,7 @@ function CustomPage() {
         item.width === width &&
         item.height === height &&
         item.rail === selectedRail &&
-        item.twolayer === selectedTwolayer&&
+        item.twolayer === selectedTwolayer &&
         item.detailwd === detailwd
     );
 
@@ -531,17 +530,17 @@ function CustomPage() {
       });
       return;
     }
-    if (!detailwd){
+    if (!detailwd) {
       Swal.fire({
         icon: "warning",
-        title:"กรุณาเลือกว่าจะรับหรือไม่รับ",
+        title: "กรุณาเลือกว่าจะรับหรือไม่รับ",
         showConfirmButton: false,
         timer: 1500
-      })
+      });
     }
 
     console.log("idUSer=====", idUser);
-    console.log("detailwd : ",detailwd);
+    console.log("detailwd : ", detailwd);
     // ตรวจสอบว่าผู้ใช้เข้าสู่ระบบหรือไม่
     if (!isLoggedIn) {
       navigate("/login");
@@ -561,21 +560,28 @@ function CustomPage() {
     }
   };
 
-  useEffect(() => {
-    setIsLoading(true);
-    setSelectedCurtain((prev) => ({
-      ...prev,
-      main: bgType
-    }));
-    setIsLoading(false);
-  }, [bgType]);
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   setSelectedCurtain((prev) => ({
+  //     ...prev,
+  //     main: bgType
+  //   }));
+  //   setIsLoading(false);
+  // }, [bgType]);
 
-  const default_product = {
-    id: 1,
-    main: bgType
-  };
+  // useEffect(() => {
+  //   if (types.length > 0) {
+  //     setSelectedCurtain({ id: 1, main: types[0].bgimage });
+  //   }
+  // }, [types]);
 
-  const [selectedCurtain, setSelectedCurtain] = useState(default_product);
+  // const default_product = {
+  //   id: 1,
+  //   main: types.image
+  // };
+
+  // const [selectedCurtain, setSelectedCurtain] = useState(default_product);
+  // const [selectedCurtain, setSelectedCurtain] = useState({ id: 1, main: "" });
 
   const [background, setBackground] = useState(data.color);
 
@@ -678,23 +684,14 @@ function CustomPage() {
           </div>
         ))}
       </div>
+
       <div className="flex flex-wrap justify-center">
         <div className=" flex flex-wrap p-11 justify-center items-center">
           <img
-            className="flex w-[200px] h-[280px] mt-[25px] rounded shadow-xl "
+            className="flex w-[200px] h-[280px] mt-[25px] rounded shadow-xl mr-10"
             src={data.image}
             alt="product"
           />
-          <CloudinaryContext className="flex w-[320px] " cloudName="dwmpdaqqh">
-            <div className="image__container">
-              <div className="image">
-                <TransformedImage
-                  rgb={background}
-                  selectedCurtain={selectedCurtain}
-                />
-              </div>{" "}
-            </div>
-          </CloudinaryContext>
 
           <div className="flex-col p-0 sm:p-0 pl-10 pr-10 pt-5 ">
             <p className="text-base md:text-lg lg:text-lg xl:text-lg mx-4 my-4 text-brown-400">
@@ -724,6 +721,29 @@ function CustomPage() {
           </div>
         </div>
       </div>
+
+      <div className="flex flex-wrap justify-center">
+        {types.map((type) => (
+          <CloudinaryContext
+            key={type._id}
+            className="flex w-[320px] "
+            cloudName="dwmpdaqqh"
+          >
+            <div className=" relative image__container">
+              <div className="absolute shadow-md rounded-r-lg top-0 left-0 bg-white/30 px-4 py-2 text-browntop text-sm hover:bg-white hover:text-browntop transition duration-500 ease-in-out">
+                {type.name}
+              </div>
+              <div className="image ">
+                <TransformedImage
+                  rgb={background}
+                  selectedCurtain={{ id: type._id, main: type.bgimage }}
+                />
+              </div>{" "}
+            </div>
+          </CloudinaryContext>
+        ))}
+      </div>
+
       <div className="flex flex-wrap items-center mb-10">
         <div className=" basis-1/3 items-center">
           <p className="text-gray-700 text-sm mt-4 pl-5 text-center ">
@@ -826,16 +846,18 @@ function CustomPage() {
         <p className="  mt-14 text-sm ml-5 text-brown-400"> เซนติเมตร</p>
       </div>
       <div className="flex justify-center">
-          <p className="mt-4  inline-block text-sm ml-5 text-brown-400">รายละเอียดเพิ่มเติม</p>
-          <input
-            class="appearance-none  rounded w-[190px] py-2 px-3 ml-2 my-2  text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            value={detailwd}
-            type="text"
-            required
-            placeholder=" ex. ผ้าม่านติดห้องนั่งเล่น"
-            onChange={(e) => setDetailwd(e.target.value)}
-          />
-        </div>
+        <p className="mt-4  inline-block text-sm ml-5 text-brown-400">
+          รายละเอียดเพิ่มเติม
+        </p>
+        <input
+          class="appearance-none  rounded w-[190px] py-2 px-3 ml-2 my-2  text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          value={detailwd}
+          type="text"
+          required
+          placeholder=" ex. ผ้าม่านติดห้องนั่งเล่น"
+          onChange={(e) => setDetailwd(e.target.value)}
+        />
+      </div>
       {typeById === "ได้" ? (
         <div className="ml-10">
           <p className="text-base mx-7 my-4 text-brown-400">
@@ -925,10 +947,7 @@ function CustomPage() {
             เพิ่มลงลงตระกร้าสินค้า
           </button>
         ) : (
-
-          <Link
-          to="/login" state={`custom-product/${productId}`} 
-          >
+          <Link to="/login" state={`custom-product/${productId}`}>
             <button className="my-4 text-white hover:shadow-2xl bg-red-400 rounded-xl p-2 w-[150px]">
               {" "}
               เข้าสู่ระบบเพื่อเพิ่มสินค้าลงตระกร้า{" "}

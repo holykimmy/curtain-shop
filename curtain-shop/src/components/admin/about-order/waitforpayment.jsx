@@ -107,8 +107,7 @@ const WaitingForPayment = ({ idUser }) => {
   const numberWithCommas = (x) => {
     const formattedNumber = parseFloat(x).toFixed(2);
     return formattedNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-};
-
+  };
 
   return (
     <>
@@ -176,16 +175,27 @@ const WaitingForPayment = ({ idUser }) => {
                               <p className="text-sm text-gray-600">
                                 ความกว้างของหน้าผ้า : {item.product.p_width} ซม.
                               </p>
+                              <p className="text-sm text-gray-600">
+                                ราคา/หลา :{" "}
+                                {numberWithCommas(item.product.price)} บาท
+                              </p>
                             </div>
                           </div>
 
                           <div className="flex flex-col ">
                             <p className="text-sm text-gray-600">
-                              การสั่งตัดผ้าม่าน : {item.type}
+                              {item.twolayer === "ทำ"
+                                ? "ม่าน 2 ชั้น"
+                                : "ม่านชั้นเดียว"}
+                            </p>
+
+                            <p className="text-sm text-gray-600">
+                              ม่านที่สั่งตัด : {item.type}
                             </p>
                             <p className="text-sm text-gray-600">
-                              ราคา/หลา : {numberWithCommas(item.product.price)} บาท
+                              เพิ่มเติม : {item.detailwd}
                             </p>
+
                             <p className="text-sm text-gray-600">
                               ขนาด : {item.width} x {item.height} เซนติเมตร
                             </p>
@@ -197,6 +207,7 @@ const WaitingForPayment = ({ idUser }) => {
                             </p>
                           </div>
                         </div>
+
                         {index !== order.products.length - 1 && (
                           <hr className="w-full mt-4 mb-2 border-gray-300" />
                         )}
@@ -299,16 +310,26 @@ const WaitingForPayment = ({ idUser }) => {
                         <p className="text-sm text-gray-600">
                           ความกว้างของหน้าผ้า : {item.product.p_width} ซม.
                         </p>
+                        <p className="text-sm text-gray-600">
+                          ราคา/หลา : {numberWithCommas(item.product.price)} บาท
+                        </p>
                       </div>
                     </div>
 
                     <div className="flex flex-col ">
                       <p className="text-sm text-gray-600">
-                        การสั่งตัดผ้าม่าน : {item.type}
+                        {item.twolayer === "ทำ"
+                          ? "ม่าน 2 ชั้น"
+                          : "ม่านชั้นเดียว"}
+                      </p>
+
+                      <p className="text-sm text-gray-600">
+                        ม่านที่สั่งตัด : {item.type}
                       </p>
                       <p className="text-sm text-gray-600">
-                        ราคา/หลา : {numberWithCommas(item.product.price)} บาท
+                        เพิ่มเติม : {item.detailwd}
                       </p>
+
                       <p className="text-sm text-gray-600">
                         ขนาด : {item.width} x {item.height} เซนติเมตร
                       </p>
@@ -320,6 +341,7 @@ const WaitingForPayment = ({ idUser }) => {
                       </p>
                     </div>
                   </div>
+
                   {index !== order.products.length - 1 && (
                     <hr className="w-full mt-4 mb-2 border-gray-300" />
                   )}

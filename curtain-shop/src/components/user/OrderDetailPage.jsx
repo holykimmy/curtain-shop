@@ -60,7 +60,6 @@ function OrderDetailPage() {
           setCurrentOrder(orderData);
           setIsLoading(false);
           console.log(currentOrder);
-
         })
         .catch((err) => {
           console.error("error", err);
@@ -68,11 +67,8 @@ function OrderDetailPage() {
         });
     };
     fetchData();
-
   }, [idOrder]);
-  console.log("currenor af set ",currentOrder);
-
-
+  console.log("currenor af set ", currentOrder);
 
   useEffect(() => {
     const authToken = localStorage.getItem("token");
@@ -163,20 +159,17 @@ function OrderDetailPage() {
         .then((addressData) => {
           setAddress(addressData);
           setIsLoading(false);
-
         })
         .catch((err) => {
           console.error("error", err);
           setIsLoading(false);
-
         });
     };
 
-    fetchData(); 
+    fetchData();
   }, [idUser]);
   console.log("address : ");
   console.log(address);
-
 
   const handlePayment = async (idOrder) => {
     navigate(`/payment/${idOrder}`, {});
@@ -203,20 +196,19 @@ function OrderDetailPage() {
           title: "ยืนยันคำสั่งซื้อ",
           text: "คำสั่งซื้อสำเร็จสำเร็จแล้ว",
           icon: "success"
-        }).then(()=>{
+        }).then(() => {
           window.location.reload();
-        })
+        });
       } catch (error) {
         console.error("Error cancelling order:", error);
-                setIsLoading(false);
-
+        setIsLoading(false);
       }
     }
   };
   const numberWithCommas = (x) => {
     const formattedNumber = parseFloat(x).toFixed(2);
     return formattedNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-};
+  };
 
   return (
     <>
@@ -315,25 +307,35 @@ function OrderDetailPage() {
                                   ความกว้างหน้าผ้า : {item.product.p_width} ซม.
                                 </span>
                               </p>
+                              <p className="text-sm leading-none text-gray-800">
+                                <span className="text-gray-600">
+                                  ราคาต่อหลา : {numberWithCommas(item.product.price)} บาท
+                                </span>
+                              </p>
                             </div>
                           </div>
                           <div className="flex justify-between space-x-8 items-start w-full">
                             <div className="flex-col">
                               {" "}
                               <p className="text-xs sm:text-xs md:text-sm xl:text-sm  leading-6">
+                                {item.twolayer === "ทำ"
+                                  ? "ม่าน 2 ชั้น"
+                                  : "ม่านชั้นเดียว"}
+                              </p>{" "}
+                              <p className="text-xs sm:text-xs md:text-sm xl:text-sm  leading-6">
                                 ผ้าม่านที่สั่งตัด : {item.type}
                               </p>{" "}
+                              <p className="text-xs sm:text-xs md:text-sm xl:text-sm  leading-6">
+                                เพิ่มเติม : {item.detailwd}
+                              </p>{" "}
+                        
                               <p className="text-base sm:text-sm md:text-sm   leading-6">
                                 จำนวน : {item.count} ชุด
                               </p>
                             </div>
 
                             <p className="text-xs sm:text-xs md:text-sm xl:text-sm font-semibold leading-6 text-gray-800">
-                              ราคา{" "}
-                              {numberWithCommas(
-                                item.totalPiece
-                              )}{" "}
-                              บาท
+                              ราคา {numberWithCommas(item.totalPiece)} บาท
                             </p>
                           </div>
                         </div>
@@ -367,8 +369,6 @@ function OrderDetailPage() {
                             {order.deliveryIs}
                           </p>
                         </div>
-
-                        
                       </div>
                       <div className="flex justify-between items-center w-full">
                         <p className="text-base font-semibold leading-4 text-gray-800">
