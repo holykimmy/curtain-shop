@@ -780,6 +780,8 @@ exports.userCart = async (req, res) => {
     const cartProducts = await Promise.all(
       cart.map(async (item) => {
         const product = await Products.findById(item.productId);
+
+        console.log("detailwddd : ",item.detailwd);
         return {
           product: {
             productId: item.productId,
@@ -1050,6 +1052,26 @@ exports.getOrderByIdComplete = async (req, res) => {
       .exec();
 
     res.json(cart);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+exports.getOrderByIdOrder2 = async (req, res) => {
+  try {
+    const idOrder = req.params.id;
+    console.log("get by id order");
+    console.log(idOrder);
+    const order = await Cart.findById(idOrder)
+      .populate([
+        {
+          path: "orderBy",
+          select: "_id f_name l_name username email tell createdAt updatedAt"
+        }
+      ])
+      .exec();
+
+    res.json(order);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });

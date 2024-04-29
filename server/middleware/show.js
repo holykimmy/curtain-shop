@@ -2,9 +2,10 @@ const express = require("express");
 const multer = require("multer");
 const path = require("path");
 const slugify = require("slugify");
-// const AWS = require('aws-sdk');
 const { v4: uuidv4 } = require("uuid");
-
+const { S3 } = require("@aws-sdk/client-s3");
+const AWS = require('aws-sdk'); 
+const multerS3 = require('multer-s3');
 const dayjs = require("dayjs");
 const localizedFormat = require("dayjs/plugin/localizedFormat");
 const utc = require('dayjs/plugin/utc');
@@ -15,25 +16,34 @@ dayjs.extend(localizedFormat);
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.locale(thLocale);
-// Multer storage configuration for show images
-const storageShow = multer.diskStorage({
-    destination: function (req, file, callback) {
-      callback(null, "./images/show"); // ระบุโฟลเดอร์ที่คุณต้องการเก็บไฟล์ show
-    },
-    filename: (req, file, cb) => {
-      const { brand, p_type, name } = req.body;
-  
-      const slugBrand = slugify(brand, { lower: true });
-      const slugPType = slugify(p_type, { lower: true });
-      const slugName = slugify(name, { lower: true });
-  
-      const newFilename = `${slugBrand}-${slugPType}-${slugName}-${uuidv4()}-${path.extname(
-        file.originalname
-      )}`;
-  
-      cb(null, newFilename);
-    },
-  });
-  const uploadShow = multer({ storage: storageShow }).single("image");
+
+// // Configure AWS SDK
+const s3 = new S3 ({
+  region: 'ap-southeast-1',
+  credentials: {
+    accessKeyId: 'AKIAQ3EGS6PRLXNBIQQV',
+    secretAccessKey: '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',
+  },
+});
+
+
+// Middleware for uploading slip images
+const uploadShow = multer({ storage: multerS3 ({
+  s3 : s3,
+  bucket: 'image-products-charoenkit',
+  acl: "public-read",
+  contentType: multerS3.AUTO_CONTENT_TYPE,
+  metadata: function(req,file,cb){
+    cb(null,{fieldName: file.fieldName});
+  },
+  key : function(req,file,cb){
+    const originalFileName = path.parse(file.originalname).name; // ดึงชื่อไฟล์เดิม (ไม่รวมนามสกุล)
+    const extension = path.extname(file.originalname); // ดึงนามสกุลของไฟล์
+
+    const newFilename = `show/${originalFileName}-${extension}`;
+    cb(null, newFilename);
+  }
+})
+}).single("image");
 
   module.exports =  uploadShow ;

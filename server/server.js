@@ -14,6 +14,7 @@ const AdminRoute = require("./routes/admin");
 const AuthRoute = require("./routes/auth");
 const ReceptRoute = require("./routes/recept");
 const TypeRoute = require("./routes/typeofcurtain");
+const ShowRoute = require("./routes/show");
 
 
 const bcrypt = require("bcrypt");
@@ -67,6 +68,7 @@ app.use("/api/category", CategoryRoute);
 app.use("/api/dashboard", AdminRoute);
 app.use("/api/recept", ReceptRoute);
 app.use("/api/type-cut", TypeRoute);
+app.use("/api/show", ShowRoute);
 
 app.use("/api", AuthRoute);
 // Error handling middleware

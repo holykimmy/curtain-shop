@@ -281,6 +281,7 @@ exports.updateProduct = (req, res) => {
     });
 };
 
+
 exports.updateVisibility = (req, res) => {
   const { visibility } = req.body;
   const productId = req.params.productId;
@@ -351,3 +352,5 @@ exports.deleteProduct = async (req, res) => {
     res.status(500).json({ error: "เกิดข้อผิดพลาดในการลบสินค้า" });
   }
 };
+
+
