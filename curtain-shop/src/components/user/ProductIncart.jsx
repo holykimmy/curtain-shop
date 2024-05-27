@@ -255,7 +255,7 @@ const ProductInCart = ({ item, idUser }) => {
           <Link to={`/product-detail/${item.productId}`}>
             {" "}
             <img
-              className=" w-[300px] rounded"
+              className=" w-[300px] h-[350px] rounded"
               src={item.image}
               alt="product"
             />
