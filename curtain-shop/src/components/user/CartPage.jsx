@@ -267,7 +267,7 @@ function CartPage() {
                   disabled={!cart.length}
                   onClick={handleSaveOrder}
                 >
-                  ชำระเงิน
+                  ตรวจสอบคำสั่งซื้อ
                 </button>
               ) : (
                 <Link to="/login" state="cart">
