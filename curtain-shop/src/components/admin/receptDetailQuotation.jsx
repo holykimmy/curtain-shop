@@ -3,7 +3,6 @@ import Navbaradmin from "./Navbaradmin";
 import { LuReceipt } from "react-icons/lu";
 import "../../App.css";
 import CreatableSelect from "react-select/creatable";
-import type { DatePickerProps } from "antd";
 import { DatePicker, Space } from "antd";
 import moment from "moment";
 import productAPI from "../../services/productAPI";

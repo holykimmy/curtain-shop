@@ -40,7 +40,7 @@ const Confirmed = ({ idUser }) => {
 
       try {
         const orderData = await customerAPI.getOrderById(idUser);
-        const confirmOrders = orderData.filter((order) => !order.confirmed);
+        const confirmOrders = orderData.filter((order) => !order.confirmed && order.enable);
         setUserOrder(confirmOrders);
         setIsLoading(false);
       } catch (error) {

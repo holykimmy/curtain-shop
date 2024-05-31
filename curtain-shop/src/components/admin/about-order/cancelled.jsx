@@ -19,7 +19,7 @@ const CancelOrder = ({ idUser }) => {
     if (isLoading) {
       Swal.fire({
         customClass: {
-          popup: "bg-transparent"
+          popup: "bg-transparent",
         },
         backdrop: "rgba(255, 255, 255, 0.5)",
         showConfirmButton: false,
@@ -27,7 +27,7 @@ const CancelOrder = ({ idUser }) => {
           Swal.showLoading();
         },
         allowOutsideClick: false, // ห้ามคลิกภายนอกสไปน์
-        allowEscapeKey: false // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
+        allowEscapeKey: false, // ห้ามใช้ปุ่ม Esc ในการปิดสไปน์
       });
     } else {
       Swal.close();
@@ -82,7 +82,7 @@ const CancelOrder = ({ idUser }) => {
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "ยืนยัน",
-      cancelButtonText: "ยกเลิก"
+      cancelButtonText: "ยกเลิก",
     });
 
     // หากผู้ใช้กดปุ่มยืนยัน
@@ -94,8 +94,7 @@ const CancelOrder = ({ idUser }) => {
   const numberWithCommas = (x) => {
     const formattedNumber = parseFloat(x).toFixed(2);
     return formattedNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-};
-
+  };
 
   return (
     <>
@@ -143,65 +142,64 @@ const CancelOrder = ({ idUser }) => {
                     </p>
 
                     {order.products.map((item, index) => (
-                <div
-                  key={item._id}
-                  className="flex flex-wrap justify-center pt-4 px-5 "
-                >
-                  <div className="flex justify-between w-full bg-white flex-row sm:flex-col md:flex-row lg:flex-row  mt-1  ">
-                    <div className="flex flex-col mt-4">
-                      <div className="flex flex-col ">
-                        <span className="text-sm text-gray-600">
-                          ชื่อสินค้า : {item.product.name}
-                        </span>
-                        <span className="text-sm text-gray-600">
-                          ยี่ห้อ : {item.product.brand}
-                        </span>
-                        <span className="text-sm text-gray-600">
-                          รหัสสี : {item.product.color}
-                        </span>
-                        <p className="text-sm text-gray-600">
-                          ความกว้างของหน้าผ้า : {item.product.p_width} ซม.
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          ราคา/หลา : {numberWithCommas(item.product.price)} บาท
-                        </p>
+                      <div
+                        key={item._id}
+                        className="flex flex-wrap justify-center pt-4 px-5 "
+                      >
+                        <div className="flex justify-between w-full bg-white flex-row sm:flex-col md:flex-row lg:flex-row  mt-1  ">
+                          <div className="flex flex-col mt-4">
+                            <div className="flex flex-col ">
+                              <span className="text-sm text-gray-600">
+                                ชื่อสินค้า : {item.product.name}
+                              </span>
+                              <span className="text-sm text-gray-600">
+                                ยี่ห้อ : {item.product.brand}
+                              </span>
+                              <span className="text-sm text-gray-600">
+                                รหัสสี : {item.product.color}
+                              </span>
+                              <p className="text-sm text-gray-600">
+                                ความกว้างของหน้าผ้า : {item.product.p_width} ซม.
+                              </p>
+                              <p className="text-sm text-gray-600">
+                                ราคา/หลา :{" "}
+                                {numberWithCommas(item.product.price)} บาท
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col ">
+                            <p className="text-sm text-gray-600">
+                              {item.twolayer === "ทำ"
+                                ? "ม่าน 2 ชั้น"
+                                : "ม่านชั้นเดียว"}
+                            </p>
+
+                            <p className="text-sm text-gray-600">
+                              ม่านที่สั่งตัด : {item.type}
+                            </p>
+                            <p className="text-sm text-gray-600">
+                              เพิ่มเติม : {item.detailwd}
+                            </p>
+
+                            <p className="text-sm text-gray-600">
+                              ขนาด : {item.width} x {item.height} เซนติเมตร
+                            </p>
+                            <p className="text-sm text-gray-600">
+                              จำนวน : {item.count} หลา
+                            </p>
+                            <p className="text-sm text-gray-600">
+                              รวม : {numberWithCommas(item.totalPiece)} บาท
+                            </p>
+                          </div>
+                        </div>
+
+                        {index !== order.products.length - 1 && (
+                          <hr className="w-full mt-4 mb-2 border-gray-300" />
+                        )}
                       </div>
-                    </div>
-
-                    <div className="flex flex-col ">
-                      <p className="text-sm text-gray-600">
-                        {item.twolayer === "ทำ"
-                          ? "ม่าน 2 ชั้น"
-                          : "ม่านชั้นเดียว"}
-                      </p>
-
-                      <p className="text-sm text-gray-600">
-                        ม่านที่สั่งตัด : {item.type}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        เพิ่มเติม : {item.detailwd}
-                      </p>
-
-                      <p className="text-sm text-gray-600">
-                        ขนาด : {item.width} x {item.height} เซนติเมตร
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        จำนวน : {item.count} หลา
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        รวม : {numberWithCommas(item.totalPiece)} บาท
-                      </p>
-                    </div>
-                  </div>
-
-                  {index !== order.products.length - 1 && (
-                    <hr className="w-full mt-4 mb-2 border-gray-300" />
-                  )}
-                </div>
-              ))}
+                    ))}
                     {/* </div> */}
-
-  
 
                     <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
                       ราคารวม : {numberWithCommas(order.totalPrice)} บาท
@@ -210,7 +208,7 @@ const CancelOrder = ({ idUser }) => {
                     <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-1">
                       {!order.enable ? " สถานะ : ยกเลิกสินค้าโดยลูกค้า" : null}
                     </p>
-                    {order.verifycancelled ? (
+                    {order.cancelled ? (
                       <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-1">
                         ยกเลิกสินค้าโดยแอดมินเนื้องจาก {order.cancelReasonAd}
                       </p>
@@ -319,10 +317,6 @@ const CancelOrder = ({ idUser }) => {
               ))}
               {/* </div> */}
 
-          
-              
-
-              
               <p className="text-sm sm:text-xs md:text-xs lg:text-xs xl:text-base text-brown-400 mt-1">
                 ราคารวม : {numberWithCommas(order.totalPrice)} บาท
               </p>
@@ -330,7 +324,7 @@ const CancelOrder = ({ idUser }) => {
               <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-1">
                 {!order.enable ? " สถานะ : ยกเลิกสินค้าโดยลูกค้า" : null}
               </p>
-              {order.verifycancelled ? (
+              {order.cancelled ? (
                 <p className="text-sm sm:text-xs md:text-xs lg:text-base xl:text-base text-brown-400 mt-1">
                   ยกเลิกสินค้าโดยแอดมินเนื้องจาก {order.cancelReasonAd}
                 </p>

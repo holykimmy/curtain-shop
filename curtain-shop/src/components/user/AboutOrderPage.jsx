@@ -60,7 +60,7 @@ function AboutOrderPage() {
 
         const allUnConfirmed = await customerAPI.getOrderById(idUser);
         const confirmedOrders = allUnConfirmed.filter(
-          (order) => order.confirmed === false
+          (order) => order.confirmed === false && order.enable
         );
         setOrderConfirmed(confirmedOrders);
 
